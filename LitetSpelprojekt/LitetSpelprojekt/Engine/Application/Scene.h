@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../Ecs.h"
+#include "../ECS.h"
 
 class Scene
 {
 private:
-	Ecs ecs;
+	ECS ecs;
 
 public:
 	Scene();
