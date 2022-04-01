@@ -75,8 +75,8 @@ LRESULT CALLBACK windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 	return DefWindowProc(handle, message, wParam, lParam);
 }
 
-Window::Window(unsigned int width, unsigned int height, const std::string title)
-	: width(width), height(height), title(title), windowHandle(NULL),
+Window::Window()
+	: width(0), height(0), title(""), windowHandle(NULL),
 	wc{}, running(false), cursorPoint(POINT()), lastCursorPoint(POINT())
 { }
 
@@ -87,8 +87,12 @@ Window::~Window()
 	this->windowHandle = 0;
 }
 
-bool Window::init()
+bool Window::init(unsigned int width, unsigned int height, const std::string title)
 {
+	this->width = width;
+	this->height = height;
+	this->title = title;
+
 	// Window class
 	const char CLASS_NAME[] = "MyWindowClass";
 

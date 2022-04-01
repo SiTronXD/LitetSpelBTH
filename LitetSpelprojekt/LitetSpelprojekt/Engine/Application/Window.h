@@ -21,10 +21,10 @@ private:
 	bool running;
 
 public:
-	Window(unsigned int width, unsigned int height, const std::string title);
+	Window();
 	~Window();
 
-	bool init();
+	bool init(unsigned int width, unsigned int height, const std::string title);
 	const bool& isRunning();
 
 	inline HWND& getWindowHandle() { return this->windowHandle; }
