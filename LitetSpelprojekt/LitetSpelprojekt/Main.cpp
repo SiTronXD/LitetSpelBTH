@@ -1,16 +1,9 @@
-#include <iostream>
-
-#include "Engine/Application/Window.h"
+#include "Engine/Engine.h"
 
 int main()
 {
-	Window window(1600, 900, "Litet Spelprojekt");
-	window.init();
-
-	while (window.isRunning())
-	{
-
-	}
+	Engine engine(1280, 720);
+	engine.run();
 
 	return 0;
 }
