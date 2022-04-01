@@ -51,3 +51,4 @@ bool ECS::hasComponent(GameObject& gameObject)
 
 	return true;
 }
+
