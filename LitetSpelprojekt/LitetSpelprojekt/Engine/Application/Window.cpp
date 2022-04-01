@@ -15,7 +15,7 @@ LRESULT CALLBACK windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 		// Key was pressed down
 	case WM_KEYDOWN:
 	{
-		// Input::setKeyDown((unsigned int)wParam);
+		Input::setKeyDown((unsigned int)wParam);
 
 		break;
 	}
@@ -23,7 +23,7 @@ LRESULT CALLBACK windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 	// Key was released
 	case WM_KEYUP:
 	{
-		// Input::setKeyUp((unsigned int)wParam);
+		Input::setKeyUp((unsigned int)wParam);
 
 		break;
 	}
@@ -31,7 +31,7 @@ LRESULT CALLBACK windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 	// Left mouse button was pressed down
 	case WM_LBUTTONDOWN:
 	{
-		// Input::setMouseDown((unsigned int)Mouse::LEFT_BUTTON);
+		Input::setMouseDown((unsigned int)Mouse::LEFT_BUTTON);
 
 		break;
 	}
@@ -39,7 +39,7 @@ LRESULT CALLBACK windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 	// Left mouse button was released
 	case WM_LBUTTONUP:
 	{
-		// Input::setMouseUp((unsigned int)Mouse::LEFT_BUTTON);
+		Input::setMouseUp((unsigned int)Mouse::LEFT_BUTTON);
 
 		break;
 	}
@@ -47,7 +47,7 @@ LRESULT CALLBACK windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 	// Right mouse button was pressed down
 	case WM_RBUTTONDOWN:
 	{
-		// Input::setMouseDown((unsigned int)Mouse::RIGHT_BUTTON);
+		Input::setMouseDown((unsigned int)Mouse::RIGHT_BUTTON);
 
 		break;
 	}
@@ -55,7 +55,7 @@ LRESULT CALLBACK windowProc(HWND handle, UINT message, WPARAM wParam, LPARAM lPa
 	// Right mouse button was released
 	case WM_RBUTTONUP:
 	{
-		// Input::setMouseUp((unsigned int)Mouse::RIGHT_BUTTON);
+		Input::setMouseUp((unsigned int)Mouse::RIGHT_BUTTON);
 
 		break;
 	}
@@ -152,8 +152,8 @@ bool Window::init(unsigned int width, unsigned int height, const std::string tit
 const bool& Window::isRunning()
 {
 	// Update last pressed states
-	// this->input.updateLastPressedKeys();
-	// this->input.updateLastPressedMouseButtons();
+	this->input.updateLastPressedKeys();
+	this->input.updateLastPressedMouseButtons();
 
 	MSG msg;
 	ZeroMemory(&msg, sizeof(MSG));
@@ -172,32 +172,16 @@ const bool& Window::isRunning()
 	// Update cursor position and delta position
 	GetCursorPos(&this->cursorPoint);
 	ScreenToClient(this->windowHandle, &this->cursorPoint);
-	/*this->input.updateCursorPosition(this->cursorPoint.x, this->cursorPoint.y);
+	this->input.updateCursorPosition(this->cursorPoint.x, this->cursorPoint.y);
 	this->input.updateCursorDelta(
 		this->cursorPoint.x - this->lastCursorPoint.x,
 		this->cursorPoint.y - this->lastCursorPoint.y
-	);*/
+	);
 	this->lastCursorPoint = this->cursorPoint;
-
-	// Lock cursor position
-	/*if (this->isFocus() && Input::shouldLockCursor())
-	{
-		// Set middle point
-		this->screenMiddlePoint.x = this->width / 2;
-		this->screenMiddlePoint.y = this->height / 2;
-		this->lastCursorPoint = this->screenMiddlePoint;
-		ClientToScreen(this->windowHandle, &screenMiddlePoint);
-		SetCursorPos(screenMiddlePoint.x, screenMiddlePoint.y);
-	}
-
-	// Show/hide cursor
-	if (Input::cursorVisibilitySwitched())
-		ShowCursor(Input::isCursorVisible());
-	this->input.updateLastCursorVisible();
 
 	// Exit if the escape button is pressed
 	if (Input::isKeyDown(Keys::ESCAPE))
-		this->running = false;*/
+		this->running = false;
 
 	return this->running;
 }

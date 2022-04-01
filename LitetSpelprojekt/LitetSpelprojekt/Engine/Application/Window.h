@@ -2,12 +2,15 @@
 
 #include <string>
 #include <Windows.h>
+#include "Input.h"
 
 class Window
 {
 private:
 	unsigned int width;
 	unsigned int height;
+
+	Input input;
 
 	HWND windowHandle;
 	WNDCLASS wc;
@@ -28,4 +31,6 @@ public:
 	const bool& isRunning();
 
 	inline HWND& getWindowHandle() { return this->windowHandle; }
+	inline const unsigned int getWidth() { return this->width; }
+	inline const unsigned int getHeight() { return this->height; }
 };

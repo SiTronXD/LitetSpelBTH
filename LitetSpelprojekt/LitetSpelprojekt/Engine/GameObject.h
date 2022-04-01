@@ -1,6 +1,6 @@
 #pragma once
 
-class ECS;
+#include "ECS.h"
 
 class GameObject
 {
@@ -11,12 +11,12 @@ public:
 	GameObject(ECS& ecs);
 	~GameObject();
 
-	/*template <typename T>
-	void addComponent();*/
+	template <typename T>
+	void addComponent();
 };
 
-/*template<typename T>
+template<typename T>
 inline void GameObject::addComponent()
 {
-	ecs.addActiveComponent<T>(*this);
-}*/
+	this->ecs.addActiveComponent<T>(*this);
+}
