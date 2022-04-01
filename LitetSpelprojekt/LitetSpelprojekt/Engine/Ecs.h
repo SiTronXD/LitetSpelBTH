@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <typeindex>
 #include <typeinfo>
-#include "GameObject.h"
 #include "Components/Transform.h"
 #include "Components/Camera.h"
 #include "Components/Light.h"
@@ -13,6 +12,8 @@
 #include "Components/Rigidbody.h"
 #include "Components/Collider.h"
 #include "Components/Script.h"
+
+class GameObject;
 
 class ECS
 {
@@ -40,3 +41,22 @@ public:
 
 	bool hasComponent(GameObject& gameObject);
 };
+
+template<typename T>
+inline void ECS::addActiveComponent(GameObject& gameObject)
+{
+	// Add new vector for component type
+	if (this->activeComponents.count(typeid(T)) <= 0)
+	{
+		this->activeComponents.insert(
+			std::pair<std::type_index, std::vector<Component*>>(
+				typeid(Transform),
+				std::vector<Component*>()
+				)
+		);
+	}
+
+	// Add new active component
+	T* newComponent = new T();
+	this->activeComponents[typeid(T)].push_back(newComponent);
+}
