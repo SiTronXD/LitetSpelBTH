@@ -1,5 +1,6 @@
 #include "Engine/Engine.h"
 #include "Engine/ECS.h"
+#include "Settings.h"
 
 int main()
 {
@@ -10,7 +11,9 @@ int main()
 	GameObject gameObject(ecs);
 	ecs.addGameObject(gameObject);
 
-
+	Settings settings;
+	settings.LoadSettings();
+	
 	//gameObject.addComponent<Transform>();
 
 	return 0;
