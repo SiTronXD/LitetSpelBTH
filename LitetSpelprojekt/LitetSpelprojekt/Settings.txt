@@ -1,0 +1,12 @@
+ResolutionX
+1920
+ResolutionY
+1080
+Sensitivity
+5
+Brightness
+10
+Volume
+10
+
+

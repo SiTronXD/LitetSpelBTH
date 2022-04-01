@@ -1,4 +1,5 @@
 #include "Engine/Engine.h"
+#include "Settings.h"
 
 int main()
 {
@@ -8,5 +9,8 @@ int main()
 	Engine engine(1280, 720);
 	engine.run();
 
+	Settings settings;
+	settings.LoadSettings();
+	
 	return 0;
 }

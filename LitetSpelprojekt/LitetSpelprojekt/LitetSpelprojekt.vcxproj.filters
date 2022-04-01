@@ -78,6 +78,9 @@
     <ClCompile Include="Engine\Components\Script.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Application\Window.h">
@@ -140,6 +143,12 @@
     <ClInclude Include="Engine\Components\Script.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Settings.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
