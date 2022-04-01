@@ -1,10 +1,16 @@
 #include <iostream>
 
+#include "Engine/Application/Window.h"
+
 int main()
 {
-	std::cout << "Hello world!" << std::endl;
+	Window window(1600, 900, "Litet Spelprojekt");
+	window.init();
 
-	getchar();
+	while (window.isRunning())
+	{
+
+	}
 
 	return 0;
 }
