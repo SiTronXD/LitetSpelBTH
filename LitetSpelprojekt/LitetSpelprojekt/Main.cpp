@@ -1,10 +1,9 @@
-#include <iostream>
+#include "Engine/Engine.h"
 
 int main()
 {
-	std::cout << "Hello world!" << std::endl;
-
-	getchar();
+	Engine engine(1280, 720);
+	engine.run();
 
 	return 0;
 }
