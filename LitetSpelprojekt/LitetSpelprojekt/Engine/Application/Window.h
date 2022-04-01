@@ -2,12 +2,15 @@
 
 #include <string>
 #include <Windows.h>
+#include "Input.h"
 
 class Window
 {
 private:
 	unsigned int width;
 	unsigned int height;
+
+	Input input;
 
 	HWND windowHandle;
 	WNDCLASS wc;
