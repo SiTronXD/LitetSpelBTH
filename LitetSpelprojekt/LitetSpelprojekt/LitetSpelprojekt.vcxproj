@@ -30,27 +30,27 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -143,29 +143,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Application\Input.cpp" />
-    <ClCompile Include="Engine\Application\Scene.cpp" />
-    <ClCompile Include="Engine\Application\SceneHandler.cpp" />
-    <ClCompile Include="Engine\Application\Window.cpp" />
     <ClCompile Include="Engine\Ecs.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Application\Input.cpp" />
     <ClCompile Include="Engine\GameObject.cpp" />
-    <ClCompile Include="Engine\Graphics\Renderer.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="ProjectSpecifics\Scenes\GameScene.cpp" />
+    <ClCompile Include="Engine\Dev\Log.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\MenuScene.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\GameScene.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Engine\Application\Window.cpp" />
+    <ClCompile Include="Engine\Graphics\Renderer.cpp" />
+    <ClCompile Include="Engine\Application\SceneHandler.cpp" />
+    <ClCompile Include="Engine\Application\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Application\Input.h" />
-    <ClInclude Include="Engine\Application\Scene.h" />
-    <ClInclude Include="Engine\Application\SceneHandler.h" />
-    <ClInclude Include="Engine\Application\Window.h" />
     <ClInclude Include="Engine\Ecs.h" />
     <ClInclude Include="Engine\Engine.h" />
-    <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\Application\Window.h" />
     <ClInclude Include="Engine\Graphics\Renderer.h" />
-    <ClInclude Include="ProjectSpecifics\Scenes\GameScene.h" />
+    <ClInclude Include="Engine\Application\Input.h" />
+    <ClInclude Include="Engine\Application\SceneHandler.h" />
+    <ClInclude Include="Engine\Application\Scene.h" />
+    <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\Dev\Log.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\MenuScene.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\GameScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
