@@ -31,4 +31,6 @@ public:
 	const bool& isRunning();
 
 	inline HWND& getWindowHandle() { return this->windowHandle; }
+	inline const unsigned int getWidth() { return this->width; }
+	inline const unsigned int getHeight() { return this->height; }
 };

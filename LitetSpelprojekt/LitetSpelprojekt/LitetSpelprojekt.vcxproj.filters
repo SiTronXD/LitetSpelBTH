@@ -141,4 +141,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
+    <FxCompile Include="Resources\Shaders\PixelShader.hlsl" />
+  </ItemGroup>
 </Project>
