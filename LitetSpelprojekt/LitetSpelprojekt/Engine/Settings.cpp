@@ -68,7 +68,7 @@ bool Settings::SaveSettings()
 	std::string gameSettings;
 	std::ofstream writer;
 
-	writer.open("Settings.txt");
+	writer.open("Engine/Settings.txt");
 	if (!writer.is_open())
 	{
 		Log::error("Unable to write to file.\n");
