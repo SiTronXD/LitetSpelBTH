@@ -4,18 +4,9 @@
 #include <directxmath.h>
 #include <fstream>
 
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
 #include "../Application/Window.h"
-
-struct SimpleVertex
-{
-	DirectX::XMFLOAT3 pos;
-	DirectX::XMFLOAT3 normal;
-	DirectX::XMFLOAT2 uv;
-
-	SimpleVertex(DirectX::XMFLOAT3 pos, DirectX::XMFLOAT3 normal, DirectX::XMFLOAT2 uv):
-		pos(pos), normal(normal), uv(uv)
-	{ }
-};
 
 class Renderer
 {
@@ -33,7 +24,8 @@ private:
 	ID3D11Texture2D* dsTexture;
 	ID3D11DepthStencilView* dsView;
 
-	ID3D11Buffer* vertexBuffer;
+	VertexBuffer vertexBuffer;
+	IndexBuffer indexBuffer;
 
 	// Functions
 	bool createInterfaces(Window& window);
@@ -50,5 +42,7 @@ public:
 	void init(Window& window);
 	void render();
 	void presentSC();
-};
 
+	inline ID3D11Device* getDevice() const { return this->device; }
+	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }
+};

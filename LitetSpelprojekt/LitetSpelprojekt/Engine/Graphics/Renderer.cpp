@@ -133,33 +133,18 @@ bool Renderer::loadShaders()
 
 bool Renderer::createTriangle()
 {
-	SimpleVertex triangle[] = {
-		{ { 0.0f, 0.5f, 0.0f }, { 0.0f, 0.0f, -1.0f}, { 0.5f, 0.0f } },
-		{ { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, -1.0f}, { 1.0f, 1.0f } },
-		{ { -0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, -1.0f}, { 0.0f, 1.0f } },
-	};
-
-	D3D11_BUFFER_DESC bufferDesc;
-	bufferDesc.ByteWidth = sizeof(triangle);
-	bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = 0;
-	bufferDesc.StructureByteStride = 0;
-
-	D3D11_SUBRESOURCE_DATA data;
-	data.pSysMem = triangle;
-	data.SysMemPitch = 0;
-	data.SysMemSlicePitch = 0;
-
-	return !FAILED(device->CreateBuffer(&bufferDesc, &data, &this->vertexBuffer));
+	MeshData meshData;
+	this->vertexBuffer.createBuffer(meshData);
+	return this->indexBuffer.createBuffer(meshData);
 }
 
 Renderer::Renderer():
 	device(nullptr), immediateContext(nullptr), swapChain(nullptr),
 	vertexShader(nullptr), inputLayout(nullptr), pixelShader(nullptr), 
 	viewport(), backBufferRTV(nullptr), dsTexture(nullptr), dsView(nullptr),
-	vertexBuffer(nullptr)
+
+	vertexBuffer(*this),
+	indexBuffer(*this)
 {
 }
 
@@ -176,8 +161,6 @@ Renderer::~Renderer()
 	this->backBufferRTV->Release();
 	this->dsTexture->Release();
 	this->dsView->Release();
-
-	this->vertexBuffer->Release();
 }
 
 void Renderer::init(Window& window)
@@ -202,17 +185,21 @@ void Renderer::render()
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
 	immediateContext->ClearDepthStencilView(this->dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 
-	UINT stride = sizeof(SimpleVertex);
-	UINT offset = 0;
-	immediateContext->IASetVertexBuffers(0, 1, &this->vertexBuffer, &stride, &offset);
+	immediateContext->IASetVertexBuffers(
+		0, 1, &this->vertexBuffer.getBuffer(), &this->vertexBuffer.getStride(), &this->vertexBuffer.getOffset());
+	immediateContext->IASetIndexBuffer(
+		this->indexBuffer.getBuffer(), DXGI_FORMAT_R32_UINT, 0
+	);
 	immediateContext->IASetInputLayout(this->inputLayout);
-	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	immediateContext->VSSetShader(this->vertexShader, nullptr, 0);
 	immediateContext->RSSetViewports(1, &this->viewport);
 	immediateContext->PSSetShader(this->pixelShader, nullptr, 0);
 	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView);
 
-	immediateContext->Draw(3, 0);
+	immediateContext->DrawIndexed(
+		this->indexBuffer.getIndexCount(), 0, 0
+	);
 }
 
 void Renderer::presentSC()
