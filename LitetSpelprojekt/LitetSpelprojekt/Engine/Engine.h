@@ -2,20 +2,19 @@
 
 #include <chrono>
 
+#include "Settings.h"
 #include "Application/Window.h"
 #include "Graphics/Renderer.h"
 
 class Engine
 {
 private:
-	UINT width;
-	UINT height;
-
+	Settings settings;
 	Window window;
 	Renderer renderer;
 
 public:
-	Engine(UINT width, UINT height);
+	Engine();
 	virtual ~Engine();
 
 	void update(float dt);
