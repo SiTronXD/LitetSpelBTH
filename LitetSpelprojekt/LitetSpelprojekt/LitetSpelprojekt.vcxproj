@@ -168,6 +168,7 @@
     <ClCompile Include="Engine\Components\Transform.cpp" />
     <ClCompile Include="Engine\Components\Rigidbody.cpp" />
     <ClCompile Include="Engine\Components\Script.cpp" />
+    <ClCompile Include="Settings.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
@@ -194,6 +195,10 @@
     <ClInclude Include="Engine\Components\Rigidbody.h" />
     <ClInclude Include="Engine\Components\Script.h" />
     <ClInclude Include="Engine\Graphics\VertexBuffer.h" />
+    <ClInclude Include="Settings.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Settings.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PixelShader.hlsl">
