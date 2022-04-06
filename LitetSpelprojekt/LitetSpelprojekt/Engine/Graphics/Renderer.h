@@ -6,6 +6,7 @@
 
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "Shaders/VertexShader.h"
 #include "../Application/Window.h"
 
 class Renderer
@@ -15,8 +16,7 @@ private:
 	ID3D11DeviceContext* immediateContext;
 	IDXGISwapChain* swapChain;
 
-	ID3D11VertexShader* vertexShader;
-	ID3D11InputLayout* inputLayout;
+	VertexShader vertexShader;
 	ID3D11PixelShader* pixelShader;
 
 	D3D11_VIEWPORT viewport;
