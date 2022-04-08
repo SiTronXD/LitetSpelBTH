@@ -11,7 +11,7 @@ public:
 	PixelShader(Renderer& renderer);
 	virtual ~PixelShader();
 
-	void loadPS(const std::string fileName);
+	bool loadPS(const std::string fileName);
 
 	inline ID3D11PixelShader*& getPS() { return this->pixelShader; }
 };

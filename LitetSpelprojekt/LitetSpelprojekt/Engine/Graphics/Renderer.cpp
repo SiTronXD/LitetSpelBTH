@@ -132,14 +132,7 @@ bool Renderer::loadShaders()
 	this->vertexShader.loadVS("VertexShader", inputLayoutDesc);
 
 	// Pixel shader
-	std::string shaderData = loadShaderData("PixelShader.cso");
-	if (FAILED(device->CreatePixelShader(shaderData.c_str(), shaderData.length(), nullptr, &this->pixelShader)))
-	{
-		Log::error("Failed to create: Pixel Shader");
-		return false;
-	}
-	shaderData.clear();
-
+	this->pixelShader.loadPS("PixelShader");
 
 	return true;
 }
@@ -153,10 +146,10 @@ bool Renderer::createTriangle()
 
 Renderer::Renderer():
 	device(nullptr), immediateContext(nullptr), swapChain(nullptr),
-	pixelShader(nullptr), 
 	viewport(), backBufferRTV(nullptr), dsTexture(nullptr), dsView(nullptr),
 
 	vertexShader(*this),
+	pixelShader(*this),
 	vertexBuffer(*this),
 	indexBuffer(*this)
 {
@@ -167,8 +160,6 @@ Renderer::~Renderer()
 	this->device->Release();
 	this->immediateContext->Release();
 	this->swapChain->Release();
-
-	this->pixelShader->Release();
 
 	this->backBufferRTV->Release();
 	this->dsTexture->Release();
@@ -206,7 +197,7 @@ void Renderer::render()
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
 	immediateContext->RSSetViewports(1, &this->viewport);
-	immediateContext->PSSetShader(this->pixelShader, nullptr, 0);
+	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
 	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView);
 
 	immediateContext->DrawIndexed(

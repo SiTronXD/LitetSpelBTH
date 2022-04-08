@@ -7,6 +7,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shaders/VertexShader.h"
+#include "Shaders/PixelShader.h"
 #include "../Application/Window.h"
 
 class Renderer
@@ -17,7 +18,7 @@ private:
 	IDXGISwapChain* swapChain;
 
 	VertexShader vertexShader;
-	ID3D11PixelShader* pixelShader;
+	PixelShader pixelShader;
 
 	D3D11_VIEWPORT viewport;
 	ID3D11RenderTargetView* backBufferRTV;
