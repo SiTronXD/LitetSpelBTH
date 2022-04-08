@@ -165,6 +165,7 @@
     <ClCompile Include="Engine\Graphics\MeshData.cpp" />
     <ClCompile Include="Engine\Graphics\InputLayoutDesc.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
+    <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\MenuScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameScene.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -175,7 +176,6 @@
     <ClCompile Include="Engine\Components\Transform.cpp" />
     <ClCompile Include="Engine\Components\Rigidbody.cpp" />
     <ClCompile Include="Engine\Components\Script.cpp" />
-    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Engine\Graphics\StructuredBuffer.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\Shader.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\VertexShader.cpp" />
@@ -203,19 +203,19 @@
     <ClInclude Include="Engine\Graphics\MeshData.h" />
     <ClInclude Include="Engine\Graphics\InputLayoutDesc.h" />
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
+    <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\MenuScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Components\Transform.h" />
     <ClInclude Include="Engine\Components\Rigidbody.h" />
     <ClInclude Include="Engine\Components\Script.h" />
     <ClInclude Include="Engine\Graphics\VertexBuffer.h" />
-    <ClInclude Include="Settings.h" />
     <ClInclude Include="Engine\Graphics\StructuredBuffer.h" />
     <ClInclude Include="Engine\Graphics\Shaders\Shader.h" />
     <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Settings.txt" />
+    <Text Include="Engine\Settings.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PixelShader.hlsl">

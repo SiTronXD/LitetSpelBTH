@@ -78,9 +78,6 @@
     <ClCompile Include="Engine\Components\Script.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Graphics\Buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -109,6 +106,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp">
+    <ClCompile Include="Engine\Settings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -185,9 +183,6 @@
     <ClInclude Include="Engine\Graphics\IndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Settings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Dev\Helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -207,11 +202,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h">
+    <ClInclude Include="Engine\Settings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Settings.txt" />
+    <Text Include="Engine\Settings.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
