@@ -99,7 +99,7 @@ bool Renderer::loadShaders()
 
 bool Renderer::createTriangle()
 {
-	MeshData meshData;
+	MeshData meshData(DefaultMesh::CUBE);
 	this->vertexBuffer.createBuffer(meshData);
 	return this->indexBuffer.createBuffer(meshData);
 }
@@ -156,7 +156,6 @@ void Renderer::render(Camera& camera)
 	m *= Matrix::CreateRotationY(timer);
 	m *= camera.getViewMatrix();
 	m *= camera.getProjectionMatrix();
-
 	this->cameraBufferStruct.mvpMat = m.Transpose();
 	this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
