@@ -6,6 +6,7 @@
 class Log
 {
 public:
+	static void write(const std::string& message);
 	static void error(const std::string& errorMessage);
 	static void resultFailed(const std::string& errorMessage, HRESULT& result);
 };

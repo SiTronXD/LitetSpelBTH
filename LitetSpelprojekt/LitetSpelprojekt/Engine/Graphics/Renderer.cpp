@@ -1,6 +1,8 @@
 #include "Renderer.h"
 #include "../Dev/Log.h"
 
+using namespace DirectX::SimpleMath;
+
 bool Renderer::createInterfaces(Window& window)
 {
 	UINT flags = 0;
@@ -151,7 +153,9 @@ Renderer::Renderer():
 	vertexShader(*this),
 	pixelShader(*this),
 	vertexBuffer(*this),
-	indexBuffer(*this)
+	indexBuffer(*this),
+
+	cameraConstantBuffer(*this, "cameraConstantBuffer")
 {
 }
 
@@ -180,10 +184,25 @@ void Renderer::init(Window& window)
 	viewport.MaxDepth = 1;
 
 	createTriangle();
+
+	// Constant buffer
+	this->cameraConstantBuffer.createBuffer(sizeof(CameraBufferData));
 }
 
-void Renderer::render()
+float timer = 0.0f;
+void Renderer::render(Camera& camera)
 {
+	// Update camera constant buffer
+	timer += 0.01f;
+	Matrix m;
+	m *= Matrix::CreateRotationY(timer);
+	m *= camera.getViewMatrix();
+	m *= camera.getProjectionMatrix();
+
+	this->cameraBufferStruct.mvpMat = m.Transpose();
+	this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
+	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
+
 	float clearColour[4] = { 0, 0, 0, 0 };
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
 	immediateContext->ClearDepthStencilView(this->dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);

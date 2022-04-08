@@ -1,9 +1,12 @@
 #pragma once
 
+#include <Windows.h>
 #include <d3d11.h>
-#include <directxmath.h>
+#include <SimpleMath.h>
 #include <fstream>
 
+#include "../Components/Camera.h"
+#include "ConstantBuffer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "Shaders/VertexShader.h"
@@ -13,6 +16,11 @@
 class Renderer
 {
 private:
+	struct CameraBufferData
+	{
+		DirectX::XMFLOAT4X4 mvpMat;
+	} cameraBufferStruct{};
+
 	ID3D11Device* device;
 	ID3D11DeviceContext* immediateContext;
 	IDXGISwapChain* swapChain;
@@ -28,6 +36,8 @@ private:
 	VertexBuffer vertexBuffer;
 	IndexBuffer indexBuffer;
 
+	ConstantBuffer cameraConstantBuffer;
+
 	// Functions
 	bool createInterfaces(Window& window);
 	bool createViews(Window& window);
@@ -41,7 +51,7 @@ public:
 	virtual ~Renderer();
 
 	void init(Window& window);
-	void render();
+	void render(Camera& camera);
 	void presentSC();
 
 	inline ID3D11Device* getDevice() const { return this->device; }

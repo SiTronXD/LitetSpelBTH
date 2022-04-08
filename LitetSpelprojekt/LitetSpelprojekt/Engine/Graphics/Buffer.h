@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
 #include <d3d11.h>
+
+#include <SimpleMath.h>
 
 class Renderer;
 
@@ -8,6 +11,8 @@ class Buffer
 {
 private:
 	ID3D11Buffer* buffer;
+
+	std::string debugName;
 
 	UINT bufferSize;
 
@@ -25,7 +30,7 @@ protected:
 		UINT structureByteStride = 0);
 
 public:
-	Buffer(Renderer& renderer);
+	Buffer(Renderer& renderer, const std::string& debugName);
 	virtual ~Buffer();
 
 	inline ID3D11Buffer*& getBuffer() { return this->buffer; }

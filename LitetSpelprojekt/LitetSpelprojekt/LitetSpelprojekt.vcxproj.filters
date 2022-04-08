@@ -1,216 +1,81 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <FxCompile Include="Resources\Shaders\PixelShader.hlsl" />
+    <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Application\Window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Application\Input.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Application\SceneHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Application\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProjectSpecifics\Scenes\GameScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ProjectSpecifics\Scenes\MenuScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GameObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\ECS.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Dev\Log.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\Transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\Light.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\ParticleEmitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\Rigidbody.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\Collider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Components\Script.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\Buffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\VertexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\MeshData.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\IndexBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\ConstantBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\StructuredBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\Shaders\Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\Shaders\VertexShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\InputLayoutDesc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp">
-    <ClCompile Include="Engine\Settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClCompile Include="Engine\Components\Collider.cpp" />
+    <ClCompile Include="Engine\Components\Camera.cpp" />
+    <ClCompile Include="Engine\Components\Component.cpp" />
+    <ClCompile Include="Engine\ECS.cpp" />
+    <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Engine\Application\Input.cpp" />
+    <ClCompile Include="Engine\GameObject.cpp" />
+    <ClCompile Include="Engine\Dev\Log.cpp" />
+    <ClCompile Include="Engine\Components\Light.cpp" />
+    <ClCompile Include="Engine\Components\Mesh.cpp" />
+    <ClCompile Include="Engine\Components\ParticleEmitter.cpp" />
+    <ClCompile Include="Engine\Graphics\Buffer.cpp" />
+    <ClCompile Include="Engine\Graphics\ConstantBuffer.cpp" />
+    <ClCompile Include="Engine\Graphics\IndexBuffer.cpp" />
+    <ClCompile Include="Engine\Graphics\VertexBuffer.cpp" />
+    <ClCompile Include="Engine\Graphics\MeshData.cpp" />
+    <ClCompile Include="Engine\Graphics\InputLayoutDesc.cpp" />
+    <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
+    <ClCompile Include="Engine\Settings.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\MenuScene.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\GameScene.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Engine\Application\Window.cpp" />
+    <ClCompile Include="Engine\Graphics\Renderer.cpp" />
+    <ClCompile Include="Engine\Application\SceneHandler.cpp" />
+    <ClCompile Include="Engine\Application\Scene.cpp" />
+    <ClCompile Include="Engine\Components\Transform.cpp" />
+    <ClCompile Include="Engine\Components\Rigidbody.cpp" />
+    <ClCompile Include="Engine\Components\Script.cpp" />
+    <ClCompile Include="Engine\Graphics\StructuredBuffer.cpp" />
+    <ClCompile Include="Engine\Graphics\Shaders\Shader.cpp" />
+    <ClCompile Include="Engine\Graphics\Shaders\VertexShader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Application\Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Application\Input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Application\SceneHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Application\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProjectSpecifics\Scenes\GameScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ProjectSpecifics\Scenes\MenuScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\GameObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\ECS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Dev\Log.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\Transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\Light.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\Mesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\ParticleEmitter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\Rigidbody.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\Collider.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Components\Script.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\Buffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\VertexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\ConstantBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\IndexBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Dev\Helpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\MeshData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\StructuredBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\Shaders\Shader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\InputLayoutDesc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h">
-    <ClInclude Include="Engine\Settings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClInclude Include="Engine\Dev\Helpers.h" />
+    <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Buffer.h" />
+    <ClInclude Include="Engine\Components\Collider.h" />
+    <ClInclude Include="Engine\Components\Camera.h" />
+    <ClInclude Include="Engine\Components\Component.h" />
+    <ClInclude Include="Engine\ECS.h" />
+    <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Engine\Application\Window.h" />
+    <ClInclude Include="Engine\Graphics\IndexBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Renderer.h" />
+    <ClInclude Include="Engine\Application\Input.h" />
+    <ClInclude Include="Engine\Application\SceneHandler.h" />
+    <ClInclude Include="Engine\Application\Scene.h" />
+    <ClInclude Include="Engine\GameObject.h" />
+    <ClInclude Include="Engine\Dev\Log.h" />
+    <ClInclude Include="Engine\Components\Light.h" />
+    <ClInclude Include="Engine\Components\Mesh.h" />
+    <ClInclude Include="Engine\Components\ParticleEmitter.h" />
+    <ClInclude Include="Engine\Graphics\MeshData.h" />
+    <ClInclude Include="Engine\Graphics\InputLayoutDesc.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
+    <ClInclude Include="Engine\Settings.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\MenuScene.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\GameScene.h" />
+    <ClInclude Include="Engine\Components\Transform.h" />
+    <ClInclude Include="Engine\Components\Rigidbody.h" />
+    <ClInclude Include="Engine\Components\Script.h" />
+    <ClInclude Include="Engine\Graphics\VertexBuffer.h" />
+    <ClInclude Include="Engine\Graphics\StructuredBuffer.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\Shader.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Engine\Settings.txt" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
-    <FxCompile Include="Resources\Shaders\PixelShader.hlsl" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

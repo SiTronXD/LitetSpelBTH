@@ -2,7 +2,7 @@
 #include "../Dev/Helpers.h"
 
 VertexBuffer::VertexBuffer(Renderer& renderer)
-	: Buffer(renderer),
+	: Buffer(renderer, "Vertex Buffer"),
 	stride(sizeof(Vertex)),
 	offset(0)
 {

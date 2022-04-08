@@ -1,7 +1,7 @@
 #include "StructuredBuffer.h"
 
-StructuredBuffer::StructuredBuffer(Renderer& renderer)
-	: Buffer(renderer)
+StructuredBuffer::StructuredBuffer(Renderer& renderer, const std::string& debugName)
+	: Buffer(renderer, debugName)
 {
 }
 
