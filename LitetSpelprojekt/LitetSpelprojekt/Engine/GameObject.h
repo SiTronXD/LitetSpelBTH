@@ -1,22 +1,20 @@
 #pragma once
 
-#include "ECS.h"
+class ECS;
 
 class GameObject
 {
 private:
 	ECS& ecs;
-
+	int ID;
 public:
-	GameObject(ECS& ecs);
+	GameObject(ECS& ecs, int ID);
 	~GameObject();
+
+	int getID() const;
 
 	template <typename T>
 	void addComponent();
+	template <typename T>
+	T* getComponent();
 };
-
-template<typename T>
-inline void GameObject::addComponent()
-{
-	this->ecs.addActiveComponent<T>(*this);
-}

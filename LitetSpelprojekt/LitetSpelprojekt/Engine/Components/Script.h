@@ -4,5 +4,8 @@
 
 class Script : public Component
 {
+private:
+public:
+	virtual void update() = 0;
 };
 
