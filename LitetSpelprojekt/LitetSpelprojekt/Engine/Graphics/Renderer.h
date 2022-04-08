@@ -6,9 +6,8 @@
 #include <fstream>
 
 #include "../Components/Camera.h"
+#include "../Components/MeshComp.h"
 #include "ConstantBuffer.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
 #include "Shaders/VertexShader.h"
 #include "Shaders/PixelShader.h"
 #include "../Application/Window.h"
@@ -33,25 +32,19 @@ private:
 	ID3D11Texture2D* dsTexture;
 	ID3D11DepthStencilView* dsView;
 
-	VertexBuffer vertexBuffer;
-	IndexBuffer indexBuffer;
-
 	ConstantBuffer cameraConstantBuffer;
 
 	// Functions
 	bool createInterfaces(Window& window);
 	bool createViews(Window& window);
 
-	std::string loadShaderData(std::string path);
 	bool loadShaders();
-
-	bool createTriangle();
 public:
 	Renderer();
 	virtual ~Renderer();
 
 	void init(Window& window);
-	void render(Camera& camera);
+	void render(Camera& camera, std::vector<MeshComp*>& meshComponents);
 	void presentSC();
 
 	inline ID3D11Device* getDevice() const { return this->device; }

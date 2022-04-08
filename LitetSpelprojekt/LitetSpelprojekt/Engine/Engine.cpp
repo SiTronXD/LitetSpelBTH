@@ -22,6 +22,9 @@ void Engine::run()
 
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
+	std::vector<MeshComp*> meshComponents;
+	meshComponents.push_back(new MeshComp(renderer));
+
 	Time::init();
 	while (this->window.isRunning())
 	{
@@ -34,7 +37,7 @@ void Engine::run()
 
 		// Update + render
 		this->update(0.0f);
-		this->renderer.render(tempCameraComponent);
+		this->renderer.render(tempCameraComponent, meshComponents);
 
 		// Stop tracking time
 		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
@@ -43,4 +46,7 @@ void Engine::run()
 		// Present
 		this->renderer.presentSC();
 	}
+
+	for (unsigned int i = 0; i < meshComponents.size(); ++i)
+		delete meshComponents[i];
 }

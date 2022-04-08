@@ -97,21 +97,12 @@ bool Renderer::loadShaders()
 	return true;
 }
 
-bool Renderer::createTriangle()
-{
-	MeshData meshData(DefaultMesh::CUBE);
-	this->vertexBuffer.createBuffer(meshData);
-	return this->indexBuffer.createBuffer(meshData);
-}
-
 Renderer::Renderer():
 	device(nullptr), immediateContext(nullptr), swapChain(nullptr),
 	viewport(), backBufferRTV(nullptr), dsTexture(nullptr), dsView(nullptr),
 
 	vertexShader(*this),
 	pixelShader(*this),
-	vertexBuffer(*this),
-	indexBuffer(*this),
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer")
 {
@@ -141,14 +132,12 @@ void Renderer::init(Window& window)
 	viewport.MinDepth = 0;
 	viewport.MaxDepth = 1;
 
-	createTriangle();
-
 	// Constant buffer
 	this->cameraConstantBuffer.createBuffer(sizeof(CameraBufferData));
 }
 
 float timer = 0.0f;
-void Renderer::render(Camera& camera)
+void Renderer::render(Camera& camera, std::vector<MeshComp*>& meshComponents)
 {
 	// Update camera constant buffer
 	timer += Time::getDT();
@@ -160,25 +149,34 @@ void Renderer::render(Camera& camera)
 	this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
 
+	// Init setup
+	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	immediateContext->RSSetViewports(1, &this->viewport);
+	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView);
+	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
+	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
+
+	// Clear buffers
 	float clearColour[4] = { 0, 0, 0, 0 };
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
 	immediateContext->ClearDepthStencilView(this->dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
 
-	immediateContext->IASetVertexBuffers(
-		0, 1, &this->vertexBuffer.getBuffer(), &this->vertexBuffer.getStride(), &this->vertexBuffer.getOffset());
-	immediateContext->IASetIndexBuffer(
-		this->indexBuffer.getBuffer(), DXGI_FORMAT_R32_UINT, 0
-	);
-	immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
-	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
-	immediateContext->RSSetViewports(1, &this->viewport);
-	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
-	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView);
+	// Render all meshes
+	for (unsigned int i = 0; i < meshComponents.size(); ++i)
+	{
+		Mesh& mesh = meshComponents[i]->getMesh();
 
-	immediateContext->DrawIndexed(
-		this->indexBuffer.getIndexCount(), 0, 0
-	);
+		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
+		immediateContext->IASetVertexBuffers(
+			0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
+		immediateContext->IASetIndexBuffer(
+			mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
+		);
+
+		immediateContext->DrawIndexed(
+			mesh.getIndexBuffer().getIndexCount(), 0, 0
+		);
+	}
 }
 
 void Renderer::presentSC()

@@ -164,7 +164,7 @@
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\Dev\Log.cpp" />
     <ClCompile Include="Engine\Components\Light.cpp" />
-    <ClCompile Include="Engine\Components\Mesh.cpp" />
+    <ClCompile Include="Engine\Components\MeshComp.cpp" />
     <ClCompile Include="Engine\Components\ParticleEmitter.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer.cpp" />
     <ClCompile Include="Engine\Graphics\ConstantBuffer.cpp" />
@@ -174,6 +174,7 @@
     <ClCompile Include="Engine\Graphics\InputLayoutDesc.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
     <ClCompile Include="Engine\Settings.cpp" />
+    <ClCompile Include="Engine\Graphics\Mesh.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\MenuScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameScene.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -207,12 +208,13 @@
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\Dev\Log.h" />
     <ClInclude Include="Engine\Components\Light.h" />
-    <ClInclude Include="Engine\Components\Mesh.h" />
+    <ClInclude Include="Engine\Components\MeshComp.h" />
     <ClInclude Include="Engine\Components\ParticleEmitter.h" />
     <ClInclude Include="Engine\Graphics\MeshData.h" />
     <ClInclude Include="Engine\Graphics\InputLayoutDesc.h" />
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
     <ClInclude Include="Engine\Settings.h" />
+    <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\MenuScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Components\Transform.h" />

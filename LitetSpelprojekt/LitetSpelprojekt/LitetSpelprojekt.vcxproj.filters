@@ -14,7 +14,7 @@
     <ClCompile Include="Engine\GameObject.cpp" />
     <ClCompile Include="Engine\Dev\Log.cpp" />
     <ClCompile Include="Engine\Components\Light.cpp" />
-    <ClCompile Include="Engine\Components\Mesh.cpp" />
+    <ClCompile Include="Engine\Components\MeshComp.cpp" />
     <ClCompile Include="Engine\Components\ParticleEmitter.cpp" />
     <ClCompile Include="Engine\Graphics\Buffer.cpp" />
     <ClCompile Include="Engine\Graphics\ConstantBuffer.cpp" />
@@ -38,6 +38,7 @@
     <ClCompile Include="Engine\Graphics\Shaders\Shader.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\VertexShader.cpp" />
     <ClCompile Include="Engine\Time.cpp" />
+    <ClCompile Include="Engine\Graphics\Mesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -57,7 +58,7 @@
     <ClInclude Include="Engine\GameObject.h" />
     <ClInclude Include="Engine\Dev\Log.h" />
     <ClInclude Include="Engine\Components\Light.h" />
-    <ClInclude Include="Engine\Components\Mesh.h" />
+    <ClInclude Include="Engine\Components\MeshComp.h" />
     <ClInclude Include="Engine\Components\ParticleEmitter.h" />
     <ClInclude Include="Engine\Graphics\MeshData.h" />
     <ClInclude Include="Engine\Graphics\InputLayoutDesc.h" />
@@ -73,6 +74,7 @@
     <ClInclude Include="Engine\Graphics\Shaders\Shader.h" />
     <ClInclude Include="Engine\Graphics\Shaders\VertexShader.h" />
     <ClInclude Include="Engine\Time.h" />
+    <ClInclude Include="Engine\Graphics\Mesh.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Engine\Settings.txt" />

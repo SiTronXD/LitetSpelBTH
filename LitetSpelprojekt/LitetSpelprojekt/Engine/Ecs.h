@@ -7,7 +7,7 @@
 #include "Components/Transform.h"
 #include "Components/Camera.h"
 #include "Components/Light.h"
-#include "Components/Mesh.h"
+#include "Components/MeshComp.h"
 #include "Components/ParticleEmitter.h"
 #include "Components/Rigidbody.h"
 #include "Components/Collider.h"
