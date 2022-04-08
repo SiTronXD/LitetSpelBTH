@@ -3,7 +3,7 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-Camera::Camera()
+Camera::Camera(float aspectRatio)
 {
 	this->viewMatrix = Matrix::CreateLookAt(
 		Vector3(1.0f, 0.5f, 1.0f),
@@ -13,7 +13,7 @@ Camera::Camera()
 
 	this->projectionMatrix = Matrix::CreatePerspectiveFieldOfView(
 		90.0f,
-		16.0f / 9.0f,
+		aspectRatio,
 		0.1f,
 		100.0f
 	);
@@ -21,4 +21,14 @@ Camera::Camera()
 
 Camera::~Camera()
 {
+}
+
+void Camera::updateAspectRatio(float aspectRatio)
+{
+	this->projectionMatrix = Matrix::CreatePerspectiveFieldOfView(
+		90.0f,
+		aspectRatio,
+		0.1f,
+		100.0f
+	);
 }

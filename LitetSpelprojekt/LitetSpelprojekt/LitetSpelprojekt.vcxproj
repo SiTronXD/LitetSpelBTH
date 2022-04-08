@@ -73,22 +73,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)External\DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)External\DirectXTK\Libs\x64\Debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)External\DirectXTK\Libs\Deb;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)External\DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)External\DirectXTK\Libs\x64\Release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)External\DirectXTK\Libs\Rel;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)External\DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)External\DirectXTK\Libs\x64\Debug;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)External\DirectXTK\Libs\Deb;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)External\DirectXTK\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)External\DirectXTK\Libs\x64\Release;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)External\DirectXTK\Libs\Rel;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
