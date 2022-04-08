@@ -1,5 +1,6 @@
 #include "Engine.h"
 #include "Dev/Log.h"
+#include "Time.h"
 
 Engine::Engine()
 {
@@ -21,8 +22,13 @@ void Engine::run()
 
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
+	Time::init();
 	while (this->window.isRunning())
 	{
+		// Track delta time
+		Time::updateDeltaTime();
+
+
 		// Start tracking time
 		lastTime = std::chrono::high_resolution_clock::now();
 

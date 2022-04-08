@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "../Dev/Log.h"
+#include "../Time.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -79,51 +80,8 @@ bool Renderer::createViews(Window& window)
 	return true;
 }
 
-std::string Renderer::loadShaderData(std::string path)
-{
-	std::string shaderData;
-	std::ifstream reader;
-
-	reader.open("CompiledShaders/" + path, std::ios::binary | std::ios::ate);
-	if (!reader.is_open())
-	{
-		Log::error("Shader file: " + path + " not found.");
-		return std::string();
-	}
-
-	reader.seekg(0, std::ios::end);
-	shaderData.reserve(static_cast<unsigned int>(reader.tellg()));
-	reader.seekg(0, std::ios::beg);
-
-	shaderData.assign((std::istreambuf_iterator<char>(reader)),
-		std::istreambuf_iterator<char>());
-	reader.close();
-	return shaderData;
-}
-
 bool Renderer::loadShaders()
 {
-	/*std::string shaderData = loadShaderData("VertexShader.cso");
-	if (FAILED(device->CreateVertexShader(shaderData.c_str(), shaderData.length(), nullptr, &this->vertexShader)))
-	{
-		Log::error("Failed to create: Vertex Shader");
-		return false;
-	}
-
-	D3D11_INPUT_ELEMENT_DESC inputDesc[3] =
-	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"UV", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-	if (FAILED(device->CreateInputLayout(inputDesc, 3, shaderData.c_str(), shaderData.length(), &this->inputLayout)))
-	{
-		Log::error("Failed to create: Input Layout");
-		return false;
-	}
-	shaderData.clear();*/
-
-	
 	// Input layout desc
 	InputLayoutDesc inputLayoutDesc;
 	inputLayoutDesc.add("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
@@ -193,7 +151,7 @@ float timer = 0.0f;
 void Renderer::render(Camera& camera)
 {
 	// Update camera constant buffer
-	timer += 0.01f;
+	timer += Time::getDT();
 	Matrix m;
 	m *= Matrix::CreateRotationY(timer);
 	m *= camera.getViewMatrix();
@@ -226,5 +184,5 @@ void Renderer::render(Camera& camera)
 
 void Renderer::presentSC()
 {
-	this->swapChain->Present(0, 0);
+	this->swapChain->Present(1, 0);
 }
