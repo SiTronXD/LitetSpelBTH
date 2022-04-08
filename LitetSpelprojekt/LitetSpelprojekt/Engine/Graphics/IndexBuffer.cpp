@@ -2,7 +2,7 @@
 #include "../Dev/Helpers.h"
 
 IndexBuffer::IndexBuffer(Renderer& renderer)
-	: Buffer(renderer),
+	: Buffer(renderer, "Index Buffer"),
 	indexCount(-1)
 {
 }

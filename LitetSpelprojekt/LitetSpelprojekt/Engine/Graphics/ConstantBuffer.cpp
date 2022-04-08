@@ -1,7 +1,8 @@
 #include "ConstantBuffer.h"
 
-ConstantBuffer::ConstantBuffer(Renderer& renderer)
-	: Buffer(renderer)
+ConstantBuffer::ConstantBuffer(Renderer& renderer, 
+	const std::string& debugName)
+	: Buffer(renderer, debugName)
 {
 }
 
@@ -26,6 +27,7 @@ bool ConstantBuffer::createBuffer(UINT bufferSize)
 		D3D11_USAGE_DYNAMIC,
 		D3D11_BIND_CONSTANT_BUFFER,
 		bufferSize,
-		NULL
+		NULL,
+		D3D11_CPU_ACCESS_WRITE
 	);
 }

@@ -1,4 +1,6 @@
 #include "Engine.h"
+#include "Dev/Log.h"
+#include "Time.h"
 
 Engine::Engine()
 {
@@ -16,10 +18,29 @@ void Engine::update(float dt)
 
 void Engine::run()
 {
+	Camera tempCameraComponent;
+
+	auto lastTime = std::chrono::high_resolution_clock::now();
+
+	Time::init();
 	while (this->window.isRunning())
 	{
+		// Track delta time
+		Time::updateDeltaTime();
+
+
+		// Start tracking time
+		lastTime = std::chrono::high_resolution_clock::now();
+
+		// Update + render
 		this->update(0.0f);
-		this->renderer.render();
+		this->renderer.render(tempCameraComponent);
+
+		// Stop tracking time
+		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
+		Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
+
+		// Present
 		this->renderer.presentSC();
 	}
 }

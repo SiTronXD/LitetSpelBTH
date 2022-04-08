@@ -5,7 +5,8 @@
 class StructuredBuffer : public Buffer
 {
 public:
-	StructuredBuffer(Renderer& renderer);
+	StructuredBuffer(Renderer& renderer,
+		const std::string& debugName);
 	virtual ~StructuredBuffer();
 
 	void updateBuffer(void* bufferData);

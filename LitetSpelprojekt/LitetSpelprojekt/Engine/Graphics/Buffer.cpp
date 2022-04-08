@@ -3,8 +3,9 @@
 #include "Buffer.h"
 #include "Renderer.h"
 
-Buffer::Buffer(Renderer& renderer) 
+Buffer::Buffer(Renderer& renderer, const std::string& debugName)
 	: renderer(renderer),
+	debugName(debugName),
 	buffer(nullptr),
 	bufferSize(-1)
 { }
@@ -50,7 +51,7 @@ bool Buffer::createBuffer(
 	);
 	if (FAILED(hr))
 	{
-		Log::error("Failed to create buffer.");
+		Log::error("Failed to create buffer: " + this->debugName);
 		return false;
 	}
 
