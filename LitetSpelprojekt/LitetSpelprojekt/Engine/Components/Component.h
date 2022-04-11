@@ -1,9 +1,14 @@
 #pragma once
+
+//#include "../GameObject.h"
+
 class Component
 {
 private:
-
+	//GameObject& object;
 public:
-	Component();
+	Component(/*GameObject& object*/);
 	virtual ~Component();
+
+	//GameObject& getObject();
 };

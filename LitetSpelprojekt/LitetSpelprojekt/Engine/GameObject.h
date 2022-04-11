@@ -6,17 +6,35 @@ class GameObject
 {
 private:
 	ECS& ecs;
-
+	int ID;
 public:
-	GameObject(ECS& ecs);
+	GameObject(ECS& ecs, int ID);
 	~GameObject();
 
+	int getID() const;
+
 	template <typename T>
-	void addComponent();
+	T* addComponent();
+	template <typename T>
+	bool removeComponent();
+	template <typename T>
+	T* getComponent();
 };
 
 template<typename T>
-inline void GameObject::addComponent()
+inline T* GameObject::addComponent()
 {
-	this->ecs.addActiveComponent<T>(*this);
+	return this->ecs.addComponent<T>(this->ID);
+}
+
+template<typename T>
+inline bool GameObject::removeComponent()
+{
+	return this->ecs.removeComponent<T>(this->ID);
+}
+
+template<typename T>
+inline T* GameObject::getComponent()
+{
+	return this->ecs.getComponent<T>(this->ID);
 }

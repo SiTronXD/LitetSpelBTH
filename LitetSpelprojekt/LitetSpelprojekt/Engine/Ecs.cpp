@@ -5,7 +5,16 @@
 
 ECS::ECS()
 {
-	
+	// Add new vector for script component type
+	if (this->activeComponents.count(typeid(Script)) <= 0)
+	{
+		this->activeComponents.insert(
+			std::pair<std::type_index, std::vector<Component*>>(
+				typeid(Script),
+				std::vector<Component*>()
+				)
+		);
+	}
 }
 
 ECS::~ECS()
@@ -22,27 +31,25 @@ ECS::~ECS()
 	}
 }
 
+void ECS::init()
+{
+	for (auto& sComp : this->scriptComps)
+	{
+		sComp->init();
+	}
+}
+
 void ECS::update()
 {
-	/*
-	
-	for(Transform t : activeTransformComponents)
+	for (auto& sComp : this->scriptComps)
 	{
-		t.update();
+		sComp->update();
 	}
-	
-	*/
 }
 
-void ECS::addGameObject(GameObject& gameObjectToAdd)
+GameObject& ECS::addGameObject()
 {
-	this->gameObjects.push_back(gameObjectToAdd);
-}
-
-bool ECS::hasComponent(GameObject& gameObject)
-{
-	// return componentPointers[gameObjectIndex][componentIndex];
-
-	return true;
+	this->gameObjects.push_back(GameObject(*this, this->gameObjects.size()));
+	return this->gameObjects.back();
 }
 
