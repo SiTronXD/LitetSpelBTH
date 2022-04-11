@@ -39,7 +39,12 @@ bool Texture::createSampler()
 }
 
 Texture::Texture(Renderer& renderer)
-	: renderer(renderer)
+	: renderer(renderer),
+	textureSRV(renderer, "textureSRV"),
+	samplerState(nullptr),
+	texture(nullptr),
+	width(0),
+	height(0)
 {
 }
 
@@ -53,6 +58,9 @@ bool Texture::load(const std::string& fileName)
 {
 	S_RELEASE(this->samplerState);
 	S_RELEASE(this->texture);
+
+	// Create sampler
+	this->createSampler();
 
 	// Load image
 	int imageWidth = 0;
@@ -105,5 +113,6 @@ bool Texture::load(const std::string& fileName)
 		return false;
 	}
 
-	return true;
+	// Create texture SRV
+	return this->textureSRV.createTextureSRV(this->texture, textureDesc.Format);
 }

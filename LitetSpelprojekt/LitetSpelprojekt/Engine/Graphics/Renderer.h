@@ -11,6 +11,7 @@
 #include "Shaders/VertexShader.h"
 #include "Shaders/PixelShader.h"
 #include "../Application/Window.h"
+#include "Texture.h"
 
 class Renderer
 {
@@ -33,6 +34,8 @@ private:
 	ID3D11DepthStencilView* dsView;
 
 	ConstantBuffer cameraConstantBuffer;
+
+	Texture testTexture;
 
 	// Functions
 	bool createInterfaces(Window& window);

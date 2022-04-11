@@ -22,6 +22,6 @@ public:
 		ID3D11Resource* resource, const DXGI_FORMAT& format
 	);
 
-	inline ID3D11ShaderResourceView*& getSRV() { return this->resourceSRV; }
+	inline ID3D11ShaderResourceView*& getPtr() { return this->resourceSRV; }
 	inline const std::string& getDebugName() const { return this->debugName; }
 };

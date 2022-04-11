@@ -3,6 +3,8 @@
 #include <string>
 #include <d3d11.h>
 
+#include "SRV.h"
+
 class Renderer;
 
 class Texture
@@ -10,6 +12,8 @@ class Texture
 private:
 	ID3D11SamplerState* samplerState;
 	ID3D11Texture2D* texture;
+
+	SRV textureSRV;
 
 	Renderer& renderer;
 
@@ -23,4 +27,7 @@ public:
 	virtual ~Texture();
 
 	bool load(const std::string& fileName);
+
+	inline SRV& getSRV() { return this->textureSRV; }
+	inline ID3D11SamplerState*& getSampler() { return this->samplerState; }
 };
