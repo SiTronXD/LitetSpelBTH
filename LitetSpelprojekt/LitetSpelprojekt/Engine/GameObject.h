@@ -1,6 +1,6 @@
 #pragma once
 
-class ECS;
+#include "ECS.h"
 
 class GameObject
 {
@@ -14,7 +14,27 @@ public:
 	int getID() const;
 
 	template <typename T>
-	void addComponent();
+	T* addComponent();
+	template <typename T>
+	bool removeComponent();
 	template <typename T>
 	T* getComponent();
 };
+
+template<typename T>
+inline T* GameObject::addComponent()
+{
+	return this->ecs.addComponent<T>(this->ID);
+}
+
+template<typename T>
+inline bool GameObject::removeComponent()
+{
+	return this->ecs.removeComponent<T>(this->ID);
+}
+
+template<typename T>
+inline T* GameObject::getComponent()
+{
+	return this->ecs.getComponent<T>(this->ID);
+}

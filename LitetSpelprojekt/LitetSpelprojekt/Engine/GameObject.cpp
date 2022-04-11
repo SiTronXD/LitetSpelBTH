@@ -16,15 +16,3 @@ int GameObject::getID() const
 {
 	return this->ID;
 }
-
-template<typename T>
-void GameObject::addComponent()
-{
-	this->ecs.addComponent<T>(*this);
-}
-
-template<typename T>
-T* GameObject::getComponent()
-{
-	return nullptr;
-}

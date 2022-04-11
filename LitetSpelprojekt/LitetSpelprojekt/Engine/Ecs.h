@@ -5,7 +5,6 @@
 #include <unordered_map>
 #include <typeindex>
 #include <typeinfo>
-#include "GameObject.h"
 #include "Components/Transform.h"
 #include "Components/Camera.h"
 #include "Components/Light.h"
@@ -17,7 +16,7 @@
 
 #include "Dev/Log.h"
 
-//class GameObject;
+class GameObject;
 
 class ECS
 {
@@ -42,34 +41,36 @@ private:
 	std::unordered_map<std::type_index, std::vector<Component*>> activeComponents;
 
 	template <typename T>
-	bool hasComponent(GameObject& gameObject);
+	bool hasComponent(int gameObjectID);
 public:
 	ECS();
 	~ECS();
 
+	// Initialize Script Components
+	void init();
 	void update();
 
 	GameObject& addGameObject();
 
 	template <typename T>
-	T* addComponent(GameObject& gameObject);
+	T* addComponent(int gameObjectID);
 	template <typename T>
-	bool removeComponent(GameObject& gameObject);
+	bool removeComponent(int gameObjectID);
 	template <typename T>
-	T* getComponent(GameObject& gameObject);
+	T* getComponent(int gameObjectID);
 };
 
 template<typename T>
-inline bool ECS::hasComponent(GameObject& gameObject)
+inline bool ECS::hasComponent(int gameObjectID)
 {
-	return this->components.count(std::pair<int, std::type_index>(gameObject.getID(), typeid(T))) > 0;
+	return this->components.count(std::pair<int, std::type_index>(gameObjectID, typeid(T))) > 0;
 }
 
 template<typename T>
-inline T* ECS::addComponent(GameObject& gameObject)
+inline T* ECS::addComponent(int gameObjectID)
 {
 	// Already have this component
-	if (this->hasComponent<T>(gameObject))
+	if (this->hasComponent<T>(gameObjectID))
 		return nullptr;
 
 	// Add new vector for component type
@@ -93,7 +94,7 @@ inline T* ECS::addComponent(GameObject& gameObject)
 
 	this->components.insert(
 		std::pair<std::pair<int, std::type_index>, Component*>(
-				std::pair<int, std::type_index>(gameObject.getID(), typeid(T)),
+				std::pair<int, std::type_index>(gameObjectID, typeid(T)),
 				newComponent
 		)
 	);
@@ -102,14 +103,14 @@ inline T* ECS::addComponent(GameObject& gameObject)
 }
 
 template<typename T>
-inline bool ECS::removeComponent(GameObject& gameObject)
+inline bool ECS::removeComponent(int gameObjectID)
 {
 	// Don't have this component
-	if (!this->hasComponent<T>(gameObject))
+	if (!this->hasComponent<T>(gameObjectID))
 		return false;
 
-	Component* comp = this->components[std::pair<int, std::type_index>(gameObject.getID(), typeid(T))];
-	this->components[std::pair<int, std::type_index>(gameObject.getID(), typeid(T))] = nullptr;
+	Component* comp = this->components[std::pair<int, std::type_index>(gameObjectID, typeid(T))];
+	this->components[std::pair<int, std::type_index>(gameObjectID, typeid(T))] = nullptr;
 
 	for (size_t i = 0; i < this->activeComponents[typeid(T)].size(); i++)
 	{
@@ -125,11 +126,11 @@ inline bool ECS::removeComponent(GameObject& gameObject)
 }
 
 template<typename T>
-inline T* ECS::getComponent(GameObject& gameObject)
+inline T* ECS::getComponent(int gameObjectID)
 {
 	// Don't have this component
-	if (!this->hasComponent<T>(gameObject))
+	if (!this->hasComponent<T>(gameObjectID))
 		return nullptr;
 
-	return dynamic_cast<T*>(this->components[std::pair<int, std::type_index>(gameObject.getID(), typeid(T))]);
+	return dynamic_cast<T*>(this->components[std::pair<int, std::type_index>(gameObjectID, typeid(T))]);
 }

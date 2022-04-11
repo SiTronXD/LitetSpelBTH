@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "ECS.h"
-//#include "GameObject.h"
+#include "GameObject.h"
 
 ECS::ECS()
 {
@@ -31,6 +31,14 @@ ECS::~ECS()
 	}
 }
 
+void ECS::init()
+{
+	for (auto& sComp : this->scriptComps)
+	{
+		sComp->init();
+	}
+}
+
 void ECS::update()
 {
 	for (auto& sComp : this->scriptComps)
@@ -44,11 +52,4 @@ GameObject& ECS::addGameObject()
 	this->gameObjects.push_back(GameObject(*this, this->gameObjects.size()));
 	return this->gameObjects.back();
 }
-
-//bool ECS::hasComponent(GameObject& gameObject)
-//{
-//	// return componentPointers[gameObjectIndex][componentIndex];
-//
-//	return true;
-//}
 
