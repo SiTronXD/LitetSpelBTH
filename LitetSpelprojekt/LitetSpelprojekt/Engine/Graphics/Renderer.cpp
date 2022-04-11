@@ -104,7 +104,9 @@ Renderer::Renderer():
 	vertexShader(*this),
 	pixelShader(*this),
 
-	cameraConstantBuffer(*this, "cameraConstantBuffer")
+	cameraConstantBuffer(*this, "cameraConstantBuffer"),
+
+	testTexture(*this)
 {
 }
 
@@ -134,11 +136,20 @@ void Renderer::init(Window& window)
 
 	// Constant buffer
 	this->cameraConstantBuffer.createBuffer(sizeof(CameraBufferData));
+
+	this->testTexture.load("Resources/Textures/me.png");
 }
 
 float timer = 0.0f;
 void Renderer::render(Camera& camera, std::vector<MeshComp*>& meshComponents)
 {
+	immediateContext->PSSetSamplers(
+		0, 1, &this->testTexture.getSampler()
+	);
+	immediateContext->PSSetShaderResources(
+		0, 1, &this->testTexture.getSRV().getPtr()
+	);
+
 	// Update camera constant buffer
 	timer += Time::getDT();
 	Matrix m;
