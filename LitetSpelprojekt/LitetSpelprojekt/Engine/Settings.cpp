@@ -17,13 +17,8 @@ Settings::~Settings()
 
 }
 
-SettingsStruct& Settings::getSettings()
-{
-	return this->settingsList;
-}
-
 //Load in Settings from File
-bool Settings::LoadSettings()
+bool Settings::loadSettings()
 {
 	std::string gameSettings;
 	std::ifstream reader;
@@ -75,7 +70,7 @@ bool Settings::LoadSettings()
 }
 
 // Save all settings to file
-bool Settings::SaveSettings()
+bool Settings::saveSettings()
 {
 	// Open Settings File
 	std::ofstream writer;

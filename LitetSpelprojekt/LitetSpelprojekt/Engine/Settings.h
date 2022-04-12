@@ -17,9 +17,9 @@ private:
 public:
 	Settings();
 	~Settings();
-	bool LoadSettings();
-	bool SaveSettings();
-	SettingsStruct& getSettings();
+	bool loadSettings();
+	bool saveSettings();
+	SettingsStruct& getSettings() { return this->settingsList; }
 
 };
 
