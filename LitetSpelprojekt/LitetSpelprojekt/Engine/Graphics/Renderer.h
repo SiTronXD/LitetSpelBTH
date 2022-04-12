@@ -13,6 +13,7 @@
 #include "../Application/Window.h"
 #include "Texture.h"
 #include "../Resources.h"
+#include "UAV.h"
 
 class Renderer
 {
@@ -38,6 +39,8 @@ private:
 
 	Resources& resources;
 
+	UAV backBufferUAV;
+
 	// Functions
 	bool createInterfaces(Window& window);
 	bool createViews(Window& window);
@@ -50,6 +53,8 @@ public:
 	void init(Window& window);
 	void render(Camera& camera, std::vector<MeshComp*>& meshComponents);
 	void presentSC();
+
+	inline UAV& getBackBufferUAV() { return this->backBufferUAV; }
 
 	inline ID3D11Device* getDevice() const { return this->device; }
 	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }

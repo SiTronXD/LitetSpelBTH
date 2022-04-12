@@ -47,6 +47,13 @@ bool Renderer::createViews(Window& window)
 		return false;
 	}
 
+	// Get buffer description
+	D3D11_TEXTURE2D_DESC backBufferDesc{};
+	backBuffer->GetDesc(&backBufferDesc);
+
+	// Create back buffer UAV
+	this->backBufferUAV.createTextureUAV(backBuffer, backBufferDesc.Format);
+
 	if (FAILED(device->CreateRenderTargetView(backBuffer, NULL, &this->backBufferRTV)))
 	{
 		Log::error("Failed to create backbufferRTV");
@@ -105,6 +112,7 @@ Renderer::Renderer(Resources& resources)
 	pixelShader(*this),
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
+	backBufferUAV(*this, "backBufferUAV"),
 
 	resources(resources)
 {

@@ -3,12 +3,14 @@
 #include "Time.h"
 
 Engine::Engine()
-	: renderer(this->resources)
+	: renderer(this->resources),
+	uiRenderer(this->renderer, this->resources)
 {
 	this->settings.LoadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
+	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
 
 	this->resources.addTexture("Resources/Textures/me.png", "me.png");
 	this->resources.addMaterial("me.png", "testMaterial");
@@ -52,6 +54,9 @@ void Engine::run()
 		// Stop tracking time
 		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
 		Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
+
+		// Render UI
+		this->uiRenderer.renderTexture("me.png", 50, 100, 300, 100);
 
 		// Present
 		this->renderer.presentSC();
