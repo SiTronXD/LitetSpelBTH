@@ -235,7 +235,7 @@
     <ClInclude Include="Engine\Graphics\SRV.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Engine\Settings.txt" />
+    <Text Include="Settings.txt" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PixelShader.hlsl">

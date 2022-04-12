@@ -4,6 +4,7 @@
 
 Engine::Engine()
 {
+	this->settings.LoadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
 	this->renderer.init(this->window);
 }
@@ -49,4 +50,6 @@ void Engine::run()
 
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
 		delete meshComponents[i];
+
+	this->settings.SaveSettings();
 }
