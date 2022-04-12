@@ -36,4 +36,5 @@ public:
 	inline ID3D11Buffer*& getBuffer() { return this->buffer; }
 
 	inline const UINT& getBufferSize() { return this->bufferSize; }
+	inline const std::string& getDebugName() { return this->debugName; }
 };
