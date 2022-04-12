@@ -1,8 +1,9 @@
 #include "MeshComp.h"
 #include "../Graphics/Renderer.h"
 
-MeshComp::MeshComp(Renderer& renderer)
-	: mesh(renderer)
+MeshComp::MeshComp(
+	const std::string& meshName, const std::string& materialName)
+	: meshName(meshName), materialName(materialName)
 {
 }
 

@@ -3,9 +3,18 @@
 #include "Time.h"
 
 Engine::Engine()
+	: renderer(this->resources)
 {
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
 	this->renderer.init(this->window);
+	this->resources.init(&this->renderer);
+
+	this->resources.addTexture("Resources/Textures/me.png", "me.png");
+	this->resources.addMaterial("me.png", "testMaterial");
+	this->resources.addMesh(
+		MeshData(DefaultMesh::CUBE), 
+		"CubeMesh"
+	);
 }
 
 Engine::~Engine()
@@ -23,7 +32,7 @@ void Engine::run()
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
 	std::vector<MeshComp*> meshComponents;
-	meshComponents.push_back(new MeshComp(renderer));
+	meshComponents.push_back(new MeshComp("CubeMesh", "testMaterial"));
 
 	Time::init();
 	while (this->window.isRunning())

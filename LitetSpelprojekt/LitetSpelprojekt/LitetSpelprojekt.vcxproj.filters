@@ -41,6 +41,8 @@
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
     <ClCompile Include="Engine\Graphics\Texture.cpp" />
     <ClCompile Include="Engine\Graphics\SRV.cpp" />
+    <ClCompile Include="Engine\Resources.cpp" />
+    <ClCompile Include="Engine\Graphics\Material.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -79,6 +81,8 @@
     <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\Graphics\Texture.h" />
     <ClInclude Include="Engine\Graphics\SRV.h" />
+    <ClInclude Include="Engine\Resources.h" />
+    <ClInclude Include="Engine\Graphics\Material.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Engine\Settings.txt" />

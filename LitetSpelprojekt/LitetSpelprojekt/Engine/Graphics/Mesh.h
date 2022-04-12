@@ -10,7 +10,7 @@ private:
 	IndexBuffer indexBuffer;
 
 public:
-	Mesh(Renderer& renderer);
+	Mesh(Renderer& renderer, MeshData&& meshData);
 	virtual ~Mesh();
 
 	inline VertexBuffer& getVertexBuffer() { return this->vertexBuffer; }

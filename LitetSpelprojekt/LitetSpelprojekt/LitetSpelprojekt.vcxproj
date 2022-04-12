@@ -179,6 +179,7 @@
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
     <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
+    <ClCompile Include="Engine\Graphics\Material.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\MenuScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameScene.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Engine\Time.cpp" />
     <ClCompile Include="Engine\Graphics\Texture.cpp" />
     <ClCompile Include="Engine\Graphics\SRV.cpp" />
+    <ClCompile Include="Engine\Resources.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -221,6 +223,7 @@
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
     <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
+    <ClInclude Include="Engine\Graphics\Material.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\MenuScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Components\Transform.h" />
@@ -233,6 +236,7 @@
     <ClInclude Include="Engine\Time.h" />
     <ClInclude Include="Engine\Graphics\Texture.h" />
     <ClInclude Include="Engine\Graphics\SRV.h" />
+    <ClInclude Include="Engine\Resources.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Engine\Settings.txt" />
