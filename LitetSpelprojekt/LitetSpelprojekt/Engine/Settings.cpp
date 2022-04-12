@@ -32,7 +32,12 @@ bool Settings::LoadSettings()
 	reader.open("Settings.txt");
 	if (!reader.is_open())
 	{
-		Log::error("Unable to load settings file.\n");
+		Log::write("Unable to load settings file");
+		this->settingsList.resolutionX = 1600;
+		this->settingsList.resolutionY = 900;
+		this->settingsList.sensitivity = 5;
+		this->settingsList.brightness = 5;
+		this->settingsList.volume = 5;
 		return false;
 	}
 
