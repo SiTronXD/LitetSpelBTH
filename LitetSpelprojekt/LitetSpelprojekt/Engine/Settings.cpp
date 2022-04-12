@@ -5,12 +5,16 @@
 
 Settings::Settings()
 {
-	LoadSettings();
+	this->settingsList.resolutionX = 0;
+	this->settingsList.resolutionY = 0;
+	this->settingsList.sensitivity = 0;
+	this->settingsList.brightness = 0;
+	this->settingsList.volume = 0;
 }
 
 Settings::~Settings()
 {
-	SaveSettings();
+
 }
 
 SettingsStruct& Settings::getSettings()
@@ -24,12 +28,15 @@ bool Settings::LoadSettings()
 	std::string gameSettings;
 	std::ifstream reader;
 	
+	// Read from settings file
 	reader.open("Settings.txt");
 	if (!reader.is_open())
 	{
 		Log::error("Unable to load settings file.\n");
 		return false;
 	}
+
+	// Read each value into settings variables
 	while (getline(reader, gameSettings))
 	{
 		if (gameSettings == "ResolutionX")
@@ -65,9 +72,8 @@ bool Settings::LoadSettings()
 // Save all settings to file
 bool Settings::SaveSettings()
 {
-	std::string gameSettings;
+	// Open Settings File
 	std::ofstream writer;
-
 	writer.open("Settings.txt");
 	if (!writer.is_open())
 	{
@@ -75,6 +81,7 @@ bool Settings::SaveSettings()
 		return false;
 	}
 	
+	// Write settings to file
 	writer << "ResolutionX\n" << settingsList.resolutionX 
 		<< "\nResolutionY\n" << settingsList.resolutionY 
 		<< "\nSensitivity\n" << settingsList.sensitivity
