@@ -3,6 +3,7 @@
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PixelShader.hlsl" />
     <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
+    <FxCompile Include="Resources\Shaders\RenderUI_COMP.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Components\Collider.cpp" />
@@ -42,6 +43,11 @@
     <ClCompile Include="Engine\Graphics\Texture.cpp" />
     <ClCompile Include="Engine\Graphics\SRV.cpp" />
     <ClCompile Include="Engine\Components\Player.cpp" />
+    <ClCompile Include="Engine\Resources.cpp" />
+    <ClCompile Include="Engine\Graphics\Material.cpp" />
+    <ClCompile Include="Engine\Graphics\UIRenderer.cpp" />
+    <ClCompile Include="Engine\Graphics\Shaders\ComputeShader.cpp" />
+    <ClCompile Include="Engine\Graphics\UAV.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -81,9 +87,14 @@
     <ClInclude Include="Engine\Graphics\Texture.h" />
     <ClInclude Include="Engine\Graphics\SRV.h" />
     <ClInclude Include="Engine\Components\Player.h" />
+    <ClInclude Include="Engine\Resources.h" />
+    <ClInclude Include="Engine\Graphics\Material.h" />
+    <ClInclude Include="Engine\Graphics\UIRenderer.h" />
+    <ClInclude Include="Engine\Graphics\Shaders\ComputeShader.h" />
+    <ClInclude Include="Engine\Graphics\UAV.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Engine\Settings.txt" />
+    <Text Include="Settings.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

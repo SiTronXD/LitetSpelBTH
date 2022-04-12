@@ -47,6 +47,13 @@ bool Renderer::createViews(Window& window)
 		return false;
 	}
 
+	// Get buffer description
+	D3D11_TEXTURE2D_DESC backBufferDesc{};
+	backBuffer->GetDesc(&backBufferDesc);
+
+	// Create back buffer UAV
+	this->backBufferUAV.createTextureUAV(backBuffer, backBufferDesc.Format);
+
 	if (FAILED(device->CreateRenderTargetView(backBuffer, NULL, &this->backBufferRTV)))
 	{
 		Log::error("Failed to create backbufferRTV");
@@ -97,16 +104,17 @@ bool Renderer::loadShaders()
 	return true;
 }
 
-Renderer::Renderer():
-	device(nullptr), immediateContext(nullptr), swapChain(nullptr),
+Renderer::Renderer(Resources& resources)
+	: device(nullptr), immediateContext(nullptr), swapChain(nullptr),
 	viewport(), backBufferRTV(nullptr), dsTexture(nullptr), dsView(nullptr),
 
 	vertexShader(*this),
 	pixelShader(*this),
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
+	backBufferUAV(*this, "backBufferUAV"),
 
-	testTexture(*this)
+	resources(resources)
 {
 }
 
@@ -136,20 +144,11 @@ void Renderer::init(Window& window)
 
 	// Constant buffer
 	this->cameraConstantBuffer.createBuffer(sizeof(CameraBufferData));
-
-	this->testTexture.load("Resources/Textures/me.png");
 }
 
 float timer = 0.0f;
 void Renderer::render(Camera& camera, std::vector<MeshComp*>& meshComponents)
 {
-	immediateContext->PSSetSamplers(
-		0, 1, &this->testTexture.getSampler()
-	);
-	immediateContext->PSSetShaderResources(
-		0, 1, &this->testTexture.getSRV().getPtr()
-	);
-
 	// Update camera constant buffer
 	timer += Time::getDT();
 	Matrix m;
@@ -175,8 +174,19 @@ void Renderer::render(Camera& camera, std::vector<MeshComp*>& meshComponents)
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
 	{
-		Mesh& mesh = meshComponents[i]->getMesh();
+		Mesh& mesh = this->resources.getMesh(meshComponents[i]->getMeshName());
 
+		// Set texture
+		Material& material = this->resources.getMaterial(meshComponents[i]->getMaterialName());
+		Texture& texture = this->resources.getTexture(material.getDiffuseTextureName());
+		immediateContext->PSSetSamplers(
+			0, 1, &texture.getSampler()
+		);
+		immediateContext->PSSetShaderResources(
+			0, 1, &texture.getSRV().getPtr()
+		);
+
+		// Vertex/index buffer
 		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
 		immediateContext->IASetVertexBuffers(
 			0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());

@@ -7,4 +7,4 @@ Sensitivity
 Brightnesss
 0
 Volume
-10
+5
