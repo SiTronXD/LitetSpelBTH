@@ -120,6 +120,16 @@ inline bool ECS::removeComponent(int gameObjectID)
 			break;
 		}
 	}
+	
+	Script* sComp = dynamic_cast<Script*>(comp);
+	for (size_t i = 0; i < this->scriptComps.size(); i++)
+	{
+		if (sComp == this->scriptComps[i])
+		{
+			this->scriptComps.erase(this->scriptComps.begin() + i);
+			break;
+		}
+	}
 
 	delete comp;
 	return true;
