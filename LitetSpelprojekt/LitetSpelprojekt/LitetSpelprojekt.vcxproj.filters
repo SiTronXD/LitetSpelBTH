@@ -42,6 +42,7 @@
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
     <ClCompile Include="Engine\Graphics\Texture.cpp" />
     <ClCompile Include="Engine\Graphics\SRV.cpp" />
+    <ClCompile Include="Engine\Components\Player.cpp" />
     <ClCompile Include="Engine\Resources.cpp" />
     <ClCompile Include="Engine\Graphics\Material.cpp" />
     <ClCompile Include="Engine\Graphics\UIRenderer.cpp" />
@@ -85,6 +86,7 @@
     <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\Graphics\Texture.h" />
     <ClInclude Include="Engine\Graphics\SRV.h" />
+    <ClInclude Include="Engine\Components\Player.h" />
     <ClInclude Include="Engine\Resources.h" />
     <ClInclude Include="Engine\Graphics\Material.h" />
     <ClInclude Include="Engine\Graphics\UIRenderer.h" />

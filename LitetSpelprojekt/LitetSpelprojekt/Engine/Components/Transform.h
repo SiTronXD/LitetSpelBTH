@@ -12,8 +12,13 @@ private:
 	DirectX::SimpleMath::Vector3 rot;
 	DirectX::SimpleMath::Vector3 scale;
 	DirectX::SimpleMath::Matrix worldMatrix;
+
+	DirectX::SimpleMath::Vector3 forward;
+	DirectX::SimpleMath::Vector3 left;
+	DirectX::SimpleMath::Vector3 up;
 	
 	void updateWorldMatrix();
+	void updateDirectionalVectors();
 public:
 	Transform();
 	~Transform();
@@ -22,32 +27,42 @@ public:
 	void setPosition(const DirectX::SimpleMath::Vector3& pos);
 	void setPosition(float x, float y, float z);
 
-	void adjustPosition(const DirectX::SimpleMath::Vector3& offSet);
-	void adjustPosition(float x, float y, float z);
+	void move(const DirectX::SimpleMath::Vector3& offSet);
+	void move(float x, float y, float z);
 
-	const DirectX::SimpleMath::Vector3& getPosition() const;
+	void moveLocal(const DirectX::SimpleMath::Vector3& offSet);
+	void moveLocal(float x, float y, float z);
+
+	inline const DirectX::SimpleMath::Vector3& getPosition() const { return this->pos; }
 
 	//Rotation
 	void setRotation(const DirectX::SimpleMath::Vector3& rot);
 	void setRotation(float x, float y, float z);
 
-	const DirectX::SimpleMath::Vector3& getRotation() const;
+	inline const DirectX::SimpleMath::Vector3& getRotation() const { return this->rot; }
 
-	void adjustRotation(const DirectX::SimpleMath::Vector3& offSet);
-	void adjustRotation(float x, float y, float z);
+	void rotate(const DirectX::SimpleMath::Vector3& offSet);
+	void rotate(float x, float y, float z);
 
 	//Scaling
 	void setScaling(const DirectX::SimpleMath::Vector3& scale);
 	void setScaling(float x, float y, float z);
 
-	void adjustScaling(const DirectX::SimpleMath::Vector3& offSet);
-	void adjustScaling(float x, float y, float z);
+	void rescale(const DirectX::SimpleMath::Vector3& offSet);
+	void rescale(float x, float y, float z);
 
-	const DirectX::SimpleMath::Vector3& getScaling() const;
+	inline const DirectX::SimpleMath::Vector3& getScaling() const { return this->scale; }
 	
 	//Matrix
 	void setWorldMatrix(const DirectX::SimpleMath::Matrix& matrix);
-	const DirectX::SimpleMath::Matrix& getWorldMatrix() const;
+	
+	inline const DirectX::SimpleMath::Matrix& getWorldMatrix()
+	{
+		this->updateWorldMatrix();
+
+		return this->worldMatrix;
+	}
+
 	void setWorldMatrixIdentity();
 	
 

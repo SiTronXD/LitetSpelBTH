@@ -41,7 +41,8 @@ enum class Keys
 	Y = 0x59,
 	Z = 0x5A,
 	ESCAPE = VK_ESCAPE,
-	LEFT_SHIFT = VK_SHIFT
+	LEFT_SHIFT = VK_SHIFT,
+	SPACE = VK_SPACE
 };
 
 enum class Mouse
