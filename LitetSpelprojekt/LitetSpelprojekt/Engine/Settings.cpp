@@ -24,7 +24,7 @@ bool Settings::LoadSettings()
 	std::string gameSettings;
 	std::ifstream reader;
 	
-	reader.open("Engine/Settings.txt");
+	reader.open("Settings.txt");
 	if (!reader.is_open())
 	{
 		Log::error("Unable to load settings file.\n");
@@ -68,10 +68,10 @@ bool Settings::SaveSettings()
 	std::string gameSettings;
 	std::ofstream writer;
 
-	writer.open("Engine/Settings.txt");
+	writer.open("Settings.txt");
 	if (!writer.is_open())
 	{
-		Log::error("Unable to write to file.\n");
+		Log::error("Unable to write to settings file.\n");
 		return false;
 	}
 	
