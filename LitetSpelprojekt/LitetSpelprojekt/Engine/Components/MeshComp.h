@@ -8,11 +8,15 @@ class Renderer;
 class MeshComp : public Component
 {
 private:
-	Mesh mesh;
+	std::string meshName;
+	std::string materialName;
 
 public:
-	MeshComp(Renderer& renderer);
+	MeshComp(
+		const std::string& meshName, 
+		const std::string& materialName);
 	virtual ~MeshComp();
 
-	inline Mesh& getMesh() { return this->mesh; }
+	inline const std::string& getMeshName() { return this->meshName; }
+	inline const std::string& getMaterialName() { return this->materialName; }
 };

@@ -12,6 +12,7 @@
 #include "Shaders/PixelShader.h"
 #include "../Application/Window.h"
 #include "Texture.h"
+#include "../Resources.h"
 
 class Renderer
 {
@@ -35,7 +36,7 @@ private:
 
 	ConstantBuffer cameraConstantBuffer;
 
-	Texture testTexture;
+	Resources& resources;
 
 	// Functions
 	bool createInterfaces(Window& window);
@@ -43,7 +44,7 @@ private:
 
 	bool loadShaders();
 public:
-	Renderer();
+	Renderer(Resources& resources);
 	virtual ~Renderer();
 
 	void init(Window& window);
