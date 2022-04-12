@@ -18,7 +18,7 @@ void Engine::update(float dt)
 
 void Engine::run()
 {
-	Camera tempCameraComponent;
+	Camera tempCameraComponent((float) this->window.getWidth() / this->window.getHeight());
 
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
