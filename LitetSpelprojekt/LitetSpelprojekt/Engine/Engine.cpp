@@ -31,7 +31,6 @@ void Engine::run()
 		// Track delta time
 		Time::updateDeltaTime();
 
-
 		// Start tracking time
 		lastTime = std::chrono::high_resolution_clock::now();
 
