@@ -189,6 +189,11 @@ const bool& Window::isRunning()
 		SetCursorPos(screenMiddlePoint.x, screenMiddlePoint.y);
 	}
 
+	// Constantly calling ShowCursor() hurts performance
+	if (Input::cursorVisibilitySwitched())
+		ShowCursor(Input::isCursorVisible());
+	this->input.updateLastCursorVisible();
+
 	// Exit if the escape button is pressed
 	if (Input::isKeyDown(Keys::ESCAPE))
 		this->running = false;
