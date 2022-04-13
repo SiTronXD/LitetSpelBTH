@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include "Dev/Log.h"
 #include "Time.h"
+#include "ResTranslator.h"
 #include "../ProjectSpecifics/Scenes/GameScene.h"
 
 Engine::Engine()
@@ -29,6 +30,11 @@ void Engine::run()
 	meshComponents.push_back(new MeshComp("CubeMesh", "testMaterial"));
 
 	Time::init();
+	ResTranslator::init(this->window.getWidth(), this->window.getHeight());
+
+	UIRectangle testRect{ -1920/2 + 100/2, 1080/2 - 100/2, 100, 100 };
+	UIRectangle transformedRect = ResTranslator::transformRect(testRect);
+
 	while (this->window.isRunning())
 	{
 		// Track delta time
@@ -47,7 +53,13 @@ void Engine::run()
 
 		// Render UI
 		this->sceneHandler.getScene()->renderUI();
-		this->uiRenderer.renderTexture("me.png", 50, 100, 300, 100);
+		this->uiRenderer.renderTexture(
+			"me.png", 
+			transformedRect.x,
+			transformedRect.y,
+			transformedRect.width,
+			transformedRect.height
+		);
 
 		// Present
 		this->renderer.presentSC();
