@@ -8,7 +8,7 @@ private:
 	void fireWeapon();
 	void lookAround();
 public:
-	Player();
+	Player(GameObject& object);
 	~Player();
 
 	// Inherited via Script

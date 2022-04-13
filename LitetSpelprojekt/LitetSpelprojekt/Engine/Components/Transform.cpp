@@ -20,8 +20,9 @@ void Transform::updateDirectionalVectors()
     this->up = DirectX::XMVector3TransformCoord(DirectX::SimpleMath::Vector4(0.0f, 1.0f, 0.0f, 0.0f), rotMatrix);
 }
 
-Transform::Transform()
-    :pos(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f)),
+Transform::Transform(GameObject& object):
+    Component(object),
+    pos(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f)),
     rot(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f)),
     scale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f)),
     forward(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f)),

@@ -2,6 +2,9 @@
 #include "Dev/Log.h"
 #include "Time.h"
 
+// Temp
+#include "ECS.h"
+
 Engine::Engine()
 	: renderer(this->resources),
 	uiRenderer(this->renderer, this->resources)
@@ -30,12 +33,16 @@ void Engine::update(float dt)
 
 void Engine::run()
 {
-	Camera tempCameraComponent((float) this->window.getWidth() / this->window.getHeight());
+	ECS ecs;
+	GameObject& g = ecs.addGameObject();
+	Camera tempCameraComponent(g);
+	Transform* test = tempCameraComponent.getTransform();
 
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
 	std::vector<MeshComp*> meshComponents;
-	meshComponents.push_back(new MeshComp("CubeMesh", "testMaterial"));
+	meshComponents.push_back(new MeshComp(ecs.addGameObject()));
+	meshComponents.back()->setMesh("CubeMesh", "testMaterial");
 
 	Time::init();
 	while (this->window.isRunning())

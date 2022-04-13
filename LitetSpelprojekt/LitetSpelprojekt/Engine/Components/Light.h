@@ -4,5 +4,9 @@
 
 class Light : public Component
 {
+private:
+public:
+	Light(GameObject& object);
+	virtual ~Light();
 };
 

@@ -12,10 +12,12 @@ private:
 	std::string materialName;
 
 public:
-	MeshComp(
-		const std::string& meshName, 
-		const std::string& materialName);
+	MeshComp(GameObject& object);
 	virtual ~MeshComp();
+
+	void setMesh(
+		const std::string& meshName,
+		const std::string& materialName);
 
 	inline const std::string& getMeshName() { return this->meshName; }
 	inline const std::string& getMaterialName() { return this->materialName; }

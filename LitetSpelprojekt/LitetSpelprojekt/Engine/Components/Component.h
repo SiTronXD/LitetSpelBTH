@@ -1,14 +1,17 @@
 #pragma once
 
-//#include "../GameObject.h"
+class GameObject;
+class Transform;
 
 class Component
 {
 private:
-	//GameObject& object;
+	GameObject& object;
+	Transform* transform;
 public:
-	Component(/*GameObject& object*/);
+	Component(GameObject& object);
 	virtual ~Component();
 
-	//GameObject& getObject();
+	inline GameObject& getObject() { return this->object; };
+	inline Transform* getTransform() { return this->transform; };
 };
