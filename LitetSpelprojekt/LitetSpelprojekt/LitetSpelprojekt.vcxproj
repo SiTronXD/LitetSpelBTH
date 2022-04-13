@@ -182,6 +182,7 @@
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
     <ClCompile Include="Engine\Components\Player.cpp" />
     <ClCompile Include="Engine\Graphics\Material.cpp" />
+    <ClCompile Include="Engine\UI\Button.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\MenuScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameScene.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -231,6 +232,7 @@
     <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\Components\Player.h" />
     <ClInclude Include="Engine\Graphics\Material.h" />
+    <ClInclude Include="Engine\UI\Button.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\MenuScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameScene.h" />
     <ClInclude Include="Engine\Components\Transform.h" />
