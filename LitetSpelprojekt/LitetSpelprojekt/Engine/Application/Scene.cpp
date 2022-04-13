@@ -1,6 +1,10 @@
 #include "Scene.h"
+#include "SceneHandler.h"
 
-Scene::Scene()
+Scene::Scene(SceneHandler& sceneHandler)
+	: sceneHandler(sceneHandler),
+	resources(&sceneHandler.getResources()),
+	renderer(&sceneHandler.getRenderer())
 {
 }
 

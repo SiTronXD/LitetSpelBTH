@@ -37,13 +37,16 @@ private:
 
 	ConstantBuffer cameraConstantBuffer;
 
+	Window* window;
 	Resources& resources;
 
 	UAV backBufferUAV;
 
+	Camera* activeCamera;
+
 	// Functions
-	bool createInterfaces(Window& window);
-	bool createViews(Window& window);
+	bool createInterfaces();
+	bool createViews();
 
 	bool loadShaders();
 public:
@@ -51,8 +54,10 @@ public:
 	virtual ~Renderer();
 
 	void init(Window& window);
-	void render(Camera& camera, std::vector<MeshComp*>& meshComponents);
+	void render(std::vector<MeshComp*>& meshComponents);
 	void presentSC();
+
+	void setActiveCamera(Camera& camera);
 
 	inline UAV& getBackBufferUAV() { return this->backBufferUAV; }
 
