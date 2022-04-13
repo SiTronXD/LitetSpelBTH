@@ -1,10 +1,12 @@
 #include "Engine.h"
 #include "Dev/Log.h"
 #include "Time.h"
+#include "../ProjectSpecifics/Scenes/GameScene.h"
 
 Engine::Engine()
 	: renderer(this->resources),
-	uiRenderer(this->renderer, this->resources)
+	uiRenderer(this->renderer, this->resources),
+	sceneHandler(this->resources, this->renderer)
 {
 	this->settings.loadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
@@ -12,26 +14,15 @@ Engine::Engine()
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
 
-	this->resources.addTexture("Resources/Textures/me.png", "me.png");
-	this->resources.addMaterial("me.png", "testMaterial");
-	this->resources.addMesh(
-		MeshData(DefaultMesh::CUBE), 
-		"CubeMesh"
-	);
+	this->sceneHandler.setScene(new GameScene(this->sceneHandler));
 }
 
 Engine::~Engine()
 {
 }
 
-void Engine::update(float dt)
-{
-}
-
 void Engine::run()
 {
-	Camera tempCameraComponent((float) this->window.getWidth() / this->window.getHeight());
-
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
 	std::vector<MeshComp*> meshComponents;
@@ -43,18 +34,19 @@ void Engine::run()
 		// Track delta time
 		Time::updateDeltaTime();
 
-		// Start tracking time
+		// ---------- Start tracking time
 		lastTime = std::chrono::high_resolution_clock::now();
 
 		// Update + render
-		this->update(0.0f);
-		this->renderer.render(tempCameraComponent, meshComponents);
+		this->sceneHandler.getScene()->update();
+		this->renderer.render(meshComponents);
 
-		// Stop tracking time
+		// ---------- Stop tracking time
 		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
 		Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
 
 		// Render UI
+		this->sceneHandler.getScene()->renderUI();
 		this->uiRenderer.renderTexture("me.png", 50, 100, 300, 100);
 
 		// Present
