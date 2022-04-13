@@ -32,7 +32,13 @@ void Engine::run()
 	Time::init();
 	ResTranslator::init(this->window.getWidth(), this->window.getHeight());
 
-	UIRectangle testRect{ -1920/2 + 100/2, 1080/2 - 100/2, 100, 100 };
+	UIRectangle testRect
+	{ 
+		1920/2 - 100/2, 
+		-1080/2 + 100/2, 
+		100, 
+		100 
+	};
 	UIRectangle transformedRect = ResTranslator::transformRect(testRect);
 
 	while (this->window.isRunning())

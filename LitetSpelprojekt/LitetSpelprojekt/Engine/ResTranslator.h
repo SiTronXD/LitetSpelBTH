@@ -2,10 +2,10 @@
 
 struct UIRectangle
 {
-	float x;
-	float y;
-	float width;
-	float height;
+	int x;
+	int y;
+	int width;
+	int height;
 };
 
 class ResTranslator

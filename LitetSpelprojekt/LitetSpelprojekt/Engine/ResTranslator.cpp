@@ -25,8 +25,8 @@ UIRectangle ResTranslator::transformRect(
 	newRect.height *= screenSizeScaleY;
 
 	// Position
-	newRect.x = (float)(screenMidX + (internalRect.x * screenSizeScaleY) - internalRect.width / 2.0f);
-	newRect.y = (float)(screenMidY + (-internalRect.y * screenSizeScaleY) - internalRect.height / 2.0f);
+	newRect.x = screenMidX + (internalRect.x - (internalRect.width / 2.0f)) * screenSizeScaleY;
+	newRect.y = screenMidY + (-internalRect.y - (internalRect.height / 2.0f)) * screenSizeScaleY;
 
 	return newRect;
 }
