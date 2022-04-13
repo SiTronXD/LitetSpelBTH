@@ -179,6 +179,21 @@ const bool& Window::isRunning()
 	);
 	this->lastCursorPoint = this->cursorPoint;
 
+	//Set cursor position to center if out of window bounds.
+	if (Input::shouldLockCursor())
+	{
+		this->screenMiddlePoint.x = this->width / 2;
+		this->screenMiddlePoint.y = this->height / 2;
+		this->lastCursorPoint = this->screenMiddlePoint;
+		ClientToScreen(this->windowHandle, &this->screenMiddlePoint);
+		SetCursorPos(screenMiddlePoint.x, screenMiddlePoint.y);
+	}
+
+	// Constantly calling ShowCursor() hurts performance
+	if (Input::cursorVisibilitySwitched())
+		ShowCursor(Input::isCursorVisible());
+	this->input.updateLastCursorVisible();
+
 	// Exit if the escape button is pressed
 	if (Input::isKeyDown(Keys::ESCAPE))
 		this->running = false;

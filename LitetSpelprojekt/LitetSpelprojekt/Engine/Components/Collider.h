@@ -4,5 +4,9 @@
 
 class Collider : public Component
 {
+private:
+public:
+	Collider(GameObject& object);
+	virtual ~Collider();
 };
 

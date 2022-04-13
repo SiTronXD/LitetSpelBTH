@@ -4,7 +4,7 @@
 
 using namespace DirectX::SimpleMath;
 
-bool Renderer::createInterfaces(Window& window)
+bool Renderer::createInterfaces()
 {
 	UINT flags = 0;
 #ifdef _DEBUG
@@ -15,8 +15,8 @@ bool Renderer::createInterfaces(Window& window)
 
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
 
-	swapChainDesc.BufferDesc.Width = window.getWidth();
-	swapChainDesc.BufferDesc.Height = window.getHeight();
+	swapChainDesc.BufferDesc.Width = this->window->getWidth();
+	swapChainDesc.BufferDesc.Height = this->window->getHeight();
 	swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
 	swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	swapChainDesc.BufferDesc.Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -28,7 +28,7 @@ bool Renderer::createInterfaces(Window& window)
 
 	swapChainDesc.BufferUsage = DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.BufferCount = 1;
-	swapChainDesc.OutputWindow = window.getWindowHandle();
+	swapChainDesc.OutputWindow = this->window->getWindowHandle();
 	swapChainDesc.Windowed = true;
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Flags = 0;
@@ -37,7 +37,7 @@ bool Renderer::createInterfaces(Window& window)
 		&swapChainDesc, &this->swapChain, &this->device, nullptr, &this->immediateContext)));
 }
 
-bool Renderer::createViews(Window& window)
+bool Renderer::createViews()
 {
 	// Get address of the back buffer
 	ID3D11Texture2D* backBuffer = nullptr;
@@ -47,6 +47,13 @@ bool Renderer::createViews(Window& window)
 		return false;
 	}
 
+	// Get buffer description
+	D3D11_TEXTURE2D_DESC backBufferDesc{};
+	backBuffer->GetDesc(&backBufferDesc);
+
+	// Create back buffer UAV
+	this->backBufferUAV.createTextureUAV(backBuffer, backBufferDesc.Format);
+
 	if (FAILED(device->CreateRenderTargetView(backBuffer, NULL, &this->backBufferRTV)))
 	{
 		Log::error("Failed to create backbufferRTV");
@@ -54,8 +61,8 @@ bool Renderer::createViews(Window& window)
 	backBuffer->Release();
 
 	D3D11_TEXTURE2D_DESC textureDesc;
-	textureDesc.Width = window.getWidth();
-	textureDesc.Height = window.getHeight();
+	textureDesc.Width = this->window->getWidth();
+	textureDesc.Height = this->window->getHeight();
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -105,8 +112,11 @@ Renderer::Renderer(Resources& resources)
 	pixelShader(*this),
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
+	backBufferUAV(*this, "backBufferUAV"),
 
 	resources(resources)
+
+	//activeCamera(nullptr)
 {
 }
 
@@ -123,14 +133,16 @@ Renderer::~Renderer()
 
 void Renderer::init(Window& window)
 {
-	createInterfaces(window);
-	createViews(window);
+	this->window = &window;
+
+	createInterfaces();
+	createViews();
 	loadShaders();
 
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = static_cast<float>(window.getWidth());
-	viewport.Height = static_cast<float>(window.getHeight());
+	viewport.Width = static_cast<float>(this->window->getWidth());
+	viewport.Height = static_cast<float>(this->window->getHeight());
 	viewport.MinDepth = 0;
 	viewport.MaxDepth = 1;
 
@@ -139,14 +151,19 @@ void Renderer::init(Window& window)
 }
 
 float timer = 0.0f;
-void Renderer::render(Camera& camera, std::vector<MeshComp*>& meshComponents)
+void Renderer::render(Scene& scene)
 {
+#ifdef _DEBUG
+	if (!scene.getActiveCamera())
+		Log::error("No active camera has been set in the renderer.");
+#endif
+
 	// Update camera constant buffer
 	timer += Time::getDT();
 	Matrix m;
 	m *= Matrix::CreateRotationY(timer);
-	m *= camera.getViewMatrix();
-	m *= camera.getProjectionMatrix();
+	m *= scene.getActiveCamera()->getViewMatrix();
+	m *= scene.getActiveCamera()->getProjectionMatrix();
 	this->cameraBufferStruct.mvpMat = m.Transpose();
 	this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
@@ -154,14 +171,16 @@ void Renderer::render(Camera& camera, std::vector<MeshComp*>& meshComponents)
 	// Init setup
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	immediateContext->RSSetViewports(1, &this->viewport);
-	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView);
 	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
 	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
+	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView);
 
 	// Clear buffers
 	float clearColour[4] = { 0, 0, 0, 0 };
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
 	immediateContext->ClearDepthStencilView(this->dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+
+	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
 
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
@@ -190,9 +209,21 @@ void Renderer::render(Camera& camera, std::vector<MeshComp*>& meshComponents)
 			mesh.getIndexBuffer().getIndexCount(), 0, 0
 		);
 	}
+
+	// Unbind render target
+	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
+	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);
 }
 
 void Renderer::presentSC()
 {
 	this->swapChain->Present(1, 0);
 }
+
+//void Renderer::setActiveCamera(Camera& camera)
+//{
+//	this->activeCamera = &camera;
+//	this->activeCamera->updateAspectRatio(
+//		(float) this->window->getWidth() / this->window->getHeight()
+//	);
+//}

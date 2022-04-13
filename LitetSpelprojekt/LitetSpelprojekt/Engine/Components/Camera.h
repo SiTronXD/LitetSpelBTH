@@ -12,7 +12,7 @@ private:
 	DirectX::SimpleMath::Matrix projectionMatrix;
 
 public:
-	Camera(float aspectRatio = 16.0f / 9.0f);
+	Camera(GameObject& object);
 	virtual ~Camera();
 
 	void updateAspectRatio(float aspectRatio);

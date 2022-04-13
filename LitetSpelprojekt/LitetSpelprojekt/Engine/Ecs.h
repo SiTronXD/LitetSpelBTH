@@ -29,7 +29,7 @@ private:
 		}
 	};
 
-	std::vector<GameObject> gameObjects;
+	std::vector<GameObject*> gameObjects;
 	std::vector<Script*> scriptComps;
 
 	// Map for constant lookups
@@ -58,11 +58,20 @@ public:
 	bool removeComponent(int gameObjectID);
 	template <typename T>
 	T* getComponent(int gameObjectID);
+
+	template <typename T>
+	std::vector<T*> getActiveComponents();
+
+	std::vector<Component*> getAllComponents(int gameObjectID);
 };
 
 template<typename T>
 inline bool ECS::hasComponent(int gameObjectID)
 {
+	// Check if ID is valid
+	if (this->gameObjects.size() <= gameObjectID)
+		return false;
+
 	return this->components.count(std::pair<int, std::type_index>(gameObjectID, typeid(T))) > 0;
 }
 
@@ -85,7 +94,7 @@ inline T* ECS::addComponent(int gameObjectID)
 	}
 
 	// Add new active component
-	T* newComponent = new T();
+	T* newComponent = new T(*this->gameObjects[gameObjectID]);
 	this->activeComponents[typeid(T)].push_back(newComponent);
 
 	Script* sComp = dynamic_cast<Script*>(newComponent);
@@ -110,7 +119,7 @@ inline bool ECS::removeComponent(int gameObjectID)
 		return false;
 
 	Component* comp = this->components[std::pair<int, std::type_index>(gameObjectID, typeid(T))];
-	this->components[std::pair<int, std::type_index>(gameObjectID, typeid(T))] = nullptr;
+	this->components.erase(std::pair<int, std::type_index>(gameObjectID, typeid(T)));
 
 	for (size_t i = 0; i < this->activeComponents[typeid(T)].size(); i++)
 	{
@@ -143,4 +152,18 @@ inline T* ECS::getComponent(int gameObjectID)
 		return nullptr;
 
 	return dynamic_cast<T*>(this->components[std::pair<int, std::type_index>(gameObjectID, typeid(T))]);
+}
+
+template<typename T>
+inline std::vector<T*> ECS::getActiveComponents()
+{
+	// None exist
+	if (this->activeComponents.count(typeid(T)) <= 0)
+		return std::vector<T*>();
+
+	std::vector<T*> vec;
+	for (auto& comp : this->activeComponents[typeid(T)])
+		vec.push_back(dynamic_cast<T*>(comp));
+
+	return vec;
 }

@@ -43,6 +43,7 @@ Texture::Texture(Renderer& renderer)
 	textureSRV(renderer, "textureSRV"),
 	samplerState(nullptr),
 	texture(nullptr),
+	textureDesc{},
 	width(0),
 	height(0)
 {
@@ -85,16 +86,16 @@ bool Texture::load(const std::string& fileName)
 	this->height = imageHeight;
 
 	// D3D texture description
-	D3D11_TEXTURE2D_DESC textureDesc{};
-	textureDesc.Width = imageWidth;
-	textureDesc.Height = imageHeight;
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.SampleDesc.Quality = 0;
-	textureDesc.Usage = D3D11_USAGE_IMMUTABLE;
-	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	this->textureDesc = {};
+	this->textureDesc.Width = imageWidth;
+	this->textureDesc.Height = imageHeight;
+	this->textureDesc.MipLevels = 1;
+	this->textureDesc.ArraySize = 1;
+	this->textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	this->textureDesc.SampleDesc.Count = 1;
+	this->textureDesc.SampleDesc.Quality = 0;
+	this->textureDesc.Usage = D3D11_USAGE_IMMUTABLE;
+	this->textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
 	// Texture subresource data
 	D3D11_SUBRESOURCE_DATA textureSubresourceData{};
@@ -102,7 +103,7 @@ bool Texture::load(const std::string& fileName)
 	textureSubresourceData.SysMemPitch = imagePitch;
 
 	// Create D3D texture
-	HRESULT hr = this->renderer.getDevice()->CreateTexture2D(&textureDesc, &textureSubresourceData, &this->texture);
+	HRESULT hr = this->renderer.getDevice()->CreateTexture2D(&this->textureDesc, &textureSubresourceData, &this->texture);
 
 	// Free image data
 	stbi_image_free(imageData);
@@ -114,5 +115,5 @@ bool Texture::load(const std::string& fileName)
 	}
 
 	// Create texture SRV
-	return this->textureSRV.createTextureSRV(this->texture, textureDesc.Format);
+	return this->createShaderResourceView();
 }

@@ -5,14 +5,16 @@
 #include <SimpleMath.h>
 #include <fstream>
 
-#include "../Components/Camera.h"
-#include "../Components/MeshComp.h"
+//#include "../Components/Camera.h"
+//#include "../Components/MeshComp.h"
+#include "../Application/Scene.h"
 #include "ConstantBuffer.h"
 #include "Shaders/VertexShader.h"
 #include "Shaders/PixelShader.h"
 #include "../Application/Window.h"
 #include "Texture.h"
 #include "../Resources.h"
+#include "UAV.h"
 
 class Renderer
 {
@@ -36,11 +38,16 @@ private:
 
 	ConstantBuffer cameraConstantBuffer;
 
+	Window* window;
 	Resources& resources;
 
+	UAV backBufferUAV;
+
+	//Camera* activeCamera;
+
 	// Functions
-	bool createInterfaces(Window& window);
-	bool createViews(Window& window);
+	bool createInterfaces();
+	bool createViews();
 
 	bool loadShaders();
 public:
@@ -48,8 +55,12 @@ public:
 	virtual ~Renderer();
 
 	void init(Window& window);
-	void render(Camera& camera, std::vector<MeshComp*>& meshComponents);
+	void render(Scene& scene);
 	void presentSC();
+
+	//void setActiveCamera(Camera& camera);
+
+	inline UAV& getBackBufferUAV() { return this->backBufferUAV; }
 
 	inline ID3D11Device* getDevice() const { return this->device; }
 	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }

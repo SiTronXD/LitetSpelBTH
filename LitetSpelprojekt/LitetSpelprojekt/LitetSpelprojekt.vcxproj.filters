@@ -3,6 +3,7 @@
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\PixelShader.hlsl" />
     <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
+    <FxCompile Include="Resources\Shaders\RenderUI_COMP.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Components\Collider.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
     <ClCompile Include="Engine\Graphics\Texture.cpp" />
     <ClCompile Include="Engine\Graphics\SRV.cpp" />
+    <ClCompile Include="Engine\Components\Player.cpp" />
     <ClCompile Include="Engine\Resources.cpp" />
     <ClCompile Include="Engine\Graphics\Material.cpp" />
     <ClCompile Include="Engine\UI\Button.cpp" />
@@ -82,6 +84,7 @@
     <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\Graphics\Texture.h" />
     <ClInclude Include="Engine\Graphics\SRV.h" />
+    <ClInclude Include="Engine\Components\Player.h" />
     <ClInclude Include="Engine\Resources.h" />
     <ClInclude Include="Engine\Graphics\Material.h" />
     <ClInclude Include="Engine\UI\Button.h" />
