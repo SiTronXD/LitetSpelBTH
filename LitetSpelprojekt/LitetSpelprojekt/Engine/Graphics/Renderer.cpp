@@ -114,9 +114,9 @@ Renderer::Renderer(Resources& resources)
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
 	backBufferUAV(*this, "backBufferUAV"),
 
-	resources(resources),
+	resources(resources)
 
-	activeCamera(nullptr)
+	//activeCamera(nullptr)
 {
 }
 
@@ -151,10 +151,10 @@ void Renderer::init(Window& window)
 }
 
 float timer = 0.0f;
-void Renderer::render(std::vector<MeshComp*>& meshComponents)
+void Renderer::render(Scene& scene)
 {
 #ifdef _DEBUG
-	if (!this->activeCamera)
+	if (!scene.getActiveCamera())
 		Log::error("No active camera has been set in the renderer.");
 #endif
 
@@ -162,8 +162,8 @@ void Renderer::render(std::vector<MeshComp*>& meshComponents)
 	timer += Time::getDT();
 	Matrix m;
 	m *= Matrix::CreateRotationY(timer);
-	m *= this->activeCamera->getViewMatrix();
-	m *= this->activeCamera->getProjectionMatrix();
+	m *= scene.getActiveCamera()->getViewMatrix();
+	m *= scene.getActiveCamera()->getProjectionMatrix();
 	this->cameraBufferStruct.mvpMat = m.Transpose();
 	this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
@@ -179,6 +179,8 @@ void Renderer::render(std::vector<MeshComp*>& meshComponents)
 	float clearColour[4] = { 0, 0, 0, 0 };
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
 	immediateContext->ClearDepthStencilView(this->dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+
+	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
 
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
@@ -218,10 +220,10 @@ void Renderer::presentSC()
 	this->swapChain->Present(1, 0);
 }
 
-void Renderer::setActiveCamera(Camera& camera)
-{
-	this->activeCamera = &camera;
-	this->activeCamera->updateAspectRatio(
-		(float) this->window->getWidth() / this->window->getHeight()
-	);
-}
+//void Renderer::setActiveCamera(Camera& camera)
+//{
+//	this->activeCamera = &camera;
+//	this->activeCamera->updateAspectRatio(
+//		(float) this->window->getWidth() / this->window->getHeight()
+//	);
+//}

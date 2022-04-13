@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
+#include "../../Engine/GameObject.h"
 
 GameScene::GameScene(SceneHandler& sceneHandler)
 	: Scene(sceneHandler)
@@ -20,7 +21,12 @@ void GameScene::init()
 		"CubeMesh"
 	);
 
-	this->getRenderer().setActiveCamera(camera);
+	GameObject& cam = this->addGameObject();
+	this->setActiveCamera(cam.addComponent<Camera>());
+
+	GameObject& model = this->addGameObject();
+	MeshComp* mc = model.addComponent<MeshComp>();
+	mc->setMesh("CubeMesh", "testMaterial");
 }
 
 void GameScene::update()
