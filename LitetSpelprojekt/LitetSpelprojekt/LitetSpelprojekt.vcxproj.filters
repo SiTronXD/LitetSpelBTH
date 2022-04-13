@@ -43,6 +43,7 @@
     <ClCompile Include="Engine\Graphics\SRV.cpp" />
     <ClCompile Include="Engine\Resources.cpp" />
     <ClCompile Include="Engine\Graphics\Material.cpp" />
+    <ClCompile Include="Engine\UI\Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -83,6 +84,7 @@
     <ClInclude Include="Engine\Graphics\SRV.h" />
     <ClInclude Include="Engine\Resources.h" />
     <ClInclude Include="Engine\Graphics\Material.h" />
+    <ClInclude Include="Engine\UI\Button.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

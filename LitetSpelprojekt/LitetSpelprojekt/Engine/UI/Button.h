@@ -4,16 +4,20 @@
 class Button
 {
 private:
+	int posX;
+	int posY;
 	int width;
 	int height;
-	int pos[2];
+
 public:
 	Button();
-	Button(int w, int h, int[] pos);
+	Button(int posX, int posY, int w, int h);
 	~Button();
 
+	inline int getPosX() { return this->posX; }
+	inline int getPosY() { return this->posY; }
 	inline int getWidth() { return this->width; }
 	inline int getheight() { return this->height; }
-	inline int getPosition() { return this->pos; }
+
 	bool isClicked();
 };
