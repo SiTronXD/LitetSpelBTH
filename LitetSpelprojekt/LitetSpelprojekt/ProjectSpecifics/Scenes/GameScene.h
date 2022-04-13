@@ -5,7 +5,6 @@
 class GameScene : public Scene
 {
 private:
-	Camera camera;
 
 public:
 	GameScene(SceneHandler& sceneHandler);

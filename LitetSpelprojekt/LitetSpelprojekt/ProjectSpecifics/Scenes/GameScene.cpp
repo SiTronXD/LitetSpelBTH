@@ -20,7 +20,9 @@ void GameScene::init()
 		"CubeMesh"
 	);
 
-	this->getRenderer().setActiveCamera(camera);
+
+
+	//this->getRenderer().setActiveCamera(camera);
 }
 
 void GameScene::update()
