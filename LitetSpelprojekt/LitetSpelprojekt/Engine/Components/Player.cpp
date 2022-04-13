@@ -50,7 +50,8 @@ void Player::lookAround()
 	//Move the camera around
 }
 
-Player::Player()
+Player::Player(GameObject& object):
+	Script(object)
 {
 }
 

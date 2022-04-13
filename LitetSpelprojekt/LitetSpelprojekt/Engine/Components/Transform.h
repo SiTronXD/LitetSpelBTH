@@ -20,7 +20,7 @@ private:
 	void updateWorldMatrix();
 	void updateDirectionalVectors();
 public:
-	Transform();
+	Transform(GameObject& object);
 	~Transform();
 
 	//Position

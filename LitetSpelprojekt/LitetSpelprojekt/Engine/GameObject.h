@@ -11,7 +11,6 @@ public:
 	GameObject(ECS& ecs, int ID);
 	~GameObject();
 
-	int getID() const;
 
 	template <typename T>
 	T* addComponent();
@@ -19,6 +18,9 @@ public:
 	bool removeComponent();
 	template <typename T>
 	T* getComponent();
+
+	inline const int getID() { return this->ID; };
+	inline std::vector<Component*> getAllComponents() { return this->ecs.getAllComponents(this->ID); };
 };
 
 template<typename T>

@@ -4,6 +4,9 @@
 #include "ResTranslator.h"
 #include "../ProjectSpecifics/Scenes/GameScene.h"
 
+// Temp
+#include "ECS.h"
+
 Engine::Engine()
 	: renderer(this->resources),
 	uiRenderer(this->renderer, this->resources),
@@ -24,10 +27,16 @@ Engine::~Engine()
 
 void Engine::run()
 {
+	ECS ecs;
+	GameObject& g = ecs.addGameObject();
+	Camera tempCameraComponent(g);
+	Transform* test = tempCameraComponent.getTransform();
+
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
 	std::vector<MeshComp*> meshComponents;
-	meshComponents.push_back(new MeshComp("CubeMesh", "testMaterial"));
+	meshComponents.push_back(new MeshComp(ecs.addGameObject()));
+	meshComponents.back()->setMesh("CubeMesh", "testMaterial");
 
 	Time::init();
 	ResTranslator::init(this->window.getWidth(), this->window.getHeight());

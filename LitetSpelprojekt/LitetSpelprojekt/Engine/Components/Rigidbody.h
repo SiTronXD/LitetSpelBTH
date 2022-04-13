@@ -4,5 +4,9 @@
 
 class Rigidbody : public Component
 {
+private:
+public:
+	Rigidbody(GameObject& object);
+	virtual ~Rigidbody();
 };
 
