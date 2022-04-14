@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "../Application/Input.h"
+#include "../GameObject.h"
 
 void Player::move()
 {

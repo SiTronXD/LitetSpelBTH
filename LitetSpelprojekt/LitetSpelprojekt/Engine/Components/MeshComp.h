@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "../Graphics/Mesh.h"
+#include "Componentpch.h"
 
 class Renderer;
 

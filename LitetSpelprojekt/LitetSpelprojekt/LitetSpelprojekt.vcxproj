@@ -205,6 +205,7 @@
     <ClCompile Include="Engine\ResTranslator.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Components\Componentpch.h" />
     <ClInclude Include="Engine\Graphics\Shaders\ComputeShader.h" />
     <ClInclude Include="Engine\Dev\Helpers.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />

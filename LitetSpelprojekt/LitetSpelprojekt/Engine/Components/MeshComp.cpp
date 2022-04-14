@@ -1,5 +1,6 @@
 #include "MeshComp.h"
 #include "../Graphics/Renderer.h"
+#include "../GameObject.h"
 
 MeshComp::MeshComp(GameObject& object):
 	Component(object)

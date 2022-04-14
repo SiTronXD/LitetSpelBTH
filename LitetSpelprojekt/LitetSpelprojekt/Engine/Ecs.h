@@ -5,14 +5,7 @@
 #include <unordered_map>
 #include <typeindex>
 #include <typeinfo>
-#include "Components/Transform.h"
-#include "Components/Camera.h"
-#include "Components/Light.h"
-#include "Components/MeshComp.h"
-#include "Components/ParticleEmitter.h"
-#include "Components/Rigidbody.h"
-#include "Components/Collider.h"
-#include "Components/Script.h"
+#include "Components/Componentpch.h"
 
 #include "Dev/Log.h"
 
