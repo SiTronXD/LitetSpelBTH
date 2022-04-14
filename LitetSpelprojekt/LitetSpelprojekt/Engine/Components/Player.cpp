@@ -4,24 +4,29 @@
 
 void Player::move()
 {
+	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+	
 	if (Input::isKeyDown(Keys::W))
 	{
-		//Move Backwards
+		direction.z = this->speed;
+		
 	}
 	else if (Input::isKeyDown(Keys::S))
 	{
-		//Move Forwards
+		direction.z = this->speed * -1;
 	}
 
 	if (Input::isKeyDown(Keys::A))
 	{
-		//Move Left
+		direction.x = this->speed * -1;
 	}
 	else if (Input::isKeyDown(Keys::D))
 	{
-		//Move Right
+		direction.x = this->speed;
 	}
-	
+
+	//direction.Normalize();
+	this->trans->moveLocal(direction);	
 }
 
 void Player::jump()
@@ -52,7 +57,7 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object):
-	Script(object)
+	Script(object), speed(3.0f)
 {
 }
 

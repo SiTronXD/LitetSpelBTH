@@ -6,6 +6,8 @@
 class Player : public Script
 {
 private:
+	float speed;
+
 	void move();
 	void jump();
 	void fireWeapon();
