@@ -1,6 +1,7 @@
 #include "MeshData.h"
 
 using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 void MeshData::createTriangle()
 {
@@ -205,6 +206,31 @@ void MeshData::createSphere(int resX, int resY)
 	}
 }
 
+void MeshData::transformVector(
+	const DirectX::SimpleMath::Matrix& transform,
+	DirectX::XMFLOAT3& vec,
+	bool isPosition)
+{
+	Vector4 vectorToTransform = Vector4(vec.x, vec.y, vec.z, isPosition ? 1.0f : 0.0f);
+
+	// Position vectors
+	if (isPosition)
+	{
+		vectorToTransform = XMVector4Transform(vectorToTransform, transform);
+	}
+	// Direction vectors
+	else
+	{
+		transform.Invert();
+		transform.Transpose();
+		vectorToTransform = XMVector4Transform(vectorToTransform, transform);
+		vectorToTransform = XMVector3Normalize(vectorToTransform);
+	}
+
+	// Store transformed vector
+	XMStoreFloat3(&vec, vectorToTransform);
+}
+
 Vertex MeshData::makeVert(float xPos, float yPos, float zPos, float uTex, float vTex)
 {
 	return {
@@ -213,6 +239,9 @@ Vertex MeshData::makeVert(float xPos, float yPos, float zPos, float uTex, float 
 		{ uTex, vTex }				// UVs
 	};
 }
+
+MeshData::MeshData()
+{ }
 
 MeshData::MeshData(DefaultMesh defaultMesh)
 {
@@ -341,4 +370,23 @@ void MeshData::invertFaces()
 		this->indices[i] = this->indices[i + 1];
 		this->indices[i + 1] = temp;
 	}
+}
+
+void MeshData::transformMesh(const DirectX::SimpleMath::Matrix& transform)
+{
+	for (unsigned int i = 0; i < this->vertices.size(); ++i)
+	{
+		this->transformVector(transform, this->vertices[i].pos, true);
+		this->transformVector(transform, this->vertices[i].normal, false);
+	}
+}
+
+void MeshData::addVertex(const Vertex& newVertex)
+{
+	this->vertices.push_back(newVertex);
+}
+
+void MeshData::addIndex(const unsigned int& newIndex)
+{
+	this->indices.push_back(newIndex);
 }

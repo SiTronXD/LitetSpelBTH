@@ -6,6 +6,10 @@
 
 // Temp
 #include "ECS.h"
+#include "GameObject.h"
+#include "Components/Component.h"
+#include "Components/Camera.h"
+#include "Components/Transform.h"
 
 Engine::Engine()
 	: renderer(this->resources),

@@ -3,6 +3,7 @@
 #include "Dev/Log.h"
 
 Resources::Resources()
+	: renderer(nullptr)
 {
 
 }
