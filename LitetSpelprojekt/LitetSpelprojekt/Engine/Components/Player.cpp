@@ -27,7 +27,6 @@ void Player::move()
 
 	direction.Normalize();
 	this->getTransform()->moveLocal(direction * this->speed * Time::getDT());
-	
 }
 
 void Player::jump()
