@@ -1,14 +1,8 @@
 #include "Button.h"
+#include "../Dev/Log.h"
 
-Button::Button()
-{
-	this->posX = 0;
-	this->posY = 0;
-	this->width = 0;
-	this->height = 0;
-}
 
-Button::Button(int pX, int pY, int w, int h)
+Button::Button(int pX, int pY, int w, int h, UIRenderer& r) : uiRenderer(r)
 {
 	this->posX = pX;
 	this->posY = pY;
@@ -37,6 +31,10 @@ bool Button::isClicked()
 			buttonClicked = true;
 		}
 	}
-
 	return buttonClicked;
+}
+
+void Button::render(std::string textureName)
+{
+	uiRenderer.renderTexture(textureName, this->posX, this->posY, this->width, this->height);
 }
