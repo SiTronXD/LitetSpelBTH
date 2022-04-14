@@ -26,7 +26,7 @@ void GameScene::init()
 	GameObject& cam = this->addGameObject();
 	this->setActiveCamera(cam.addComponent<Camera>());
 	cam.getComponent<Transform>()->setPosition({ 0.0f, 0.75f, 1.0f });
-	cam.getComponent<Transform>()->rotate({ 30.0f, 0.0f, 0.0f });
+	cam.getComponent<Transform>()->rotate({ -30.0f, 0.0f, 0.0f });
 
 	GameObject& model = this->addGameObject();
 	MeshComp* mc = model.addComponent<MeshComp>();
