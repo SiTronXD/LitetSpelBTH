@@ -12,12 +12,18 @@ private:
 	DirectX::SimpleMath::Matrix viewMatrix;
 	DirectX::SimpleMath::Matrix projectionMatrix;
 
+	void updateViewMatrix();
+
 public:
 	Camera(GameObject& object);
 	virtual ~Camera();
 
 	void updateAspectRatio(float aspectRatio);
 
-	inline const DirectX::SimpleMath::Matrix& getViewMatrix() { return this->viewMatrix; }
+	inline const DirectX::SimpleMath::Matrix& getViewMatrix() 
+	{
+		this->updateViewMatrix();
+		return this->viewMatrix; 
+	}
 	inline const DirectX::SimpleMath::Matrix& getProjectionMatrix() { return this->projectionMatrix; }
 };

@@ -1,7 +1,6 @@
 #pragma once
 #include "Component.h"
 #include <d3d11.h>
-#include <DirectXMath.h>
 #include <SimpleMath.h>
 #include "Componentpch.h"
 
@@ -13,9 +12,9 @@ private:
 	DirectX::SimpleMath::Vector3 scale;
 	DirectX::SimpleMath::Matrix worldMatrix;
 
-	DirectX::SimpleMath::Vector3 forward;
-	DirectX::SimpleMath::Vector3 left;
-	DirectX::SimpleMath::Vector3 up;
+	DirectX::SimpleMath::Vector3 leftVec;
+	DirectX::SimpleMath::Vector3 upVec;
+	DirectX::SimpleMath::Vector3 forwardVec;
 	
 	void updateWorldMatrix();
 	void updateDirectionalVectors();
@@ -53,18 +52,15 @@ public:
 
 	inline const DirectX::SimpleMath::Vector3& getScaling() const { return this->scale; }
 	
-	//Matrix
-	void setWorldMatrix(const DirectX::SimpleMath::Matrix& matrix);
+	// Local vectors
+	inline const DirectX::SimpleMath::Vector3& left() const { return this->leftVec; }
+	inline const DirectX::SimpleMath::Vector3& up() const { return this->upVec; }
+	inline const DirectX::SimpleMath::Vector3& forward() const { return this->forwardVec; }
 	
 	inline const DirectX::SimpleMath::Matrix& getWorldMatrix()
 	{
 		this->updateWorldMatrix();
-
 		return this->worldMatrix;
 	}
-
-	void setWorldMatrixIdentity();
-	
-
 };
 
