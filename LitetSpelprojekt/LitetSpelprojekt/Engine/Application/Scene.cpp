@@ -4,7 +4,8 @@
 Scene::Scene(SceneHandler& sceneHandler)
 	: sceneHandler(sceneHandler),
 	resources(&sceneHandler.getResources()),
-	renderer(&sceneHandler.getRenderer())
+	renderer(&sceneHandler.getRenderer()),
+	uiRenderer(&sceneHandler.getUIRenderer())
 {
 }
 

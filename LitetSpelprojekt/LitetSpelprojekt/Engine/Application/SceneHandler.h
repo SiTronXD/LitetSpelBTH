@@ -3,6 +3,7 @@
 
 #include "../Resources.h"
 #include "../Graphics/Renderer.h"
+#include "../Graphics/UIRenderer.h"
 
 class SceneHandler
 {
@@ -11,9 +12,14 @@ private:
 
 	Resources& resources;
 	Renderer& renderer;
+	UIRenderer& uiRenderer;
 
 public:
-	SceneHandler(Resources& resources, Renderer& renderer);
+	SceneHandler(
+		Resources& resources, 
+		Renderer& renderer, 
+		UIRenderer& uiRenderer
+	);
 	~SceneHandler();
 
 	void setScene(Scene* scene);
@@ -21,4 +27,5 @@ public:
 
 	inline Resources& getResources() { return this->resources; }
 	inline Renderer& getRenderer() { return this->renderer; }
+	inline UIRenderer& getUIRenderer() { return this->uiRenderer; }
 };
