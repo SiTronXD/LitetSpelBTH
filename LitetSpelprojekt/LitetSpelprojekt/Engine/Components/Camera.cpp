@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "../GameObject.h"
+#include "../SMath.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -27,7 +28,7 @@ Camera::~Camera()
 void Camera::updateAspectRatio(float aspectRatio)
 {
 	this->projectionMatrix = Matrix::CreatePerspectiveFieldOfView(
-		90.0f,
+		SMath::PI * 0.5f,
 		aspectRatio,
 		0.1f,
 		100.0f
