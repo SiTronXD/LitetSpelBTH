@@ -5,8 +5,9 @@
 #include <SimpleMath.h>
 #include <fstream>
 
-#include "../Components/Camera.h"
-#include "../Components/MeshComp.h"
+//#include "../Components/Camera.h"
+//#include "../Components/MeshComp.h"
+#include "../Application/Scene.h"
 #include "ConstantBuffer.h"
 #include "Shaders/VertexShader.h"
 #include "Shaders/PixelShader.h"
@@ -42,7 +43,7 @@ private:
 
 	UAV backBufferUAV;
 
-	Camera* activeCamera;
+	//Camera* activeCamera;
 
 	// Functions
 	bool createInterfaces();
@@ -54,10 +55,10 @@ public:
 	virtual ~Renderer();
 
 	void init(Window& window);
-	void render(std::vector<MeshComp*>& meshComponents);
+	void render(Scene& scene);
 	void presentSC();
 
-	void setActiveCamera(Camera& camera);
+	//void setActiveCamera(Camera& camera);
 
 	inline UAV& getBackBufferUAV() { return this->backBufferUAV; }
 

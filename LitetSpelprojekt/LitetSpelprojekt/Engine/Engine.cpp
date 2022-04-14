@@ -31,18 +31,7 @@ Engine::~Engine()
 
 void Engine::run()
 {
-	ECS ecs;
-	GameObject& g = ecs.addGameObject();
-	Camera tempCameraComponent(g);
-	Transform* test = tempCameraComponent.getTransform();
-
-	renderer.setActiveCamera(tempCameraComponent);
-
 	auto lastTime = std::chrono::high_resolution_clock::now();
-
-	std::vector<MeshComp*> meshComponents;
-	meshComponents.push_back(new MeshComp(ecs.addGameObject()));
-	meshComponents.back()->setMesh("CubeMesh", "testMaterial");
 
 	Time::init();
 	ResTranslator::init(this->window.getWidth(), this->window.getHeight());
@@ -66,7 +55,7 @@ void Engine::run()
 
 		// Update + render
 		this->sceneHandler.getScene()->update();
-		this->renderer.render(meshComponents);
+		this->renderer.render(*this->sceneHandler.getScene());
 
 		// ---------- Stop tracking time
 		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
@@ -86,8 +75,8 @@ void Engine::run()
 		this->renderer.presentSC();
 	}
 
-	for (unsigned int i = 0; i < meshComponents.size(); ++i)
-		delete meshComponents[i];
+	//for (unsigned int i = 0; i < meshComponents.size(); ++i)
+	//	delete meshComponents[i];
 
 	this->settings.saveSettings();
 }

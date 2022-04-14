@@ -1,8 +1,13 @@
 #pragma once
+
 #include "Script.h"
+#include "Componentpch.h"
+
 class Player : public Script
 {
 private:
+	float speed;
+
 	void move();
 	void jump();
 	void fireWeapon();

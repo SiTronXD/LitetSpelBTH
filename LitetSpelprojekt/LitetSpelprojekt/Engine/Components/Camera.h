@@ -4,6 +4,7 @@
 #include <d3d11.h>
 #include <SimpleMath.h>
 #include "Component.h"
+#include "Componentpch.h"
 
 class Camera : public Component
 {

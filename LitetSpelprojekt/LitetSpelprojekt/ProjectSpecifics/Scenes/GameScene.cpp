@@ -4,6 +4,7 @@
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
+#include "../../Engine/GameObject.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -29,10 +30,13 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh"
 	);
+  
+	GameObject& cam = this->addGameObject();
+	this->setActiveCamera(cam.addComponent<Camera>());
 
-
-
-	//this->getRenderer().setActiveCamera(camera);
+	GameObject& model = this->addGameObject();
+	MeshComp* mc = model.addComponent<MeshComp>();
+	mc->setMesh("CubeMesh", "testMaterial");
 }
 
 void GameScene::update()
