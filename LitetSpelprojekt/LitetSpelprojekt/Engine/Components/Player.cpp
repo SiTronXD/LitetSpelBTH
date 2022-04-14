@@ -7,23 +7,9 @@ void Player::move()
 {
 	DirectX::SimpleMath::Vector3 direction = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
 	
-	if (Input::isKeyDown(Keys::W))
-	{
-		direction = this->FORWARD;
-	}
-	else if (Input::isKeyDown(Keys::S))
-	{
-		direction = this->BACKWARD;
-	}
+	direction = (Input::isKeyDown(Keys::W) - Input::isKeyDown(Keys::S)) * this->FORWARD;
 
-	if (Input::isKeyDown(Keys::A))
-	{
-		direction = this->LEFT;
-	}
-	else if (Input::isKeyDown(Keys::D))
-	{
-		direction = this->RIGHT;
-	}
+	direction += (Input::isKeyDown(Keys::A) - Input::isKeyDown(Keys::D)) * this->LEFT;
 
 	direction.Normalize();
 	this->getTransform()->moveLocal(direction * this->speed * Time::getDT());
