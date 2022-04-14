@@ -2,11 +2,10 @@
 
 void Transform::updateWorldMatrix()
 {
-    this->worldMatrix = DirectX::XMMatrixTranspose(
+    this->worldMatrix = 
         DirectX::XMMatrixScaling(this->scale.x, this->scale.y, this->scale.z) *
-        DirectX::XMMatrixRotationRollPitchYaw(DirectX::XMConvertToRadians(rot.x), DirectX::XMConvertToRadians(rot.y), DirectX::XMConvertToRadians(rot.z)) *
-        DirectX::XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z)
-    );
+        DirectX::XMMatrixRotationRollPitchYaw(DirectX::XMConvertToRadians(this->rot.x), DirectX::XMConvertToRadians(this->rot.y), DirectX::XMConvertToRadians(this->rot.z)) *
+        DirectX::XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
 }
 
 void Transform::updateDirectionalVectors()
