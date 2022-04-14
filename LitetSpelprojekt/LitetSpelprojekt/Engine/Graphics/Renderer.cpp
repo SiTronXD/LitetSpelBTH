@@ -1,6 +1,5 @@
 #include "Renderer.h"
 #include "../Dev/Log.h"
-#include "../Time.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -159,13 +158,9 @@ void Renderer::render(Scene& scene)
 #endif
 
 	// Update camera constant buffer
-	timer += Time::getDT();
-	Matrix m;
-	m *= Matrix::CreateRotationY(timer);
-	m *= scene.getActiveCamera()->getViewMatrix();
-	m *= scene.getActiveCamera()->getProjectionMatrix();
-	this->cameraBufferStruct.mvpMat = m.Transpose();
-	this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
+	Matrix vp;
+	vp = scene.getActiveCamera()->getViewMatrix();
+	vp *= scene.getActiveCamera()->getProjectionMatrix();
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
 
 	// Init setup
@@ -186,6 +181,11 @@ void Renderer::render(Scene& scene)
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
 	{
 		Mesh& mesh = this->resources.getMesh(meshComponents[i]->getMeshName());
+
+		// Set mvp Matrix
+		Matrix m = meshComponents[i]->getTransform()->getWorldMatrix() * vp;
+		this->cameraBufferStruct.mvpMat = m.Transpose();
+		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 
 		// Set texture
 		Material& material = this->resources.getMaterial(meshComponents[i]->getMaterialName());
@@ -219,11 +219,3 @@ void Renderer::presentSC()
 {
 	this->swapChain->Present(1, 0);
 }
-
-//void Renderer::setActiveCamera(Camera& camera)
-//{
-//	this->activeCamera = &camera;
-//	this->activeCamera->updateAspectRatio(
-//		(float) this->window->getWidth() / this->window->getHeight()
-//	);
-//}

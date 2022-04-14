@@ -75,8 +75,5 @@ void Engine::run()
 		this->renderer.presentSC();
 	}
 
-	//for (unsigned int i = 0; i < meshComponents.size(); ++i)
-	//	delete meshComponents[i];
-
 	this->settings.saveSettings();
 }
