@@ -7,7 +7,7 @@ using namespace DirectX::SimpleMath;
 Rigidbody::Rigidbody(GameObject& object):
 	Script(object),
 	transform(*this->getTransform()),
-	mass(-1.0f),
+	mass(1.0f),
 	isKinematic(false)
 {
 	this->acceleration = Vector3(0.0f, -9.82f, 0.0f);
@@ -43,6 +43,11 @@ void Rigidbody::onCollisionStay(GameObject& other)
 			otherRb->velocity * otherRb->mass * (1.0f + e)) / 
 			(this->mass + otherRb->mass);
 	}
+}
+
+void Rigidbody::setMass(float newMass)
+{
+	this->mass = newMass;
 }
 
 void Rigidbody::setVelocity(const DirectX::SimpleMath::Vector3& newVelocity)

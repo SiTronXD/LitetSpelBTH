@@ -25,6 +25,7 @@ public:
 	virtual void update() override;
 	virtual void onCollisionStay(GameObject& other) override;
 
+	void setMass(float newMass);
 	void setVelocity(const DirectX::SimpleMath::Vector3& newVelocity);
 	void addForce(const DirectX::SimpleMath::Vector3& newForce);
 };
