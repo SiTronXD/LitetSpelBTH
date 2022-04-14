@@ -5,7 +5,7 @@
 class GameScene : public Scene
 {
 private:
-
+	
 public:
 	GameScene(SceneHandler& sceneHandler);
 	virtual ~GameScene();

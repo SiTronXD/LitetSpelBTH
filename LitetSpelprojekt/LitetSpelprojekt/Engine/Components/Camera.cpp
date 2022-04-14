@@ -9,7 +9,7 @@ void Camera::updateViewMatrix()
 	this->viewMatrix = Matrix::CreateLookAt(
 		this->getTransform()->getPosition(),
 		this->getTransform()->getPosition() + this->getTransform()->forward(),
-		Vector3(0, 1, 0)
+		this->getTransform()->up() // Could change if precision is off
 	);
 }
 

@@ -53,20 +53,12 @@ void Player::fireWeapon()
 
 void Player::lookAround()
 {
-	DirectX::SimpleMath::Vector3 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
-	int cursorDeltaX = Input::getCursorDeltaX();
-	
-	if (cursorDeltaX != 0)
-	{
-		rotation = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
-	}
-
-	rotation.Normalize();
-	this->getTransform()->rotate(rotation * this->mouseSensitiv);
+	DirectX::SimpleMath::Vector3 rotation = DirectX::SimpleMath::Vector3(Input::getCursorDeltaY(), Input::getCursorDeltaX(), 0.0f);
+	this->getTransform()->rotate(-rotation * this->mouseSensitive);
 }
 
 Player::Player(GameObject& object):
-	Script(object), speed(3.0f), mouseSensitiv(3.0f), onGround(false)
+	Script(object), speed(3.0f), mouseSensitive(0.5f), onGround(false)
 {
 }
 

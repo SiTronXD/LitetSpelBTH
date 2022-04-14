@@ -12,7 +12,7 @@ private:
 	DirectX::SimpleMath::Vector3 scale;
 	DirectX::SimpleMath::Matrix worldMatrix;
 
-	DirectX::SimpleMath::Vector3 leftVec;
+	DirectX::SimpleMath::Vector3 rightVec;
 	DirectX::SimpleMath::Vector3 upVec;
 	DirectX::SimpleMath::Vector3 forwardVec;
 	
@@ -53,7 +53,7 @@ public:
 	inline const DirectX::SimpleMath::Vector3& getScaling() const { return this->scale; }
 	
 	// Local vectors
-	inline const DirectX::SimpleMath::Vector3& left() const { return this->leftVec; }
+	inline const DirectX::SimpleMath::Vector3& right() const { return this->rightVec; }
 	inline const DirectX::SimpleMath::Vector3& up() const { return this->upVec; }
 	inline const DirectX::SimpleMath::Vector3& forward() const { return this->forwardVec; }
 	

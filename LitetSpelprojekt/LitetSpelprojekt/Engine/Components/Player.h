@@ -7,7 +7,7 @@ class Player : public Script
 {
 private:
 	float speed;
-	float mouseSensitiv;
+	float mouseSensitive;
 
 	bool onGround;
 	
