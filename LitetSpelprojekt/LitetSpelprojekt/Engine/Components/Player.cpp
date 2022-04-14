@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "../Application/Input.h"
 #include "../GameObject.h"
+#include "../Time.h"
 
 void Player::move()
 {
@@ -8,31 +9,30 @@ void Player::move()
 	
 	if (Input::isKeyDown(Keys::W))
 	{
-		direction.z = this->speed;
-		
+		direction = this->FORWARD;
 	}
 	else if (Input::isKeyDown(Keys::S))
 	{
-		direction.z = this->speed * -1;
+		direction = this->BACKWARD;
 	}
 
 	if (Input::isKeyDown(Keys::A))
 	{
-		direction.x = this->speed * -1;
+		direction = this->LEFT;
 	}
 	else if (Input::isKeyDown(Keys::D))
 	{
-		direction.x = this->speed;
+		direction = this->RIGHT;
 	}
 
-	//direction.Normalize();
-	this->trans->moveLocal(direction);	
+	direction.Normalize();
+	this->getTransform()->moveLocal(direction * this->speed * Time::getDT());
 }
 
 void Player::jump()
 {
 
-	if(Input::isKeyDown(Keys::SPACE)) //Gonna change it to spacebar later
+	if(Input::isKeyDown(Keys::SPACE) && this->onGround) //Gonna change it to spacebar later
 	{
 		//Jump
 	}
@@ -53,16 +53,30 @@ void Player::fireWeapon()
 
 void Player::lookAround()
 {
-	//Move the camera around
+	DirectX::SimpleMath::Vector3 rotation = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f);
+	int cursorDeltaX = Input::getCursorDeltaX();
+	
+	if (cursorDeltaX != 0)
+	{
+		rotation = DirectX::SimpleMath::Vector3(0.0f, 1.0f, 0.0f);
+	}
+
+	rotation.Normalize();
+	this->getTransform()->rotate(rotation * this->mouseSensitiv);
 }
 
 Player::Player(GameObject& object):
-	Script(object), speed(3.0f)
+	Script(object), speed(3.0f), mouseSensitiv(3.0f), onGround(false)
 {
 }
 
 Player::~Player()
 {
+}
+
+void Player::setSpeed(float spd)
+{
+	this->speed = spd;
 }
 
 void Player::init()
