@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <DirectXMath.h>
+#include <Windows.h>
+#include <SimpleMath.h>
 
 struct Vertex
 {
@@ -31,15 +32,26 @@ private:
 	void createPlane(int resX = 10, int resY =  10);
 	void createSphere(int resX = 10, int resY = 10);
 
+	void transformVector(
+		const DirectX::SimpleMath::Matrix& transform, 
+		DirectX::XMFLOAT3& vec,
+		bool isPosition
+	);
+
 	Vertex makeVert(float xPos, float yPos, float zPos, float uTex, float vTex);
 
 public:
+	MeshData();
 	MeshData(DefaultMesh defaultMesh);
 	virtual ~MeshData();
 
 	void createDefault(DefaultMesh defaultMesh);
 	void calculateNormals(DefaultMesh defaultMesh);
 	void invertFaces();
+	void transformMesh(const DirectX::SimpleMath::Matrix& transform);
+
+	void addVertex(const Vertex& newVertex);
+	void addIndex(const unsigned int& newIndex);
 
 	inline const std::vector<Vertex>& getVertices() { return this->vertices; }
 	inline const std::vector<unsigned int>& getIndices() { return this->indices; }

@@ -36,6 +36,8 @@ void Engine::run()
 	Camera tempCameraComponent(g);
 	Transform* test = tempCameraComponent.getTransform();
 
+	renderer.setActiveCamera(tempCameraComponent);
+
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
 	std::vector<MeshComp*> meshComponents;
