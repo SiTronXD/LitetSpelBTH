@@ -14,7 +14,7 @@
 Engine::Engine()
 	: renderer(this->resources),
 	uiRenderer(this->renderer, this->resources),
-	sceneHandler(this->resources, this->renderer, uiRenderer)
+	sceneHandler(this->resources, this->renderer, this->uiRenderer)
 {
 	this->settings.loadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
