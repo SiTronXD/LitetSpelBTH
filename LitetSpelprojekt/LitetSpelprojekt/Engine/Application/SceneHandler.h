@@ -22,6 +22,8 @@ public:
 	);
 	~SceneHandler();
 
+	void update();
+
 	void setScene(Scene* scene);
 	Scene* getScene() const;
 

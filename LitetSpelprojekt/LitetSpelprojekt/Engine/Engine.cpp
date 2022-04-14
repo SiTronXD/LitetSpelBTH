@@ -14,7 +14,7 @@
 Engine::Engine()
 	: renderer(this->resources),
 	uiRenderer(this->renderer, this->resources),
-	sceneHandler(this->resources, this->renderer)
+	sceneHandler(this->resources, this->renderer, this->uiRenderer)
 {
 	this->settings.loadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
@@ -45,7 +45,7 @@ void Engine::run()
 		lastTime = std::chrono::high_resolution_clock::now();
 
 		// Update + render
-		this->sceneHandler.getScene()->update();
+		this->sceneHandler.update();
 		this->renderer.render(*this->sceneHandler.getScene());
 
 		// ---------- Stop tracking time

@@ -14,6 +14,12 @@ SceneHandler::~SceneHandler()
 	delete this->scene;
 }
 
+void SceneHandler::update()
+{
+	this->scene->update();
+	this->scene->getECS().update();
+}
+
 void SceneHandler::setScene(Scene* scene)
 {
 	if (this->scene != nullptr)

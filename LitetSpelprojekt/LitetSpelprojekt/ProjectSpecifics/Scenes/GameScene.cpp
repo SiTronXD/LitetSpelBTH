@@ -8,8 +8,6 @@
 
 using namespace DirectX::SimpleMath;
 
-GameObject* player;
-
 GameScene::GameScene(SceneHandler& sceneHandler)
 	: Scene(sceneHandler)
 {
@@ -38,16 +36,17 @@ void GameScene::init()
 	cam.getComponent<Transform>()->setPosition({ 0.0f, 0.75f, 1.0f });
 	cam.getComponent<Transform>()->rotate({ -30.0f, 0.0f, 0.0f });
 	cam.addComponent<Player>();
-	player = &cam;
 
 	GameObject& model = this->addGameObject();
+	Rigidbody* rb = model.addComponent<Rigidbody>();
+	rb->addForce(Vector3(0, 2, -2));
 	MeshComp* mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 }
 
 void GameScene::update()
 {
-	this->getECS().update();
+
 }
 
 void GameScene::renderUI()
