@@ -23,7 +23,7 @@ protected:
 
 	inline Resources& getResources() { return *this->resources; }
 	inline Renderer& getRenderer() { return *this->renderer; }
-	//inline ECS& getECS() { return this->ecs; }
+	inline ECS& getECS() { return this->ecs; }
 
 public:
 	Scene(SceneHandler& sceneHandler);

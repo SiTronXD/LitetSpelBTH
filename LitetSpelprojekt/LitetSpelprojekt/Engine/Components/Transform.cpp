@@ -12,7 +12,7 @@ void Transform::updateDirectionalVectors()
 {
     this->updateWorldMatrix();
 
-    this->leftVec = this->worldMatrix.Left();
+    this->rightVec = this->worldMatrix.Right();
     this->upVec = this->worldMatrix.Up();
     this->forwardVec = this->worldMatrix.Forward();
 }
@@ -56,12 +56,12 @@ void Transform::move(float x, float y, float z)
 
 void Transform::moveLocal(const DirectX::SimpleMath::Vector3& offSet)
 {
-    this->move(offSet.x * this->leftVec + offSet.y * this->upVec + offSet.z * this->forwardVec);
+    this->move(offSet.x * this->rightVec + offSet.y * this->upVec + offSet.z * this->forwardVec);
 }
 
 void Transform::moveLocal(float x, float y, float z)
 {
-    this->move(x * this->leftVec + y * this->upVec + z * this->forwardVec);
+    this->move(x * this->rightVec + y * this->upVec + z * this->forwardVec);
 }
 
 void Transform::setRotation(const DirectX::SimpleMath::Vector3& rot)
