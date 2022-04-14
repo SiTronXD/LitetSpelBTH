@@ -1,5 +1,6 @@
 #include "UIRenderer.h"
 #include "Renderer.h"
+#include "../ResTranslator.h"
 
 UIRenderer::UIRenderer(
 	Renderer& renderer, Resources& resources)
@@ -43,18 +44,23 @@ void UIRenderer::renderTexture(
 	// Set texture SRV
 	this->uiRenderComputeShader.setSRV(0, texture.getSRV());
 
+	// Transform from internal resolution to screen resolution
+	UIRectangle transformedRect = ResTranslator::transformRect(
+		UIRectangle{ x, y, uiWidth, uiHeight }
+	);
+
 	// Orientation
-	this->uiOrientationBufferStruct.position.x = x;
-	this->uiOrientationBufferStruct.position.y = y;
-	this->uiOrientationBufferStruct.uiSize.x = uiWidth;
-	this->uiOrientationBufferStruct.uiSize.y = uiHeight;
+	this->uiOrientationBufferStruct.position.x = transformedRect.x;
+	this->uiOrientationBufferStruct.position.y = transformedRect.y;
+	this->uiOrientationBufferStruct.uiSize.x = transformedRect.width;
+	this->uiOrientationBufferStruct.uiSize.y = transformedRect.height;
 	this->uiOrientationBufferStruct.textureSize.x = textureWidth;
 	this->uiOrientationBufferStruct.textureSize.y = textureHeight;
 	this->uiOrientationBuffer.updateBuffer(&this->uiOrientationBufferStruct);
 
 	// Set the number of thread groups to the resolution
 	this->uiRenderComputeShader.setThreadGroup(
-		uiWidth, uiHeight, 1
+		transformedRect.width, transformedRect.height, 1
 	);
 
 	// Run
