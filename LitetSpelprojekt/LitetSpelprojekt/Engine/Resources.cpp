@@ -50,6 +50,12 @@ void Resources::init(Renderer* renderer)
 void Resources::addTexture(
 	const std::string& textureFilePath, const std::string& textureName)
 {
+	if (this->textures.count(textureName) > 0)
+	{
+		Log::write(textureName + " has already been added to resources.");
+		return;
+	}
+
 	// Create and load texture
 	Texture* newTexture = new Texture(*this->renderer);
 	newTexture->load(textureFilePath);
@@ -67,6 +73,12 @@ void Resources::addMesh(
 	MeshData&& newMeshData, 
 	const std::string& meshName)
 {
+	if (this->meshes.count(meshName) > 0)
+	{
+		Log::write(meshName + " has already been added to resources.");
+		return;
+	}
+
 	// Create mesh
 	Mesh* newMesh = new Mesh(*this->renderer, std::move(newMeshData));
 
@@ -84,6 +96,12 @@ void Resources::addMaterial(
 	const std::string materialName
 )
 {
+	if (this->materials.count(materialName) > 0)
+	{
+		Log::write(materialName + " has already been added to resources.");
+		return;
+	}
+
 	// Create material
 	Material* newMaterial = new Material(diffuseTextureName);
 
@@ -98,6 +116,12 @@ void Resources::addMaterial(
 
 void Resources::addVertexShader(const std::string& vertexShaderName, InputLayoutDesc& inputLayoutDesc)
 {
+	if (this->vertexShaders.count(vertexShaderName) > 0)
+	{
+		Log::write(vertexShaderName + " has already been added to resources.");
+		return;
+	}
+
 	// Create and load vertex shader
 	VertexShader* createdVertexShader = new VertexShader(*this->renderer);
 	createdVertexShader->loadVS(vertexShaderName, inputLayoutDesc);
@@ -113,6 +137,12 @@ void Resources::addVertexShader(const std::string& vertexShaderName, InputLayout
 
 void Resources::addPixelShader(const std::string& pixelShaderName)
 {
+	if (this->pixelShaders.count(pixelShaderName) > 0)
+	{
+		Log::write(pixelShaderName + " has already been added to resources.");
+		return;
+	}
+
 	// Create and load pixel shader
 	PixelShader* createdPixelShader = new PixelShader(*this->renderer);
 	createdPixelShader->loadPS(pixelShaderName);
