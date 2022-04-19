@@ -5,10 +5,12 @@
 class GameScene : public Scene
 {
 private:
-	
 public:
 	GameScene(SceneHandler& sceneHandler);
 	virtual ~GameScene();
+
+	//Ui implementation
+	void playerUi();
 
 	virtual void init() override;
 	virtual void update() override;

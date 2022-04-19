@@ -5,6 +5,7 @@
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
 #include "../../Engine/GameObject.h"
+#include "../../Engine/Graphics/UIRenderer.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -17,10 +18,19 @@ GameScene::~GameScene()
 {
 }
 
+void GameScene::playerUi()
+{
+}
+
 void GameScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
+	this->getResources().addTexture("Resources/Textures/crosshairs64.png", "crosshairs64.png");
+	this->getResources().addTexture("Resources/Textures/healthBorder.png", "healthBorder.png");
+	this->getResources().addTexture("Resources/Textures/timergui.png", "timergui.png");
+	this->getResources().addTexture("Resources/Textures/keygui.png", "keygui.png");
 	this->getResources().addMaterial("me.png", "testMaterial");
+	
 
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
 	testMeshData.transformMesh(
@@ -42,6 +52,7 @@ void GameScene::init()
 	rb->addForce(Vector3(0, 2, -2));
 	MeshComp* mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
+
 }
 
 void GameScene::update()
@@ -51,5 +62,29 @@ void GameScene::update()
 
 void GameScene::renderUI()
 {
+	//Crosshair
+	this->getUIRenderer().renderTexture(
+		"crosshairs64.png",
+		0,0,64,64
+	);
+	
+	//Healthbar
+	this->getUIRenderer().renderTexture(
+		"healthBorder.png",
+		-700, -500, 500, 50
+	);
 
+	//Keys
+	this->getUIRenderer().renderTexture(
+		"keygui.png",
+		800, 500, 256, 64
+	);
+
+	//Keys
+	this->getUIRenderer().renderTexture(
+		"timergui.png",
+		-700, 500, 256, 128
+	);
+
+	//Timer
 }

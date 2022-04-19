@@ -54,13 +54,6 @@ void Engine::run()
 
 		// Render UI
 		this->sceneHandler.getScene()->renderUI();
-		this->uiRenderer.renderTexture(
-			"me.png", 
-			1920 / 2 - 100 / 2,
-			-1080 / 2 + 100 / 2,
-			100,
-			100
-		);
 
 		// Present
 		this->renderer.presentSC();
