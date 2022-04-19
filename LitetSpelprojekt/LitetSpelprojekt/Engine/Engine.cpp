@@ -47,7 +47,7 @@ void Engine::run()
 		lastTime = std::chrono::high_resolution_clock::now();
 
 		// Update + render
-		this->sceneHandler.getScene()->update();
+		this->sceneHandler.update();
 		this->renderer.render(*this->sceneHandler.getScene());
 
 		// ---------- Stop tracking time
@@ -55,15 +55,6 @@ void Engine::run()
 		Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
 
 		// Render UI
-		/*
-		this->uiRenderer.renderTexture(
-			"me.png", 
-			1920 / 2 - 100 / 2,
-			-1080 / 2 + 100 / 2,
-			100,
-			100
-		);
-		*/
 		this->sceneHandler.getScene()->renderUI();
 
 		// Present
