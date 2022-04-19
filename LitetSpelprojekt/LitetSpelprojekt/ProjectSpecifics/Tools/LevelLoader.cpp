@@ -35,8 +35,8 @@ bool LevelLoader::load(const std::string& levelName)
 		return false;
 	}
 
-	aiNode* rootNode = scene->mRootNode;
-	this->traverseFile(rootNode);
+	// aiNode* rootNode = scene->mRootNode;
+	// this->traverseFile(rootNode);
 
 	// Loop through each submesh
 	unsigned int indexOffset = 0;

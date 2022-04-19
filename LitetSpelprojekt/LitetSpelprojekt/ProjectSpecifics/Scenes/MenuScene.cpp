@@ -15,6 +15,7 @@ void MenuScene::init()
 
 void MenuScene::update()
 {
+	
 }
 
 void MenuScene::renderUI()
