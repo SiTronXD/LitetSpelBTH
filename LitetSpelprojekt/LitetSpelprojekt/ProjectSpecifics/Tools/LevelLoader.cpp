@@ -2,14 +2,20 @@
 #include "../../Engine/Dev/Log.h"
 
 #include <DirectXMath.h>
-#include <assimp/cimport.h>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-#include <assimp/material.h>
 
 using namespace DirectX;
+using namespace DirectX::SimpleMath;
+
+void LevelLoader::traverseFile(aiNode* node)
+{
+	Log::write("Name: " + std::string(node->mName.C_Str()));
+
+	for(int i = 0; i < node->mNumChildren; ++i)
+		this->traverseFile(node->mChildren[i]);
+}
 
 LevelLoader::LevelLoader()
+	: playerStartPos(0,0,0)
 {
 }
 
@@ -29,52 +35,81 @@ bool LevelLoader::load(const std::string& levelName)
 		return false;
 	}
 
+	aiNode* rootNode = scene->mRootNode;
+	this->traverseFile(rootNode);
+
 	// Loop through each submesh
 	unsigned int indexOffset = 0;
 	for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
 	{
 		aiMesh* submesh = scene->mMeshes[i];
 
-		// Loop through each vertex
-		for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
+		std::string submeshName = std::string(submesh->mName.C_Str());
+
+		// Colliders
+		if (submeshName.find("collider_") != std::string::npos)
 		{
-			// Load data
-			aiVector3D pos = submesh->mVertices[j];
-			aiVector3D norm = submesh->mNormals[j];
-			aiVector3D uv = submesh->mTextureCoords[0][j];
 
-			if (flipVerticalUV)
-				uv.y = 1.0f - uv.y;
-
-			// Create vertex with data
-			Vertex newVertex{};
-			newVertex.pos = XMFLOAT3(pos.x, pos.y, pos.z);
-			newVertex.normal = XMFLOAT3(norm.x, norm.y, norm.z);
-			newVertex.uv = XMFLOAT2(uv.x, uv.y);
-
-			this->meshData.addVertex(newVertex);
 		}
-
-		// Loop through each index
-		for (unsigned int j = 0; j < submesh->mNumFaces; ++j)
+		// Player start position
+		else if (submeshName == "PlayerStartPos")
 		{
-			assert(submesh->mFaces[j].mNumIndices == 3u);
+			// Average position
+			Vector3 sumPos = Vector3(0, 0, 0);
+			for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
+			{
+				sumPos += Vector3(
+					submesh->mVertices[j].x,
+					submesh->mVertices[j].y,
+					submesh->mVertices[j].z
+				);
+			}
+			sumPos /= (float) submesh->mNumVertices;
 
-			this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[0]);
-			this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[1]);
-			this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[2]);
+			// Apply
+			this->playerStartPos = sumPos;
 		}
+		// Mesh
+		else
+		{
+			// Loop through each vertex
+			for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
+			{
+				// Load data
+				aiVector3D pos = submesh->mVertices[j];
+				aiVector3D norm = submesh->mNormals[j];
+				aiVector3D uv = submesh->mTextureCoords[0][j];
 
-		// Update offset for next submesh
-		indexOffset = this->meshData.getVertices().size();
+				if (flipVerticalUV)
+					uv.y = 1.0f - uv.y;
+
+				// Create vertex with data
+				Vertex newVertex{};
+				newVertex.pos = XMFLOAT3(pos.x, pos.y, pos.z);
+				newVertex.normal = XMFLOAT3(norm.x, norm.y, norm.z);
+				newVertex.uv = XMFLOAT2(uv.x, uv.y);
+
+				this->meshData.addVertex(newVertex);
+			}
+
+			// Loop through each index
+			for (unsigned int j = 0; j < submesh->mNumFaces; ++j)
+			{
+				assert(submesh->mFaces[j].mNumIndices == 3u);
+
+				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[0]);
+				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[1]);
+				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[2]);
+			}
+
+			// Update offset for next submesh
+			indexOffset = this->meshData.getVertices().size();
+		}
 	}
 
 	aiReleaseImport(scene);
 
 	this->meshData.invertFaces();
-
-
-
 
 	return true;
 }

@@ -44,9 +44,8 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader;
-	levelLoader.load("Resources/Levels/testLevel.fbx");
+	levelLoader.load("Resources/Levels/testLevel.obj");
 	MeshData levelMeshData = levelLoader.getMeshData();
-	levelMeshData.transformMesh(Matrix::CreateScale(0.1f));
 	this->getResources().addMesh(
 		std::move(levelMeshData),
 		"LevelMesh"
@@ -54,7 +53,7 @@ void GameScene::init()
   
 	GameObject& cam = this->addGameObject();
 	this->setActiveCamera(cam.addComponent<Camera>());
-	cam.getComponent<Transform>()->setPosition({ 0.0f, 0.75f, 1.0f });
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	cam.getComponent<Transform>()->rotate({ -30.0f, 0.0f, 0.0f });
 	cam.addComponent<Player>();
 
