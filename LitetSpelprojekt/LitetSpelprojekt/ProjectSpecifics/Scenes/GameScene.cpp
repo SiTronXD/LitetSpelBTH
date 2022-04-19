@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <SimpleMath.h>
 #include "GameScene.h"
+#include "../Tools/LevelLoader.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -40,6 +41,16 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh"
 	);
+
+	// Level loader
+	LevelLoader levelLoader;
+	levelLoader.load("Resources/Levels/testLevel.fbx");
+	MeshData levelMeshData = levelLoader.getMeshData();
+	levelMeshData.transformMesh(Matrix::CreateScale(0.1f));
+	this->getResources().addMesh(
+		std::move(levelMeshData),
+		"LevelMesh"
+	);
   
 	GameObject& cam = this->addGameObject();
 	this->setActiveCamera(cam.addComponent<Camera>());
@@ -53,6 +64,10 @@ void GameScene::init()
 	MeshComp* mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 
+	// Level game object
+	GameObject& levelObject = this->addGameObject();
+	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
+	levelMeshComponent->setMesh("LevelMesh", "testMaterial");
 }
 
 void GameScene::update()

@@ -52,6 +52,7 @@
     <ClCompile Include="Engine\ResTranslator.cpp" />
     <ClCompile Include="Engine\Graphics\MeshLoader.cpp" />
     <ClCompile Include="Engine\SMath.cpp" />
+    <ClCompile Include="ProjectSpecifics\Tools\LevelLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -101,6 +102,7 @@
     <ClInclude Include="Engine\Graphics\MeshLoader.h" />
     <ClInclude Include="Engine\Components\Componentpch.h" />
     <ClInclude Include="Engine\SMath.h" />
+    <ClInclude Include="ProjectSpecifics\Tools\LevelLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />
