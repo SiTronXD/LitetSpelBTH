@@ -188,26 +188,29 @@ void Renderer::render(Scene& scene)
 		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 
 		// Set texture
-		Material& material = this->resources.getMaterial(meshComponents[i]->getMaterialName());
-		Texture& texture = this->resources.getTexture(material.getDiffuseTextureName());
-		immediateContext->PSSetSamplers(
-			0, 1, &texture.getSampler()
-		);
-		immediateContext->PSSetShaderResources(
-			0, 1, &texture.getSRV().getPtr()
-		);
+		// for (unsigned int j = 0; j < mesh.)
+		{
+			Material& material = this->resources.getMaterial(meshComponents[i]->getMaterialName());
+			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName());
+			immediateContext->PSSetSamplers(
+				0, 1, &texture.getSampler()
+			);
+			immediateContext->PSSetShaderResources(
+				0, 1, &texture.getSRV().getPtr()
+			);
 
-		// Vertex/index buffer
-		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
-		immediateContext->IASetVertexBuffers(
-			0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
-		immediateContext->IASetIndexBuffer(
-			mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
-		);
+			// Vertex/index buffer
+			immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
+			immediateContext->IASetVertexBuffers(
+				0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
+			immediateContext->IASetIndexBuffer(
+				mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
+			);
 
-		immediateContext->DrawIndexed(
-			mesh.getIndexBuffer().getIndexCount(), 0, 0
-		);
+			immediateContext->DrawIndexed(
+				mesh.getIndexBuffer().getIndexCount(), 0, 0
+			);
+		}
 	}
 
 	// Unbind render target
