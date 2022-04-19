@@ -46,11 +46,12 @@ void Engine::run()
 
 		// Update + render
 		this->sceneHandler.getScene()->update();
+		this->physicsEngine.updateCollisions(*this->sceneHandler.getScene());
 		this->renderer.render(*this->sceneHandler.getScene());
 
 		// ---------- Stop tracking time
 		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
-		Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
+		//Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
 
 		// Render UI
 		this->sceneHandler.getScene()->renderUI();

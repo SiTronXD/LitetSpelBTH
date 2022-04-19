@@ -26,7 +26,6 @@ protected:
 	inline Resources& getResources() { return *this->resources; }
 	inline Renderer& getRenderer() { return *this->renderer; }
 	inline UIRenderer& getUIRenderer() { return *this->uiRenderer; }
-	inline ECS& getECS() { return this->ecs; }
 
 public:
 	Scene(SceneHandler& sceneHandler);
@@ -36,6 +35,7 @@ public:
 	virtual void update() = 0;
 	virtual void renderUI() = 0;
 
+	inline ECS& getECS() { return this->ecs; }
 	inline Camera* getActiveCamera() { return this->activeCamera; }
 	template<typename T>
 	std::vector<T*> getActiveComponents();

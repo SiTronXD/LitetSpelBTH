@@ -8,3 +8,9 @@ Script::Script(GameObject& object):
 Script::~Script()
 {
 }
+
+void Script::onCollisionStay(GameObject& other)
+{ }
+
+void Script::onTriggerStay(GameObject& other)
+{ }

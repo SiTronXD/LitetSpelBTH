@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../ECS.h"
+#include "../Application/Scene.h"
 
 class PhysicsEngine
 {
@@ -9,7 +10,7 @@ public:
 	PhysicsEngine();
 	virtual ~PhysicsEngine();
 
-	void updateCollisions(ECS& ecs);
-	//bool raycast(ECS& ecs, DirectX::SimpleMath::Ray ray, GameObject* hitObject, int& distance);
+	void updateCollisions(Scene& scene);
+	static bool raycast(ECS& ecs, DirectX::SimpleMath::Ray ray, GameObject*& hitObject, float& distance);
 };
 

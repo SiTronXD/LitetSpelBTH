@@ -2,7 +2,8 @@
 
 #include "Component.h"
 #include "Componentpch.h"
-#include "../Physics/BoundingVolumes.h"
+
+class BoundingVolume;
 
 class Collider : public Component
 {
@@ -14,12 +15,13 @@ public:
 	Collider(GameObject& object);
 	virtual ~Collider();
 
-	inline void setCollider(DirectX::BoundingBox box) { delete this->volume; this->volume = new BoxVolume(box); }
-	inline void setCollider(DirectX::BoundingOrientedBox orientedBox) { delete this->volume; this->volume = new OrientedBoxVolume(orientedBox); }
-	inline void setCollider(DirectX::BoundingSphere sphere) { delete this->volume; this->volume = new SphereVolume(sphere); }
+	void setBoxCollider(DirectX::SimpleMath::Vector3 extents);
+	void setOrientedBoxCollider(DirectX::SimpleMath::Vector3 extents);
+	void setSphereCollider(float radius);
 
 	inline void setTrigger(bool isTrigger) { this->trigger = isTrigger; }
 	inline const bool isTrigger() const { return this->trigger; }
 	bool isIntersecting(Collider& col) const;
+	bool isIntersecting(DirectX::SimpleMath::Ray ray, float& distance);
 };
 

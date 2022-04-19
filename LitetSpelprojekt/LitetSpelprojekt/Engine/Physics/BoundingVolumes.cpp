@@ -1,6 +1,15 @@
 #include "BoundingVolumes.h"
 
-BoundingVolume::BoundingVolume()
+using namespace DirectX;
+using namespace DirectX::SimpleMath;
+
+const Transform* BoundingVolume::getTransform() const
+{
+	return this->transform;
+}
+
+BoundingVolume::BoundingVolume(Transform* transform):
+	transform(transform)
 {
 
 }
@@ -10,8 +19,8 @@ BoundingVolume::~BoundingVolume()
 
 }
 
-BoxVolume::BoxVolume(DirectX::BoundingBox box):
-	box(box)
+BoxVolume::BoxVolume(Transform* transform, Vector3 extents):
+	BoundingVolume(transform), extents(extents)
 {
 }
 
@@ -21,26 +30,38 @@ BoxVolume::~BoxVolume()
 
 bool BoxVolume::intersectsBox(DirectX::BoundingBox vol) const
 {
-	return this->box.Intersects(vol);
+	return BoundingBox(this->getTransform()->getPosition(), this->extents).Intersects(vol);
 }
 
 bool BoxVolume::intersectsOrientedBox(DirectX::BoundingOrientedBox vol) const
 {
-	return this->box.Intersects(vol);
+	return BoundingBox(this->getTransform()->getPosition(), this->extents).Intersects(vol);
 }
 
 bool BoxVolume::intersectsSphere(DirectX::BoundingSphere vol) const
 {
-	return this->box.Intersects(vol);
+	return BoundingBox(this->getTransform()->getPosition(), this->extents).Intersects(vol);
 }
 
 bool BoxVolume::intersects(BoundingVolume* vol) const
 {
-	return this->intersectsBox(this->box);
+	return vol->intersectsBox(BoundingBox(this->getTransform()->getPosition(), this->extents));
 }
 
-OrientedBoxVolume::OrientedBoxVolume(DirectX::BoundingOrientedBox orientBox):
-	orientBox(orientBox)
+bool BoxVolume::intersects(DirectX::SimpleMath::Ray ray, float& distance) const
+{
+	return BoundingBox(this->getTransform()->getPosition(), this->extents).Intersects(ray.position, ray.direction, distance);
+}
+
+DirectX::BoundingOrientedBox OrientedBoxVolume::createOrientedBox() const
+{
+	Vector3 pos = this->getTransform()->getPosition();
+	return BoundingOrientedBox(pos, this->extents,
+		Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(pos.x), XMConvertToRadians(pos.y), XMConvertToRadians(pos.z)));
+}
+
+OrientedBoxVolume::OrientedBoxVolume(Transform* transform, Vector3 extents):
+	BoundingVolume(transform), extents(extents)
 {
 }
 
@@ -50,26 +71,31 @@ OrientedBoxVolume::~OrientedBoxVolume()
 
 bool OrientedBoxVolume::intersectsBox(DirectX::BoundingBox vol) const
 {
-	return this->orientBox.Intersects(vol);
+	return this->createOrientedBox().Intersects(vol);
 }
 
 bool OrientedBoxVolume::intersectsOrientedBox(DirectX::BoundingOrientedBox vol) const
 {
-	return this->orientBox.Intersects(vol);
+	return this->createOrientedBox().Intersects(vol);
 }
 
 bool OrientedBoxVolume::intersectsSphere(DirectX::BoundingSphere vol) const
 {
-	return this->orientBox.Intersects(vol);
+	return this->createOrientedBox().Intersects(vol);
 }
 
 bool OrientedBoxVolume::intersects(BoundingVolume* vol) const
 {
-	return this->intersectsOrientedBox(this->orientBox);
+	return vol->intersectsOrientedBox(this->createOrientedBox());
 }
 
-SphereVolume::SphereVolume(DirectX::BoundingSphere sphere):
-	sphere(sphere)
+bool OrientedBoxVolume::intersects(DirectX::SimpleMath::Ray ray, float& distance) const
+{
+	return this->createOrientedBox().Intersects(ray.position, ray.direction, distance);
+}
+
+SphereVolume::SphereVolume(Transform* transform, float radius):
+	BoundingVolume(transform), radius(radius)
 {
 }
 
@@ -79,20 +105,25 @@ SphereVolume::~SphereVolume()
 
 bool SphereVolume::intersectsBox(DirectX::BoundingBox vol) const
 {
-	return this->sphere.Intersects(vol);
+	return BoundingSphere(this->getTransform()->getPosition(), this->radius).Intersects(vol);
 }
 
 bool SphereVolume::intersectsOrientedBox(DirectX::BoundingOrientedBox vol) const
 {
-	return this->sphere.Intersects(vol);
+	return BoundingSphere(this->getTransform()->getPosition(), this->radius).Intersects(vol);
 }
 
 bool SphereVolume::intersectsSphere(DirectX::BoundingSphere vol) const
 {
-	return this->sphere.Intersects(vol);
+	return BoundingSphere(this->getTransform()->getPosition(), this->radius).Intersects(vol);
 }
 
 bool SphereVolume::intersects(BoundingVolume* vol) const
 {
-	return this->intersectsSphere(this->sphere);
+	return vol->intersectsSphere(BoundingSphere(this->getTransform()->getPosition(), this->radius));
+}
+
+bool SphereVolume::intersects(DirectX::SimpleMath::Ray ray, float& distance) const
+{
+	return BoundingSphere(this->getTransform()->getPosition(), this->radius).Intersects(ray.position, ray.direction, distance);
 }
