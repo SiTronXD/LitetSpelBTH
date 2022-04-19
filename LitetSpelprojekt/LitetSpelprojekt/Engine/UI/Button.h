@@ -11,7 +11,6 @@ private:
 	int width;
 	int height;
 	UIRenderer& uiRenderer;
-	
 
 public:
 	Button(int pX, int pY, int w, int h, UIRenderer& r);
