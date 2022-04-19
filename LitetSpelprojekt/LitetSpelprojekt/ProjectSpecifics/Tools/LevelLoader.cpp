@@ -38,6 +38,22 @@ bool LevelLoader::load(const std::string& levelName)
 	// aiNode* rootNode = scene->mRootNode;
 	// this->traverseFile(rootNode);
 
+	Log::write("Num materials: " + std::to_string(scene->mNumMaterials));
+	for (int i = 0; i < scene->mNumMaterials; ++i)
+	{
+		Log::write("Mat: ");
+
+		aiString path;
+		if (scene->mMaterials[i]->GetTexture(
+			aiTextureType_DIFFUSE,
+			0,
+			&path,
+			NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS)
+		{
+			Log::write("path: " + std::string(path.C_Str()));
+		}
+	}
+
 	// Loop through each submesh
 	unsigned int indexOffset = 0;
 	for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
@@ -72,6 +88,8 @@ bool LevelLoader::load(const std::string& levelName)
 		// Mesh
 		else
 		{
+			Log::write("Material index: " + std::to_string(submesh->mMaterialIndex));
+
 			// Loop through each vertex
 			for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
 			{
@@ -93,6 +111,7 @@ bool LevelLoader::load(const std::string& levelName)
 			}
 
 			// Loop through each index
+			unsigned int numIndices = 0;
 			for (unsigned int j = 0; j < submesh->mNumFaces; ++j)
 			{
 				if (submesh->mFaces[j].mNumIndices != 3u)
@@ -101,7 +120,14 @@ bool LevelLoader::load(const std::string& levelName)
 				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[0]);
 				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[1]);
 				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[2]);
+			
+				numIndices += 3;
 			}
+
+			Submesh newSubmesh{};
+			newSubmesh.startIndex = indexOffset;
+			newSubmesh.numIndices = numIndices;
+			this->meshData.addSubmesh(newSubmesh);
 
 			// Update offset for next submesh
 			indexOffset = this->meshData.getVertices().size();

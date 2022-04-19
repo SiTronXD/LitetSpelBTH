@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <vector>
 #include <Windows.h>
 #include <SimpleMath.h>
@@ -9,6 +10,14 @@ struct Vertex
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 normal;
 	DirectX::XMFLOAT2 uv;
+};
+
+struct Submesh
+{
+	std::string materialName;
+
+	unsigned int startIndex;
+	unsigned int numIndices;
 };
 
 enum class DefaultMesh
@@ -25,6 +34,7 @@ class MeshData
 private:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
+	std::vector<Submesh> submeshes;
 
 	void createTriangle();
 	void createTetrahedron();
@@ -52,6 +62,7 @@ public:
 
 	void addVertex(const Vertex& newVertex);
 	void addIndex(const unsigned int& newIndex);
+	void addSubmesh(const Submesh& newSubmesh);
 
 	inline const std::vector<Vertex>& getVertices() { return this->vertices; }
 	inline const std::vector<unsigned int>& getIndices() { return this->indices; }

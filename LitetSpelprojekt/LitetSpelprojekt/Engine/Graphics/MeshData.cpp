@@ -390,3 +390,8 @@ void MeshData::addIndex(const unsigned int& newIndex)
 {
 	this->indices.push_back(newIndex);
 }
+
+void MeshData::addSubmesh(const Submesh& newSubmesh)
+{
+	this->submeshes.push_back(newSubmesh);
+}
