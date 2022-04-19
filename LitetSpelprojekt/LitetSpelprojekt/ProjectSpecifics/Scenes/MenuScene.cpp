@@ -1,5 +1,6 @@
 #include "MenuScene.h"
 #include "../../Engine/GameObject.h"
+#include "../../Engine/Application/Window.h"
 
 MenuScene::MenuScene(SceneHandler& sceneHandler)
 	: Scene(sceneHandler),
@@ -49,17 +50,17 @@ void MenuScene::update()
 	if (playButton.isClicked())
 	{
 		// Change to Game Scene
-		Log::error("Inside Button!");
+		Log::error("Implement Change to Game Scene");
 	}
 	else if (settingsButton.isClicked())
 	{
 		// Load Settings Menu
-		Log::error("Inside Button!");
+		Log::error("Implement Settings Menu");
 	}
 	else if (exitButton.isClicked())
 	{
 		// Exit Game
-		Log::error("Inside Button!");
+		Log::error("Implement Quit Function");
 	}
 }
 
