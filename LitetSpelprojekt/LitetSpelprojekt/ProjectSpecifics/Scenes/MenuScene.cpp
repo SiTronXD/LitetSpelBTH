@@ -7,7 +7,6 @@ MenuScene::MenuScene(SceneHandler& sceneHandler)
 	settingsButton(0, 0, 0, 0, this->getUIRenderer()),
 	exitButton(0, 0, 0, 0, this->getUIRenderer())
 {
-	
 }
 
 MenuScene::~MenuScene()
@@ -22,6 +21,7 @@ void MenuScene::init()
 	
 	GameObject& cam = this->addGameObject();
 	this->setActiveCamera(cam.addComponent<Camera>());
+	
 	// Define Play Button's size and position
 	playButton.setPosX(0);
 	playButton.setPosY(161);
@@ -33,7 +33,6 @@ void MenuScene::init()
 	settingsButton.setPosY(0);
 	settingsButton.setWidth(354);
 	settingsButton.setHeight(159);
-	
 
 	// Define Exit Button's size and position
 	exitButton.setPosX(0);
@@ -45,19 +44,22 @@ void MenuScene::init()
 void MenuScene::update()
 {
 	this->getECS().update();
+	
 	// Check for user input
 	if (playButton.isClicked())
 	{
 		// Change to Game Scene
-		Log::write("Inside Button!");
+		Log::error("Inside Button!");
 	}
 	else if (settingsButton.isClicked())
 	{
 		// Load Settings Menu
+		Log::error("Inside Button!");
 	}
 	else if (exitButton.isClicked())
 	{
 		// Exit Game
+		Log::error("Inside Button!");
 	}
 }
 

@@ -28,7 +28,10 @@ bool Button::isClicked()
 	{
 		if (Input::getCursorY() >= minPosY && Input::getCursorY() <= maxPosY)
 		{
-			buttonClicked = true;
+			if (Input::isMouseButtonDown(Mouse::LEFT_BUTTON))
+			{
+				buttonClicked = true;
+			}	
 		}
 	}
 	return buttonClicked;

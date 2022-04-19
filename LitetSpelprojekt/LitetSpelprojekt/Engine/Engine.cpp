@@ -55,7 +55,6 @@ void Engine::run()
 		Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
 
 		// Render UI
-		this->sceneHandler.getScene()->renderUI();
 		/*
 		this->uiRenderer.renderTexture(
 			"me.png", 
