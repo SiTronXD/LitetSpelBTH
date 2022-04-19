@@ -6,6 +6,7 @@ class SceneHandler;
 class Resources;
 class Renderer;
 class UIRenderer;
+class Window;
 
 class Scene
 {
@@ -18,6 +19,7 @@ private:
 	Resources* resources;
 	Renderer* renderer;
 	UIRenderer* uiRenderer;
+	Window* window;
 
 protected:
 	inline void setActiveCamera(Camera* cam) { this->activeCamera = cam; }
@@ -26,6 +28,7 @@ protected:
 	inline Resources& getResources() { return *this->resources; }
 	inline Renderer& getRenderer() { return *this->renderer; }
 	inline UIRenderer& getUIRenderer() { return *this->uiRenderer; }
+	inline Window& getWindow() { return *this->window; }
 
 public:
 	Scene(SceneHandler& sceneHandler);

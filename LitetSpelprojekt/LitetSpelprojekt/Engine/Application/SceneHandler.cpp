@@ -1,11 +1,13 @@
 #include "SceneHandler.h"
 
 SceneHandler::SceneHandler(
-	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer)
+	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
+	Window& window)
 	:scene(nullptr),
 	resources(resources),
 	renderer(renderer),
-	uiRenderer(uiRenderer)
+	uiRenderer(uiRenderer),
+	window(window)
 {
 }
 
