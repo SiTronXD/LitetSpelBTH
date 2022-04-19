@@ -95,7 +95,8 @@ bool LevelLoader::load(const std::string& levelName)
 			// Loop through each index
 			for (unsigned int j = 0; j < submesh->mNumFaces; ++j)
 			{
-				assert(submesh->mFaces[j].mNumIndices == 3u);
+				if (submesh->mFaces[j].mNumIndices != 3u)
+					continue;
 
 				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[0]);
 				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[1]);
