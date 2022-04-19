@@ -60,7 +60,7 @@ void MenuScene::update()
 	else if (exitButton.isClicked())
 	{
 		// Exit Game
-		Log::error("Implement Quit Function");
+		getWindow().quit();
 	}
 }
 
