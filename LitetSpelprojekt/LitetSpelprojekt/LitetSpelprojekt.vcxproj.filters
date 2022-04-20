@@ -54,6 +54,7 @@
     <ClCompile Include="Engine\SMath.cpp" />
     <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Physics\BoundingVolumes.cpp" />
+    <ClCompile Include="Engine\UI\Slider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -105,6 +106,7 @@
     <ClInclude Include="Engine\SMath.h" />
     <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Physics\BoundingVolumes.h" />
+    <ClInclude Include="Engine\UI\Slider.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

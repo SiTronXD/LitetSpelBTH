@@ -4,7 +4,8 @@
 #include "../ResTranslator.h"
 
 
-Button::Button(int pX, int pY, int w, int h, UIRenderer& r) : uiRenderer(r)
+Button::Button(int pX, int pY, int w, int h, UIRenderer& r):
+	uiRenderer(r)
 {
 	this->posX = pX;
 	this->posY = pY;
