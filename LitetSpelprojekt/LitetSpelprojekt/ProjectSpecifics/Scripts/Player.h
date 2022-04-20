@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Script.h"
-#include "Componentpch.h"
+#include "../../Engine/Components/Script.h"
+#include "../../Engine/Components/Componentpch.h"
 
 class Player : public Script
 {

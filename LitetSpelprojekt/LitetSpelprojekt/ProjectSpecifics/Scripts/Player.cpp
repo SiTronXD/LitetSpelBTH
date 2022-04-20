@@ -1,7 +1,7 @@
 #include "Player.h"
-#include "../Application/Input.h"
-#include "../GameObject.h"
-#include "../Time.h"
+#include "../../Engine/Application/Input.h"
+#include "../../Engine/GameObject.h"
+#include "../../Engine/Time.h"
 
 void Player::move()
 {
@@ -46,6 +46,8 @@ void Player::lookAround()
 Player::Player(GameObject& object):
 	Script(object), speed(3.0f), mouseSensitive(0.5f), onGround(false)
 {
+	Input::setCursorVisible(false);
+	Input::setLockCursorPosition(true);
 }
 
 Player::~Player()

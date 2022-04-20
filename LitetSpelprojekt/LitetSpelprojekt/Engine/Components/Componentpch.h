@@ -4,7 +4,7 @@
 #include "Light.h"
 #include "MeshComp.h"
 #include "ParticleEmitter.h"
-#include "Player.h"
+#include "../../ProjectSpecifics/Scripts/Player.h"
 #include "Rigidbody.h"
 #include "Script.h"
 #include "Transform.h"
