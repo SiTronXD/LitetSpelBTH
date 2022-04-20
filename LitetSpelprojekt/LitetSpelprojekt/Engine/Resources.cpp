@@ -5,8 +5,6 @@
 Resources::Resources()
 	: renderer(nullptr)
 {
-	// Default texture
-	this->addTexture("Resources/Textures/me.png", "");
 }
 
 Resources::~Resources()

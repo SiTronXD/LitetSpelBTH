@@ -155,6 +155,8 @@ void Renderer::render(Scene& scene)
 #ifdef _DEBUG
 	if (!scene.getActiveCamera())
 		Log::error("No active camera has been set in the renderer.");
+
+	unsigned int numDrawCalls = 0;
 #endif
 
 	// Update camera constant buffer
@@ -193,7 +195,7 @@ void Renderer::render(Scene& scene)
 			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
 
 			Material& material = this->resources.getMaterial(meshComponents[i]->getMaterialName());
-			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName());
+			Texture& texture = this->resources.getTexture(currentSubmesh.materialName);
 			immediateContext->PSSetSamplers(
 				0, 1, &texture.getSampler()
 			);
@@ -216,12 +218,20 @@ void Renderer::render(Scene& scene)
 			immediateContext->DrawIndexed(
 				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
 			);
+
+		#ifdef _DEBUG
+			numDrawCalls++;
+		#endif
 		}
 	}
 
 	// Unbind render target
 	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
 	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);
+
+#ifdef _DEBUG
+	Log::write("Num draw calls: " + std::to_string(numDrawCalls));
+#endif
 }
 
 void Renderer::presentSC()
