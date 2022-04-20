@@ -8,3 +8,5 @@
 #include "Rigidbody.h"
 #include "Script.h"
 #include "Transform.h"
+
+enum class ObjectTag { UNTAGGED, GROUND, PLAYER, ENEMY, COUNT };

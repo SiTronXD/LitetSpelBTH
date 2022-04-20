@@ -9,8 +9,6 @@
 
 #include "Dev/Log.h"
 
-enum class ObjectTag { UNTAGGED, GROUND, PLAYER, ENEMY, COUNT };
-
 class GameObject;
 
 class ECS
