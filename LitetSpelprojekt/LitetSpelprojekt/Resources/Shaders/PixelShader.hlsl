@@ -12,6 +12,6 @@ float4 main(Input input) : SV_TARGET
 {
     //return float4(input.uv, 1.0f, 1.0f);
 
-    return diffuseTexture.Sample(textureSampler, input.uv) * 
-        dot(input.normal, normalize(float3(1,1,1)));
+    return diffuseTexture.Sample(textureSampler, input.uv); /*
+        dot(input.normal, normalize(float3(1,1,1)));*/
 }

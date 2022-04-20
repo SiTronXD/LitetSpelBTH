@@ -5,7 +5,6 @@
 Resources::Resources()
 	: renderer(nullptr)
 {
-
 }
 
 Resources::~Resources()
@@ -156,32 +155,32 @@ void Resources::addPixelShader(const std::string& pixelShaderName)
 	);
 }
 
-Texture& Resources::getTexture(const std::string& textureName)
+Texture& Resources::getTexture(const char* textureName)
 {
 	Texture* foundTexture = this->textures[textureName];
 
 	if (!foundTexture)
-		Log::error("Texture has not been added as a resource: " + textureName);
+		Log::error("Texture has not been added as a resource: " + std::string(textureName));
 
 	return *foundTexture;
 }
 
-Mesh& Resources::getMesh(const std::string& meshName)
+Mesh& Resources::getMesh(const char* meshName)
 {
 	Mesh* foundMesh = this->meshes[meshName];
 
 	if (!foundMesh)
-		Log::error("Mesh has not been added as a resource: " + meshName);
+		Log::error("Mesh has not been added as a resource: " + std::string(meshName));
 
 	return *foundMesh;
 }
 
-Material& Resources::getMaterial(const std::string& materialName)
+Material& Resources::getMaterial(const char* materialName)
 {
 	Material* foundMaterial = this->materials[materialName];
 
 	if (!foundMaterial)
-		Log::error("Material has not been added: " + materialName);
+		Log::error("Material has not been added: " + std::string(materialName));
 
 	return *foundMaterial;
 }

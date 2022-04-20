@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <SimpleMath.h>
 #include "GameScene.h"
+#include "../Tools/LevelLoader.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -40,10 +41,19 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh"
 	);
+
+	// Level loader
+	LevelLoader levelLoader(this->getResources());
+	levelLoader.load("Resources/Levels/testLevel.obj");
+	MeshData levelMeshData = levelLoader.getMeshData();
+	this->getResources().addMesh(
+		std::move(levelMeshData),
+		"LevelMesh"
+	);
   
 	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());
-	cam.getComponent<Transform>()->setPosition({ 0.0f, 0.75f, 1.0f });
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	cam.getComponent<Transform>()->rotate({ -30.0f, 0.0f, 0.0f });
 	cam.addComponent<Player>();
 	Collider* col = cam.addComponent<Collider>();
@@ -56,6 +66,11 @@ void GameScene::init()
 	mc->setMesh("CubeMesh", "testMaterial");
 	col = model.addComponent<Collider>();
 	col->setSphereCollider(1.0f);
+
+	// Level game object
+	GameObject& levelObject = this->addGameObject();
+	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
+	levelMeshComponent->setMesh("LevelMesh", "testMaterial");
 
 	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
