@@ -21,7 +21,8 @@ RWTexture2D<float4> outputTexture : register(u0);
 void main(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
     uint2 imagePos = uint2((float2(dispatchThreadID.xy) / uiSize) * textureSize);
-    float3 col = imageTexture[imagePos].rgb;
+    float4 col = imageTexture[imagePos];
 
-    outputTexture[position + dispatchThreadID.xy] = float4(col, 1.0f);
+    if(col.a > 0.5f)
+        outputTexture[position + dispatchThreadID.xy] = float4(col.rgb, 1.0f);
 }

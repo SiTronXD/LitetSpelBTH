@@ -3,6 +3,7 @@
 #include "Time.h"
 #include "ResTranslator.h"
 #include "../ProjectSpecifics/Scenes/GameScene.h"
+#include "../ProjectSpecifics/Scenes/MenuScene.h"
 
 // Temp
 #include "ECS.h"
@@ -14,7 +15,12 @@
 Engine::Engine()
 	: renderer(this->resources),
 	uiRenderer(this->renderer, this->resources),
-	sceneHandler(this->resources, this->renderer, this->uiRenderer)
+	sceneHandler(
+		this->resources, 
+		this->renderer, 
+		this->uiRenderer,
+		this->window
+	)
 {
 	this->settings.loadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
@@ -22,7 +28,8 @@ Engine::Engine()
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
 
-	this->sceneHandler.setScene(new GameScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
+	this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
 }
 
 Engine::~Engine()
@@ -45,7 +52,7 @@ void Engine::run()
 		lastTime = std::chrono::high_resolution_clock::now();
 
 		// Update + render
-		this->sceneHandler.getScene()->update();
+		this->sceneHandler.update();
 		this->physicsEngine.updateCollisions(*this->sceneHandler.getScene());
 		this->renderer.render(*this->sceneHandler.getScene());
 
@@ -55,13 +62,6 @@ void Engine::run()
 
 		// Render UI
 		this->sceneHandler.getScene()->renderUI();
-		this->uiRenderer.renderTexture(
-			"me.png", 
-			1920 / 2 - 100 / 2,
-			-1080 / 2 + 100 / 2,
-			100,
-			100
-		);
 
 		// Present
 		this->renderer.presentSC();

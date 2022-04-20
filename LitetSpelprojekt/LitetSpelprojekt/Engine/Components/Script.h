@@ -15,4 +15,3 @@ public:
 	virtual void onCollisionStay(GameObject& other);
 	virtual void onTriggerStay(GameObject& other);
 };
-

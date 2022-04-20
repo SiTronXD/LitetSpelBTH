@@ -8,8 +8,8 @@ UIRenderer::UIRenderer(
 	resources(resources),
 	uiOrientationBuffer(renderer, "uiOrientationBuffer"),
 	uiRenderComputeShader(renderer, "uiRenderComputeShader")
-{
-	
+{	
+
 }
 
 UIRenderer::~UIRenderer()

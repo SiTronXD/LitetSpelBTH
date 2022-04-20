@@ -13,14 +13,18 @@ private:
 	Resources& resources;
 	Renderer& renderer;
 	UIRenderer& uiRenderer;
+	Window& window;
 
 public:
 	SceneHandler(
 		Resources& resources, 
 		Renderer& renderer, 
-		UIRenderer& uiRenderer
+		UIRenderer& uiRenderer,
+		Window& window
 	);
 	~SceneHandler();
+
+	void update();
 
 	void setScene(Scene* scene);
 	Scene* getScene() const;
@@ -28,4 +32,5 @@ public:
 	inline Resources& getResources() { return this->resources; }
 	inline Renderer& getRenderer() { return this->renderer; }
 	inline UIRenderer& getUIRenderer() { return this->uiRenderer; }
+	inline Window& getWindow() { return this->window; }
 };

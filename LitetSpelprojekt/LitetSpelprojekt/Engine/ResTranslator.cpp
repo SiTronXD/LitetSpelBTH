@@ -30,3 +30,12 @@ UIRectangle ResTranslator::transformRect(
 
 	return newRect;
 }
+
+DirectX::XMFLOAT2 ResTranslator::toInternalPos(
+	const DirectX::XMFLOAT2& externalPos)
+{
+	float newX = (externalPos.x / windowWidth - 0.5f) * INTERNAL_WIDTH;
+	float newY = -(externalPos.y / windowHeight - 0.5f) * INTERNAL_HEIGHT;
+
+	return DirectX::XMFLOAT2(newX, newY);
+}

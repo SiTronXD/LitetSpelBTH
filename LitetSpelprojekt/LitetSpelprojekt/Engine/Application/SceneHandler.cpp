@@ -1,17 +1,25 @@
 #include "SceneHandler.h"
 
 SceneHandler::SceneHandler(
-	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer)
+	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
+	Window& window)
 	:scene(nullptr),
 	resources(resources),
 	renderer(renderer),
-	uiRenderer(uiRenderer)
+	uiRenderer(uiRenderer),
+	window(window)
 {
 }
 
 SceneHandler::~SceneHandler()
 {
 	delete this->scene;
+}
+
+void SceneHandler::update()
+{
+	this->scene->update();
+	this->scene->getECS().update();
 }
 
 void SceneHandler::setScene(Scene* scene)
