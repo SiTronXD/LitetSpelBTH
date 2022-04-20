@@ -68,7 +68,7 @@ void GameScene::init()
 	col->setSphereCollider(1.0f);
 
 	// Level game object
-	GameObject& levelObject = this->addGameObject();
+	GameObject& levelObject = this->addGameObject("LevelObject");
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
 	levelMeshComponent->setMesh("LevelMesh", "testMaterial");
 
