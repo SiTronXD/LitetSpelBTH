@@ -52,6 +52,7 @@ void Engine::run()
 		lastTime = std::chrono::high_resolution_clock::now();
 
 		// Update + render
+		this->sceneHandler.updateToNextScene();
 		this->sceneHandler.update();
 		this->physicsEngine.updateCollisions(*this->sceneHandler.getScene());
 		this->renderer.render(*this->sceneHandler.getScene());

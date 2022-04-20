@@ -9,6 +9,7 @@ class SceneHandler
 {
 private:
 	Scene* scene;
+	Scene* nextScene;
 
 	Resources& resources;
 	Renderer& renderer;
@@ -25,6 +26,7 @@ public:
 	~SceneHandler();
 
 	void update();
+	void updateToNextScene();
 
 	void setScene(Scene* scene);
 	Scene* getScene() const;

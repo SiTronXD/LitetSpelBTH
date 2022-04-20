@@ -25,6 +25,7 @@ protected:
 	inline void setActiveCamera(Camera* cam) { this->activeCamera = cam; }
 	inline GameObject& addGameObject() { return this->ecs.addGameObject(); }
 
+	inline SceneHandler& getSceneHandler() { return this->sceneHandler; }
 	inline Resources& getResources() { return *this->resources; }
 	inline Renderer& getRenderer() { return *this->renderer; }
 	inline UIRenderer& getUIRenderer() { return *this->uiRenderer; }

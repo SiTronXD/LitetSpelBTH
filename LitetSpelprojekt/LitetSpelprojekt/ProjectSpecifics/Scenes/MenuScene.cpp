@@ -44,8 +44,6 @@ void MenuScene::init()
 
 void MenuScene::update()
 {
-	this->getECS().update();
-	
 	// Check for user input
 	if (playButton.isClicked())
 	{
