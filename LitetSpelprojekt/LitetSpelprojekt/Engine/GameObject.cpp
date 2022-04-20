@@ -2,8 +2,8 @@
 #include "ECS.h"
 #include "Physics/PhysicsEngine.h"
 
-GameObject::GameObject(ECS& ecs, int ID)
-	: ecs(ecs), ID(ID)
+GameObject::GameObject(ECS& ecs, int ID, std::string name, ObjectTag tag)
+	: ecs(ecs), ID(ID), name(name), tag(tag)
 {
 }
 

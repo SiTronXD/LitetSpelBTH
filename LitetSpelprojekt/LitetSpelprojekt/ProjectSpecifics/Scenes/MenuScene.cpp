@@ -20,7 +20,7 @@ void MenuScene::init()
 	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
 	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
 	
-	GameObject& cam = this->addGameObject();
+	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
 	
 	// Define Play Button's size and position

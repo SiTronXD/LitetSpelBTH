@@ -28,8 +28,8 @@ Engine::Engine()
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
 
-	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
-	this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
+	this->sceneHandler.setScene(new GameScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
 }
 
 Engine::~Engine()

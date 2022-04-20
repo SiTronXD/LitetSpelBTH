@@ -73,10 +73,10 @@ void Player::update()
 	GameObject* g = nullptr;
 	float distance = 0.0f;
 	if (this->getObject().raycast(g, distance))
-		std::cout << "Hit: " << g->getID() << " with distance of: " << distance << std::endl;
+		std::cout << "Hit Object: " << g->getName() << " Tag: " << (int)g->getTag() << " with distance of: " << distance << std::endl;
 }
 
 void Player::onCollisionStay(GameObject& other)
 {
-	std::cout << "Player hit: " << other.getID() << std::endl;
+	std::cout << "Player hit: " << other.getName() << std::endl;
 }
