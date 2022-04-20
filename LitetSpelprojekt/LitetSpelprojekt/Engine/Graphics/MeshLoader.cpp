@@ -65,6 +65,13 @@ MeshData MeshLoader::loadModel(const std::string& fileName, bool flipVerticalUV)
 		}
 	}
 
+	// Create one single submesh for entire model
+	Submesh newSubmesh{};
+	newSubmesh.startIndex = 0;
+	newSubmesh.numIndices = createdMeshData.getIndices().size();
+	createdMeshData.addSubmesh(newSubmesh);
+
+
 	aiReleaseImport(scene);
 
 	createdMeshData.invertFaces();

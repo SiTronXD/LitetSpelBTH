@@ -43,7 +43,7 @@ void GameScene::init()
 	);
 
 	// Level loader
-	LevelLoader levelLoader;
+	LevelLoader levelLoader(this->getResources());
 	levelLoader.load("Resources/Levels/testLevel.obj");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(

@@ -188,8 +188,10 @@ void Renderer::render(Scene& scene)
 		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 
 		// Set texture
-		// for (unsigned int j = 0; j < mesh.)
+		for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)
 		{
+			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
+
 			Material& material = this->resources.getMaterial(meshComponents[i]->getMaterialName());
 			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName());
 			immediateContext->PSSetSamplers(
@@ -207,8 +209,12 @@ void Renderer::render(Scene& scene)
 				mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
 			);
 
-			immediateContext->DrawIndexed(
+			/*immediateContext->DrawIndexed(
 				mesh.getIndexBuffer().getIndexCount(), 0, 0
+			);*/
+
+			immediateContext->DrawIndexed(
+				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
 			);
 		}
 	}

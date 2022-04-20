@@ -14,8 +14,9 @@ void LevelLoader::traverseFile(aiNode* node)
 		this->traverseFile(node->mChildren[i]);
 }
 
-LevelLoader::LevelLoader()
-	: playerStartPos(0,0,0)
+LevelLoader::LevelLoader(Resources& resources)
+	: resources(resources),
+	playerStartPos(0,0,0)
 {
 }
 
@@ -38,11 +39,11 @@ bool LevelLoader::load(const std::string& levelName)
 	// aiNode* rootNode = scene->mRootNode;
 	// this->traverseFile(rootNode);
 
-	Log::write("Num materials: " + std::to_string(scene->mNumMaterials));
+	// Materials
+	std::vector<std::string> diffuseTexturePaths(scene->mNumMaterials);
 	for (int i = 0; i < scene->mNumMaterials; ++i)
 	{
-		Log::write("Mat: ");
-
+		// Get diffuse texture
 		aiString path;
 		if (scene->mMaterials[i]->GetTexture(
 			aiTextureType_DIFFUSE,
@@ -50,12 +51,29 @@ bool LevelLoader::load(const std::string& levelName)
 			&path,
 			NULL, NULL, NULL, NULL, NULL) == AI_SUCCESS)
 		{
-			Log::write("path: " + std::string(path.C_Str()));
+			// Texture path
+			diffuseTexturePaths[i] = std::string(path.C_Str());
+
+			// Replace .tga with .png
+			if (diffuseTexturePaths[i].find(".tga") != std::string::npos)
+			{
+				diffuseTexturePaths[i].erase(
+					diffuseTexturePaths[i].size() - 3,
+					3
+				);
+				diffuseTexturePaths[i] += "png";
+			}
+
+			// Load
+			this->resources.addTexture(
+				"Resources/Textures/" + diffuseTexturePaths[i],
+				diffuseTexturePaths[i]
+			);
 		}
 	}
 
 	// Loop through each submesh
-	unsigned int indexOffset = 0;
+	unsigned int vertexOffset = 0;
 	for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
 	{
 		aiMesh* submesh = scene->mMeshes[i];
@@ -112,25 +130,27 @@ bool LevelLoader::load(const std::string& levelName)
 
 			// Loop through each index
 			unsigned int numIndices = 0;
+			unsigned int indicesSize = this->meshData.getIndices().size();
 			for (unsigned int j = 0; j < submesh->mNumFaces; ++j)
 			{
 				if (submesh->mFaces[j].mNumIndices != 3u)
 					continue;
 
-				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[0]);
-				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[1]);
-				this->meshData.addIndex(indexOffset + submesh->mFaces[j].mIndices[2]);
+				this->meshData.addIndex(vertexOffset + submesh->mFaces[j].mIndices[0]);
+				this->meshData.addIndex(vertexOffset + submesh->mFaces[j].mIndices[1]);
+				this->meshData.addIndex(vertexOffset + submesh->mFaces[j].mIndices[2]);
 			
 				numIndices += 3;
 			}
 
 			Submesh newSubmesh{};
-			newSubmesh.startIndex = indexOffset;
+			newSubmesh.startIndex = indicesSize;
 			newSubmesh.numIndices = numIndices;
+			newSubmesh.materialName = diffuseTexturePaths[submesh->mMaterialIndex];
 			this->meshData.addSubmesh(newSubmesh);
 
 			// Update offset for next submesh
-			indexOffset = this->meshData.getVertices().size();
+			vertexOffset = this->meshData.getVertices().size();
 		}
 	}
 

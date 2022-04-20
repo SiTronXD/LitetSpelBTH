@@ -2,7 +2,8 @@
 
 Mesh::Mesh(Renderer& renderer, MeshData&& meshData)
 	: vertexBuffer(renderer),
-	indexBuffer(renderer)
+	indexBuffer(renderer),
+	submeshes(meshData.getSubmeshes())
 {
 	this->vertexBuffer.createBuffer(meshData);
 	this->indexBuffer.createBuffer(meshData);

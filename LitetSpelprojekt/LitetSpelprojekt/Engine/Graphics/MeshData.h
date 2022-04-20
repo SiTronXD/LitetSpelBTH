@@ -66,4 +66,5 @@ public:
 
 	inline const std::vector<Vertex>& getVertices() { return this->vertices; }
 	inline const std::vector<unsigned int>& getIndices() { return this->indices; }
+	inline const std::vector<Submesh>& getSubmeshes() { return this->submeshes; }
 };
