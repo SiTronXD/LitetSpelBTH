@@ -6,6 +6,23 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
+DirectX::SimpleMath::Vector3 LevelLoader::getAveragePosition(aiMesh* submesh)
+{
+	// Average position
+	Vector3 avgPos = Vector3(0, 0, 0);
+	for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
+	{
+		avgPos += Vector3(
+			submesh->mVertices[j].x,
+			submesh->mVertices[j].y,
+			submesh->mVertices[j].z
+		);
+	}
+	avgPos /= (float)submesh->mNumVertices;
+
+	return avgPos;
+}
+
 LevelLoader::LevelLoader(Resources& resources)
 	: resources(resources),
 	playerStartPos(0,0,0)
@@ -76,25 +93,75 @@ bool LevelLoader::load(const std::string& levelName)
 		// Colliders
 		if (submeshName.find("collider_") != std::string::npos)
 		{
+			Vector3 avgPos = this->getAveragePosition(submesh);
 
+			// Sphere
+			if (submeshName.find("sphere") != std::string::npos)
+			{
+				// First position in sphere surface
+				Vector3 surfacePos = Vector3(
+					submesh->mVertices[0].x,
+					submesh->mVertices[0].y,
+					submesh->mVertices[0].z
+				);
+
+				// Create and add sphere collider
+				LevelColliderSphere newColliderSphere{};
+				newColliderSphere.pos = avgPos;
+				newColliderSphere.radius = (avgPos - surfacePos).Length();
+				this->sphereColliders.push_back(newColliderSphere);
+			}
+			// Box
+			else if (submeshName.find("cube") != std::string::npos)
+			{
+				Vector3 extents = Vector3(
+					abs(avgPos.x - submesh->mVertices[0].x),
+					abs(avgPos.y - submesh->mVertices[0].y),
+					abs(avgPos.z - submesh->mVertices[0].z)
+				);
+
+				// Create and add box collider
+				LevelColliderBox newColliderBox{};
+				newColliderBox.pos = avgPos;
+				newColliderBox.extents = extents;
+				this->boxColliders.push_back(newColliderBox);
+			}
+			// Oriented box
+			else if (submeshName.find("orientedBox") != std::string::npos)
+			{
+				// Create XMFLOAT3 array
+				XMFLOAT3* points = new XMFLOAT3[submesh->mNumVertices]{};
+				for (int j = 0; j < submesh->mNumVertices; ++j)
+				{
+					points[j] = XMFLOAT3(
+						submesh->mVertices[j].x,
+						submesh->mVertices[j].y,
+						submesh->mVertices[j].z
+					);
+				}
+
+				// Create oriented box
+				BoundingOrientedBox tempBox;
+				BoundingOrientedBox::CreateFromPoints(
+					tempBox, 
+					submesh->mNumVertices, 
+					points,
+					sizeof(XMFLOAT3)
+				);
+				delete[] points;
+
+				// Create and add oriented box collider
+				LevelColliderOrientedBox newColliderOrientedBox{};
+				newColliderOrientedBox.pos = avgPos;
+				newColliderOrientedBox.extents = tempBox.Extents;
+				// newColliderOrientedBox.orientation = eulerangle tempBox.Orientation;
+				this->orientedBoxColliders.push_back(newColliderOrientedBox);
+			}
 		}
 		// Player start position
 		else if (submeshName == "PlayerStartPos")
 		{
-			// Average position
-			Vector3 sumPos = Vector3(0, 0, 0);
-			for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
-			{
-				sumPos += Vector3(
-					submesh->mVertices[j].x,
-					submesh->mVertices[j].y,
-					submesh->mVertices[j].z
-				);
-			}
-			sumPos /= (float) submesh->mNumVertices;
-
-			// Apply
-			this->playerStartPos = sumPos;
+			this->playerStartPos = this->getAveragePosition(submesh);
 		}
 		// Mesh
 		else
