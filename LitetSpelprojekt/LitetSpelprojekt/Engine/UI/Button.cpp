@@ -3,7 +3,6 @@
 #include <DirectXMath.h>
 #include "../ResTranslator.h"
 
-
 Button::Button(int pX, int pY, int w, int h, UIRenderer& r):
 	uiRenderer(r)
 {
@@ -32,17 +31,6 @@ bool Button::isClicked()
 	// Transform resolution to internal positions
 	DirectX::XMFLOAT2 internal = ResTranslator::toInternalPos(DirectX::XMFLOAT2(Input::getCursorX(), Input::getCursorY()));
 	
-	/*  DEBUG
-	int eX = Input::getCursorX();
-	int eY = Input::getCursorY();
-	Log::write("minPosX: " + std::to_string(minPosX));
-	Log::write("maxPosX: " + std::to_string(maxPosX));
-	Log::write("minPosY: " + std::to_string(minPosY));
-	Log::write("maxPosY: " + std::to_string(maxPosY));
-	Log::write("internalX: " + std::to_string(internal.x));
-	Log::write("internalY: " + std::to_string(internal.y));
-	*/
-
 	// Inside X Range
 	if (internal.x >= minPosX && (internal.x <= maxPosX))
 	{

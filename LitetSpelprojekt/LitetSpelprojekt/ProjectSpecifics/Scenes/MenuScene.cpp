@@ -2,8 +2,8 @@
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Application/Window.h"
 
-MenuScene::MenuScene(SceneHandler& sceneHandler)
-	: Scene(sceneHandler),
+MenuScene::MenuScene(SceneHandler& sceneHandler) :
+	Scene(sceneHandler),
 	playButton(0, 0, 0, 0, this->getUIRenderer()),
 	settingsButton(0, 0, 0, 0, this->getUIRenderer()),
 	exitButton(0, 0, 0, 0, this->getUIRenderer())
