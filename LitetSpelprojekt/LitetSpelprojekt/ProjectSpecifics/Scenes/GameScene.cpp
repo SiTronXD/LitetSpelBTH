@@ -51,22 +51,33 @@ void GameScene::init()
 		"LevelMesh"
 	);
   
-	GameObject& cam = this->addGameObject();
+	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	cam.getComponent<Transform>()->rotate({ -30.0f, 0.0f, 0.0f });
 	cam.addComponent<Player>();
+	Collider* col = cam.addComponent<Collider>();
+	col->setBoxCollider(Vector3(0.5f, 0.5f, 0.5f));
 
-	GameObject& model = this->addGameObject();
+	GameObject& model = this->addGameObject("Suzanne1");
 	Rigidbody* rb = model.addComponent<Rigidbody>();
 	rb->addForce(Vector3(0, 2, -2));
 	MeshComp* mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
+	col = model.addComponent<Collider>();
+	col->setSphereCollider(1.0f);
 
 	// Level game object
 	GameObject& levelObject = this->addGameObject();
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
 	levelMeshComponent->setMesh("LevelMesh", "testMaterial");
+
+	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
+	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
+	mc = model2.addComponent<MeshComp>();
+	mc->setMesh("CubeMesh", "testMaterial");
+	col = model2.addComponent<Collider>();
+	col->setSphereCollider(1.0f);
 }
 
 void GameScene::update()

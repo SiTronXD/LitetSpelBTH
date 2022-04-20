@@ -1,11 +1,14 @@
 #include "SceneHandler.h"
 
 SceneHandler::SceneHandler(
-	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer)
+	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
+	Window& window)
 	:scene(nullptr),
+	nextScene(nullptr),
 	resources(resources),
 	renderer(renderer),
-	uiRenderer(uiRenderer)
+	uiRenderer(uiRenderer),
+	window(window)
 {
 }
 
@@ -20,15 +23,26 @@ void SceneHandler::update()
 	this->scene->getECS().update();
 }
 
-void SceneHandler::setScene(Scene* scene)
+void SceneHandler::updateToNextScene()
 {
-	if (this->scene != nullptr)
+	// Make sure a scene can be switched to
+	if (this->nextScene != nullptr)
 	{
+		// Delete old scene
 		delete this->scene;
 		this->scene = nullptr;
+
+		// Switch
+		this->scene = this->nextScene;
+		this->nextScene = nullptr;
+		this->scene->init();
 	}
-	this->scene = scene;
-	this->scene->init();
+}
+
+void SceneHandler::setScene(Scene* scene)
+{
+	if (this->nextScene == nullptr)
+		this->nextScene = scene;
 }
 
 Scene* SceneHandler::getScene() const

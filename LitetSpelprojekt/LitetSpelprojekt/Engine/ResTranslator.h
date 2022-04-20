@@ -1,5 +1,7 @@
 #pragma once
 
+#include <DirectXMath.h>
+
 struct UIRectangle
 {
 	int x;
@@ -26,5 +28,9 @@ private:
 public:
 	static UIRectangle transformRect(
 		const UIRectangle& internalRect
+	);
+
+	static DirectX::XMFLOAT2 toInternalPos(
+		const DirectX::XMFLOAT2& externalPos
 	);
 };

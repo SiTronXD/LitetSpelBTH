@@ -7,10 +7,12 @@ class GameObject
 private:
 	ECS& ecs;
 	int ID;
-public:
-	GameObject(ECS& ecs, int ID);
-	~GameObject();
 
+	std::string name;
+	ObjectTag tag;
+public:
+	GameObject(ECS& ecs, int ID, std::string name, ObjectTag tag);
+	~GameObject();
 
 	template <typename T>
 	T* addComponent();
@@ -20,7 +22,15 @@ public:
 	T* getComponent();
 
 	inline const int getID() { return this->ID; };
+	inline const std::string getName() { return this->name; }
+	inline const ObjectTag getTag() { return this->tag; }
 	inline std::vector<Component*> getAllComponents() { return this->ecs.getAllComponents(this->ID); };
+
+
+	// Cast from own position and direction
+	const bool raycast(GameObject*& hitObject, float& distance);
+	// Define own ray position and direction
+	const bool raycast(DirectX::SimpleMath::Ray ray, GameObject*& hitObject, float& distance);
 };
 
 template<typename T>

@@ -200,3 +200,8 @@ const bool& Window::isRunning()
 
 	return this->running;
 }
+
+void Window::quit()
+{
+	this->running = false;
+}

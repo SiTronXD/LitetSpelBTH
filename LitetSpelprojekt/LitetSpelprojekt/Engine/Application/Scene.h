@@ -6,6 +6,7 @@ class SceneHandler;
 class Resources;
 class Renderer;
 class UIRenderer;
+class Window;
 
 class Scene
 {
@@ -18,14 +19,17 @@ private:
 	Resources* resources;
 	Renderer* renderer;
 	UIRenderer* uiRenderer;
+	Window* window;
 
 protected:
 	inline void setActiveCamera(Camera* cam) { this->activeCamera = cam; }
-	inline GameObject& addGameObject() { return this->ecs.addGameObject(); }
+	inline GameObject& addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTAGGED) { return this->ecs.addGameObject(name, tag); }
 
+	inline SceneHandler& getSceneHandler() { return this->sceneHandler; }
 	inline Resources& getResources() { return *this->resources; }
 	inline Renderer& getRenderer() { return *this->renderer; }
 	inline UIRenderer& getUIRenderer() { return *this->uiRenderer; }
+	inline Window& getWindow() { return *this->window; }
 
 public:
 	Scene(SceneHandler& sceneHandler);

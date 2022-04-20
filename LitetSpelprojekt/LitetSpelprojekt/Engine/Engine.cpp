@@ -3,6 +3,7 @@
 #include "Time.h"
 #include "ResTranslator.h"
 #include "../ProjectSpecifics/Scenes/GameScene.h"
+#include "../ProjectSpecifics/Scenes/MenuScene.h"
 
 // Temp
 #include "ECS.h"
@@ -14,7 +15,12 @@
 Engine::Engine()
 	: renderer(this->resources),
 	uiRenderer(this->renderer, this->resources),
-	sceneHandler(this->resources, this->renderer, this->uiRenderer)
+	sceneHandler(
+		this->resources, 
+		this->renderer, 
+		this->uiRenderer,
+		this->window
+	)
 {
 	this->settings.loadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
@@ -28,6 +34,8 @@ Engine::Engine()
 	// Default texture and material
 	this->resources.addTexture("Resources/Textures/me.png", "me.png");
 	this->resources.addMaterial("me.png", "");
+
+	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
 }
 
 Engine::~Engine()
@@ -50,12 +58,14 @@ void Engine::run()
 		lastTime = std::chrono::high_resolution_clock::now();
 
 		// Update + render
+		this->sceneHandler.updateToNextScene();
 		this->sceneHandler.update();
+		this->physicsEngine.updateCollisions(*this->sceneHandler.getScene());
 		this->renderer.render(*this->sceneHandler.getScene());
 
 		// ---------- Stop tracking time
 		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
-		Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
+		//Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
 
 		// Render UI
 		this->sceneHandler.getScene()->renderUI();

@@ -8,6 +8,7 @@
 #include "Graphics/UIRenderer.h"
 #include "Resources.h"
 #include "Application/SceneHandler.h"
+#include "Physics/PhysicsEngine.h"
 
 class Engine
 {
@@ -17,6 +18,7 @@ private:
 	Renderer renderer;
 	UIRenderer uiRenderer;
 	Resources resources;
+	PhysicsEngine physicsEngine;
 
 	SceneHandler sceneHandler;
 

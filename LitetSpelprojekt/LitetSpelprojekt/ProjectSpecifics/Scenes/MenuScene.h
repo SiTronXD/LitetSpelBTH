@@ -1,10 +1,14 @@
 #pragma once
 
 #include "../../Engine/Application/Scene.h"
+#include "../../Engine/UI/Button.h"
 
 class MenuScene : public Scene
 {
 private:
+	Button playButton;
+	Button settingsButton;
+	Button exitButton;
 public:
 	MenuScene(SceneHandler& sceneHandler);
 	virtual ~MenuScene();

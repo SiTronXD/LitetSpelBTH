@@ -1,7 +1,7 @@
 #include "Player.h"
-#include "../Application/Input.h"
-#include "../GameObject.h"
-#include "../Time.h"
+#include "../../Engine/Application/Input.h"
+#include "../../Engine/GameObject.h"
+#include "../../Engine/Time.h"
 
 void Player::move()
 {
@@ -46,6 +46,8 @@ void Player::lookAround()
 Player::Player(GameObject& object):
 	Script(object), speed(3.0f), mouseSensitive(0.5f), onGround(false)
 {
+	Input::setCursorVisible(false);
+	Input::setLockCursorPosition(true);
 }
 
 Player::~Player()
@@ -67,4 +69,14 @@ void Player::update()
 	jump();
 	fireWeapon();
 	lookAround();
+
+	GameObject* g = nullptr;
+	float distance = 0.0f;
+	if (this->getObject().raycast(g, distance))
+		std::cout << "Hit Object: " << g->getName() << " Tag: " << (int)g->getTag() << " with distance of: " << distance << std::endl;
+}
+
+void Player::onCollisionStay(GameObject& other)
+{
+	std::cout << "Player hit: " << other.getName() << std::endl;
 }
