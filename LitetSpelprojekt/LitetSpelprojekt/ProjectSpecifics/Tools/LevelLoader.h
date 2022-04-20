@@ -19,8 +19,6 @@ private:
 
 	DirectX::SimpleMath::Vector3 playerStartPos;
 
-	void traverseFile(aiNode* node);
-
 public:
 	LevelLoader(Resources& resources);
 	virtual ~LevelLoader();

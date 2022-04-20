@@ -37,7 +37,7 @@ void UIRenderer::renderTexture(
 	const std::string& textureName, 
 	int x, int y, int uiWidth, int uiHeight)
 {
-	Texture& texture = this->resources.getTexture(textureName);
+	Texture& texture = this->resources.getTexture(textureName.c_str());
 	unsigned int textureWidth = texture.getWidth();
 	unsigned int textureHeight = texture.getHeight();
 

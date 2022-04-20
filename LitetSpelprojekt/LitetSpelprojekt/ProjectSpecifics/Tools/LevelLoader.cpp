@@ -6,14 +6,6 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
-void LevelLoader::traverseFile(aiNode* node)
-{
-	Log::write("Name: " + std::string(node->mName.C_Str()));
-
-	for(int i = 0; i < node->mNumChildren; ++i)
-		this->traverseFile(node->mChildren[i]);
-}
-
 LevelLoader::LevelLoader(Resources& resources)
 	: resources(resources),
 	playerStartPos(0,0,0)
@@ -35,9 +27,6 @@ bool LevelLoader::load(const std::string& levelName)
 		Log::error("Could not load level: " + std::string(aiGetErrorString()));
 		return false;
 	}
-
-	// aiNode* rootNode = scene->mRootNode;
-	// this->traverseFile(rootNode);
 
 	// Materials
 	std::vector<std::string> diffuseTexturePaths(scene->mNumMaterials);
@@ -64,9 +53,13 @@ bool LevelLoader::load(const std::string& levelName)
 				diffuseTexturePaths[i] += "png";
 			}
 
-			// Load
+			// Add texture and material
 			this->resources.addTexture(
 				"Resources/Textures/" + diffuseTexturePaths[i],
+				diffuseTexturePaths[i]
+			);
+			this->resources.addMaterial(
+				diffuseTexturePaths[i],
 				diffuseTexturePaths[i]
 			);
 		}
@@ -106,8 +99,6 @@ bool LevelLoader::load(const std::string& levelName)
 		// Mesh
 		else
 		{
-			Log::write("Material index: " + std::to_string(submesh->mMaterialIndex));
-
 			// Loop through each vertex
 			for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
 			{
@@ -146,7 +137,7 @@ bool LevelLoader::load(const std::string& levelName)
 			Submesh newSubmesh{};
 			newSubmesh.startIndex = indicesSize;
 			newSubmesh.numIndices = numIndices;
-			newSubmesh.materialName = diffuseTexturePaths[submesh->mMaterialIndex];
+			strcpy_s(newSubmesh.materialName, diffuseTexturePaths[submesh->mMaterialIndex].c_str());
 			this->meshData.addSubmesh(newSubmesh);
 
 			// Update offset for next submesh

@@ -182,7 +182,7 @@ void Renderer::render(Scene& scene)
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
 	{
-		Mesh& mesh = this->resources.getMesh(meshComponents[i]->getMeshName());
+		Mesh& mesh = this->resources.getMesh(meshComponents[i]->getMeshName().c_str());
 
 		// Set mvp Matrix
 		Matrix m = meshComponents[i]->getTransform()->getWorldMatrix() * vp;
@@ -194,8 +194,8 @@ void Renderer::render(Scene& scene)
 		{
 			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
 
-			Material& material = this->resources.getMaterial(meshComponents[i]->getMaterialName());
-			Texture& texture = this->resources.getTexture(currentSubmesh.materialName);
+			Material& material = this->resources.getMaterial(currentSubmesh.materialName);
+			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName().c_str());
 			immediateContext->PSSetSamplers(
 				0, 1, &texture.getSampler()
 			);

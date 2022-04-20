@@ -48,7 +48,7 @@ public:
 		const std::string& pixelShaderName
 	);
 
-	Texture& getTexture(const std::string& textureName);
-	Mesh& getMesh(const std::string& meshName);
-	Material& getMaterial(const std::string& materialName);
+	Texture& getTexture(const char* textureName);
+	Mesh& getMesh(const char* meshName);
+	Material& getMaterial(const char* materialName);
 };

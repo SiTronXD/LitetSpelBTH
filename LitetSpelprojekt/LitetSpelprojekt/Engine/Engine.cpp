@@ -25,8 +25,9 @@ Engine::Engine()
 	this->sceneHandler.setScene(new GameScene(this->sceneHandler));
 
 
-	// Default texture
-	this->resources.addTexture("Resources/Textures/me.png", "");
+	// Default texture and material
+	this->resources.addTexture("Resources/Textures/me.png", "me.png");
+	this->resources.addMaterial("me.png", "");
 }
 
 Engine::~Engine()

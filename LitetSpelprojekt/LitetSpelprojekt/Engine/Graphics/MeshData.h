@@ -14,7 +14,7 @@ struct Vertex
 
 struct Submesh
 {
-	std::string materialName;
+	char materialName[64];
 
 	unsigned int startIndex;
 	unsigned int numIndices;
