@@ -38,6 +38,7 @@ public:
 	virtual void update() = 0;
 	virtual void renderUI() = 0;
 
+	inline ECS& getECS() { return this->ecs; }
 	inline Camera* getActiveCamera() { return this->activeCamera; }
 	template<typename T>
 	std::vector<T*> getActiveComponents();

@@ -27,8 +27,8 @@ public:
 
 	// Inherited via Script
 	virtual void init() override;
-
 	virtual void update() override;
+	virtual void onCollisionStay(GameObject& other) override;
 
 private:
 	const DirectX::SimpleMath::Vector3 FORWARD = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f);

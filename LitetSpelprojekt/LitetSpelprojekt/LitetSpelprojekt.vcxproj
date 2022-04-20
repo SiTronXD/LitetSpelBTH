@@ -178,6 +178,8 @@
     <ClCompile Include="Engine\Graphics\MeshData.cpp" />
     <ClCompile Include="Engine\Graphics\InputLayoutDesc.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
+    <ClCompile Include="Engine\Physics\BoundingVolumes.cpp" />
+    <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
     <ClCompile Include="Engine\Components\Player.cpp" />
@@ -231,6 +233,8 @@
     <ClInclude Include="Engine\Graphics\MeshData.h" />
     <ClInclude Include="Engine\Graphics\InputLayoutDesc.h" />
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
+    <ClInclude Include="Engine\Physics\BoundingVolumes.h" />
+    <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
     <ClInclude Include="Engine\Components\Player.h" />
