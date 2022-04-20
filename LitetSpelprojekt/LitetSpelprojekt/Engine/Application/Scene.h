@@ -23,7 +23,7 @@ private:
 
 protected:
 	inline void setActiveCamera(Camera* cam) { this->activeCamera = cam; }
-	inline GameObject& addGameObject() { return this->ecs.addGameObject(); }
+	inline GameObject& addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTAGGED) { return this->ecs.addGameObject(name, tag); }
 
 	inline Resources& getResources() { return *this->resources; }
 	inline Renderer& getRenderer() { return *this->renderer; }

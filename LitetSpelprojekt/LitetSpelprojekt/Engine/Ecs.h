@@ -9,6 +9,8 @@
 
 #include "Dev/Log.h"
 
+enum class ObjectTag { UNTAGGED, GROUND, PLAYER, ENEMY, COUNT };
+
 class GameObject;
 
 class ECS
@@ -43,7 +45,7 @@ public:
 	void init();
 	void update();
 
-	GameObject& addGameObject();
+	GameObject& addGameObject(std::string name, ObjectTag tag);
 
 	template <typename T>
 	T* addComponent(int gameObjectID);
@@ -54,7 +56,6 @@ public:
 
 	template <typename T>
 	std::vector<T*> getActiveComponents();
-
 	std::vector<Component*> getAllComponents(int gameObjectID);
 };
 
