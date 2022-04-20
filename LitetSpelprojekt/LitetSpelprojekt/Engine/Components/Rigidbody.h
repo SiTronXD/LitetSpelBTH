@@ -15,7 +15,7 @@ private:
 
 	float mass;
 
-	bool isKinematic;
+	bool kinematicStatus;
 
 public:
 	Rigidbody(GameObject& object);
@@ -24,6 +24,9 @@ public:
 	virtual void init() override;
 	virtual void update() override;
 	virtual void onCollisionStay(GameObject& other) override;
+
+	bool isKinematic() const;
+	void setKinematicStatus(bool kinematicStatus);
 
 	void setMass(float newMass);
 	void setVelocity(const DirectX::SimpleMath::Vector3& newVelocity);

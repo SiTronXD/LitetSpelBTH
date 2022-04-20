@@ -3,6 +3,8 @@
 #include "../../Engine/Components/Script.h"
 #include "../../Engine/Components/Componentpch.h"
 
+class Rigidbody;
+
 class Player : public Script
 {
 private:
@@ -10,6 +12,9 @@ private:
 	float mouseSensitive;
 
 	bool onGround;
+
+	// Component references
+	Rigidbody* rb;
 	
 	void move();
 	void jump();
@@ -21,7 +26,7 @@ public:
 	~Player();
 
 	inline float getSpeed() const { return this->speed; }
-	void setSpeed(float spd);
+	void setSpeed(float speed);
 
 	inline bool isOnGround() const { return this->onGround; }
 
@@ -31,10 +36,10 @@ public:
 	virtual void onCollisionStay(GameObject& other) override;
 
 private:
-	const DirectX::SimpleMath::Vector3 FORWARD = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f);
+	/*const DirectX::SimpleMath::Vector3 FORWARD = DirectX::SimpleMath::Vector3(0.0f, 0.0f, 1.0f);
 	const DirectX::SimpleMath::Vector3 BACKWARD = DirectX::SimpleMath::Vector3(0.0f, 0.0f, -1.0f);
 	const DirectX::SimpleMath::Vector3 LEFT = DirectX::SimpleMath::Vector3(-1.0f, 0.0f, 0.0f);
-	const DirectX::SimpleMath::Vector3 RIGHT = DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f);
+	const DirectX::SimpleMath::Vector3 RIGHT = DirectX::SimpleMath::Vector3(1.0f, 0.0f, 0.0f);*/
 
 };
 
