@@ -56,11 +56,17 @@ bool BoxVolume::intersects(DirectX::SimpleMath::Ray ray, float& distance) const
 DirectX::BoundingOrientedBox OrientedBoxVolume::createOrientedBox() const
 {
 	Vector3 pos = this->getTransform()->getPosition();
-	return BoundingOrientedBox(pos, this->extents,
-		Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(pos.x), XMConvertToRadians(pos.y), XMConvertToRadians(pos.z)));
+	Vector4 rot = this->getTransform()->getRotationQuat();
+	return BoundingOrientedBox(
+		pos, 
+		this->extents,
+		rot
+	);
 }
 
-OrientedBoxVolume::OrientedBoxVolume(Transform* transform, Vector3 extents):
+OrientedBoxVolume::OrientedBoxVolume(
+	Transform* transform, 
+	Vector3 extents):
 	BoundingVolume(transform), extents(extents)
 {
 }

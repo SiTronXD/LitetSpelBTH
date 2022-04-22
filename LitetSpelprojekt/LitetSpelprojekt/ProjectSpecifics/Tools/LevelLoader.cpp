@@ -69,8 +69,6 @@ void LevelLoader::traverseStructure(
 			newColliderOrientedBox.pos = nodePosition;
 			newColliderOrientedBox.extents = nodeScale;
 			newColliderOrientedBox.orientation = nodeRotationQuaternion;
-
-			// newColliderOrientedBox.orientation = eulerangle tempBox.Orientation;
 			this->orientedBoxColliders.push_back(newColliderOrientedBox);
 		}
 	}

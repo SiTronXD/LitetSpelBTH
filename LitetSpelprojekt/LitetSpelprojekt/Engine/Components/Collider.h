@@ -11,12 +11,16 @@ private:
 	BoundingVolume* volume;
 	bool trigger;
 
+	DirectX::SimpleMath::Vector4 orientation;
+
 public:
 	Collider(GameObject& object);
 	virtual ~Collider();
 
 	void setBoxCollider(DirectX::SimpleMath::Vector3 extents);
-	void setOrientedBoxCollider(DirectX::SimpleMath::Vector3 extents);
+	void setOrientedBoxCollider(
+		DirectX::SimpleMath::Vector3 extents
+	);
 	void setSphereCollider(float radius);
 
 	inline void setTrigger(bool isTrigger) { this->trigger = isTrigger; }

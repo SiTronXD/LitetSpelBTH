@@ -11,6 +11,9 @@ using namespace DirectX::SimpleMath;
 
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
 {
+	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
+
 	// Sphere colliders
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
 	{
@@ -19,7 +22,10 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelSphereCollider: " + i
 		);
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealSphereMesh", "testMaterial");
 		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
+		colliderObject.getComponent<Transform>()->setScaling(Vector3(1,1,1) * sphereInfo.radius);
 		Collider* col = colliderObject.addComponent<Collider>();
 		col->setSphereCollider(sphereInfo.radius);
 	}
@@ -32,7 +38,11 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelBoxCollider: " + i
 		);
+
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealCubeMesh", "testMaterial");
 		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
+		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
 		Collider* col = colliderObject.addComponent<Collider>();
 		col->setBoxCollider(boxInfo.extents);
 	}
@@ -46,7 +56,11 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelOrientedBoxColldier: " + i
 		);
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealCubeMesh", "testMaterial");
 		colliderObject.getComponent<Transform>()->setPosition(orientedBoxInfo.pos);
+		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
+		colliderObject.getComponent<Transform>()->setScaling(orientedBoxInfo.extents * 2);
 		Collider* col = colliderObject.addComponent<Collider>();
 		col->setOrientedBoxCollider(orientedBoxInfo.extents);
 	}

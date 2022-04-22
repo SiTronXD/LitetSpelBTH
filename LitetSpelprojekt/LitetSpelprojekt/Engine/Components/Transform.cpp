@@ -2,10 +2,25 @@
 
 void Transform::updateWorldMatrix()
 {
-    this->worldMatrix = 
-        DirectX::XMMatrixScaling(this->scale.x, this->scale.y, this->scale.z) *
-        DirectX::XMMatrixRotationRollPitchYaw(DirectX::XMConvertToRadians(this->rot.x), DirectX::XMConvertToRadians(this->rot.y), DirectX::XMConvertToRadians(this->rot.z)) *
-        DirectX::XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
+    // Quaternion rotation
+    if (this->rotQuat.x != 0.0f ||
+        this->rotQuat.y != 0.0f ||
+        this->rotQuat.z != 0.0f ||
+        this->rotQuat.w != 0.0f)
+    {
+        this->worldMatrix =
+            DirectX::XMMatrixScaling(this->scale.x, this->scale.y, this->scale.z) *
+            DirectX::XMMatrixRotationQuaternion(this->rotQuat) *
+            DirectX::XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
+    }
+    // Euler angles
+    else
+    {
+        this->worldMatrix =
+            DirectX::XMMatrixScaling(this->scale.x, this->scale.y, this->scale.z) *
+            DirectX::XMMatrixRotationRollPitchYaw(DirectX::XMConvertToRadians(this->rot.x), DirectX::XMConvertToRadians(this->rot.y), DirectX::XMConvertToRadians(this->rot.z)) *
+            DirectX::XMMatrixTranslation(this->pos.x, this->pos.y, this->pos.z);
+    }
 }
 
 void Transform::updateDirectionalVectors()
@@ -68,6 +83,11 @@ void Transform::setRotation(const DirectX::SimpleMath::Vector3& rot)
 {
     this->rot = rot;
     this->updateDirectionalVectors();
+}
+
+void Transform::setRotation(const DirectX::SimpleMath::Vector4& quat)
+{
+    this->rotQuat = quat;
 }
 
 void Transform::setRotation(float x, float y, float z)
