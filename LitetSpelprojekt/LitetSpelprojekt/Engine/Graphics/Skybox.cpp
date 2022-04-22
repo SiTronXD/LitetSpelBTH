@@ -20,8 +20,7 @@ void Skybox::update(const DirectX::SimpleMath::Vector3& cameraPos, const DirectX
 	
 	//First reset skybox
 	DirectX::SimpleMath::Matrix m = DirectX::XMMatrixIdentity();
-	//DirectX::SimpleMath::Matrix scale = DirectX::XMMatrixScaling(10.0f, 10.0f, 10.0f);
-
+	
 	m = vpMatrix;
 
 	//Define the skybox in worldspace
@@ -35,9 +34,7 @@ void Skybox::update(const DirectX::SimpleMath::Vector3& cameraPos, const DirectX
 
 void Skybox::initialize()
 {
-
-	//Initialize a skybox texture.
-	this->cubemap.createCubeMap("Skybox");
+	//Initialize a skybox
 	MeshData data(DefaultMesh::CUBE);
 	data.invertFaces();
 
@@ -47,10 +44,6 @@ void Skybox::initialize()
 	this->initShaders();
 
 	this->constantBuffer.createBuffer(sizeof(BufferData));
-}
-
-void Skybox::shutdown()
-{
 }
 
 void Skybox::initShaders()

@@ -39,6 +39,12 @@ Resources::~Resources()
 	{
 		delete itr->second;
 	}
+
+	//Cubemaps
+	for (std::map<std::string, CubeMap*>::iterator itr = this->cubeMaps.begin(), itr_end = this->cubeMaps.end(); itr != itr_end; ++itr)
+	{
+		delete itr->second;
+	}
 }
 
 void Resources::init(Renderer* renderer)
@@ -155,6 +161,28 @@ void Resources::addPixelShader(const std::string& pixelShaderName)
 	);
 }
 
+void Resources::addCubeMap(const std::string& textureFileName, const std::string& textureFormat, const std::string& cubeMapName)
+{
+	//Check if resource already exist
+	if (this->cubeMaps.count(cubeMapName) > 0)
+	{
+		Log::write(cubeMapName + " has already been added to resources.");
+		return;
+	}
+
+	//Create and load cubemap
+	CubeMap* createdCubeMap = new CubeMap(*this->renderer);
+	createdCubeMap->createCubeMap(textureFileName, textureFormat);
+
+	//Insert cubemap
+	this->cubeMaps.insert(
+		std::pair<std::string, CubeMap*>(
+			cubeMapName,
+			createdCubeMap
+			)
+	);
+}
+
 Texture& Resources::getTexture(const char* textureName)
 {
 	Texture* foundTexture = this->textures[textureName];
@@ -181,6 +209,16 @@ Material& Resources::getMaterial(const char* materialName)
 
 	if (!foundMaterial)
 		Log::error("Material has not been added: " + std::string(materialName));
+
+	return *foundMaterial;
+}
+
+CubeMap& Resources::getCubemap(const char* cubemapName)
+{
+	CubeMap* foundMaterial = this->cubeMaps[cubemapName];
+
+	if (!foundMaterial)
+		Log::error("Cubemap has not been added: " + std::string(cubemapName));
 
 	return *foundMaterial;
 }

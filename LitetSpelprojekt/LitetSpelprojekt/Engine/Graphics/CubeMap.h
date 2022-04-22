@@ -11,6 +11,6 @@ public:
 
 	inline Texture& getTexture() { return this->texture; }
 
-	void createCubeMap(std::string path);
+	void createCubeMap(std::string fileName, std::string format);
 };
 

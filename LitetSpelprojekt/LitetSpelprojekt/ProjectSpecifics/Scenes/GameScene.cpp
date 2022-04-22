@@ -31,7 +31,10 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/timergui.png", "timergui.png");
 	this->getResources().addTexture("Resources/Textures/keygui.png", "keygui.png");
 	this->getResources().addMaterial("me.png", "testMaterial");
-	
+
+	//Add cubemap
+	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
+	this->getRenderer().setSkyBoxName("skybox");
 
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
 	testMeshData.transformMesh(

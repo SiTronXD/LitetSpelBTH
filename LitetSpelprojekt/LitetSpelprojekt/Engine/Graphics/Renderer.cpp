@@ -266,12 +266,14 @@ void Renderer::render(Scene& scene)
 		DXGI_FORMAT_R32_UINT, 0
 	);
 
+	CubeMap& cubeMap = resources.getCubemap(this->skyboxName.c_str());
+
 	immediateContext->PSSetSamplers(
-		0, 1, &this->skybox.getCubeMap().getTexture().getSampler()
+		0, 1, &cubeMap.getTexture().getSampler()
 	);
 
 	immediateContext->PSSetShaderResources(
-		0, 1, &this->skybox.getCubeMap().getTexture().getSRV().getPtr()
+		0, 1, &cubeMap.getTexture().getSRV().getPtr()
 	);
 
 	immediateContext->VSSetShader(this->skybox.getVertexShader().getVS(), nullptr, 0);
@@ -293,4 +295,9 @@ void Renderer::render(Scene& scene)
 void Renderer::presentSC()
 {
 	this->swapChain->Present(1, 0);
+}
+
+void Renderer::setSkyBoxName(const std::string& name)
+{
+	this->skyboxName = name;
 }

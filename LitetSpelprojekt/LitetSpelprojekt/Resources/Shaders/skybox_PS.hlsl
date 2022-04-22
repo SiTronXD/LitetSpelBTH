@@ -1,7 +1,6 @@
 struct SKYMAP_PS_INPUT
 {
-    float3 inPos : POSITION;
-    float3 inNormal : NORMAL;
+    float4 inPos : SV_POSITION;
     float3 inTexCoord : UV;
 };
 
