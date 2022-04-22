@@ -22,7 +22,8 @@ void SettingsScene::init()
 {
 	// Load Textures
 	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
-	
+	this->getResources().addTexture("Resources/Textures/HealthBar.png", "healthBar.png");
+
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
@@ -33,7 +34,7 @@ void SettingsScene::init()
 
 	// Settings Header
 	settingsHeader.setPos(Vector2(0, 220));
-	settingsHeader.setWidth(354);
+	settingsHeader.setWidth(sliderWidth);
 	settingsHeader.setHeight(159);
 
 	// Resolution Slider
@@ -50,7 +51,7 @@ void SettingsScene::init()
 	sensSlider.setHeight(sliderHeight);
 	sensSlider.setMinVal(0);
 	sensSlider.setCurVal(5);
-	sensSlider.setMaxVal(35);
+	sensSlider.setMaxVal(10);
 
 	// Brightness Slider
 	brightSlider.setPos(Vector2(0, -35));
@@ -77,8 +78,24 @@ void SettingsScene::init()
 void SettingsScene::update()
 {
 	this->getECS().update();
+	
+	if (resSlider.isClicked())
+	{
 
-	if (exitButton.isClicked())
+	}
+	else if (sensSlider.isClicked())
+	{
+
+	}
+	else if (brightSlider.isClicked())
+	{
+
+	}
+	else if (volSlider.isClicked())
+	{
+
+	}
+	else if (exitButton.isClicked())
 	{
 		// Exit Game
 		this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
