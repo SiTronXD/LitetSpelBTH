@@ -8,6 +8,7 @@
 #include "Graphics/Material.h"
 #include "Graphics/Shaders/VertexShader.h"
 #include "Graphics/Shaders/PixelShader.h"
+#include "Graphics/CubeMap.h"
 
 class Renderer;
 
@@ -19,6 +20,7 @@ private:
 	std::map<std::string, Material*> materials;
 	std::map<std::string, VertexShader*> vertexShaders;
 	std::map<std::string, PixelShader*> pixelShaders;
+	std::map<std::string, CubeMap*> cubeMaps;
 
 	Renderer* renderer;
 
@@ -48,7 +50,14 @@ public:
 		const std::string& pixelShaderName
 	);
 
+	void addCubeMap(
+		const std::string& textureFileName,
+		const std::string& textureFormat,
+		const std::string& cubeMapName
+	);
+
 	Texture& getTexture(const char* textureName);
 	Mesh& getMesh(const char* meshName);
 	Material& getMaterial(const char* materialName);
+	CubeMap& getCubemap(const char* cubemapName);
 };

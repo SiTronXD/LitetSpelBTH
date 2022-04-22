@@ -11,8 +11,8 @@ private:
 	struct BufferData
 	{
 		DirectX::XMFLOAT4X4 mvpMat;
-		DirectX::SimpleMath::Vector3 cameraPos;
-		float fill;
+		DirectX::XMFLOAT3 cameraPos;
+		float padding;
 	} bufferStruct{};
 	
 	Renderer& renderer;
@@ -44,7 +44,6 @@ public:
 	void update(const DirectX::SimpleMath::Vector3& cameraPos, const DirectX::XMMATRIX& vpMatrix);
 
 	void initialize();
-	void shutdown();
 
 private:
 	void initShaders();

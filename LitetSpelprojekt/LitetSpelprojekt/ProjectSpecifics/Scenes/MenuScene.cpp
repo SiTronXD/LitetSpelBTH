@@ -20,6 +20,10 @@ void MenuScene::init()
 	this->getResources().addTexture("Resources/Textures/playButton.png", "playButton.png");
 	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
 	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
+
+	//Add cubemap
+	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
+	this->getRenderer().setSkyBoxName("menubox");
 	
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());

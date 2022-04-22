@@ -118,7 +118,7 @@ bool Texture::load(const std::string& fileName)
 	return this->createShaderResourceView();
 }
 
-bool Texture::createCubemap(std::string path)
+bool Texture::createCubemap(std::string fileName, std::string format)
 {
 	HRESULT hr = {};
 	
@@ -143,7 +143,7 @@ bool Texture::createCubemap(std::string path)
 	for (int i = 0; i < 6; i++)
 	{
 		//Load image
-		std::string tempPath = "Resources/Textures/"+ path + std::to_string(i + 1) + ".bmp";
+		std::string tempPath = "Resources/Textures/"+ fileName + std::to_string(i + 1) + format;
 		
 		imageData[i] = stbi_load(
 			tempPath.c_str(),
@@ -153,7 +153,7 @@ bool Texture::createCubemap(std::string path)
 
 		if (!imageData[i])
 		{
-			Log::error("Failed to load image: " + path + std::to_string(i) + ".bmp");
+			Log::error("Failed to load image: " + fileName + std::to_string(i) + format);
 			return false;
 			break;
 		}

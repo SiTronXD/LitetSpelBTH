@@ -9,7 +9,7 @@ CubeMap::~CubeMap()
 {
 }
 
-void CubeMap::createCubeMap(std::string path)
+void CubeMap::createCubeMap(std::string fileName, std::string format)
 {
-	this->texture.createCubemap(path);
+	this->texture.createCubemap(fileName, format);
 }
