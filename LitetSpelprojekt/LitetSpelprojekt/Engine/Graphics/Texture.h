@@ -29,6 +29,7 @@ public:
 	virtual ~Texture();
 
 	bool load(const std::string& fileName);
+	bool createCubemap(std::string path);
 
 	inline SRV& getSRV() { return this->textureSRV; }
 	inline ID3D11SamplerState*& getSampler() { return this->samplerState; }

@@ -59,6 +59,8 @@ void Player::setSpeed(float spd)
 
 void Player::init()
 {
+	Input::setLockCursorPosition(true);
+	Input::setCursorVisible(false);
 }
 
 void Player::update()

@@ -1,4 +1,5 @@
 #include "SceneHandler.h"
+#include "../Ecs.h"
 
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer)
@@ -29,6 +30,8 @@ void SceneHandler::setScene(Scene* scene)
 	}
 	this->scene = scene;
 	this->scene->init();
+
+	this->scene->getECS().init();
 }
 
 Scene* SceneHandler::getScene() const
