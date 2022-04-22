@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <SimpleMath.h>
 #include "GameScene.h"
+#include "../Tools/LevelLoader.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -40,16 +41,29 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh"
 	);
+	this->getResources().addMesh(
+		MeshData(DefaultMesh::PLANE),
+		"PlaneMesh"
+	);
+
+	// Level loader
+	LevelLoader levelLoader(this->getResources());
+	levelLoader.load("Resources/Levels/testLevel.obj");
+	MeshData levelMeshData = levelLoader.getMeshData();
+	this->getResources().addMesh(
+		std::move(levelMeshData),
+		"LevelMesh"
+	);
   
-	GameObject& cam = this->addGameObject();
+	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());
-	cam.getComponent<Transform>()->setPosition({ 0.0f, 0.75f, 1.0f });
-	cam.getComponent<Transform>()->rotate({ -30.0f, 0.0f, 0.0f });
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	cam.addComponent<Player>();
+	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
 	col->setBoxCollider(Vector3(0.5f, 0.5f, 0.5f));
 
-	GameObject& model = this->addGameObject();
+	GameObject& model = this->addGameObject("Suzanne1");
 	Rigidbody* rb = model.addComponent<Rigidbody>();
 	rb->addForce(Vector3(0, 2, -2));
 	MeshComp* mc = model.addComponent<MeshComp>();
@@ -57,12 +71,29 @@ void GameScene::init()
 	col = model.addComponent<Collider>();
 	col->setSphereCollider(1.0f);
 
-	GameObject& model2 = this->addGameObject();
+	// Level game object
+	GameObject& levelObject = this->addGameObject("LevelObject");
+	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
+	levelMeshComponent->setMesh("LevelMesh", "testMaterial");
+
+	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
 	mc = model2.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 	col = model2.addComponent<Collider>();
 	col->setSphereCollider(1.0f);
+
+	GameObject& ground = this->addGameObject("Ground", ObjectTag::GROUND);
+	mc = ground.addComponent<MeshComp>();
+	mc->setMesh("CubeMesh", "testMaterial");
+	col = ground.addComponent<Collider>();
+	col->setBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
+	rb = ground.addComponent<Rigidbody>();
+	rb->setKinematicStatus(true);
+	ground.getComponent<Transform>()->setScaling({ 100.0f, 1.0f, 100.0f });
+	ground.getComponent<Transform>()->setPosition(0.0f, -10.0f, 0.0f);
+
+	this->getECS().init();
 }
 
 void GameScene::update()

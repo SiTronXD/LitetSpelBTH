@@ -8,7 +8,7 @@ Rigidbody::Rigidbody(GameObject& object):
 	Script(object),
 	transform(*this->getTransform()),
 	mass(1.0f),
-	isKinematic(false)
+	kinematicStatus(false)
 {
 	this->acceleration = Vector3(0.0f, -9.82f, 0.0f);
 }
@@ -23,12 +23,15 @@ void Rigidbody::init()
 
 void Rigidbody::update()
 {
-	// Adjust position by velocity
-	transform.move(this->velocity * Time::getDT());
+	if (!this->kinematicStatus)
+	{
+		// Adjust position by velocity
+		transform.move(this->velocity * Time::getDT());
 
-	// Adjust velocity by acceleration. Do this last because
-	// velocity could be manually set.
-	this->velocity += this->acceleration * Time::getDT();
+		// Adjust velocity by acceleration. Do this last because
+		// velocity could be manually set.
+		this->velocity += this->acceleration * Time::getDT();
+	}
 }
 
 void Rigidbody::onCollisionStay(GameObject& other)
@@ -37,12 +40,22 @@ void Rigidbody::onCollisionStay(GameObject& other)
 
 	if (otherRb)
 	{
-		float e = 0.0f;
+		float e = 1.0f;
 
-		this->velocity = (this->velocity * (this->mass - otherRb->mass * e) +
+		this->velocity = -(this->velocity * (this->mass - otherRb->mass * e) +
 			otherRb->velocity * otherRb->mass * (1.0f + e)) / 
 			(this->mass + otherRb->mass);
 	}
+}
+
+bool Rigidbody::isKinematic() const
+{
+	return this->kinematicStatus;
+}
+
+void Rigidbody::setKinematicStatus(bool kinematicStatus)
+{
+	this->kinematicStatus = kinematicStatus;
 }
 
 void Rigidbody::setMass(float newMass)

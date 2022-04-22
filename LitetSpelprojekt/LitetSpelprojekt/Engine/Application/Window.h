@@ -30,9 +30,11 @@ public:
 	bool init(unsigned int width, unsigned int height, const std::string title);
 	const bool& isRunning();
 
+	void setTitle(const std::string& title);
 	void quit();
 
 	inline HWND& getWindowHandle() { return this->windowHandle; }
+	inline const bool isFocus() { return GetFocus() != NULL; }
 	inline const unsigned int getWidth() { return this->width; }
 	inline const unsigned int getHeight() { return this->height; }
 };

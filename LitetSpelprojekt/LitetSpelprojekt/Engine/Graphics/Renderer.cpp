@@ -155,6 +155,8 @@ void Renderer::render(Scene& scene)
 #ifdef _DEBUG
 	if (!scene.getActiveCamera())
 		Log::error("No active camera has been set in the renderer.");
+
+	unsigned int numDrawCalls = 0;
 #endif
 
 	// Update camera constant buffer
@@ -180,7 +182,7 @@ void Renderer::render(Scene& scene)
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
 	{
-		Mesh& mesh = this->resources.getMesh(meshComponents[i]->getMeshName());
+		Mesh& mesh = this->resources.getMesh(meshComponents[i]->getMeshName().c_str());
 
 		// Set mvp Matrix
 		Matrix m = meshComponents[i]->getTransform()->getWorldMatrix() * vp;
@@ -188,31 +190,48 @@ void Renderer::render(Scene& scene)
 		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 
 		// Set texture
-		Material& material = this->resources.getMaterial(meshComponents[i]->getMaterialName());
-		Texture& texture = this->resources.getTexture(material.getDiffuseTextureName());
-		immediateContext->PSSetSamplers(
-			0, 1, &texture.getSampler()
-		);
-		immediateContext->PSSetShaderResources(
-			0, 1, &texture.getSRV().getPtr()
-		);
+		for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)
+		{
+			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
 
-		// Vertex/index buffer
-		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
-		immediateContext->IASetVertexBuffers(
-			0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
-		immediateContext->IASetIndexBuffer(
-			mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
-		);
+			Material& material = this->resources.getMaterial(currentSubmesh.materialName);
+			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName().c_str());
+			immediateContext->PSSetSamplers(
+				0, 1, &texture.getSampler()
+			);
+			immediateContext->PSSetShaderResources(
+				0, 1, &texture.getSRV().getPtr()
+			);
 
-		immediateContext->DrawIndexed(
-			mesh.getIndexBuffer().getIndexCount(), 0, 0
-		);
+			// Vertex/index buffer
+			immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
+			immediateContext->IASetVertexBuffers(
+				0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
+			immediateContext->IASetIndexBuffer(
+				mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
+			);
+
+			/*immediateContext->DrawIndexed(
+				mesh.getIndexBuffer().getIndexCount(), 0, 0
+			);*/
+
+			immediateContext->DrawIndexed(
+				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
+			);
+
+		#ifdef _DEBUG
+			numDrawCalls++;
+		#endif
+		}
 	}
 
 	// Unbind render target
 	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
 	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);
+
+#ifdef _DEBUG
+	//Log::write("Num draw calls: " + std::to_string(numDrawCalls));
+#endif
 }
 
 void Renderer::presentSC()

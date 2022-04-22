@@ -180,7 +180,7 @@ const bool& Window::isRunning()
 	this->lastCursorPoint = this->cursorPoint;
 
 	//Set cursor position to center if out of window bounds.
-	if (Input::shouldLockCursor())
+	if (Input::shouldLockCursor() && this->isFocus())
 	{
 		this->screenMiddlePoint.x = this->width / 2;
 		this->screenMiddlePoint.y = this->height / 2;
@@ -199,6 +199,11 @@ const bool& Window::isRunning()
 		this->running = false;
 
 	return this->running;
+}
+
+void Window::setTitle(const std::string& title)
+{
+	SetWindowTextA(this->windowHandle, title.c_str());
 }
 
 void Window::quit()

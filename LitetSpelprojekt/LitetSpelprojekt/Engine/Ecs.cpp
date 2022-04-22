@@ -49,12 +49,12 @@ void ECS::update()
 	}
 }
 
-GameObject& ECS::addGameObject()
+GameObject& ECS::addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTAGGED)
 {
 	int ID = this->gameObjects.size();
 
 	// All game objects should have a transform
-	this->gameObjects.push_back(new GameObject(*this, ID));
+	this->gameObjects.push_back(new GameObject(*this, ID, name, tag));
 	this->addComponent<Transform>(ID);
 
 	return *this->gameObjects.back();

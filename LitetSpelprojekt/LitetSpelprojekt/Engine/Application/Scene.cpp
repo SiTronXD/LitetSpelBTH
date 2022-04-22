@@ -2,7 +2,8 @@
 #include "SceneHandler.h"
 
 Scene::Scene(SceneHandler& sceneHandler)
-	: sceneHandler(sceneHandler),
+	: activeCamera(nullptr),
+	sceneHandler(sceneHandler),
 	resources(&sceneHandler.getResources()),
 	renderer(&sceneHandler.getRenderer()),
 	uiRenderer(&sceneHandler.getUIRenderer()),
