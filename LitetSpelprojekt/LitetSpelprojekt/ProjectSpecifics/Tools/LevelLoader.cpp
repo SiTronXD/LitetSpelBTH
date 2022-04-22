@@ -23,24 +23,26 @@ void LevelLoader::traverseStructure(
 
 	// Log::writeMat(transformation);
 
+	// Decompose transformation
+	Vector3 nodePosition;
+	Vector4 nodeRotationQuaternion;
+	Vector3 nodeScale;
+	XMVECTOR tempNodePosition;
+	XMVECTOR tempNodeRotationQuaternion;
+	XMVECTOR tempNodeScale;
+	XMMatrixDecompose(
+		&tempNodeScale,
+		&tempNodeRotationQuaternion,
+		&tempNodePosition,
+		transformation
+	);
+	nodePosition = tempNodePosition;
+	nodeRotationQuaternion = tempNodeRotationQuaternion;
+	nodeScale = tempNodeScale;
+
 	// Colliders
 	if (nodeName.find("collider_") != std::string::npos)
 	{
-		// Decompose transformation
-		Vector3 nodePosition;
-		Vector3 nodeRotationQuaternion;
-		Vector3 nodeScale;
-
-		XMVECTOR tempNodePosition;
-		XMVECTOR tempNodeRotationQuaternion;
-		XMVECTOR tempNodeScale;
-		XMMatrixDecompose(
-			&tempNodeScale,
-			&tempNodeRotationQuaternion,
-			&tempNodePosition,
-			transformation
-		);
-
 		// Sphere
 		if (nodeName.find("sphere") != std::string::npos)
 		{
@@ -53,12 +55,10 @@ void LevelLoader::traverseStructure(
 		// Box
 		else if (nodeName.find("cube") != std::string::npos)
 		{
-			Vector3 extents = nodeScale * 0.5f;
-
 			// Create and add box collider
 			LevelColliderBox newColliderBox{};
 			newColliderBox.pos = nodePosition;
-			//newColliderBox.extents = ---extents;
+			newColliderBox.extents = nodeScale;
 			this->boxColliders.push_back(newColliderBox);
 		}
 		// Oriented box
@@ -67,10 +67,17 @@ void LevelLoader::traverseStructure(
 			// Create and add oriented box collider
 			LevelColliderOrientedBox newColliderOrientedBox{};
 			newColliderOrientedBox.pos = nodePosition;
-			//newColliderOrientedBox.extents = tempBox.Extents;
+			newColliderOrientedBox.extents = nodeScale;
+			newColliderOrientedBox.orientation = nodeRotationQuaternion;
+
 			// newColliderOrientedBox.orientation = eulerangle tempBox.Orientation;
 			this->orientedBoxColliders.push_back(newColliderOrientedBox);
 		}
+	}
+	// Player start position
+	else if (nodeName == "PlayerStartPos")
+	{
+		this->playerStartPos = nodePosition;
 	}
 	// Mesh
 	else
@@ -221,84 +228,7 @@ bool LevelLoader::load(const std::string& levelName)
 	{
 		aiMesh* submesh = scene->mMeshes[i];
 
-		std::string submeshName = std::string(submesh->mName.C_Str());
-
-		// Colliders
-		/*if (submeshName.find("collider_") != std::string::npos)
-		{
-			Vector3 avgPos = this->getAveragePosition(submesh);
-
-			// Sphere
-			if (submeshName.find("sphere") != std::string::npos)
-			{
-				// First position in sphere surface
-				Vector3 surfacePos = Vector3(
-					submesh->mVertices[0].x,
-					submesh->mVertices[0].y,
-					submesh->mVertices[0].z
-				);
-
-				// Create and add sphere collider
-				LevelColliderSphere newColliderSphere{};
-				newColliderSphere.pos = avgPos;
-				newColliderSphere.radius = (avgPos - surfacePos).Length();
-				this->sphereColliders.push_back(newColliderSphere);
-			}
-			// Box
-			else if (submeshName.find("cube") != std::string::npos)
-			{
-				Vector3 extents = Vector3(
-					abs(avgPos.x - submesh->mVertices[0].x),
-					abs(avgPos.y - submesh->mVertices[0].y),
-					abs(avgPos.z - submesh->mVertices[0].z)
-				);
-
-				// Create and add box collider
-				LevelColliderBox newColliderBox{};
-				newColliderBox.pos = avgPos;
-				newColliderBox.extents = extents;
-				this->boxColliders.push_back(newColliderBox);
-			}
-			// Oriented box
-			else if (submeshName.find("orientedBox") != std::string::npos)
-			{
-				// Create XMFLOAT3 array
-				XMFLOAT3* points = new XMFLOAT3[submesh->mNumVertices]{};
-				for (int j = 0; j < submesh->mNumVertices; ++j)
-				{
-					points[j] = XMFLOAT3(
-						submesh->mVertices[j].x,
-						submesh->mVertices[j].y,
-						submesh->mVertices[j].z
-					);
-				}
-
-				// Create oriented box
-				BoundingOrientedBox tempBox;
-				BoundingOrientedBox::CreateFromPoints(
-					tempBox, 
-					submesh->mNumVertices, 
-					points,
-					sizeof(XMFLOAT3)
-				);
-				delete[] points;
-
-				// Create and add oriented box collider
-				LevelColliderOrientedBox newColliderOrientedBox{};
-				newColliderOrientedBox.pos = avgPos;
-				newColliderOrientedBox.extents = tempBox.Extents;
-				// newColliderOrientedBox.orientation = eulerangle tempBox.Orientation;
-				this->orientedBoxColliders.push_back(newColliderOrientedBox);
-			}
-		}
-		// Player start position
-		else if (submeshName == "PlayerStartPos")
-		{
-			this->playerStartPos = this->getAveragePosition(submesh);
-		}
-		// Mesh
-		else*/
-
+		// std::string submeshName = std::string(submesh->mName.C_Str());
 		// Log::write("Mesh: " + std::string(submesh->mName.C_Str()));
 
 		MeshData* newMeshData = new MeshData();

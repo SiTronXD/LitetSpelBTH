@@ -1,7 +1,6 @@
 #include <Windows.h>
 #include <SimpleMath.h>
 #include "GameScene.h"
-#include "../Tools/LevelLoader.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -9,6 +8,49 @@
 #include "../../Engine/Graphics/UIRenderer.h"
 
 using namespace DirectX::SimpleMath;
+
+void GameScene::addLevelColliders(LevelLoader& levelLoader)
+{
+	// Sphere colliders
+	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
+	{
+		LevelColliderSphere sphereInfo = levelLoader.getSphereColliders()[i];
+
+		GameObject& colliderObject = this->addGameObject(
+			"LevelSphereCollider: " + i
+		);
+		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
+		Collider* col = colliderObject.addComponent<Collider>();
+		col->setSphereCollider(sphereInfo.radius);
+	}
+
+	// Box colliders
+	for (unsigned int i = 0; i < levelLoader.getBoxColliders().size(); ++i)
+	{
+		LevelColliderBox boxInfo = levelLoader.getBoxColliders()[i];
+
+		GameObject& colliderObject = this->addGameObject(
+			"LevelBoxCollider: " + i
+		);
+		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
+		Collider* col = colliderObject.addComponent<Collider>();
+		col->setBoxCollider(boxInfo.extents);
+	}
+
+	// Oriented box colliders
+	for (unsigned int i = 0; i < levelLoader.getOrientedBoxColliders().size(); ++i)
+	{
+		LevelColliderOrientedBox orientedBoxInfo = 
+			levelLoader.getOrientedBoxColliders()[i];
+
+		GameObject& colliderObject = this->addGameObject(
+			"LevelOrientedBoxColldier: " + i
+		);
+		colliderObject.getComponent<Transform>()->setPosition(orientedBoxInfo.pos);
+		Collider* col = colliderObject.addComponent<Collider>();
+		col->setOrientedBoxCollider(orientedBoxInfo.extents);
+	}
+}
 
 GameScene::GameScene(SceneHandler& sceneHandler)
 	: Scene(sceneHandler)
@@ -50,6 +92,7 @@ void GameScene::init()
 		std::move(levelMeshData),
 		"LevelMesh"
 	);
+	this->addLevelColliders(levelLoader);
   
 	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());

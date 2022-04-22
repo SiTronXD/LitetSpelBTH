@@ -27,7 +27,7 @@ struct LevelColliderOrientedBox
 {
 	DirectX::XMFLOAT3 pos;
 	DirectX::XMFLOAT3 extents;
-	DirectX::XMFLOAT3 orientation;
+	DirectX::XMFLOAT4 orientation;
 };
 
 class LevelLoader
