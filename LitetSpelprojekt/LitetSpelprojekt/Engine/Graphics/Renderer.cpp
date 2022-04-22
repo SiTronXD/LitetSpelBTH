@@ -230,7 +230,7 @@ void Renderer::render(Scene& scene)
 	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);
 
 #ifdef _DEBUG
-	Log::write("Num draw calls: " + std::to_string(numDrawCalls));
+	//Log::write("Num draw calls: " + std::to_string(numDrawCalls));
 #endif
 }
 
