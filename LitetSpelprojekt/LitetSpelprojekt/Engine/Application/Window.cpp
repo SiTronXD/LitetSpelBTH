@@ -201,6 +201,11 @@ const bool& Window::isRunning()
 	return this->running;
 }
 
+void Window::setTitle(const std::string& title)
+{
+	SetWindowTextA(this->windowHandle, title.c_str());
+}
+
 void Window::quit()
 {
 	this->running = false;

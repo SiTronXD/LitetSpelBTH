@@ -1,12 +1,13 @@
 #include "MenuScene.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Application/Window.h"
+using namespace DirectX::SimpleMath;
 
-MenuScene::MenuScene(SceneHandler& sceneHandler)
-	: Scene(sceneHandler),
-	playButton(0, 0, 0, 0, this->getUIRenderer()),
-	settingsButton(0, 0, 0, 0, this->getUIRenderer()),
-	exitButton(0, 0, 0, 0, this->getUIRenderer())
+MenuScene::MenuScene(SceneHandler& sceneHandler) :
+	Scene(sceneHandler),
+	playButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
+	settingsButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
+	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer())
 {
 }
 
@@ -19,25 +20,26 @@ void MenuScene::init()
 	this->getResources().addTexture("Resources/Textures/playButton.png", "playButton.png");
 	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
 	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
+
+	//Add cubemap
+	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
+	this->getRenderer().setSkyBoxName("menubox");
 	
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
 	
 	// Define Play Button's size and position
-	playButton.setPosX(0);
-	playButton.setPosY(161);
+	playButton.setPos(Vector2(0, 161));
 	playButton.setWidth(354);
 	playButton.setHeight(159);
 
 	// Define Settings Button's size and position
-	settingsButton.setPosX(0);
-	settingsButton.setPosY(0);
+	settingsButton.setPos(Vector2(0, 0));
 	settingsButton.setWidth(354);
 	settingsButton.setHeight(159);
 
 	// Define Exit Button's size and position
-	exitButton.setPosX(0);
-	exitButton.setPosY(-160);
+	exitButton.setPos(Vector2(0, -161));
 	exitButton.setWidth(354);
 	exitButton.setHeight(159);
 }
@@ -48,12 +50,12 @@ void MenuScene::update()
 	if (playButton.isClicked())
 	{
 		// Change to Game Scene
-		Log::error("Implement Change to Game Scene");
+		this->getSceneHandler().setScene(new GameScene(this->getSceneHandler()));
 	}
 	else if (settingsButton.isClicked())
 	{
 		// Load Settings Menu
-		Log::error("Implement Settings Menu");
+		this->getSceneHandler().setScene(new SettingsScene(this->getSceneHandler()));
 	}
 	else if (exitButton.isClicked())
 	{

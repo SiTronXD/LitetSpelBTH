@@ -56,7 +56,7 @@ bool VertexShader::loadVS(
 	);
 	if (FAILED(result))
 	{
-		Log::resultFailed("Failed to create vertex shader.", result);
+		Log::resultFailed("Failed to create vertex shader: " + fileName, result);
 
 		return false;
 	}

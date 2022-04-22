@@ -83,11 +83,14 @@ void GameScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
 	this->getResources().addTexture("Resources/Textures/crosshairs64.png", "crosshairs64.png");
-	this->getResources().addTexture("Resources/Textures/healthBorder.png", "healthBorder.png");
+	this->getResources().addTexture("Resources/Textures/HealthBar.png", "HealthBar.png");
 	this->getResources().addTexture("Resources/Textures/timergui.png", "timergui.png");
 	this->getResources().addTexture("Resources/Textures/keygui.png", "keygui.png");
 	this->getResources().addMaterial("me.png", "testMaterial");
-	
+
+	//Add cubemap
+	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
+	this->getRenderer().setSkyBoxName("skybox");
 
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
 	testMeshData.transformMesh(
@@ -96,6 +99,10 @@ void GameScene::init()
 	this->getResources().addMesh(
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh"
+	);
+	this->getResources().addMesh(
+		MeshData(DefaultMesh::PLANE),
+		"PlaneMesh"
 	);
 
 	// Level loader
@@ -111,8 +118,8 @@ void GameScene::init()
 	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
-	cam.getComponent<Transform>()->rotate({ -30.0f, 0.0f, 0.0f });
 	cam.addComponent<Player>();
+	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
 	col->setBoxCollider(Vector3(0.5f, 0.5f, 0.5f));
 
@@ -135,6 +142,18 @@ void GameScene::init()
 	mc->setMesh("CubeMesh", "testMaterial");
 	col = model2.addComponent<Collider>();
 	col->setSphereCollider(1.0f);
+
+	GameObject& ground = this->addGameObject("Ground", ObjectTag::GROUND);
+	mc = ground.addComponent<MeshComp>();
+	mc->setMesh("CubeMesh", "testMaterial");
+	col = ground.addComponent<Collider>();
+	col->setBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
+	rb = ground.addComponent<Rigidbody>();
+	rb->setKinematicStatus(true);
+	ground.getComponent<Transform>()->setScaling({ 100.0f, 1.0f, 100.0f });
+	ground.getComponent<Transform>()->setPosition(0.0f, -10.0f, 0.0f);
+
+	this->getECS().init();
 }
 
 void GameScene::update()
@@ -152,7 +171,7 @@ void GameScene::renderUI()
 	
 	//Healthbar
 	this->getUIRenderer().renderTexture(
-		"healthBorder.png",
+		"HealthBar.png",
 		-700, -500, 500, 50
 	);
 

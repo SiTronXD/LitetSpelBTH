@@ -54,14 +54,16 @@
     <ClCompile Include="Engine\ResTranslator.cpp" />
     <ClCompile Include="Engine\Graphics\MeshLoader.cpp" />
     <ClCompile Include="Engine\SMath.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="ProjectSpecifics\Tools\LevelLoader.cpp" />
     <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Physics\BoundingVolumes.cpp" />
-    <ClCompile Include="Engine\Dev\Str.cpp" />
     <ClCompile Include="Engine\UI\Slider.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\SettingsScene.cpp" />
+=======
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
+>>>>>>> Skybox
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -111,14 +113,16 @@
     <ClInclude Include="Engine\Graphics\MeshLoader.h" />
     <ClInclude Include="Engine\Components\Componentpch.h" />
     <ClInclude Include="Engine\SMath.h" />
+<<<<<<< HEAD
     <ClInclude Include="ProjectSpecifics\Tools\LevelLoader.h" />
     <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Physics\BoundingVolumes.h" />
-    <ClInclude Include="Engine\Dev\Str.h" />
     <ClInclude Include="Engine\UI\Slider.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\SettingsScene.h" />
+=======
     <ClInclude Include="Engine\Graphics\Skybox.h" />
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
+>>>>>>> Skybox
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

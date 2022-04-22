@@ -19,7 +19,7 @@ public:
 	virtual ~SRV();
 
 	bool createTextureSRV(
-		ID3D11Resource* resource, const DXGI_FORMAT& format
+		ID3D11Resource* resource, const DXGI_FORMAT& format, const D3D11_SRV_DIMENSION& dimension = D3D11_SRV_DIMENSION_TEXTURE2D
 	);
 
 	inline ID3D11ShaderResourceView*& getPtr() { return this->resourceSRV; }

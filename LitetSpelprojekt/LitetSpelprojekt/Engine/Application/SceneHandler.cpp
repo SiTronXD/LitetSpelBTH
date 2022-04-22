@@ -1,4 +1,5 @@
 #include "SceneHandler.h"
+#include "../Ecs.h"
 
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,

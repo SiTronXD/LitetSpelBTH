@@ -15,6 +15,7 @@
 #include "Texture.h"
 #include "../Resources.h"
 #include "UAV.h"
+#include "Skybox.h"
 
 class Renderer
 {
@@ -35,6 +36,7 @@ private:
 	ID3D11RenderTargetView* backBufferRTV;
 	ID3D11Texture2D* dsTexture;
 	ID3D11DepthStencilView* dsView;
+	ID3D11DepthStencilState* dsState;
 
 	ConstantBuffer cameraConstantBuffer;
 
@@ -43,6 +45,10 @@ private:
 
 	UAV backBufferUAV;
 
+	Skybox skybox;
+
+	std::string skyboxName;
+
 	//Camera* activeCamera;
 
 	// Functions
@@ -50,6 +56,7 @@ private:
 	bool createViews();
 
 	bool loadShaders();
+
 public:
 	Renderer(Resources& resources);
 	virtual ~Renderer();
@@ -57,6 +64,7 @@ public:
 	void init(Window& window);
 	void render(Scene& scene);
 	void presentSC();
+	void setSkyBoxName(const std::string& name);
 
 	//void setActiveCamera(Camera& camera);
 
@@ -64,4 +72,6 @@ public:
 
 	inline ID3D11Device* getDevice() const { return this->device; }
 	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }
+
+
 };

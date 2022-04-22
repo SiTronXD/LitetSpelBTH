@@ -29,7 +29,7 @@ bool PixelShader::loadPS(const std::string fileName)
 	);
 	if (FAILED(result))
 	{
-		Log::resultFailed("Failed to create pixel shader.", result);
+		Log::resultFailed("Failed to create pixel shader: " + fileName, result);
 
 		return false;
 	}

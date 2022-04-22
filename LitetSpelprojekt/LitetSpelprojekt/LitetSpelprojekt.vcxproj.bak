@@ -159,7 +159,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Engine\Dev\Str.cpp" />
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\ComputeShader.cpp" />
     <ClCompile Include="Engine\Components\Collider.cpp" />
@@ -211,13 +210,15 @@
     <ClCompile Include="Engine\Graphics\UAV.cpp" />
     <ClCompile Include="Engine\ResTranslator.cpp" />
     <ClCompile Include="Engine\SMath.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="ProjectSpecifics\Scenes\SettingsScene.cpp" />
+=======
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
+>>>>>>> Skybox
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
     <ClInclude Include="Engine\Components\Componentpch.h" />
-    <ClInclude Include="Engine\Dev\Str.h" />
     <ClInclude Include="Engine\Graphics\Shaders\ComputeShader.h" />
     <ClInclude Include="Engine\Dev\Helpers.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
@@ -268,8 +269,11 @@
     <ClInclude Include="Engine\Graphics\UAV.h" />
     <ClInclude Include="Engine\ResTranslator.h" />
     <ClInclude Include="Engine\SMath.h" />
+<<<<<<< HEAD
     <ClInclude Include="ProjectSpecifics\Scenes\SettingsScene.h" />
+=======
     <ClInclude Include="Engine\Graphics\Skybox.h" />
+>>>>>>> Skybox
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

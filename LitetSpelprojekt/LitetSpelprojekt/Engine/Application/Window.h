@@ -30,6 +30,7 @@ public:
 	bool init(unsigned int width, unsigned int height, const std::string title);
 	const bool& isRunning();
 
+	void setTitle(const std::string& title);
 	void quit();
 
 	inline HWND& getWindowHandle() { return this->windowHandle; }

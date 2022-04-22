@@ -2,15 +2,11 @@
 #include "Dev/Log.h"
 #include "Time.h"
 #include "ResTranslator.h"
-#include "../ProjectSpecifics/Scenes/GameScene.h"
 #include "../ProjectSpecifics/Scenes/MenuScene.h"
 
 // Temp
-#include "ECS.h"
-#include "GameObject.h"
-#include "Components/Component.h"
-#include "Components/Camera.h"
-#include "Components/Transform.h"
+#include "../ProjectSpecifics/Scenes/GameScene.h"
+#include "../ProjectSpecifics/Scenes/SettingsScene.h"
 
 Engine::Engine()
 	: renderer(this->resources),
@@ -27,15 +23,12 @@ Engine::Engine()
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
-
-	this->sceneHandler.setScene(new GameScene(this->sceneHandler));
-
+	this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
 
 	// Default texture and material
-	this->resources.addTexture("Resources/Textures/me.png", "me.png");
-	this->resources.addMaterial("me.png", "");
-
-	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
+	this->resources.addTexture("Resources/Textures/Default.png", "Default.png");
+	this->resources.addMaterial("Default.png", "");
 }
 
 Engine::~Engine()
@@ -65,7 +58,7 @@ void Engine::run()
 
 		// ---------- Stop tracking time
 		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
-		//Log::write("update + render: " + std::to_string(fp_ms.count()) + " ms");
+		this->window.setTitle("Grapple Mayhem " + std::to_string((int)(1.0f / Time::getDT())) + " FPS | DT " + std::to_string(Time::getDT() * 1000.0f) + " ms");
 
 		// Render UI
 		this->sceneHandler.getScene()->renderUI();
