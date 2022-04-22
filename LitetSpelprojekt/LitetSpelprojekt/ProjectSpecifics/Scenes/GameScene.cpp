@@ -58,7 +58,6 @@ void GameScene::init()
 	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
-	cam.getComponent<Transform>()->rotate({ -30.0f, 0.0f, 0.0f });
 	cam.addComponent<Player>();
 	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
