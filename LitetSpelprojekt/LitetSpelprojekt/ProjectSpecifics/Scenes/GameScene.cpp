@@ -27,7 +27,7 @@ void GameScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
 	this->getResources().addTexture("Resources/Textures/crosshairs64.png", "crosshairs64.png");
-	this->getResources().addTexture("Resources/Textures/healthBorder.png", "healthBorder.png");
+	this->getResources().addTexture("Resources/Textures/HealthBar.png", "HealthBar.png");
 	this->getResources().addTexture("Resources/Textures/timergui.png", "timergui.png");
 	this->getResources().addTexture("Resources/Textures/keygui.png", "keygui.png");
 	this->getResources().addMaterial("me.png", "testMaterial");
@@ -111,7 +111,7 @@ void GameScene::renderUI()
 	
 	//Healthbar
 	this->getUIRenderer().renderTexture(
-		"healthBorder.png",
+		"HealthBar.png",
 		-700, -500, 500, 50
 	);
 

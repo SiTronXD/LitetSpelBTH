@@ -117,3 +117,87 @@ bool Texture::load(const std::string& fileName)
 	// Create texture SRV
 	return this->createShaderResourceView();
 }
+
+bool Texture::createCubemap(std::string path)
+{
+	HRESULT hr = {};
+	
+	//Release old texture/data if exist.
+	S_RELEASE(this->samplerState);
+	S_RELEASE(this->texture);
+
+	// Create sampler
+	this->createSampler();
+
+	// Load all six images and set Texture subresource data
+	int imageWidth = 0;
+	int imageHeight = 0;
+	int imageChannels = 0;
+	int imageDesiredChannels = 4;
+
+	unsigned char* imageData[6] = {};
+	D3D11_SUBRESOURCE_DATA textureSubresourceData[6] = {};
+
+	int imagePitch = 0;
+
+	for (int i = 0; i < 6; i++)
+	{
+		//Load image
+		std::string tempPath = "Resources/Textures/"+ path + std::to_string(i + 1) + ".bmp";
+		
+		imageData[i] = stbi_load(
+			tempPath.c_str(),
+			&imageWidth, &imageHeight,
+			&imageChannels, imageDesiredChannels
+		);
+
+		if (!imageData[i])
+		{
+			Log::error("Failed to load image: " + path + std::to_string(i) + ".bmp");
+			return false;
+			break;
+		}
+
+		imagePitch = imageWidth * imageDesiredChannels;
+
+		//Texture subresource data
+		textureSubresourceData[i].pSysMem = imageData[i];
+		textureSubresourceData[i].SysMemPitch = imagePitch;
+		textureSubresourceData[i].SysMemSlicePitch = 0;
+	}
+
+	// Create texture
+	this->textureDesc = {};
+	this->textureDesc.Width = imageWidth;
+	this->textureDesc.Height = imageHeight;
+	this->textureDesc.MipLevels = 1;
+	this->textureDesc.ArraySize = 6;
+	this->textureDesc.CPUAccessFlags = 0;
+	this->textureDesc.SampleDesc.Count = 1;
+	this->textureDesc.SampleDesc.Quality = 0;
+	this->textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	this->textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	this->textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	this->textureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+	// Create D3D texture
+	hr = this->renderer.getDevice()->CreateTexture2D(&this->textureDesc, textureSubresourceData, &this->texture);
+
+	// Free image data
+	for (int i = 0; i < 6; i++)
+	{	
+		stbi_image_free(imageData[i]);
+	}
+
+	if (FAILED(hr))
+	{
+		Log::error("Failed to create cubemap texture.");
+		return false;
+	}
+
+	// Create texture SRV
+	return this->textureSRV.createTextureSRV(this->texture, textureDesc.Format, D3D11_SRV_DIMENSION_TEXTURECUBE);
+
+	// Free image data
+	stbi_image_free(imageData);
+}

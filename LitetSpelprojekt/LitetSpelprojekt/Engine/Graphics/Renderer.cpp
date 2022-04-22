@@ -83,6 +83,21 @@ bool Renderer::createViews()
 		return false;
 	}
 
+	//Depth stencil state
+	D3D11_DEPTH_STENCIL_DESC dssDesc;
+	ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	dssDesc.DepthEnable = true;
+	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	dssDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	if (FAILED(device->CreateDepthStencilState(&dssDesc, &this->dsState)))
+	{
+		Log::error("Failed to create Depth Stencil State");
+		return false;
+	}
+
+	immediateContext->OMSetDepthStencilState(this->dsState, 0);
+	
 	return true;
 }
 
@@ -113,7 +128,9 @@ Renderer::Renderer(Resources& resources)
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
 	backBufferUAV(*this, "backBufferUAV"),
 
-	resources(resources)
+	resources(resources),
+
+	skybox(*this)
 
 	//activeCamera(nullptr)
 {
@@ -128,6 +145,7 @@ Renderer::~Renderer()
 	this->backBufferRTV->Release();
 	this->dsTexture->Release();
 	this->dsView->Release();
+	this->dsState->Release();
 }
 
 void Renderer::init(Window& window)
@@ -147,6 +165,9 @@ void Renderer::init(Window& window)
 
 	// Constant buffer
 	this->cameraConstantBuffer.createBuffer(sizeof(CameraBufferData));
+	
+	//Init skybox
+	this->skybox.initialize();
 }
 
 float timer = 0.0f;
@@ -225,6 +246,41 @@ void Renderer::render(Scene& scene)
 		}
 	}
 
+	//Skybox
+	immediateContext->IASetInputLayout(this->skybox.getVertexShader().getInputLayout());
+	immediateContext->VSSetConstantBuffers(0, 1, &this->skybox.getConstantBuffer().getBuffer());
+
+	// Update mvp Matrix
+	this->skybox.update(scene.getActiveCamera()->getTransform()->getPosition(), vp);
+	
+	//Bind skybox
+	immediateContext->IASetVertexBuffers(
+		0, 1,
+		&this->skybox.getMesh().getVertexBuffer().getBuffer(), 
+		&this->skybox.getMesh().getVertexBuffer().getStride(),
+		&this->skybox.getMesh().getVertexBuffer().getOffset()
+	);
+
+	immediateContext->IASetIndexBuffer(
+		this->skybox.getMesh().getIndexBuffer().getBuffer(),
+		DXGI_FORMAT_R32_UINT, 0
+	);
+
+	immediateContext->PSSetSamplers(
+		0, 1, &this->skybox.getCubeMap().getTexture().getSampler()
+	);
+
+	immediateContext->PSSetShaderResources(
+		0, 1, &this->skybox.getCubeMap().getTexture().getSRV().getPtr()
+	);
+
+	immediateContext->VSSetShader(this->skybox.getVertexShader().getVS(), nullptr, 0);
+	immediateContext->PSSetShader(this->skybox.getPixelShader().getPS(), nullptr, 0);
+
+	immediateContext->DrawIndexed(
+		this->skybox.getMesh().getIndexBuffer().getIndexCount(), 0, 0
+	);
+	
 	// Unbind render target
 	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
 	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);

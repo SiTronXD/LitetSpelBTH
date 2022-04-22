@@ -15,6 +15,7 @@
 #include "Texture.h"
 #include "../Resources.h"
 #include "UAV.h"
+#include "Skybox.h"
 
 class Renderer
 {
@@ -35,6 +36,7 @@ private:
 	ID3D11RenderTargetView* backBufferRTV;
 	ID3D11Texture2D* dsTexture;
 	ID3D11DepthStencilView* dsView;
+	ID3D11DepthStencilState* dsState;
 
 	ConstantBuffer cameraConstantBuffer;
 
@@ -42,6 +44,8 @@ private:
 	Resources& resources;
 
 	UAV backBufferUAV;
+
+	Skybox skybox;
 
 	//Camera* activeCamera;
 

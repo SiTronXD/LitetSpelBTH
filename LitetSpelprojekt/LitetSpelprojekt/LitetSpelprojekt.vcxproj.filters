@@ -4,6 +4,8 @@
     <FxCompile Include="Resources\Shaders\PixelShader.hlsl" />
     <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
     <FxCompile Include="Resources\Shaders\RenderUI_COMP.hlsl" />
+    <FxCompile Include="Resources\Shaders\skybox_VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\skybox_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Components\Collider.cpp" />
@@ -57,6 +59,8 @@
     <ClCompile Include="Engine\Physics\BoundingVolumes.cpp" />
     <ClCompile Include="Engine\UI\Slider.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\SettingsScene.cpp" />
+    <ClCompile Include="Engine\Graphics\Skybox.cpp" />
+    <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -111,6 +115,8 @@
     <ClInclude Include="Engine\Physics\BoundingVolumes.h" />
     <ClInclude Include="Engine\UI\Slider.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\SettingsScene.h" />
+    <ClInclude Include="Engine\Graphics\Skybox.h" />
+    <ClInclude Include="Engine\Graphics\CubeMap.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />
