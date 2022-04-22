@@ -2,12 +2,12 @@
 #include "../Dev/Log.h"
 #include <DirectXMath.h>
 #include "../ResTranslator.h"
+using namespace DirectX::SimpleMath;
 
-
-Button::Button(int pX, int pY, int w, int h, UIRenderer& r) : uiRenderer(r)
+Button::Button(Vector2 p, int w, int h, UIRenderer& r):
+	uiRenderer(r)
 {
-	this->posX = pX;
-	this->posY = pY;
+	this->pos = p;
 	this->width = w;
 	this->height = h;
 }
@@ -23,25 +23,14 @@ bool Button::isClicked()
 	bool buttonClicked = false;
 
 	// Button boundries
-	int maxPosX = this->posX + (this->width / 2);
-	int minPosX = this->posX - (this->width / 2);
-	int maxPosY = this->posY + (this->height / 2);
-	int minPosY = this->posY - (this->height / 2);
+	int maxPosX = this->pos.x + (this->width / 2);
+	int minPosX = this->pos.x - (this->width / 2);
+	int maxPosY = this->pos.y + (this->height / 2);
+	int minPosY = this->pos.y - (this->height / 2);
 
 	// Transform resolution to internal positions
 	DirectX::XMFLOAT2 internal = ResTranslator::toInternalPos(DirectX::XMFLOAT2(Input::getCursorX(), Input::getCursorY()));
 	
-	/*  DEBUG
-	int eX = Input::getCursorX();
-	int eY = Input::getCursorY();
-	Log::write("minPosX: " + std::to_string(minPosX));
-	Log::write("maxPosX: " + std::to_string(maxPosX));
-	Log::write("minPosY: " + std::to_string(minPosY));
-	Log::write("maxPosY: " + std::to_string(maxPosY));
-	Log::write("internalX: " + std::to_string(internal.x));
-	Log::write("internalY: " + std::to_string(internal.y));
-	*/
-
 	// Inside X Range
 	if (internal.x >= minPosX && (internal.x <= maxPosX))
 	{
@@ -49,7 +38,7 @@ bool Button::isClicked()
 		if (internal.y >= minPosY && internal.y <= maxPosY)
 		{
 			// Left click inside the button
-			if (Input::isMouseButtonDown(Mouse::LEFT_BUTTON))
+			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
 			{
 				buttonClicked = true;
 			}	
@@ -60,5 +49,5 @@ bool Button::isClicked()
 
 void Button::render(std::string textureName)
 {
-	uiRenderer.renderTexture(textureName, this->posX, this->posY, this->width, this->height);
+	uiRenderer.renderTexture(textureName, this->pos.x, this->pos.y, this->width, this->height);
 }

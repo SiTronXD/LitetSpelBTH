@@ -2,26 +2,24 @@
 #include "../Application/Input.h"
 #include "../Graphics/UIRenderer.h"
 #include <iostream>
+#include "SimpleMath.h"
 
 class Button
 {
 private:
-	int posX;
-	int posY;
+	DirectX::SimpleMath::Vector2 pos;
 	int width;
 	int height;
 	UIRenderer& uiRenderer;
 
 public:
-	Button(int pX, int pY, int w, int h, UIRenderer& r);
+	Button(DirectX::SimpleMath::Vector2 p, int w, int h, UIRenderer& r);
 	~Button();
 
-	inline int getPosX() const{ return this->posX; }
-	inline int getPosY() const{ return this->posY; }
+	inline DirectX::SimpleMath::Vector2 getPos() const{ return this->pos; }
 	inline int getWidth() const{ return this->width; }
 	inline int getheight() const { return this->height; }
-	inline void setPosX(int newPosX) { this->posX = newPosX; }
-	inline void setPosY(int newPosY) { this->posY = newPosY; }
+	inline void setPos(DirectX::SimpleMath::Vector2 newPos) { this->pos = newPos; }
 	inline void setWidth(int newWidth) { this->width = newWidth; }
 	inline void setHeight(int newHeight) { this->height = newHeight; }
 

@@ -55,6 +55,8 @@
     <ClCompile Include="ProjectSpecifics\Tools\LevelLoader.cpp" />
     <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Physics\BoundingVolumes.cpp" />
+    <ClCompile Include="Engine\UI\Slider.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\SettingsMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -107,6 +109,8 @@
     <ClInclude Include="ProjectSpecifics\Tools\LevelLoader.h" />
     <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Physics\BoundingVolumes.h" />
+    <ClInclude Include="Engine\UI\Slider.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\SettingsMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />
