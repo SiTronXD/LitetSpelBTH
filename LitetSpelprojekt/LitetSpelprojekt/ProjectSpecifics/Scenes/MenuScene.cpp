@@ -48,7 +48,7 @@ void MenuScene::update()
 	if (playButton.isClicked())
 	{
 		// Change to Game Scene
-		Log::error("Implement Change to Game Scene");
+		this->getSceneHandler().setScene(new GameScene(this->getSceneHandler()));
 	}
 	else if (settingsButton.isClicked())
 	{

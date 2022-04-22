@@ -3,6 +3,9 @@
 #include "../../Engine/Application/Scene.h"
 #include "../../Engine/UI/Button.h"
 
+#include "../../Engine/Application/SceneHandler.h"
+#include "GameScene.h"
+
 class MenuScene : public Scene
 {
 private:
