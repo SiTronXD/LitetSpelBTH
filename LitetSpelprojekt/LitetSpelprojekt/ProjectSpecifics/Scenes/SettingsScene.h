@@ -1,8 +1,11 @@
 #pragma once
 
-#include "../../Engine/Application//Scene.h"
+#include "../../Engine/Application/Scene.h"
 #include "../../Engine/UI/Slider.h"
 #include "../../Engine/UI/Button.h"
+
+#include "../../Engine/Application/SceneHandler.h"
+#include "MenuScene.h"
 
 class SettingsScene : public Scene
 {

@@ -35,7 +35,7 @@ void MenuScene::init()
 	settingsButton.setHeight(159);
 
 	// Define Exit Button's size and position
-	exitButton.setPos(Vector2(0, - 60));
+	exitButton.setPos(Vector2(0, -161));
 	exitButton.setWidth(354);
 	exitButton.setHeight(159);
 }
@@ -51,7 +51,7 @@ void MenuScene::update()
 	else if (settingsButton.isClicked())
 	{
 		// Load Settings Menu
-		Log::error("Implement Settings Menu");
+		this->getSceneHandler().setScene(new SettingsScene(this->getSceneHandler()));
 	}
 	else if (exitButton.isClicked())
 	{

@@ -1,4 +1,4 @@
-#include "SettingsMenu.h"
+#include "SettingsScene.h"
 #include "../../Engine/GameObject.h"
 #include "SimpleMath.h"
 using namespace DirectX::SimpleMath;
@@ -24,7 +24,7 @@ void SettingsScene::init()
 	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
 	
 	// Set Camera
-	GameObject& cam = this->addGameObject();
+	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
 
 	// Default values for sliders
@@ -78,7 +78,11 @@ void SettingsScene::update()
 {
 	this->getECS().update();
 
-	// Implement Functionality
+	if (exitButton.isClicked())
+	{
+		// Exit Game
+		this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
+	}
 }
 
 void SettingsScene::renderUI()
