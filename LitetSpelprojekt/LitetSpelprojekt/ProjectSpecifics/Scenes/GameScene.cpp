@@ -42,7 +42,7 @@ void GameScene::init()
 		"CubeMesh"
 	);
 	this->getResources().addMesh(
-		MeshData(DefaultMesh::CUBE),
+		MeshData(DefaultMesh::PLANE),
 		"PlaneMesh"
 	);
 
