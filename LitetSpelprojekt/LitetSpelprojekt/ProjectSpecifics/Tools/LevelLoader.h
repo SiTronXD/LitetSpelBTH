@@ -35,7 +35,9 @@ class LevelLoader
 private:
 	Resources& resources;
 
-	MeshData meshData;
+	std::vector<MeshData*> allMeshes;
+
+	MeshData megaMesh;
 
 	DirectX::SimpleMath::Vector3 playerStartPos;
 
@@ -43,7 +45,14 @@ private:
 	std::vector<LevelColliderBox> boxColliders;
 	std::vector<LevelColliderOrientedBox> orientedBoxColliders;
 
-	void traverseStructure(aiNode* node);
+	void traverseStructure(
+		aiNode* node,
+		const DirectX::SimpleMath::Matrix& parentTransform
+	);
+	void addMeshToMegaMesh(
+		MeshData meshData, 
+		const DirectX::SimpleMath::Matrix transformation
+	);
 
 	DirectX::SimpleMath::Vector3 getAveragePosition(aiMesh* submesh);
 
@@ -53,7 +62,7 @@ public:
 
 	bool load(const std::string& levelName);
 
-	inline MeshData& getMeshData() { return this->meshData; }
+	inline MeshData& getMeshData() { return this->megaMesh; }
 
 	inline DirectX::SimpleMath::Vector3& getPlayerStartPos() { return this->playerStartPos; }
 

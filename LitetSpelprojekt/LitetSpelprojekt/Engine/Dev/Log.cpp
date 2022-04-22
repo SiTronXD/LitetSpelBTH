@@ -2,6 +2,35 @@
 #include <comdef.h>
 #include "Log.h"
 
+void Log::writeMat(const DirectX::SimpleMath::Matrix& mat)
+{
+	Log::write("[" + 
+		std::to_string(mat._11) + " " +
+		std::to_string(mat._21) + " " +
+		std::to_string(mat._31) + " " +
+		std::to_string(mat._41) + "]"
+	);
+	Log::write("[" +
+		std::to_string(mat._12) + " " +
+		std::to_string(mat._22) + " " +
+		std::to_string(mat._32) + " " +
+		std::to_string(mat._42) + "]"
+	);
+	Log::write("[" +
+		std::to_string(mat._13) + " " +
+		std::to_string(mat._23) + " " +
+		std::to_string(mat._33) + " " +
+		std::to_string(mat._43) + "]"
+	);
+	Log::write("[" +
+		std::to_string(mat._14) + " " +
+		std::to_string(mat._24) + " " +
+		std::to_string(mat._34) + " " +
+		std::to_string(mat._44) + "]"
+	);
+	Log::write("");
+}
+
 void Log::write(const std::string& message)
 {
 	std::cout << "[Log]: " << message << std::endl;
