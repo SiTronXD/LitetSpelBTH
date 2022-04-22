@@ -1,10 +1,22 @@
 #include "LevelLoader.h"
 #include "../../Engine/Dev/Log.h"
+#include "../../Engine/Dev/Str.h"
 
 #include <DirectXMath.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+
+void LevelLoader::traverseStructure(aiNode* node)
+{
+	Log::write(node->mName.C_Str());
+	
+
+	for (int i = 0; i < node->mNumChildren; ++i)
+	{
+		this->traverseStructure(node->mChildren[i]);
+	}
+}
 
 DirectX::SimpleMath::Vector3 LevelLoader::getAveragePosition(aiMesh* submesh)
 {
@@ -45,6 +57,8 @@ bool LevelLoader::load(const std::string& levelName)
 		return false;
 	}
 
+	this->traverseStructure(scene->mRootNode);
+
 	// Materials
 	std::vector<std::string> diffuseTexturePaths(scene->mNumMaterials);
 	for (int i = 0; i < scene->mNumMaterials; ++i)
@@ -69,6 +83,11 @@ bool LevelLoader::load(const std::string& levelName)
 				);
 				diffuseTexturePaths[i] += "png";
 			}
+
+			// Pick the last texture name of either absolute/relative path
+			std::vector<std::string> splitPath;
+			Str::splitString(diffuseTexturePaths[i], '\\', splitPath);
+			diffuseTexturePaths[i] = splitPath[splitPath.size() - 1];
 
 			// Add texture and material
 			this->resources.addTexture(

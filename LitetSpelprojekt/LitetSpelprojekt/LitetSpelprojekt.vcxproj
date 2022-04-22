@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Dev\Str.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\ComputeShader.cpp" />
     <ClCompile Include="Engine\Components\Collider.cpp" />
     <ClCompile Include="Engine\Components\Camera.cpp" />
@@ -211,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Components\Componentpch.h" />
+    <ClInclude Include="Engine\Dev\Str.h" />
     <ClInclude Include="Engine\Graphics\Shaders\ComputeShader.h" />
     <ClInclude Include="Engine\Dev\Helpers.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />

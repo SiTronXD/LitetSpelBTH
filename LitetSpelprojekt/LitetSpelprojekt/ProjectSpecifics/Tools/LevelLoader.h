@@ -43,6 +43,8 @@ private:
 	std::vector<LevelColliderBox> boxColliders;
 	std::vector<LevelColliderOrientedBox> orientedBoxColliders;
 
+	void traverseStructure(aiNode* node);
+
 	DirectX::SimpleMath::Vector3 getAveragePosition(aiMesh* submesh);
 
 public:
