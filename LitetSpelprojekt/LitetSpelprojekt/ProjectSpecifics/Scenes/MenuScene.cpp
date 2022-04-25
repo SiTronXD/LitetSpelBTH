@@ -32,7 +32,7 @@ void MenuScene::init()
 		"@*% "
 	};
 
-	this->getResources().addTexture("Resources/Fonts/testBitmapFont.png", "fontTexture");
+	this->getResources().addTexture("Resources/Fonts/testBitmapFont.png", "fontTexture", true);
 	this->getUIRenderer().setFontTexture("fontTexture");
 	this->getUIRenderer().setFontCharacterOrder(
 		fontCharacterOrder, 16, 16
@@ -90,9 +90,9 @@ void MenuScene::renderUI()
 
 	this->getUIRenderer().renderString(
 		"the quick brown fox jumps over the lazy dog", 
-		-900, 
 		0, 
-		32, 
-		32
+		0, 
+		55, 
+		55
 	);
 }

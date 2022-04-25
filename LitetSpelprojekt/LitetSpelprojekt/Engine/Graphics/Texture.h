@@ -2,6 +2,7 @@
 
 #include <string>
 #include <d3d11.h>
+#include <DirectXMath.h>
 
 #include "SRV.h"
 
@@ -19,8 +20,11 @@ private:
 
 	Renderer& renderer;
 
-	unsigned int width;
-	unsigned int height;
+	unsigned char* pixels;
+
+	int width;
+	int height;
+	int numChannels;
 
 	bool createSampler();
 
@@ -28,8 +32,10 @@ public:
 	Texture(Renderer& renderer);
 	virtual ~Texture();
 
-	bool load(const std::string& fileName);
+	bool load(const std::string& fileName, bool saveImageData);
 	bool createCubemap(std::string fileName, std::string format);
+
+	DirectX::XMFLOAT4 getPixel(int x, int y);
 
 	inline SRV& getSRV() { return this->textureSRV; }
 	inline ID3D11SamplerState*& getSampler() { return this->samplerState; }

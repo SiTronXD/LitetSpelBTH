@@ -2,6 +2,8 @@
 #include "Renderer.h"
 #include "../ResTranslator.h"
 
+using namespace DirectX;
+
 UIRenderer::UIRenderer(
 	Renderer& renderer, Resources& resources)
 	: renderer(renderer),
@@ -63,6 +65,17 @@ void UIRenderer::setFontCharacterOrder(
 	const std::vector<std::string>& characters,
 	unsigned int tileWidth, unsigned int tileHeight)
 {
+	if (this->fontTextureName == "")
+	{
+		Log::error("You need to set font texture name before character order.");
+
+		return;
+	}
+
+	Texture& texture = this->resources.getTexture(
+		this->fontTextureName.c_str()
+	);
+
 	this->fontTileWidth = tileWidth;
 	this->fontTileHeight = tileHeight;
 
@@ -74,16 +87,48 @@ void UIRenderer::setFontCharacterOrder(
 	{
 		for (unsigned int col = 0; col < characters[row].length(); ++col)
 		{
+			CharacterRect newCharRect
+			{
+				col * tileWidth,
+				row * tileHeight,
+				tileWidth,
+				tileHeight
+			};
+
+			// Find bounds
+			int xMax = 0;
+			int yMax = 0;
+			int xMin = tileWidth;
+			int yMin = tileHeight;
+			for(int yo = 0; yo < tileHeight; ++yo)
+			{
+				for (int xo = 0; xo < tileWidth; ++xo)
+				{
+					XMFLOAT4 pixel = texture.getPixel(newCharRect.x + xo, newCharRect.y + yo);
+
+					// Update bounds
+					if (pixel.x + pixel.y + pixel.z + pixel.w > 0)
+					{
+						if (xo > xMax) xMax = xo;
+						if (yo > yMax) yMax = yo;
+						if (xo < xMin) xMin = xo;
+						if (yo < yMin) yMin = yo;
+					}
+				}
+			}
+			// Set new bounds
+			if (xMax >= xMin && yMax >= yMin)
+			{
+				newCharRect.x += xMin;
+				newCharRect.y += yMin;
+				newCharRect.tileWidth = xMax - xMin + 1;
+				newCharRect.tileHeight = yMax - yMin + 1;
+			}
+
 			this->fontCharacters.insert(
 				std::pair<char, CharacterRect>(
 					characters[row][col],
-					CharacterRect
-					{ 
-						col * tileWidth, 
-						row * tileHeight, 
-						tileWidth, 
-						tileHeight
-					}
+					newCharRect
 				)
 			);
 		}
@@ -128,22 +173,42 @@ void UIRenderer::renderString(
 	const std::string& text, 
 	int x, int y, int characterWidth, int characterHeight)
 {
-	// Render each character
-	int posX = x;
+	// Get entire text width
+	int textWidth = 0;
 	for (int i = 0; i < text.length(); ++i)
 	{
+		// Get character size
+		CharacterRect& charRect = this->fontCharacters[text[i]];
+
+		float sizeRatioX = (float) charRect.tileWidth / this->fontTileWidth;
+
+		textWidth += (int) (characterWidth * sizeRatioX);
+	}
+
+	int posX = x - (textWidth / 2);
+
+	// Render each character
+	for (int i = 0; i < text.length(); ++i)
+	{
+		// Get character size
+		CharacterRect& charRect = this->fontCharacters[text[i]];
+
+		float sizeRatioX = (float) charRect.tileWidth / this->fontTileWidth;
+		float sizeRatioY = (float) charRect.tileHeight / this->fontTileHeight;
+
+		// Move character from edge to middle
+		posX += (int)(characterWidth * sizeRatioX * 0.5f);
+
 		// Transform from internal resolution to screen resolution
 		UIRectangle transformedRect = ResTranslator::transformRect(
 			UIRectangle
 			{ 
-				x + i * characterWidth, 
+				posX, 
 				y, 
-				characterWidth, 
-				characterHeight 
+				(int) (characterWidth * sizeRatioX), 
+				(int) (characterHeight * sizeRatioY)
 			}
 		);
-
-		CharacterRect& charRect = this->fontCharacters[text[i]];
 
 		// Orientation per character
 		this->textOrientationBufferStruct.position.x = transformedRect.x;
@@ -164,7 +229,7 @@ void UIRenderer::renderString(
 		// Run
 		this->textRenderComputeShader.run();
 
-		// Move character
-		posX += (float) characterWidth * (charRect.tileWidth / this->fontTileWidth);
+		// Move character from middle to edge
+		posX += (int) (characterWidth * sizeRatioX * 0.5f);
 	}
 }
