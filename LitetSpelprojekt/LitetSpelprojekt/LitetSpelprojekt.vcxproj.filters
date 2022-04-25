@@ -63,6 +63,7 @@
     <ClCompile Include="ProjectSpecifics\Scenes\SettingsScene.cpp" />
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -120,6 +121,7 @@
     <ClInclude Include="ProjectSpecifics\Scenes\SettingsScene.h" />
     <ClInclude Include="Engine\Graphics\Skybox.h" />
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

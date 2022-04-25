@@ -1,6 +1,9 @@
 #include "MenuScene.h"
+#include "LoadingScene.h"
+#include "SettingsScene.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Application/Window.h"
+
 using namespace DirectX::SimpleMath;
 
 MenuScene::MenuScene(SceneHandler& sceneHandler) :
@@ -69,7 +72,7 @@ void MenuScene::update()
 	if (playButton.isClicked())
 	{
 		// Change to Game Scene
-		this->getSceneHandler().setScene(new GameScene(this->getSceneHandler()));
+		this->getSceneHandler().setScene(new LoadingScene(this->getSceneHandler()));
 	}
 	else if (settingsButton.isClicked())
 	{
