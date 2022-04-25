@@ -15,6 +15,7 @@ private:
 	Slider brightSlider;
 	Slider volSlider;
 	Button exitButton;
+	std::vector<std::string>resolutions;
 
 public:
 	SettingsScene(SceneHandler& sceneHandler);

@@ -15,7 +15,8 @@ Engine::Engine()
 		this->resources, 
 		this->renderer, 
 		this->uiRenderer,
-		this->window
+		this->window,
+		this->settings
 	)
 {
 	this->settings.loadSettings();
