@@ -43,7 +43,7 @@ bool Slider::isClicked()
 			// Left click inside the button
 			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
 			{
-				this->currentValue = (this->width / 2 + internal.x);
+				this->currentValue = (this->width / 2.0 + internal.x);
 				this->percentFilled = (this->currentValue / this->width);
 				sliderClicked = true;
 			}

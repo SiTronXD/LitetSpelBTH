@@ -22,8 +22,8 @@ public:
 	inline DirectX::SimpleMath::Vector2 getPos() const { return this->pos; }
 	inline int getWidth() const { return this->width; }
 	inline int getheight() const { return this->height; }
-	inline float getMinVal() const { return this->maxValue; }
-	inline float getCurVal() const { return this->maxValue; }
+	inline float getMinVal() const { return this->minValue; }
+	inline float getCurVal() const { return this->currentValue; }
 	inline float getMaxVal() const { return this->maxValue; }
 	
 	// Set
