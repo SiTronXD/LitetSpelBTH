@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Graphics\DSV.cpp" />
     <ClCompile Include="Engine\Dev\Str.cpp" />
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\ComputeShader.cpp" />
@@ -216,6 +217,7 @@
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Graphics\DSV.h" />
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
     <ClInclude Include="Engine\Components\Componentpch.h" />
     <ClInclude Include="Engine\Dev\Str.h" />

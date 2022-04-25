@@ -215,7 +215,11 @@ void Renderer::render(Scene& scene)
 		{
 			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
 
-			Material& material = this->resources.getMaterial(currentSubmesh.materialName);
+			Material& material = this->resources.getMaterial(
+				strcmp(currentSubmesh.materialName, "") ?
+				currentSubmesh.materialName :
+				meshComponents[i]->getMaterialName().c_str()
+			);
 			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName().c_str());
 			immediateContext->PSSetSamplers(
 				0, 1, &texture.getSampler()

@@ -119,7 +119,7 @@ void GameScene::init()
 	this->addLevelColliders(levelLoader);
   
 	this->setActiveCamera(cam.addComponent<Camera>());
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	cam.addComponent<Player>();
 	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
@@ -137,7 +137,7 @@ void GameScene::init()
 	// Level game object
 	GameObject& levelObject = this->addGameObject("LevelObject");
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
-	levelMeshComponent->setMesh("LevelMesh", "testMaterial");
+	levelMeshComponent->setMesh("LevelMesh", "");
 
 	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
