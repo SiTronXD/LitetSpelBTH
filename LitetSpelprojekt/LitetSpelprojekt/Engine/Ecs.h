@@ -44,6 +44,7 @@ public:
 	void update();
 
 	GameObject& addGameObject(std::string name, ObjectTag tag);
+	GameObject& getGameObject(int gameObjectID);
 
 	template <typename T>
 	T* addComponent(int gameObjectID);
@@ -106,8 +107,8 @@ inline T* ECS::addComponent(int gameObjectID)
 template<typename T>
 inline bool ECS::removeComponent(int gameObjectID)
 {
-	// Don't have this component
-	if (!this->hasComponent<T>(gameObjectID))
+	// Don't have this component or type is Transform (not removeable)
+	if (!this->hasComponent<T>(gameObjectID) || typeid(T) == typeid(Transform))
 		return false;
 
 	Component* comp = this->components[std::pair<int, std::type_index>(gameObjectID, typeid(T))];

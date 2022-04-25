@@ -23,12 +23,15 @@ public:
 
 	virtual void init() override;
 	virtual void update() override;
+	virtual void onCollisionEnter(GameObject& other) override;
 	virtual void onCollisionStay(GameObject& other) override;
+	virtual void onCollisionExit(GameObject& other) override;
 
 	bool isKinematic() const;
 	void setKinematicStatus(bool kinematicStatus);
 
 	void setMass(float newMass);
+	DirectX::SimpleMath::Vector3 getVelocity() const;
 	void setVelocity(const DirectX::SimpleMath::Vector3& newVelocity);
 	void addForce(const DirectX::SimpleMath::Vector3& newForce);
 };

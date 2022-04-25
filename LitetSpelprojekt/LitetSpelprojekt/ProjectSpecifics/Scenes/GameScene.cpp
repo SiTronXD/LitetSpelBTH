@@ -61,15 +61,16 @@ void GameScene::init()
 	cam.addComponent<Player>();
 	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
-	col->setBoxCollider(Vector3(0.5f, 0.5f, 0.5f));
+	col->setSphereCollider(0.5f);
 
 	GameObject& model = this->addGameObject("Suzanne1");
+	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
 	Rigidbody* rb = model.addComponent<Rigidbody>();
 	rb->addForce(Vector3(0, 2, -2));
 	MeshComp* mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 	col = model.addComponent<Collider>();
-	col->setSphereCollider(1.0f);
+	col->setSphereCollider(5.0f);
 
 	// Level game object
 	GameObject& levelObject = this->addGameObject("LevelObject");
