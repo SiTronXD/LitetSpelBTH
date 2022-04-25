@@ -46,7 +46,9 @@ private:
 
 	DirectX::BoundingOrientedBox createOrientedBox() const;
 public:
-	OrientedBoxVolume(Transform* transform, DirectX::SimpleMath::Vector3 extents);
+	OrientedBoxVolume(
+		Transform* transform, 
+		DirectX::SimpleMath::Vector3 extents);
 	virtual ~OrientedBoxVolume();
 
 	// Inherited via BoundingVolume

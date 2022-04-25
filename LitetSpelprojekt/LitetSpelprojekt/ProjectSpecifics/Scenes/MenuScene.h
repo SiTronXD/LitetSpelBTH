@@ -4,8 +4,6 @@
 #include "../../Engine/UI/Button.h"
 
 #include "../../Engine/Application/SceneHandler.h"
-#include "GameScene.h"
-#include "SettingsScene.h"
 
 class MenuScene : public Scene
 {

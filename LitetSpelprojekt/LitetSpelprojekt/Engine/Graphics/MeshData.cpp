@@ -288,6 +288,12 @@ void MeshData::createDefault(DefaultMesh defaultMesh)
 		break;
 	}
 
+	// One single submesh
+	Submesh newSubmesh{};
+	newSubmesh.numIndices = this->indices.size();
+	this->submeshes.clear();
+	this->submeshes.push_back(newSubmesh);
+
 	this->invertFaces();
 	this->calculateNormals(defaultMesh);
 }

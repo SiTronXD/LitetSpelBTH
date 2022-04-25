@@ -1,9 +1,3 @@
-/*cbuffer ResolutionBuffer : register(b0)
-{
-    float windowWidth;
-    float windowHeight;
-    float2 padding1;
-}*/
 
 cbuffer UIOrientationBuffer : register(b0)
 {

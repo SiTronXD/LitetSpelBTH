@@ -1,11 +1,13 @@
 #pragma once
 
 #include <string>
-#include <d3d11.h>
+#include <Windows.h>
+#include <SimpleMath.h>
 
 class Log
 {
 public:
+	static void writeMat(const DirectX::SimpleMath::Matrix& mat);
 	static void write(const std::string& message);
 	static void error(const std::string& errorMessage);
 	static void resultFailed(const std::string& errorMessage, HRESULT& result);

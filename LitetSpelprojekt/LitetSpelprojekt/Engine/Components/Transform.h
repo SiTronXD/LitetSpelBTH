@@ -10,6 +10,7 @@ private:
 	DirectX::SimpleMath::Vector3 pos;
 	DirectX::SimpleMath::Vector3 rot;
 	DirectX::SimpleMath::Vector3 scale;
+	DirectX::SimpleMath::Vector4 rotQuat;
 	DirectX::SimpleMath::Matrix worldMatrix;
 
 	DirectX::SimpleMath::Vector3 rightVec;
@@ -36,9 +37,11 @@ public:
 
 	//Rotation
 	void setRotation(const DirectX::SimpleMath::Vector3& rot);
+	void setRotation(const DirectX::SimpleMath::Vector4& quat);
 	void setRotation(float x, float y, float z);
 
 	inline const DirectX::SimpleMath::Vector3& getRotation() const { return this->rot; }
+	inline const DirectX::SimpleMath::Vector4& getRotationQuat() const { return this->rotQuat; }
 
 	void rotate(const DirectX::SimpleMath::Vector3& offSet);
 	void rotate(float x, float y, float z);

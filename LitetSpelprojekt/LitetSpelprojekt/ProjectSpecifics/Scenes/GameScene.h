@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../Engine/Application/Scene.h"
+#include "../Tools/LevelLoader.h"
 
 class GameScene : public Scene
 {
@@ -10,6 +11,9 @@ private:
 	std::vector<GameObject*> enemies; //Just for testing
 	
 	int currentKeys;
+
+	void addLevelColliders(LevelLoader& levelLoader);
+
 public:
 	GameScene(SceneHandler& sceneHandler);
 	virtual ~GameScene();

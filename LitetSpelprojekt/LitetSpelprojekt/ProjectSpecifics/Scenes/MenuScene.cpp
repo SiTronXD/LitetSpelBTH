@@ -1,6 +1,9 @@
 #include "MenuScene.h"
+#include "LoadingScene.h"
+#include "SettingsScene.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Application/Window.h"
+
 using namespace DirectX::SimpleMath;
 
 MenuScene::MenuScene(SceneHandler& sceneHandler) :
@@ -20,6 +23,25 @@ void MenuScene::init()
 	this->getResources().addTexture("Resources/Textures/playButton.png", "playButton.png");
 	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
 	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
+
+	// Text rendering
+	std::vector<std::string> fontCharacterOrder =
+	{
+		"abcdefghij",
+		"klmnopqrst",
+		"uvwxyz+-.'",
+		"0123456789",
+		"!?,<>:()¤/^",
+		"@*% "
+	};
+
+	this->getResources().addTexture("Resources/Fonts/testBitmapFont.png", "fontTexture", true);
+	this->getUIRenderer().setFontTexture("fontTexture");
+	this->getUIRenderer().setFontCharacterOrder(
+		fontCharacterOrder, 16, 16
+	);
+	this->getUIRenderer().setFontCharacterSpacing(5);
+	this->getUIRenderer().setFontSpaceWidth(10);
 
 	//Add cubemap
 	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
@@ -50,7 +72,7 @@ void MenuScene::update()
 	if (playButton.isClicked())
 	{
 		// Change to Game Scene
-		this->getSceneHandler().setScene(new GameScene(this->getSceneHandler()));
+		this->getSceneHandler().setScene(new LoadingScene(this->getSceneHandler()));
 	}
 	else if (settingsButton.isClicked())
 	{
@@ -70,4 +92,12 @@ void MenuScene::renderUI()
 	playButton.render("playButton.png");
 	settingsButton.render("settingsButton.png");
 	exitButton.render("exitButton.png");
+
+	this->getUIRenderer().renderString(
+		"the quick brown fox jumps over the lazy dog", 
+		0, 
+		0, 
+		54, 
+		54
+	);
 }

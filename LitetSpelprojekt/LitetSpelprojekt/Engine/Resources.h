@@ -32,7 +32,8 @@ public:
 
 	void addTexture(
 		const std::string& textureFilePath,
-		const std::string& textureName
+		const std::string& textureName,
+		bool saveImageData = false
 	);
 	void addMesh(
 		MeshData&& newMeshData, 

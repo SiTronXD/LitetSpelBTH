@@ -1,10 +1,161 @@
 #include "LevelLoader.h"
 #include "../../Engine/Dev/Log.h"
+#include "../../Engine/Dev/Str.h"
+#include "../../Engine/SMath.h"
 
 #include <DirectXMath.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+
+void LevelLoader::traverseStructure(
+	aiNode* node,
+	const DirectX::SimpleMath::Matrix& parentTransform)
+{
+	std::string nodeName = std::string(node->mName.C_Str());
+	Log::write(nodeName);
+
+	// Node transformation
+	Matrix transformation = parentTransform;
+	Matrix nodeTransform;
+	SMath::assimpToMat(node->mTransformation, nodeTransform);
+	transformation *= nodeTransform;
+
+	// Log::writeMat(transformation);
+
+	// Decompose transformation
+	Vector3 nodePosition;
+	Vector4 nodeRotationQuaternion;
+	Vector3 nodeScale;
+	XMVECTOR tempNodePosition;
+	XMVECTOR tempNodeRotationQuaternion;
+	XMVECTOR tempNodeScale;
+	XMMatrixDecompose(
+		&tempNodeScale,
+		&tempNodeRotationQuaternion,
+		&tempNodePosition,
+		transformation
+	);
+	nodePosition = tempNodePosition;
+	nodeRotationQuaternion = tempNodeRotationQuaternion;
+	nodeScale = tempNodeScale;
+
+	// Colliders
+	if (nodeName.find("collider_") != std::string::npos)
+	{
+		// Sphere
+		if (nodeName.find("sphere") != std::string::npos)
+		{
+			// Create and add sphere collider
+			LevelColliderSphere newColliderSphere{};
+			newColliderSphere.pos = nodePosition;
+			newColliderSphere.radius = nodeScale.x;
+			this->sphereColliders.push_back(newColliderSphere);
+		}
+		// Box
+		else if (nodeName.find("cube") != std::string::npos)
+		{
+			// Create and add box collider
+			LevelColliderBox newColliderBox{};
+			newColliderBox.pos = nodePosition;
+			newColliderBox.extents = nodeScale;
+			this->boxColliders.push_back(newColliderBox);
+		}
+		// Oriented box
+		else if (nodeName.find("orientedBox") != std::string::npos)
+		{
+			// Create and add oriented box collider
+			LevelColliderOrientedBox newColliderOrientedBox{};
+			newColliderOrientedBox.pos = nodePosition;
+			newColliderOrientedBox.extents = nodeScale;
+			newColliderOrientedBox.orientation = nodeRotationQuaternion;
+			this->orientedBoxColliders.push_back(newColliderOrientedBox);
+		}
+	}
+	// Player start position
+	else if (nodeName == "PlayerStartPos")
+	{
+		this->playerStartPos = nodePosition;
+	}
+	// Mesh
+	else
+	{
+
+		// Add meshes for this node
+		for (int i = 0; i < node->mNumMeshes; ++i)
+		{
+			// Add mesh
+			this->addMeshToMegaMesh(
+				*this->allMeshes[node->mMeshes[i]],
+				transformation
+			);
+		}
+
+		// Traverse through child node
+		for (int i = 0; i < node->mNumChildren; ++i)
+			this->traverseStructure(node->mChildren[i], transformation);
+	}
+}
+
+void LevelLoader::addMeshToMegaMesh(
+	MeshData meshData,
+	const DirectX::SimpleMath::Matrix transformation)
+{
+	unsigned int initialVertexCount = this->megaMesh.getVertices().size();
+	unsigned int initialIndexCount = this->megaMesh.getIndices().size();
+
+	// Transform
+	meshData.transformMesh(transformation);
+
+	// Vertices
+	for (unsigned int i = 0; i < meshData.getVertices().size(); ++i)
+	{
+		this->megaMesh.addVertex(
+			meshData.getVertices()[i]
+		);
+	}
+
+	// Indices
+	for (unsigned int i = 0; i < meshData.getIndices().size(); ++i)
+	{
+		this->megaMesh.addIndex(
+			initialVertexCount +
+			meshData.getIndices()[i]
+		);
+	}
+
+	// Submeshes
+	for (unsigned int i = 0; i < meshData.getSubmeshes().size(); ++i)
+	{
+		Submesh newSubmesh{};
+		strcpy_s(
+			newSubmesh.materialName,
+			meshData.getSubmeshes()[i].materialName
+		);
+		newSubmesh.startIndex = initialIndexCount +
+			meshData.getSubmeshes()[i].startIndex;
+		newSubmesh.numIndices = meshData.getSubmeshes()[i].numIndices;
+
+		this->megaMesh.addSubmesh(newSubmesh);
+	}
+}
+
+DirectX::SimpleMath::Vector3 LevelLoader::getAveragePosition(aiMesh* submesh)
+{
+	// Average position
+	Vector3 avgPos = Vector3(0, 0, 0);
+	for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
+	{
+		avgPos += Vector3(
+			submesh->mVertices[j].x,
+			submesh->mVertices[j].y,
+			submesh->mVertices[j].z
+		);
+	}
+	avgPos /= (float)submesh->mNumVertices;
+
+	return avgPos;
+}
 
 LevelLoader::LevelLoader(Resources& resources)
 	: resources(resources),
@@ -53,6 +204,11 @@ bool LevelLoader::load(const std::string& levelName)
 				diffuseTexturePaths[i] += "png";
 			}
 
+			// Pick the last texture name of either absolute/relative path
+			std::vector<std::string> splitPath;
+			Str::splitString(diffuseTexturePaths[i], '\\', splitPath);
+			diffuseTexturePaths[i] = splitPath[splitPath.size() - 1];
+
 			// Add texture and material
 			this->resources.addTexture(
 				"Resources/Textures/" + diffuseTexturePaths[i],
@@ -66,88 +222,75 @@ bool LevelLoader::load(const std::string& levelName)
 	}
 
 	// Loop through each submesh
-	unsigned int vertexOffset = 0;
 	for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
 	{
 		aiMesh* submesh = scene->mMeshes[i];
 
-		std::string submeshName = std::string(submesh->mName.C_Str());
+		// std::string submeshName = std::string(submesh->mName.C_Str());
+		// Log::write("Mesh: " + std::string(submesh->mName.C_Str()));
 
-		// Colliders
-		if (submeshName.find("collider_") != std::string::npos)
+		MeshData* newMeshData = new MeshData();
+
+		// Loop through each vertex
+		for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
 		{
+			// Load data
+			aiVector3D pos = submesh->mVertices[j];
+			aiVector3D norm = submesh->mNormals[j];
+			aiVector3D uv = submesh->mTextureCoords[0][j];
 
+			if (flipVerticalUV)
+				uv.y = 1.0f - uv.y;
+
+			// Create vertex with data
+			Vertex newVertex{};
+			newVertex.pos = XMFLOAT3(pos.x, pos.y, pos.z);
+			newVertex.normal = XMFLOAT3(norm.x, norm.y, norm.z);
+			newVertex.uv = XMFLOAT2(uv.x, uv.y);
+
+			newMeshData->addVertex(newVertex);
 		}
-		// Player start position
-		else if (submeshName == "PlayerStartPos")
+
+		// Loop through each index
+		unsigned int numIndices = 0;
+		unsigned int indicesSize = this->megaMesh.getIndices().size();
+		for (unsigned int j = 0; j < submesh->mNumFaces; ++j)
 		{
-			// Average position
-			Vector3 sumPos = Vector3(0, 0, 0);
-			for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
-			{
-				sumPos += Vector3(
-					submesh->mVertices[j].x,
-					submesh->mVertices[j].y,
-					submesh->mVertices[j].z
-				);
-			}
-			sumPos /= (float) submesh->mNumVertices;
+			if (submesh->mFaces[j].mNumIndices != 3u)
+				continue;
 
-			// Apply
-			this->playerStartPos = sumPos;
-		}
-		// Mesh
-		else
-		{
-			// Loop through each vertex
-			for (unsigned int j = 0; j < submesh->mNumVertices; ++j)
-			{
-				// Load data
-				aiVector3D pos = submesh->mVertices[j];
-				aiVector3D norm = submesh->mNormals[j];
-				aiVector3D uv = submesh->mTextureCoords[0][j];
-
-				if (flipVerticalUV)
-					uv.y = 1.0f - uv.y;
-
-				// Create vertex with data
-				Vertex newVertex{};
-				newVertex.pos = XMFLOAT3(pos.x, pos.y, pos.z);
-				newVertex.normal = XMFLOAT3(norm.x, norm.y, norm.z);
-				newVertex.uv = XMFLOAT2(uv.x, uv.y);
-
-				this->meshData.addVertex(newVertex);
-			}
-
-			// Loop through each index
-			unsigned int numIndices = 0;
-			unsigned int indicesSize = this->meshData.getIndices().size();
-			for (unsigned int j = 0; j < submesh->mNumFaces; ++j)
-			{
-				if (submesh->mFaces[j].mNumIndices != 3u)
-					continue;
-
-				this->meshData.addIndex(vertexOffset + submesh->mFaces[j].mIndices[0]);
-				this->meshData.addIndex(vertexOffset + submesh->mFaces[j].mIndices[1]);
-				this->meshData.addIndex(vertexOffset + submesh->mFaces[j].mIndices[2]);
+			newMeshData->addIndex(submesh->mFaces[j].mIndices[0]);
+			newMeshData->addIndex(submesh->mFaces[j].mIndices[1]);
+			newMeshData->addIndex(submesh->mFaces[j].mIndices[2]);
 			
-				numIndices += 3;
-			}
-
-			Submesh newSubmesh{};
-			newSubmesh.startIndex = indicesSize;
-			newSubmesh.numIndices = numIndices;
-			strcpy_s(newSubmesh.materialName, diffuseTexturePaths[submesh->mMaterialIndex].c_str());
-			this->meshData.addSubmesh(newSubmesh);
-
-			// Update offset for next submesh
-			vertexOffset = this->meshData.getVertices().size();
+			numIndices += 3;
 		}
+
+		Submesh newSubmesh{};
+		newSubmesh.startIndex = indicesSize;
+		newSubmesh.numIndices = numIndices;
+		strcpy_s(newSubmesh.materialName, diffuseTexturePaths[submesh->mMaterialIndex].c_str());
+		newMeshData->addSubmesh(newSubmesh);
+
+		this->allMeshes.push_back(newMeshData);
 	}
+
+	// Place all meshes in mega mesh
+	this->traverseStructure(scene->mRootNode, Matrix());
+
+	// Merge all separate meshes into one single mesh
+	/*for (unsigned int i = 0; i < this->allMeshes.size(); ++i)
+	{
+		this->addMeshToMegaMesh(*this->allMeshes[i], Matrix());
+	}*/
+
+	// Deallocate all old meshes
+	for (MeshData* meshData : allMeshes)
+		delete meshData;
 
 	aiReleaseImport(scene);
 
-	this->meshData.invertFaces();
+	this->megaMesh.invertFaces();
 
 	return true;
 }

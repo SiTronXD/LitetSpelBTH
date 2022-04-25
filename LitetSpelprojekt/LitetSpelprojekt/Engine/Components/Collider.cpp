@@ -21,10 +21,14 @@ void Collider::setBoxCollider(DirectX::SimpleMath::Vector3 extents)
 	this->volume = new BoxVolume(this->getTransform(), extents);
 }
 
-void Collider::setOrientedBoxCollider(DirectX::SimpleMath::Vector3 extents)
+void Collider::setOrientedBoxCollider(
+	DirectX::SimpleMath::Vector3 extents)
 {
 	delete this->volume;
-	this->volume = new OrientedBoxVolume(this->getTransform(), extents);
+	this->volume = new OrientedBoxVolume(
+		this->getTransform(), 
+		extents
+	);
 }
 
 void Collider::setSphereCollider(float radius)

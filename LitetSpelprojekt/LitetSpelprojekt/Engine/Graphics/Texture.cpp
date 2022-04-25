@@ -44,18 +44,26 @@ Texture::Texture(Renderer& renderer)
 	samplerState(nullptr),
 	texture(nullptr),
 	textureDesc{},
+	pixels(nullptr),
 	width(0),
-	height(0)
+	height(0),
+	numChannels(0)
 {
 }
 
 Texture::~Texture()
 {
+	if (this->pixels)
+	{
+		stbi_image_free(this->pixels);
+		this->pixels = nullptr;
+	}
+
 	S_RELEASE(this->samplerState);
 	S_RELEASE(this->texture);
 }
 
-bool Texture::load(const std::string& fileName)
+bool Texture::load(const std::string& fileName, bool saveImageData)
 {
 	S_RELEASE(this->samplerState);
 	S_RELEASE(this->texture);
@@ -64,16 +72,13 @@ bool Texture::load(const std::string& fileName)
 	this->createSampler();
 
 	// Load image
-	int imageWidth = 0;
-	int imageHeight = 0;
-	int imageChannels = 0;
 	int imageDesiredChannels = 4;
 	unsigned char* imageData = stbi_load(
 		fileName.c_str(),
-		&imageWidth, &imageHeight,
-		&imageChannels, imageDesiredChannels
+		&this->width, &this->height,
+		&this->numChannels, imageDesiredChannels
 	);
-	int imagePitch = imageWidth * imageDesiredChannels;
+	int imagePitch = this->width * imageDesiredChannels;
 	if (!imageData)
 	{
 		Log::error("Failed to load image: " + fileName);
@@ -81,14 +86,10 @@ bool Texture::load(const std::string& fileName)
 		return false;
 	}
 
-	// Save size
-	this->width = imageWidth;
-	this->height = imageHeight;
-
 	// D3D texture description
 	this->textureDesc = {};
-	this->textureDesc.Width = imageWidth;
-	this->textureDesc.Height = imageHeight;
+	this->textureDesc.Width = this->width;
+	this->textureDesc.Height = this->height;
 	this->textureDesc.MipLevels = 1;
 	this->textureDesc.ArraySize = 1;
 	this->textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -106,7 +107,10 @@ bool Texture::load(const std::string& fileName)
 	HRESULT hr = this->renderer.getDevice()->CreateTexture2D(&this->textureDesc, &textureSubresourceData, &this->texture);
 
 	// Free image data
-	stbi_image_free(imageData);
+	if (!saveImageData)
+		stbi_image_free(imageData);
+	else
+		this->pixels = imageData;
 
 	if (FAILED(hr))
 	{
@@ -200,4 +204,26 @@ bool Texture::createCubemap(std::string fileName, std::string format)
 
 	// Free image data
 	stbi_image_free(imageData);
+}
+
+DirectX::XMFLOAT4 Texture::getPixel(int x, int y)
+{
+	return DirectX::XMFLOAT4(
+		(float) this->pixels[
+			this->width * this->numChannels * y + 
+			this->numChannels * x + 0
+		],
+		(float)this->pixels[
+			this->width * this->numChannels * y +
+			this->numChannels * x + 1
+		],
+				(float)this->pixels[
+			this->width * this->numChannels * y +
+			this->numChannels * x + 2
+		],
+		(float) this->pixels[
+			this->width * this->numChannels * y +
+			this->numChannels * x + 3
+		]
+	);
 }
