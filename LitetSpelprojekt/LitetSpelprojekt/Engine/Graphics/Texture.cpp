@@ -143,7 +143,7 @@ bool Texture::createCubemap(std::string fileName, std::string format)
 	for (int i = 0; i < 6; i++)
 	{
 		//Load image
-		std::string tempPath = "Resources/Textures/"+ fileName + std::to_string(i + 1) + format;
+		std::string tempPath = "Resources/Textures/CubeMap/"+ fileName + std::to_string(i + 1) + format;
 		
 		imageData[i] = stbi_load(
 			tempPath.c_str(),
