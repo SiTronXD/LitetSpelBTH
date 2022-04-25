@@ -4,7 +4,7 @@
 
 using namespace DirectX::SimpleMath;
 
-Rigidbody::Rigidbody(GameObject& object):
+Rigidbody::Rigidbody(GameObject& object) :
 	Script(object),
 	transform(*this->getTransform()),
 	mass(1.0f),
@@ -34,6 +34,19 @@ void Rigidbody::update()
 	}
 }
 
+void Rigidbody::onCollisionEnter(GameObject& other)
+{
+	Rigidbody* otherRb = other.getComponent<Rigidbody>();
+
+	if (otherRb)
+	{
+		float e = 1.0f;
+		this->velocity = -(this->velocity * (this->mass - otherRb->mass * e) +
+			otherRb->velocity * otherRb->mass * (1.0f + e)) /
+			(this->mass + otherRb->mass);
+	}
+}
+
 void Rigidbody::onCollisionStay(GameObject& other)
 {
 	Rigidbody* otherRb = other.getComponent<Rigidbody>();
@@ -41,11 +54,14 @@ void Rigidbody::onCollisionStay(GameObject& other)
 	if (otherRb)
 	{
 		float e = 1.0f;
-
 		this->velocity = -(this->velocity * (this->mass - otherRb->mass * e) +
-			otherRb->velocity * otherRb->mass * (1.0f + e)) / 
+			otherRb->velocity * otherRb->mass * (1.0f + e)) /
 			(this->mass + otherRb->mass);
 	}
+}
+
+void Rigidbody::onCollisionExit(GameObject& other)
+{
 }
 
 bool Rigidbody::isKinematic() const
@@ -61,6 +77,11 @@ void Rigidbody::setKinematicStatus(bool kinematicStatus)
 void Rigidbody::setMass(float newMass)
 {
 	this->mass = newMass;
+}
+
+DirectX::SimpleMath::Vector3 Rigidbody::getVelocity() const
+{
+	return this->velocity;
 }
 
 void Rigidbody::setVelocity(const DirectX::SimpleMath::Vector3& newVelocity)

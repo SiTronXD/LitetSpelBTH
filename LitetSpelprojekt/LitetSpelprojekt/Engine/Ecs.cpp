@@ -60,6 +60,11 @@ GameObject& ECS::addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTA
 	return *this->gameObjects.back();
 }
 
+GameObject& ECS::getGameObject(int gameObjectID)
+{
+	return this->getComponent<Transform>(gameObjectID)->getObject();
+}
+
 std::vector<Component*> ECS::getAllComponents(int gameObjectID)
 {
 	std::vector<Component*> comps;

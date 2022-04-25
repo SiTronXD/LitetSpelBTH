@@ -7,7 +7,6 @@ using namespace DirectX::SimpleMath;
 
 void Player::move()
 {
-
 	Vector3 direction((float)(Input::isKeyDown(Keys::D) - Input::isKeyDown(Keys::A)), 0.0f, (float)(Input::isKeyDown(Keys::W) - Input::isKeyDown(Keys::S)));
 	direction.Normalize();
 
@@ -17,7 +16,10 @@ void Player::move()
 	Vector3 forward = this->getTransform()->forward();
 	forward.y = 0.0f;
 	forward.Normalize();
-	this->getTransform()->move((right * direction.x + forward * direction.z) * this->speed * Time::getDT());
+
+	Vector3 moveVec = (right * direction.x + forward * direction.z) * this->speed * Time::getDT();
+	moveVec.y = this->rb->getVelocity().y;
+	this->rb->setVelocity(moveVec);
 }
 
 void Player::jump()
@@ -44,7 +46,7 @@ void Player::fireWeapon()
 
 void Player::lookAround()
 {
-	Vector3 rotation = DirectX::SimpleMath::Vector3((float)Input::getCursorDeltaY(), (float)Input::getCursorDeltaX(), 0.0f);
+	Vector3 rotation((float)Input::getCursorDeltaY(), (float)Input::getCursorDeltaX(), 0.0f);
 	this->getTransform()->rotate(-rotation * this->mouseSensitivity);
 
 	Vector3 origRot = this->getTransform()->getRotation();
@@ -56,7 +58,7 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object):
-	Script(object), speed(10.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr)
+	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr)
 {
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
@@ -96,10 +98,20 @@ void Player::update()
 		std::cout << "Hit Object: " << g->getName() << " Tag: " << (int)g->getTag() << " with distance of: " << distance << std::endl;*/
 }
 
+void Player::onCollisionEnter(GameObject& other)
+{
+	std::cout << "Player started hitting: " << other.getName() << std::endl;
+}
+
 void Player::onCollisionStay(GameObject& other)
 {
-	std::cout << "Player hit: " << other.getName() << std::endl;
+	std::cout << "Player still hitting: " << other.getName() << std::endl;
 
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
+}
+
+void Player::onCollisionExit(GameObject& other)
+{
+	std::cout << "Player stopped hitting: " << other.getName() << std::endl;
 }
