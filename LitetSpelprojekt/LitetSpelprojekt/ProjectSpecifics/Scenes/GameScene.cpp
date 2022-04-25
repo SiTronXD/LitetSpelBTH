@@ -67,7 +67,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 }
 
 GameScene::GameScene(SceneHandler& sceneHandler)
-	: Scene(sceneHandler)
+	: Scene(sceneHandler), cam(this->addGameObject("Player", ObjectTag::PLAYER)), currentKeys(0)
 {
 }
 
@@ -82,10 +82,13 @@ void GameScene::playerUi()
 void GameScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
-	this->getResources().addTexture("Resources/Textures/crosshairs64.png", "crosshairs64.png");
-	this->getResources().addTexture("Resources/Textures/HealthBar.png", "HealthBar.png");
-	this->getResources().addTexture("Resources/Textures/timergui.png", "timergui.png");
-	this->getResources().addTexture("Resources/Textures/keygui.png", "keygui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
+	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "HealthBox.png");
+	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "HealthBar.png");
+	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
+	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/GameOver.jpg", "GameOver.jpg");
 	this->getResources().addMaterial("me.png", "testMaterial");
 
 	//Add cubemap
@@ -98,7 +101,7 @@ void GameScene::init()
 	);
 	this->getResources().addMesh(
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
-		"CubeMesh"
+		"CubeMesh" 
 	);
 	this->getResources().addMesh(
 		MeshData(DefaultMesh::PLANE),
@@ -115,7 +118,6 @@ void GameScene::init()
 	);
 	this->addLevelColliders(levelLoader);
   
-	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	cam.addComponent<Player>();
@@ -154,16 +156,76 @@ void GameScene::init()
 	ground.getComponent<Transform>()->setScaling({ 100.0f, 1.0f, 100.0f });
 	ground.getComponent<Transform>()->setPosition(0.0f, -10.0f, 0.0f);
 
+	//Key objects
+	for (int i = 0; i < 4; i++)
+	{
+		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
+		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
+		keyMc->setMesh("CubeMesh", "testMaterial");
+		Collider* keyCol = portalKey.addComponent<Collider>();
+		keyCol->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		portalKey.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
+		portalKey.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, 2.0f);
+
+		this->portalKeys.push_back(&portalKey);
+	}
+
+	//Portal
+	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
+	MeshComp* portalMc = portal.addComponent<MeshComp>();
+	portalMc->setMesh("CubeMesh", "testMaterial");
+	Collider* portalCol = portal.addComponent<Collider>();
+	portalCol->setBoxCollider(Vector3(2.0f, 4.0f, 1.0f));
+	portal.getComponent<Transform>()->setScaling({ 2.0f, 4.0f, 1.0f });
+	portal.getComponent<Transform>()->setPosition(0.0f, -9.0f, -8.0f);
+
+	//Test obstacle, taking damage etc
+	for (int i = 0; i < 3; i++)
+	{
+		GameObject& enemy = this->addGameObject("Enemy", ObjectTag::ENEMY);
+		MeshComp* enemyMc = enemy.addComponent<MeshComp>();
+		enemyMc->setMesh("CubeMesh", "testMaterial");
+		Collider* enemyCollider = enemy.addComponent<Collider>();
+		enemyCollider->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		enemy.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
+		enemy.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, -6.0f);
+
+		this->enemies.push_back(&enemy);
+
+	}
+
 	this->getECS().init();
 }
 
+#include <iostream>
 void GameScene::update()
 {
+	//When they player pick up a key.
+	if (this->cam.getComponent<Player>()->isKeyPickUp())
+	{
+		std::cout << "Key pickup!" << std::endl;
+	}
 
+	//Check if player is dead or not
+	if (this->cam.getComponent<Player>()->isPlayerDead())
+	{
+		std::cout << "Player is dead NOOB!!" << std::endl;
+		//Change scene to gameover scene
+	}
+
+	this->currentKeys = this->cam.getComponent<Player>()->getCurrentKeys();
+
+	//Player enters the portal and win.
+	if (this->cam.getComponent<Player>()->onPortal() && this->currentKeys >= 4)
+	{
+		std::cout << "YOU HAVE WON!!" << std::endl;
+		//Change scene to winning scene
+	}
 }
 
 void GameScene::renderUI()
 {
+	
 	//Crosshair
 	this->getUIRenderer().renderTexture(
 		"crosshairs64.png",
@@ -172,21 +234,50 @@ void GameScene::renderUI()
 	
 	//Healthbar
 	this->getUIRenderer().renderTexture(
-		"HealthBar.png",
+		"HealthBox.png",
 		-700, -500, 500, 50
 	);
 
+	//866
+	int currentHealth = this->cam.getComponent<Player>()->getHealth();
+	if (currentHealth > 0)
+	{
+		this->getUIRenderer().renderTexture(
+			"HealthBar.png",
+			(- 949 + (83 * currentHealth)), -500, (166 * currentHealth), 50
+		);
+	}
+	
 	//Keys
 	this->getUIRenderer().renderTexture(
-		"keygui.png",
+		"EmptyKeyGui.png",
 		800, 500, 256, 64
 	);
 
-	//Keys
-	this->getUIRenderer().renderTexture(
-		"timergui.png",
-		-700, 500, 256, 128
-	);
+	if (this->currentKeys > 0)
+	{
+		for (int i = 0; i < this->currentKeys; i++)
+		{
+			this->getUIRenderer().renderTexture(
+				"KeyGui.png",
+				(716 + (56 * i)), 500, 64, 64
+			);
+		}
+	}
 
 	//Timer
+	this->getUIRenderer().renderTexture(
+		"TimerBox.png",
+		-832, 420, 256, 256
+	);
+
+	//Gameover
+	/*if (this->gameOver)
+	{
+		this->getUIRenderer().renderTexture(
+			"GameOver.jpg",
+			0, 0, 1920, 1080
+		);
+	}*/
+
 }

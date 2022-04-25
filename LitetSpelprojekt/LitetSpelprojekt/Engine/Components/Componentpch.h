@@ -9,4 +9,4 @@
 #include "Script.h"
 #include "Transform.h"
 
-enum class ObjectTag { UNTAGGED, GROUND, PLAYER, ENEMY, COUNT };
+enum class ObjectTag { UNTAGGED, GROUND, PLAYER, ENEMY, KEY, PORTAL, COUNT };

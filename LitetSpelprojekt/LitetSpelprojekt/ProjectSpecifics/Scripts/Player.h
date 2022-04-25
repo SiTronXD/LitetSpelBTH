@@ -12,7 +12,15 @@ private:
 	float jumpForce;
 	float mouseSensitivity;
 
+	int keyPieces;
+	int health;
+
+	float healthCooldown;
+
 	bool onGround;
+	bool keyPickup;
+	bool dead;
+	bool portal;
 
 	// Component references
 	Rigidbody* rb;
@@ -31,7 +39,16 @@ public:
 	inline float getJumpForce() const { return this->jumpForce; }
 	void setJumpForce(float jumpForce);
 
+	void setHealth(int health);
+	void addHealth(int health);
+	
 	inline bool isOnGround() const { return this->onGround; }
+	inline bool isKeyPickUp() const { return this->keyPickup; }
+	inline int getCurrentKeys() const { return this->keyPieces; }
+	inline int getHealth() const { return this->health; }
+	
+	inline bool isPlayerDead() const { return this->dead; }
+	inline bool onPortal() const { return this->portal; }
 
 	// Inherited via Script
 	virtual void init() override;

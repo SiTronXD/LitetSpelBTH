@@ -58,7 +58,8 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object):
-	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr)
+	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr), 
+	keyPickup(false), keyPieces(0), health(3), dead(false), healthCooldown(0.0f), portal(false)
 {
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
@@ -78,6 +79,16 @@ void Player::setJumpForce(float jumpForce)
 	this->jumpForce = jumpForce;
 }
 
+void Player::setHealth(int health)
+{
+	this->health = health;
+}
+
+void Player::addHealth(int health)
+{
+	this->health += health;
+}
+
 void Player::init()
 {
 	this->rb = this->getObject().getComponent<Rigidbody>();
@@ -91,6 +102,22 @@ void Player::update()
 	jump();
 	fireWeapon();
 	lookAround();
+
+	//Reset keypickup
+	if (this->keyPickup == true)
+		this->keyPickup = false;
+
+	//Rest portal
+	if (this->portal == true)
+		this->portal = false;
+
+	//Check if player is dead
+	if (this->health < 1)
+		this->dead = true;
+
+	//Update health cooldown
+	if (this->healthCooldown > 0)
+		this->healthCooldown--;
 
 	/*GameObject* g = nullptr;
 	float distance = 0.0f;
@@ -109,6 +136,29 @@ void Player::onCollisionStay(GameObject& other)
 
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
+	
+	if (other.getTag() == ObjectTag::KEY)
+	{
+		other.removeComponent<MeshComp>();
+		//other.removeComponent<Collider>();
+		other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
+		this->keyPieces++;
+		this->keyPickup = true;
+	}
+
+	//Test
+	if (other.getTag() == ObjectTag::ENEMY && healthCooldown == 0)
+	{
+		other.removeComponent<MeshComp>();
+		other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
+		this->health--;	
+		this->healthCooldown = 40;
+	}
+
+	//Poral
+	if (other.getTag() == ObjectTag::PORTAL)
+		this->portal = true;
+	
 }
 
 void Player::onCollisionExit(GameObject& other)
