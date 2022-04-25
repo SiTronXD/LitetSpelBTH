@@ -53,7 +53,8 @@ void Resources::init(Renderer* renderer)
 }
 
 void Resources::addTexture(
-	const std::string& textureFilePath, const std::string& textureName)
+	const std::string& textureFilePath, const std::string& textureName,
+	bool saveImageData)
 {
 	if (this->textures.count(textureName) > 0)
 	{
@@ -63,7 +64,7 @@ void Resources::addTexture(
 
 	// Create and load texture
 	Texture* newTexture = new Texture(*this->renderer);
-	newTexture->load(textureFilePath);
+	newTexture->load(textureFilePath, saveImageData);
 
 	// Insert texture
 	this->textures.insert(
