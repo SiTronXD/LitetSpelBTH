@@ -1,7 +1,6 @@
 #include <Windows.h>
 #include <SimpleMath.h>
 #include "GameScene.h"
-#include "../Tools/LevelLoader.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -9,6 +8,63 @@
 #include "../../Engine/Graphics/UIRenderer.h"
 
 using namespace DirectX::SimpleMath;
+
+void GameScene::addLevelColliders(LevelLoader& levelLoader)
+{
+	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
+
+	// Sphere colliders
+	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
+	{
+		LevelColliderSphere sphereInfo = levelLoader.getSphereColliders()[i];
+
+		GameObject& colliderObject = this->addGameObject(
+			"LevelSphereCollider: " + i
+		);
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealSphereMesh", "testMaterial");
+		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
+		colliderObject.getComponent<Transform>()->setScaling(Vector3(1,1,1) * sphereInfo.radius);
+		Collider* col = colliderObject.addComponent<Collider>();
+		col->setSphereCollider(sphereInfo.radius);
+	}
+
+	// Box colliders
+	for (unsigned int i = 0; i < levelLoader.getBoxColliders().size(); ++i)
+	{
+		LevelColliderBox boxInfo = levelLoader.getBoxColliders()[i];
+
+		GameObject& colliderObject = this->addGameObject(
+			"LevelBoxCollider: " + i
+		);
+
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealCubeMesh", "testMaterial");
+		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
+		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
+		Collider* col = colliderObject.addComponent<Collider>();
+		col->setBoxCollider(boxInfo.extents);
+	}
+
+	// Oriented box colliders
+	for (unsigned int i = 0; i < levelLoader.getOrientedBoxColliders().size(); ++i)
+	{
+		LevelColliderOrientedBox orientedBoxInfo = 
+			levelLoader.getOrientedBoxColliders()[i];
+
+		GameObject& colliderObject = this->addGameObject(
+			"LevelOrientedBoxColldier: " + i
+		);
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealCubeMesh", "testMaterial");
+		colliderObject.getComponent<Transform>()->setPosition(orientedBoxInfo.pos);
+		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
+		colliderObject.getComponent<Transform>()->setScaling(orientedBoxInfo.extents * 2);
+		Collider* col = colliderObject.addComponent<Collider>();
+		col->setOrientedBoxCollider(orientedBoxInfo.extents);
+	}
+}
 
 GameScene::GameScene(SceneHandler& sceneHandler)
 	: Scene(sceneHandler)
@@ -51,12 +107,13 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevel.obj");
+	levelLoader.load("Resources/Levels/testLevel.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
 		"LevelMesh"
 	);
+	this->addLevelColliders(levelLoader);
   
 	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());
