@@ -21,6 +21,23 @@ void MenuScene::init()
 	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
 	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
 
+	// Text rendering
+	std::vector<std::string> fontCharacterOrder =
+	{
+		"abcdefghij",
+		"klmnopqrst",
+		"uvwxyz+-.'",
+		"0123456789",
+		"!?,<>:()¤/^",
+		"@*% "
+	};
+
+	this->getResources().addTexture("Resources/Fonts/testBitmapFont.png", "fontTexture");
+	this->getUIRenderer().setFontTexture("fontTexture");
+	this->getUIRenderer().setFontCharacterOrder(
+		fontCharacterOrder, 16, 16
+	);
+
 	//Add cubemap
 	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
 	this->getRenderer().setSkyBoxName("menubox");
@@ -70,4 +87,12 @@ void MenuScene::renderUI()
 	playButton.render("playButton.png");
 	settingsButton.render("settingsButton.png");
 	exitButton.render("exitButton.png");
+
+	this->getUIRenderer().renderString(
+		"the quick brown fox jumps over the lazy dog", 
+		-900, 
+		0, 
+		32, 
+		32
+	);
 }
