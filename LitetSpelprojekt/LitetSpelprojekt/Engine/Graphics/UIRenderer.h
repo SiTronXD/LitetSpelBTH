@@ -43,6 +43,8 @@ private:
 	unsigned int fontTileWidth;
 	unsigned int fontTileHeight;
 
+	int characterSpace;
+
 	std::unordered_map<char, CharacterRect> fontCharacters;
 	std::string fontTextureName;
 
@@ -66,6 +68,8 @@ public:
 		unsigned int tileWidth,
 		unsigned int tileHeight
 	);
+	void setFontCharacterSpacing(int characterSpace);
+	void setFontSpaceWidth(int spaceWidth);
 
 	void renderTexture(
 		const std::string& textureName,

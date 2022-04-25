@@ -135,6 +135,16 @@ void UIRenderer::setFontCharacterOrder(
 	}
 }
 
+void UIRenderer::setFontCharacterSpacing(int characterSpace)
+{
+	this->characterSpace = characterSpace;
+}
+
+void UIRenderer::setFontSpaceWidth(int spaceWidth)
+{
+	this->fontCharacters[' '].tileWidth = spaceWidth;
+}
+
 void UIRenderer::renderTexture(
 	const std::string& textureName, 
 	int x, int y, int uiWidth, int uiHeight)
@@ -174,7 +184,7 @@ void UIRenderer::renderString(
 	int x, int y, int characterWidth, int characterHeight)
 {
 	// Get entire text width
-	int textWidth = 0;
+	float textWidth = 0;
 	for (int i = 0; i < text.length(); ++i)
 	{
 		// Get character size
@@ -182,10 +192,18 @@ void UIRenderer::renderString(
 
 		float sizeRatioX = (float) charRect.tileWidth / this->fontTileWidth;
 
-		textWidth += (int) (characterWidth * sizeRatioX);
+		// Character width
+		textWidth += characterWidth * sizeRatioX;
+
+		// Character space
+		if (i < text.length() - 1)
+			textWidth += this->characterSpace;
 	}
 
-	int posX = x - (textWidth / 2);
+	// "startX = x - halfWidth + firstCharacterHalfWidth"
+	int posX = x - ((int) textWidth / 2) + 
+		(characterWidth * this->fontCharacters[text[0]].tileWidth / 
+		this->fontTileWidth * 0.5f);
 
 	// Render each character
 	for (int i = 0; i < text.length(); ++i)
@@ -196,7 +214,7 @@ void UIRenderer::renderString(
 		float sizeRatioX = (float) charRect.tileWidth / this->fontTileWidth;
 		float sizeRatioY = (float) charRect.tileHeight / this->fontTileHeight;
 
-		// Move character from edge to middle
+		// Move character from left edge to middle
 		posX += (int)(characterWidth * sizeRatioX * 0.5f);
 
 		// Transform from internal resolution to screen resolution
@@ -229,7 +247,8 @@ void UIRenderer::renderString(
 		// Run
 		this->textRenderComputeShader.run();
 
-		// Move character from middle to edge
+		// Move character from middle to right edge
 		posX += (int) (characterWidth * sizeRatioX * 0.5f);
+		posX += this->characterSpace;
 	}
 }

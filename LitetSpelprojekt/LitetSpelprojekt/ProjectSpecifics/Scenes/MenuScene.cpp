@@ -37,6 +37,8 @@ void MenuScene::init()
 	this->getUIRenderer().setFontCharacterOrder(
 		fontCharacterOrder, 16, 16
 	);
+	this->getUIRenderer().setFontCharacterSpacing(5);
+	this->getUIRenderer().setFontSpaceWidth(10);
 
 	//Add cubemap
 	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
@@ -92,7 +94,7 @@ void MenuScene::renderUI()
 		"the quick brown fox jumps over the lazy dog", 
 		0, 
 		0, 
-		55, 
-		55
+		54, 
+		54
 	);
 }

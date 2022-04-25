@@ -22,6 +22,6 @@ void main(uint3 dispatchThreadID : SV_DispatchThreadID)
 
     if (col.a > 0.5f)
         outputTexture[position + dispatchThreadID.xy] = float4(col.rgb, 1.0f);
-    else
-        outputTexture[position + dispatchThreadID.xy] = float4(float2(dispatchThreadID.xy) / uiSize, 0.0f, 1.0f);
+    /*else
+        outputTexture[position + dispatchThreadID.xy] = float4(float2(dispatchThreadID.xy) / uiSize, 0.0f, 1.0f);*/
 }
