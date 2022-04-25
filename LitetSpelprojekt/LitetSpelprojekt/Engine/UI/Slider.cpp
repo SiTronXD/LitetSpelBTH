@@ -5,7 +5,7 @@
 
 using namespace DirectX::SimpleMath;
 
-Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal, UIRenderer& r) :
+Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal, float perFil, UIRenderer& r) :
 	uiRenderer(r)
 {
 	this->pos = p;
@@ -14,6 +14,7 @@ Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal
 	this->minValue = minVal;
 	this->currentValue = curVal;
 	this->maxValue = maxVal;
+	this->percentFilled = perFil;
 }
 
 Slider::~Slider()
@@ -25,10 +26,10 @@ bool Slider::isClicked()
 	bool sliderClicked = false;
 
 	// Slider boundries
-	int maxPosX = this->pos.x + (this->width / 2);
-	int minPosX = this->pos.x - (this->width / 2);
-	int maxPosY = this->pos.y + (this->height / 2);
-	int minPosY = this->pos.y - (this->height / 2);
+	int maxPosX = this->pos.x + (this->width / 2.0);
+	int minPosX = this->pos.x - (this->width / 2.0);
+	int maxPosY = this->pos.y + (this->height / 2.0);
+	int minPosY = this->pos.y - (this->height / 2.0);
 
 	// Transform resolution to internal positions
 	DirectX::XMFLOAT2 internal = ResTranslator::toInternalPos(DirectX::XMFLOAT2(Input::getCursorX(), Input::getCursorY()));
@@ -42,8 +43,8 @@ bool Slider::isClicked()
 			// Left click inside the button
 			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
 			{
-				//this->currentValue = internal.x;
-				Log::write("Internal X: " + std::to_string(internal.x));
+				this->currentValue = (this->width / 2 + internal.x);
+				this->percentFilled = (this->currentValue / this->width);
 				sliderClicked = true;
 			}
 		}
@@ -53,7 +54,19 @@ bool Slider::isClicked()
 
 void Slider::render(std::string textureName)
 {
-	float percent = this->currentValue / this->maxValue;
-	uiRenderer.renderTexture(textureName, this->pos.x - ((width - this->width * percent) / 2), this->pos.y, this->width * percent, this->height);
-	uiRenderer.renderTexture("healthBar.png", this->pos.x, this->pos.y, this->width, this->height);
+	// Render Filled out Slider texture
+	uiRenderer.renderTexture(
+		textureName,
+		this->pos.x - ((this->width - this->width * this->percentFilled) / 2),
+		this->pos.y,
+		this->width * this->percentFilled,
+		this->height);
+
+	// Render Slider border
+	uiRenderer.renderTexture(
+		"healthBar.png",
+		this->pos.x,
+		this->pos.y,
+		this->width,
+		this->height);
 }

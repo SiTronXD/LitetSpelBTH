@@ -6,10 +6,10 @@ using namespace DirectX::SimpleMath;
 SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
 	settingsHeader(Vector2(0, 0), 0, 0, this->getUIRenderer()),
-	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, this->getUIRenderer()),
-	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, this->getUIRenderer()),
-	brightSlider(Vector2(0, 0), 0, 0, 0, 0, 0, this->getUIRenderer()),
-	volSlider(Vector2(0,0), 0, 0, 0, 0, 0, this->getUIRenderer()),
+	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
+	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
+	brightSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
+	volSlider(Vector2(0,0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
 	exitButton(Vector2(0,0), 0, 0, this->getUIRenderer())
 {
 }
@@ -42,32 +42,32 @@ void SettingsScene::init()
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
 	resSlider.setMinVal(0);
-	resSlider.setCurVal(5);
-	resSlider.setMaxVal(10);
+	resSlider.setCurVal(0);
+	resSlider.setMaxVal(177);
 
 	// Sensitivity Slider
 	sensSlider.setPos(Vector2(0,35));
 	sensSlider.setWidth(sliderWidth);
 	sensSlider.setHeight(sliderHeight);
 	sensSlider.setMinVal(0);
-	sensSlider.setCurVal(5);
-	sensSlider.setMaxVal(10);
+	sensSlider.setCurVal(0);
+	sensSlider.setMaxVal(177);
 
 	// Brightness Slider
 	brightSlider.setPos(Vector2(0, -35));
 	brightSlider.setWidth(sliderWidth);
 	brightSlider.setHeight(sliderHeight);
 	brightSlider.setMinVal(0);
-	brightSlider.setCurVal(5);
-	brightSlider.setMaxVal(10);
+	brightSlider.setCurVal(0);
+	brightSlider.setMaxVal(177);
 
 	// Volume Slider
 	volSlider.setPos(Vector2(0, -105));
 	volSlider.setWidth(sliderWidth);
 	volSlider.setHeight(sliderHeight);
 	volSlider.setMinVal(0);
-	volSlider.setCurVal(5);
-	volSlider.setMaxVal(10);
+	volSlider.setCurVal(0);
+	volSlider.setMaxVal(177);
 
 	// Return to Menu
 	exitButton.setPos(Vector2(0, -220));
