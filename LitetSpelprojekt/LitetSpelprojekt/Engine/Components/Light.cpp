@@ -11,7 +11,7 @@ using namespace DirectX::SimpleMath;
 
 Light::Light(GameObject& object)
 	: Component(object), 
-	position(0, 0, 0),
+	camPositionOffset(-30, 10, -30),
 	type(LightType::DIRECTIONAL),
 	shadowMapDepthTexture(nullptr),
 	shadowMapDSV("shadowMapDSV"),
@@ -76,14 +76,9 @@ void Light::init(Resources& resources, Renderer& renderer)
 		dirLightDirection.Normalize();
 		this->dirLightProps.direction = dirLightDirection;
 
-		this->position = Vector3(-30,10,-30);
+		this->camPositionOffset = Vector3(-30,10,-30);
 
-		// Matrices
-		this->viewMatrix = Matrix::CreateLookAt(
-			this->position,
-			this->position + this->dirLightProps.direction,
-			Vector3(0, 1, 0)
-		);
+		// Constant projection matrix
 		this->projectionMatrix = Matrix::CreateOrthographic(
 			100,
 			100,
@@ -97,6 +92,21 @@ void Light::init(Resources& resources, Renderer& renderer)
 
 void Light::render(Scene& scene)
 {
+	// Make position follow camera
+	Vector3 position = scene.getActiveCamera()->getTransform()->getPosition() + 
+		this->camPositionOffset;
+
+	// Try to make the transition a bit easier
+	position.x = std::roundf(position.x * 0.5f) / 0.5f;
+	position.y = std::roundf(position.y * 0.5f) / 0.5f;
+	position.z = std::roundf(position.z * 0.5f) / 0.5f;
+
+	// View matrix
+	this->viewMatrix = Matrix::CreateLookAt(
+		position,
+		position + this->dirLightProps.direction,
+		Vector3(0, 1, 0)
+	);
 	Matrix vpMatrix = this->viewMatrix * this->projectionMatrix;
 
 	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();

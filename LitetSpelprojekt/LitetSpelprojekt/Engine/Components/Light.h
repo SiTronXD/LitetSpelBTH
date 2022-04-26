@@ -32,7 +32,7 @@ private:
 		DirectX::XMFLOAT3 direction;
 	} dirLightProps{};
 
-	DirectX::SimpleMath::Vector3 position;
+	DirectX::SimpleMath::Vector3 camPositionOffset;
 
 	DirectX::SimpleMath::Matrix viewMatrix;
 	DirectX::SimpleMath::Matrix projectionMatrix;
