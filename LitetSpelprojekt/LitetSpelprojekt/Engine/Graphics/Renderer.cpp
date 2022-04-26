@@ -107,13 +107,14 @@ bool Renderer::loadShaders()
 
 Renderer::Renderer(Resources& resources)
 	: device(nullptr), immediateContext(nullptr), swapChain(nullptr),
-	viewport(), backBufferRTV(nullptr), dsTexture(*this), 
+	viewport(), backBufferRTV(nullptr), dsTexture(*this),
 	dsView("rendererDSV"),
 
 	vertexShader(*this),
 	pixelShader(*this),
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
+	compactCameraConstantBuffer(*this, "compactCameraConstantBuffer"),
 	backBufferUAV(*this, "backBufferUAV"),
 
 	resources(resources),
@@ -149,8 +150,9 @@ void Renderer::init(Window& window)
 	viewport.MinDepth = 0;
 	viewport.MaxDepth = 1;
 
-	// Constant buffer
+	// Constant buffers
 	this->cameraConstantBuffer.createBuffer(sizeof(CameraBufferData));
+	this->compactCameraConstantBuffer.createBuffer(sizeof(CompactCameraBufferData));
 	
 	//Init skybox
 	this->skybox.initialize();
@@ -177,7 +179,10 @@ void Renderer::render(Scene& scene)
 	// ----- Render shadow maps -----
 	std::vector<Light*> lightComponents = scene.getActiveComponents<Light>();
 	for (unsigned int i = 0; i < lightComponents.size(); ++i)
+	{
 		lightComponents[i]->render(scene);
+	}
+	Light* firstLight = lightComponents[0];
 
 	// ----- Render meshes to back buffer -----
 	immediateContext->RSSetViewports(1, &this->viewport);
@@ -191,11 +196,16 @@ void Renderer::render(Scene& scene)
 	Matrix vp;
 	vp = scene.getActiveCamera()->getViewMatrix();
 	vp *= scene.getActiveCamera()->getProjectionMatrix();
+	this->cameraBufferStruct.vpMat = vp.Transpose();
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
+	immediateContext->PSSetConstantBuffers(0, 1, &firstLight->getLightBuffer().getBuffer());
 
 	// Set shadow map
+	immediateContext->PSSetSamplers(
+		1, 1, &firstLight->getShadowMapTexture().getSampler()
+	);
 	immediateContext->PSSetShaderResources(
-		1, 1, &lightComponents[0]->getShadowMapTexture().getSRV().getPtr()
+		1, 1, &firstLight->getShadowMapTexture().getSRV().getPtr()
 	);
 
 	// Render all meshes
@@ -204,8 +214,8 @@ void Renderer::render(Scene& scene)
 		Mesh& mesh = this->resources.getMesh(meshComponents[i]->getMeshName().c_str());
 
 		// Set mvp Matrix
-		Matrix m = meshComponents[i]->getTransform()->getWorldMatrix() * vp;
-		this->cameraBufferStruct.mvpMat = m.Transpose();
+		Matrix m = meshComponents[i]->getTransform()->getWorldMatrix();
+		this->cameraBufferStruct.modelMat = m.Transpose();
 		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 
 		// Set texture

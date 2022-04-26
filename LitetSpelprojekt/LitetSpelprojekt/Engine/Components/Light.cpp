@@ -24,6 +24,7 @@ Light::Light(GameObject& object)
 Light::~Light()
 {
 	delete this->shadowMapDepthTexture;
+	delete this->lightBuffer;
 }
 
 void Light::init(Resources& resources, Renderer& renderer)
@@ -37,7 +38,8 @@ void Light::init(Resources& resources, Renderer& renderer)
 	this->shadowMapDepthTexture->createAsDepthTexture(
 		this->SHADOW_MAP_SIZE, this->SHADOW_MAP_SIZE,
 		DXGI_FORMAT_R32_TYPELESS,
-		D3D11_BIND_SHADER_RESOURCE
+		D3D11_BIND_SHADER_RESOURCE,
+		true
 	);
 
 	// Create DSV
@@ -52,6 +54,10 @@ void Light::init(Resources& resources, Renderer& renderer)
 	inputLayoutDesc.add("UV", DXGI_FORMAT_R32G32_FLOAT);
 	this->resources->addVertexShader("ShadowMap_VS", inputLayoutDesc);
 	this->shadowMapVS = &this->resources->getVertexShader("ShadowMap_VS");
+
+	delete this->lightBuffer;
+	this->lightBuffer = new ConstantBuffer(renderer, "lightConstantBuffer");
+	this->lightBuffer->createBuffer(sizeof(LightBufferData));
 
 	switch (this->type)
 	{
@@ -70,7 +76,7 @@ void Light::init(Resources& resources, Renderer& renderer)
 		dirLightDirection.Normalize();
 		this->dirLightProps.direction = dirLightDirection;
 
-		this->position = Vector3(0,0,0);
+		this->position = Vector3(-30,10,-30);
 
 		// Matrices
 		this->viewMatrix = Matrix::CreateLookAt(
@@ -121,7 +127,7 @@ void Light::render(Scene& scene)
 	immediateContext->VSSetConstantBuffers(
 		0, 
 		1, 
-		&this->renderer->getMatrixConstantBuffer().getBuffer()
+		&this->renderer->getCompactCameraConstantBuffer().getBuffer()
 	);
 
 	// Null sampler and texture
@@ -141,8 +147,8 @@ void Light::render(Scene& scene)
 
 		// Set mvp Matrix
 		Matrix m = meshComponents[i]->getTransform()->getWorldMatrix() * vpMatrix;
-		this->renderer->getMatrixBufferStruct().mvpMat = m.Transpose();
-		this->renderer->getMatrixConstantBuffer().updateBuffer(&this->renderer->getMatrixBufferStruct());
+		this->renderer->getCompactCameraBufferStruct().mvpMat = m.Transpose();
+		this->renderer->getCompactCameraConstantBuffer().updateBuffer(&this->renderer->getCompactCameraBufferStruct());
 
 		// Vertex/index buffer
 		immediateContext->IASetVertexBuffers(
@@ -156,4 +162,8 @@ void Light::render(Scene& scene)
 			numIndices, 0, 0
 		);
 	}
+
+	// Update light buffer
+	this->lightBufferStruct.vpMatrix = vpMatrix.Transpose();
+	this->lightBuffer->updateBuffer(&this->lightBufferStruct);
 }

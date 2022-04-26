@@ -1,7 +1,8 @@
 
 cbuffer CameraBuffer : register(b0)
 {
-    matrix mvpMatrix;
+    matrix modelMatrix;
+    matrix vpMatrix;
 };
 
 struct Vertex
@@ -14,6 +15,7 @@ struct Vertex
 struct Output
 {
     float4 position : SV_POSITION;
+    float3 worldPos : POSITION1;
     float3 normal : NORMAL;
     float2 uv : UV;
 };
@@ -22,7 +24,9 @@ Output main(Vertex input)
 {
     Output output;
     
-    output.position = mul(float4(input.position, 1.0f), mvpMatrix);
+    output.position = mul(float4(input.position, 1.0f), modelMatrix);
+    output.worldPos = output.position;
+    output.position = mul(output.position, vpMatrix);
     output.normal = input.normal;
     output.uv = input.uv;
     

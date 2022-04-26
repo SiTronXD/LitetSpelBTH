@@ -4,6 +4,7 @@
 #include "Componentpch.h"
 #include "../Graphics/DSV.h"
 #include "../Graphics/Texture.h"
+#include "../Graphics/ConstantBuffer.h"
 
 class VertexShader;
 class Resources;
@@ -19,7 +20,12 @@ enum class LightType
 class Light : public Component
 {
 private:
-	static const unsigned int SHADOW_MAP_SIZE = 1024;
+	static const unsigned int SHADOW_MAP_SIZE = 512;
+
+	struct LightBufferData
+	{
+		DirectX::XMFLOAT4X4 vpMatrix;
+	} lightBufferStruct{};
 
 	struct DirectionalLightProperties
 	{
@@ -38,6 +44,8 @@ private:
 	Texture* shadowMapDepthTexture;
 	DSV shadowMapDSV;
 
+	ConstantBuffer* lightBuffer;
+
 	VertexShader* shadowMapVS;
 
 	Resources* resources;
@@ -52,4 +60,5 @@ public:
 	void render(Scene& scene);
 
 	inline Texture& getShadowMapTexture() { return *this->shadowMapDepthTexture; }
+	inline ConstantBuffer& getLightBuffer() { return *this->lightBuffer; }
 };

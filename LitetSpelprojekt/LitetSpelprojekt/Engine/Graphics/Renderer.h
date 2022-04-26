@@ -23,8 +23,14 @@ class Renderer
 private:
 	struct CameraBufferData
 	{
-		DirectX::XMFLOAT4X4 mvpMat;
+		DirectX::XMFLOAT4X4 modelMat;
+		DirectX::XMFLOAT4X4 vpMat;
 	} cameraBufferStruct{};
+
+	struct CompactCameraBufferData
+	{
+		DirectX::XMFLOAT4X4 mvpMat;
+	} compactCameraBufferStruct{};
 
 	ID3D11Device* device;
 	ID3D11DeviceContext* immediateContext;
@@ -40,6 +46,7 @@ private:
 	DSV dsView;
 
 	ConstantBuffer cameraConstantBuffer;
+	ConstantBuffer compactCameraConstantBuffer;
 
 	Window* window;
 	Resources& resources;
@@ -73,6 +80,6 @@ public:
 
 	inline ID3D11Device* getDevice() const { return this->device; }
 	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }
-	inline ConstantBuffer& getMatrixConstantBuffer() { return this->cameraConstantBuffer; }
-	inline CameraBufferData& getMatrixBufferStruct() { return this->cameraBufferStruct; }
+	inline ConstantBuffer& getCompactCameraConstantBuffer() { return this->compactCameraConstantBuffer; }
+	inline CompactCameraBufferData& getCompactCameraBufferStruct() { return this->compactCameraBufferStruct; }
 };

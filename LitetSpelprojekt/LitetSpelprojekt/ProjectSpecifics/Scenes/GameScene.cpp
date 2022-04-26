@@ -124,6 +124,9 @@ void GameScene::init()
 	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
 	col->setSphereCollider(0.5f);
+	cam.getComponent<Camera>()->updateAspectRatio(
+		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
+	);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);

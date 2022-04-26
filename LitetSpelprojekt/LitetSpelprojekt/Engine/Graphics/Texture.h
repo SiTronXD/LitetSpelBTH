@@ -26,7 +26,9 @@ private:
 	int height;
 	int numChannels;
 
-	bool createSampler();
+	bool createSampler(
+		const D3D11_FILTER& filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR
+	);
 
 public:
 	Texture(Renderer& renderer);
@@ -36,7 +38,8 @@ public:
 	bool createAsDepthTexture(
 		int width, int height,
 		const DXGI_FORMAT& format,
-		const UINT& additionalBindFlags = 0
+		const UINT& additionalBindFlags = 0,
+		bool shouldCreateSampler = false
 	);
 	bool createCubemap(std::string fileName, std::string format);
 

@@ -6,7 +6,7 @@
 #include "../Dev/Log.h"
 #include "Renderer.h"
 
-bool Texture::createSampler()
+bool Texture::createSampler(const D3D11_FILTER& filter)
 {
 	// Sampler description
 	D3D11_SAMPLER_DESC samplerDesc{};
@@ -22,7 +22,7 @@ bool Texture::createSampler()
 	samplerDesc.BorderColor[3] = 0;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.Filter = filter;
 
 	// Create sampler
 	HRESULT hr = this->renderer.getDevice()->CreateSamplerState(
@@ -124,13 +124,19 @@ bool Texture::load(const std::string& fileName, bool saveImageData)
 
 bool Texture::createAsDepthTexture(
 	int width, int height, const DXGI_FORMAT& format,
-	const UINT& additionalBindFlags)
+	const UINT& additionalBindFlags,
+	bool shouldCreateSampler)
 {
 	this->width = width;
 	this->height = height;
 
 	// Deallocate old texture
+	S_RELEASE(this->samplerState);
 	S_RELEASE(this->texture);
+
+	// Create sampler
+	if(shouldCreateSampler)
+		this->createSampler(D3D11_FILTER_MIN_MAG_MIP_POINT);
 
 	// Description
 	D3D11_TEXTURE2D_DESC textureDesc{};
