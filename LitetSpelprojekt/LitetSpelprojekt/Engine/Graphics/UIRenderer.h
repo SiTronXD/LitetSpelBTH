@@ -73,7 +73,12 @@ public:
 
 	void renderTexture(
 		const std::string& textureName,
-		int x, int y, int width, int height
+		int x, int y, int uiWidth, int uiHeight
+	);
+	void renderTexture(
+		SRV& srv,
+		int x, int y, int uiWidth, int uiHeight,
+		int srvWidth, int srvHeight
 	);
 	void renderString(
 		const std::string& text,

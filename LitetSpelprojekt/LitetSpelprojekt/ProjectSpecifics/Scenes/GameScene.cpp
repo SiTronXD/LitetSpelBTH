@@ -139,6 +139,11 @@ void GameScene::init()
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
 	levelMeshComponent->setMesh("LevelMesh", "");
 
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
+
 	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
 	mc = model2.addComponent<MeshComp>();

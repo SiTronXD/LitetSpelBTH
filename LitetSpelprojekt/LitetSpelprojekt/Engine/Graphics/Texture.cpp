@@ -122,6 +122,51 @@ bool Texture::load(const std::string& fileName, bool saveImageData)
 	return this->createShaderResourceView();
 }
 
+bool Texture::createAsDepthTexture(
+	int width, int height, const DXGI_FORMAT& format,
+	const UINT& additionalBindFlags)
+{
+	this->width = width;
+	this->height = height;
+
+	// Deallocate old texture
+	S_RELEASE(this->texture);
+
+	// Description
+	D3D11_TEXTURE2D_DESC textureDesc{};
+	textureDesc.Width = width;
+	textureDesc.Height = height;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = format;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.SampleDesc.Quality = 0;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | additionalBindFlags;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+
+	// Create depth/stencil texture
+	HRESULT result = this->renderer.getDevice()->CreateTexture2D(
+		&textureDesc, nullptr, &this->texture
+	);
+	if (FAILED(result))
+	{
+		Log::resultFailed(
+			"Failed to create depth/stencil texture.",
+			result
+		);
+
+		return false;
+	}
+
+	// SRV
+	if ((additionalBindFlags & D3D11_BIND_SHADER_RESOURCE) == D3D11_BIND_SHADER_RESOURCE)
+		this->textureSRV.createTextureSRV(this->texture, DXGI_FORMAT_R32_FLOAT);
+
+	return true;
+}
+
 bool Texture::createCubemap(std::string fileName, std::string format)
 {
 	HRESULT hr = {};

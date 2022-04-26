@@ -59,32 +59,19 @@ bool Renderer::createViews()
 	}
 	backBuffer->Release();
 
-	D3D11_TEXTURE2D_DESC textureDesc;
-	textureDesc.Width = this->window->getWidth();
-	textureDesc.Height = this->window->getHeight();
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.SampleDesc.Quality = 0;
-	textureDesc.Usage = D3D11_USAGE_DEFAULT;
-	textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	textureDesc.CPUAccessFlags = 0;
-	textureDesc.MiscFlags = 0;
-	if (FAILED(device->CreateTexture2D(&textureDesc, nullptr, &dsTexture)))
-	{
-		Log::error("Failed to create Depth Stencil Texture");
-		return false;
-	}
+	// Depth/stencil texture
+	this->dsTexture.createAsDepthTexture(
+		this->window->getWidth(), this->window->getHeight(),
+		DXGI_FORMAT_R32_TYPELESS
+	);
 
-	if (FAILED(device->CreateDepthStencilView(dsTexture, 0, &dsView)))
-	{
-		Log::error("Failed to create Depth Stencil View");
-		return false;
-	}
+	// Depth/stencil view
+	this->dsView.createDSV(
+		*this, this->dsTexture.getPtr(), DXGI_FORMAT_D32_FLOAT
+	);
 
 	//Depth stencil state
-	D3D11_DEPTH_STENCIL_DESC dssDesc;
+	D3D11_DEPTH_STENCIL_DESC dssDesc{};
 	ZeroMemory(&dssDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 	dssDesc.DepthEnable = true;
 	dssDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -120,7 +107,8 @@ bool Renderer::loadShaders()
 
 Renderer::Renderer(Resources& resources)
 	: device(nullptr), immediateContext(nullptr), swapChain(nullptr),
-	viewport(), backBufferRTV(nullptr), dsTexture(nullptr), dsView(nullptr),
+	viewport(), backBufferRTV(nullptr), dsTexture(*this), 
+	dsView("rendererDSV"),
 
 	vertexShader(*this),
 	pixelShader(*this),
@@ -143,8 +131,6 @@ Renderer::~Renderer()
 	this->swapChain->Release();
 
 	this->backBufferRTV->Release();
-	this->dsTexture->Release();
-	this->dsView->Release();
 	this->dsState->Release();
 }
 
@@ -168,6 +154,9 @@ void Renderer::init(Window& window)
 	
 	//Init skybox
 	this->skybox.initialize();
+
+	// Topology won't change during runtime
+	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 float timer = 0.0f;
@@ -180,25 +169,34 @@ void Renderer::render(Scene& scene)
 	unsigned int numDrawCalls = 0;
 #endif
 
+	// Clear buffers
+	float clearColour[4] = { 0, 0, 0, 0 };
+	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
+	immediateContext->ClearDepthStencilView(this->dsView.getPtr(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	// ----- Render shadow maps -----
+	std::vector<Light*> lightComponents = scene.getActiveComponents<Light>();
+	for (unsigned int i = 0; i < lightComponents.size(); ++i)
+		lightComponents[i]->render(scene);
+
+	// ----- Render meshes to back buffer -----
+	immediateContext->RSSetViewports(1, &this->viewport);
+	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
+	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
+	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView.getPtr());
+
+	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
+
 	// Update camera constant buffer
 	Matrix vp;
 	vp = scene.getActiveCamera()->getViewMatrix();
 	vp *= scene.getActiveCamera()->getProjectionMatrix();
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
 
-	// Init setup
-	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	immediateContext->RSSetViewports(1, &this->viewport);
-	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
-	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
-	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView);
-
-	// Clear buffers
-	float clearColour[4] = { 0, 0, 0, 0 };
-	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
-	immediateContext->ClearDepthStencilView(this->dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
-
-	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
+	// Set shadow map
+	immediateContext->PSSetShaderResources(
+		1, 1, &lightComponents[0]->getShadowMapTexture().getSRV().getPtr()
+	);
 
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
@@ -249,6 +247,12 @@ void Renderer::render(Scene& scene)
 		#endif
 		}
 	}
+
+	// Remove shadow map from slot 1
+	ID3D11ShaderResourceView* nullSRV[]{ nullptr };
+	immediateContext->PSSetShaderResources(
+		1, 1, nullSRV
+	);
 
 	//Skybox
 	immediateContext->IASetInputLayout(this->skybox.getVertexShader().getInputLayout());

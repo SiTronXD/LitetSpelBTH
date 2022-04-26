@@ -15,6 +15,7 @@
 #include "Texture.h"
 #include "../Resources.h"
 #include "UAV.h"
+#include "DSV.h"
 #include "Skybox.h"
 
 class Renderer
@@ -34,9 +35,9 @@ private:
 
 	D3D11_VIEWPORT viewport;
 	ID3D11RenderTargetView* backBufferRTV;
-	ID3D11Texture2D* dsTexture;
-	ID3D11DepthStencilView* dsView;
+	Texture dsTexture;
 	ID3D11DepthStencilState* dsState;
+	DSV dsView;
 
 	ConstantBuffer cameraConstantBuffer;
 
@@ -72,6 +73,6 @@ public:
 
 	inline ID3D11Device* getDevice() const { return this->device; }
 	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }
-
-
+	inline ConstantBuffer& getMatrixConstantBuffer() { return this->cameraConstantBuffer; }
+	inline CameraBufferData& getMatrixBufferStruct() { return this->cameraBufferStruct; }
 };
