@@ -30,9 +30,9 @@ bool Settings::loadSettings()
 		Log::error("Unable to load settings file");
 		this->settingsList.resolutionX = 600;
 		this->settingsList.resolutionY = 480;
-		this->settingsList.sensitivity = 6;
-		this->settingsList.brightness = 6;
-		this->settingsList.volume = 6;
+		this->settingsList.sensitivity = 3;
+		this->settingsList.brightness = 3;
+		this->settingsList.volume = 3;
 		return false;
 	}
 

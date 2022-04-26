@@ -25,6 +25,7 @@ public:
 	inline float getMinVal() const { return this->minValue; }
 	inline float getCurVal() const { return this->currentValue; }
 	inline float getMaxVal() const { return this->maxValue; }
+	inline float getPerFel() const { return this->percentFilled; }
 	
 	// Set
 	inline void setPos(DirectX::SimpleMath::Vector2 newPos) { this->pos = newPos; }
@@ -33,6 +34,7 @@ public:
 	inline void setMinVal(float newMinVal) { this->maxValue = newMinVal; }
 	inline void setCurVal(float newCurVal) { this->maxValue = newCurVal; }
 	inline void setMaxVal(float newMaxVal) { this->maxValue = newMaxVal; }
+	inline void setPerFill(float newPerFill) { this->percentFilled = newPerFill; }
 
 	bool isClicked();
 	void render(std::string textureName);

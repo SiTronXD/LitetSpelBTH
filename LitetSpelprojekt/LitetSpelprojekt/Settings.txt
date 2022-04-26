@@ -3,8 +3,8 @@ ResolutionX
 ResolutionY
 900
 Sensitivity
-5
+9
 Brightnesss
-10
-Volume
 6
+Volume
+9

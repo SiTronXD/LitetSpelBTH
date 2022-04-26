@@ -1,6 +1,7 @@
 #include "SettingsScene.h"
 #include "../../Engine/GameObject.h"
 #include "SimpleMath.h"
+#include "../Scripts/Player.h"
 using namespace DirectX::SimpleMath;
 
 SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
@@ -25,17 +26,17 @@ void SettingsScene::init()
 	// Load Textures
 	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
 	this->getResources().addTexture("Resources/Textures/HealthBar.png", "healthBar.png");
-
+	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
+	resolutions.push_back("800");
+	resolutions.push_back("600");
 	resolutions.push_back("1280");
-	resolutions.push_back("720");
+	resolutions.push_back("840");
 	resolutions.push_back("1600");
 	resolutions.push_back("900");
 	resolutions.push_back("1920");
 	resolutions.push_back("1080");
 	resolutions.push_back("2048");
-	resolutions.push_back("1152");
-	resolutions.push_back("3840");
-	resolutions.push_back("2160");
+	resolutions.push_back("1080");
 
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
@@ -46,44 +47,48 @@ void SettingsScene::init()
 	int sliderWidth = 354;
 
 	// Settings Header
-	settingsHeader.setPos(Vector2(0, 220));
+	settingsHeader.setPos(Vector2(0, 420));
 	settingsHeader.setWidth(sliderWidth);
 	settingsHeader.setHeight(159);
 
 	// Resolution Slider
-	resSlider.setPos(Vector2(0, 105));
+	resSlider.setPos(Vector2(0, 210));
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
 	resSlider.setMinVal(1);
 	resSlider.setCurVal(3);
 	resSlider.setMaxVal(5);
+	resSlider.setPerFill(0.4);
 
 	// Sensitivity Slider
-	sensSlider.setPos(Vector2(0,35));
+	sensSlider.setPos(Vector2(0, 70));
 	sensSlider.setWidth(sliderWidth);
 	sensSlider.setHeight(sliderHeight);
 	sensSlider.setMinVal(1);
 	sensSlider.setCurVal(5);
 	sensSlider.setMaxVal(10);
+	sensSlider.setPerFill(0.5);
 
 	// Brightness Slider
-	brightSlider.setPos(Vector2(0, -35));
+	brightSlider.setPos(Vector2(0, -70));
 	brightSlider.setWidth(sliderWidth);
 	brightSlider.setHeight(sliderHeight);
 	brightSlider.setMinVal(1);
 	brightSlider.setCurVal(5);
 	brightSlider.setMaxVal(10);
+	brightSlider.setPerFill(0.8);
 
 	// Volume Slider
-	volSlider.setPos(Vector2(0, -105));
+	volSlider.setPos(Vector2(0, -210));
 	volSlider.setWidth(sliderWidth);
 	volSlider.setHeight(sliderHeight);
 	volSlider.setMinVal(1);
 	volSlider.setCurVal(5);
 	volSlider.setMaxVal(10);
+	volSlider.setPerFill(0.7);
 
 	// Return to Menu
-	exitButton.setPos(Vector2(0, -220));
+	exitButton.setPos(Vector2(0, -420));
 	exitButton.setWidth(354);
 	exitButton.setHeight(159);
 }
@@ -264,16 +269,15 @@ void SettingsScene::update()
 	{
 		// Exit Game
 		this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
-		
 	}
 }
 
 void SettingsScene::renderUI()
 {
 	settingsHeader.render("settingsButton.png");
-	resSlider.render("resSlider.png");
-	sensSlider.render("resSlider.png");
-	brightSlider.render("resSlider.png");
-	volSlider.render("resSlider.png");
+	resSlider.render("sliderBackground.png");
+	sensSlider.render("sliderBackground.png");
+	brightSlider.render("sliderBackground.png");
+	volSlider.render("sliderBackground.png");
 	exitButton.render("exitButton.png");
 }
