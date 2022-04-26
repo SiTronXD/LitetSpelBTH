@@ -4,9 +4,9 @@ struct SettingsStruct
 {
 	unsigned int resolutionX;
 	unsigned int resolutionY;
-	unsigned int sensitivity;
-	unsigned int brightness;
-	unsigned int volume;
+	float sensitivity;
+	float brightness;
+	float volume;
 };
 
 class Settings

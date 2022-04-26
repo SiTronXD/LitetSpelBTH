@@ -5,16 +5,12 @@
 
 Settings::Settings()
 {
-	this->settingsList.resolutionX = 0;
-	this->settingsList.resolutionY = 0;
-	this->settingsList.sensitivity = 0;
-	this->settingsList.brightness = 0;
-	this->settingsList.volume = 0;
+	loadSettings();
 }
 
 Settings::~Settings()
 {
-
+	saveSettings();
 }
 
 //Load in Settings from File
@@ -30,9 +26,9 @@ bool Settings::loadSettings()
 		Log::error("Unable to load settings file");
 		this->settingsList.resolutionX = 600;
 		this->settingsList.resolutionY = 480;
-		this->settingsList.sensitivity = 3;
-		this->settingsList.brightness = 3;
-		this->settingsList.volume = 3;
+		this->settingsList.sensitivity = 3.0f;
+		this->settingsList.brightness = 3.0f;
+		this->settingsList.volume = 3.0f;
 		return false;
 	}
 
@@ -49,23 +45,29 @@ bool Settings::loadSettings()
 			getline(reader, gameSettings);
 			settingsList.resolutionY = stoi(gameSettings);
 		}
-		else if (gameSettings == "Sensitvity")
+		else if (gameSettings == "Sensitivity")
 		{
 			getline(reader, gameSettings);
-			settingsList.sensitivity = stoi(gameSettings);
+			settingsList.sensitivity = stof(gameSettings);
 		}
 		else if (gameSettings == "Brightness")
 		{
 			getline(reader, gameSettings);
-			settingsList.brightness = stoi(gameSettings);
+			settingsList.brightness = stof(gameSettings);
 		}
 		else if (gameSettings == "Volume")
 		{
 			getline(reader, gameSettings);
-			settingsList.volume = stoi(gameSettings);
+			settingsList.volume = stof(gameSettings);
 		}
 	}
 	reader.close();
+
+	Log::write("ResX: " + std::to_string(settingsList.resolutionX) +
+		"ResY: " + std::to_string(settingsList.resolutionY) +
+		"Sens: " + std::to_string(settingsList.sensitivity) +
+		"Bright: " + std::to_string(settingsList.brightness) +
+		"Volume: " + std::to_string(settingsList.volume));
 	return true;
 }
 
@@ -85,8 +87,14 @@ bool Settings::saveSettings()
 	writer << "ResolutionX\n" << settingsList.resolutionX 
 		<< "\nResolutionY\n" << settingsList.resolutionY 
 		<< "\nSensitivity\n" << settingsList.sensitivity
-		<< "\nBrightnesss\n" << settingsList.brightness
+		<< "\nBrightness\n" << settingsList.brightness
 		<< "\nVolume\n" << settingsList.volume;
+
+	Log::write("ResX: " + std::to_string(settingsList.resolutionX) +
+		"ResY: " + std::to_string(settingsList.resolutionY) +
+		"Sens: " + std::to_string(settingsList.sensitivity) +
+		"Bright: " + std::to_string(settingsList.brightness) +
+		"Volume: " + std::to_string(settingsList.volume));
 	
 	writer.close();
 	return true;

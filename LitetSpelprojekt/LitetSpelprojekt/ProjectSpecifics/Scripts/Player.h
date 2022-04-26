@@ -28,8 +28,12 @@ public:
 
 	inline float getSpeed() const { return this->speed; }
 	void setSpeed(float speed);
+	
 	inline float getJumpForce() const { return this->jumpForce; }
 	void setJumpForce(float jumpForce);
+
+	inline float getMouseSensitivity() const { return this->mouseSensitivity; }
+	void setMouseSensitivity(float mouseSensitivity);
 
 	inline bool isOnGround() const { return this->onGround; }
 

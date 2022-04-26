@@ -10,15 +10,15 @@ SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
 	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
 	brightSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
-	volSlider(Vector2(0,0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
-	exitButton(Vector2(0,0), 0, 0, this->getUIRenderer())
+	volSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
+	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer())
 {
 	resolutions = {};
 }
 
 SettingsScene::~SettingsScene()
 {
-	this->getSettings().saveSettings();
+	
 }
 
 void SettingsScene::init()
@@ -27,6 +27,7 @@ void SettingsScene::init()
 	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
 	this->getResources().addTexture("Resources/Textures/HealthBar.png", "healthBar.png");
 	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
+
 	resolutions.push_back("800");
 	resolutions.push_back("600");
 	resolutions.push_back("1280");
@@ -37,6 +38,28 @@ void SettingsScene::init()
 	resolutions.push_back("1080");
 	resolutions.push_back("2048");
 	resolutions.push_back("1080");
+
+	float counter = 0.0f;
+	switch (this->getSettings().getSettings().resolutionX)
+	{
+	case 800:
+		counter = 0.2;
+		break;
+	case 1280:
+		counter = 0.4;
+		break;
+	case 1600:
+		counter = 0.6;
+		break;
+	case 1920:
+		counter = 0.8;
+		break;
+	case 2048:
+		counter = 1.0;
+		break;
+	default:
+		Log::error("Unknown ResolutionX");
+	}
 
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
@@ -55,37 +78,37 @@ void SettingsScene::init()
 	resSlider.setPos(Vector2(0, 210));
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
-	resSlider.setMinVal(1);
-	resSlider.setCurVal(3);
-	resSlider.setMaxVal(5);
-	resSlider.setPerFill(0.4);
+	resSlider.setMinVal(0.2);
+	resSlider.setCurVal(counter);
+	resSlider.setMaxVal(1.0);
+	resSlider.setPerFill(counter);
 
 	// Sensitivity Slider
 	sensSlider.setPos(Vector2(0, 70));
 	sensSlider.setWidth(sliderWidth);
 	sensSlider.setHeight(sliderHeight);
-	sensSlider.setMinVal(1);
-	sensSlider.setCurVal(5);
-	sensSlider.setMaxVal(10);
-	sensSlider.setPerFill(0.5);
+	sensSlider.setMinVal(0.1f);
+	sensSlider.setCurVal(this->getSettings().getSettings().sensitivity);
+	sensSlider.setMaxVal(1.0f);
+	sensSlider.setPerFill(this->getSettings().getSettings().sensitivity);
 
 	// Brightness Slider
 	brightSlider.setPos(Vector2(0, -70));
 	brightSlider.setWidth(sliderWidth);
 	brightSlider.setHeight(sliderHeight);
-	brightSlider.setMinVal(1);
-	brightSlider.setCurVal(5);
-	brightSlider.setMaxVal(10);
-	brightSlider.setPerFill(0.8);
+	brightSlider.setMinVal(0.1f);
+	brightSlider.setCurVal(this->getSettings().getSettings().brightness);
+	brightSlider.setMaxVal(1.0f);
+	brightSlider.setPerFill(this->getSettings().getSettings().brightness);
 
 	// Volume Slider
 	volSlider.setPos(Vector2(0, -210));
 	volSlider.setWidth(sliderWidth);
 	volSlider.setHeight(sliderHeight);
-	volSlider.setMinVal(1);
-	volSlider.setCurVal(5);
-	volSlider.setMaxVal(10);
-	volSlider.setPerFill(0.7);
+	volSlider.setMinVal(0.1f);
+	volSlider.setCurVal(this->getSettings().getSettings().volume);
+	volSlider.setMaxVal(1.0f);
+	volSlider.setPerFill(this->getSettings().getSettings().volume);
 
 	// Return to Menu
 	exitButton.setPos(Vector2(0, -420));
@@ -149,34 +172,34 @@ void SettingsScene::update()
 		switch (range)
 		{
 		case 0:
-			this->getSettings().getSettings().sensitivity = 1;
+			this->getSettings().getSettings().sensitivity = 0.1f;
 			break;
 		case 1:
-			this->getSettings().getSettings().sensitivity = 2;
+			this->getSettings().getSettings().sensitivity = 0.2f;
 			break;
 		case 2:
-			this->getSettings().getSettings().sensitivity = 3;
+			this->getSettings().getSettings().sensitivity = 0.3f;
 			break;
 		case 3:
-			this->getSettings().getSettings().sensitivity = 4;
+			this->getSettings().getSettings().sensitivity = 0.4f;
 			break;
 		case 4:
-			this->getSettings().getSettings().sensitivity = 5;
+			this->getSettings().getSettings().sensitivity = 0.5f;
 			break;
 		case 5:
-			this->getSettings().getSettings().sensitivity = 6;
+			this->getSettings().getSettings().sensitivity = 0.6f;
 			break;
 		case 6:
-			this->getSettings().getSettings().sensitivity = 7;
+			this->getSettings().getSettings().sensitivity = 0.7f;
 			break;
 		case 7:
-			this->getSettings().getSettings().sensitivity = 8;
+			this->getSettings().getSettings().sensitivity = 0.8f;
 			break;
 		case 8:
-			this->getSettings().getSettings().sensitivity = 9;
+			this->getSettings().getSettings().sensitivity = 0.9f;
 			break;
 		case 9:
-			this->getSettings().getSettings().sensitivity = 10;
+			this->getSettings().getSettings().sensitivity = 1.0f;
 			break;
 		default:
 			Log::write("Sensitivity out of bounds");
@@ -185,39 +208,39 @@ void SettingsScene::update()
 	}
 	else if (brightSlider.isClicked())
 	{
-		float divider = brightSlider.getWidth() / 10.0;
+		float divider = brightSlider.getWidth() / 10.0f;
 		int range = brightSlider.getCurVal() / divider;
 		switch (range)
 		{
 		case 0:
-			this->getSettings().getSettings().brightness = 1;
+			this->getSettings().getSettings().brightness = 0.1f;
 			break;
 		case 1:
-			this->getSettings().getSettings().brightness = 2;
+			this->getSettings().getSettings().brightness = 0.2f;
 			break;
 		case 2:
-			this->getSettings().getSettings().brightness = 3;
+			this->getSettings().getSettings().brightness = 0.3f;
 			break;
 		case 3:
-			this->getSettings().getSettings().brightness = 4;
+			this->getSettings().getSettings().brightness = 0.4f;
 			break;
 		case 4:
-			this->getSettings().getSettings().brightness = 5;
+			this->getSettings().getSettings().brightness = 0.5f;
 			break;
 		case 5:
-			this->getSettings().getSettings().brightness = 6;
+			this->getSettings().getSettings().brightness = 0.6f;
 			break;
 		case 6:
-			this->getSettings().getSettings().brightness = 7;
+			this->getSettings().getSettings().brightness = 0.7f;
 			break;
 		case 7:
-			this->getSettings().getSettings().brightness = 8;
+			this->getSettings().getSettings().brightness = 0.8f;
 			break;
 		case 8:
-			this->getSettings().getSettings().brightness = 9;
+			this->getSettings().getSettings().brightness = 0.9f;
 			break;
 		case 9:
-			this->getSettings().getSettings().brightness = 10;
+			this->getSettings().getSettings().brightness = 1.0f;
 			break;
 		default:
 			Log::write("Brightness out of bounds.");
@@ -231,34 +254,34 @@ void SettingsScene::update()
 		switch (range)
 		{
 		case 0:
-			this->getSettings().getSettings().volume = 1;
+			this->getSettings().getSettings().volume = 0.1f;
 			break;
 		case 1:
-			this->getSettings().getSettings().volume = 2;
+			this->getSettings().getSettings().volume = 0.2f;
 			break;
 		case 2:
-			this->getSettings().getSettings().volume = 3;
+			this->getSettings().getSettings().volume = 0.3f;
 			break;
 		case 3:
-			this->getSettings().getSettings().volume = 4;
+			this->getSettings().getSettings().volume = 0.4f;
 			break;
 		case 4:
-			this->getSettings().getSettings().volume = 5;
+			this->getSettings().getSettings().volume = 0.5f;
 			break;
 		case 5:
-			this->getSettings().getSettings().volume = 6;
+			this->getSettings().getSettings().volume = 0.6f;
 			break;
 		case 6:
-			this->getSettings().getSettings().volume = 7;
+			this->getSettings().getSettings().volume = 0.7f;
 			break;
 		case 7:
-			this->getSettings().getSettings().volume = 8;
+			this->getSettings().getSettings().volume = 0.8f;
 			break;
 		case 8:
-			this->getSettings().getSettings().volume = 9;
+			this->getSettings().getSettings().volume = 0.9f;
 			break;
 		case 9:
-			this->getSettings().getSettings().volume = 10;
+			this->getSettings().getSettings().volume = 1.0f;
 			break;
 		default:
 			Log::write("Volume out of bounds.");

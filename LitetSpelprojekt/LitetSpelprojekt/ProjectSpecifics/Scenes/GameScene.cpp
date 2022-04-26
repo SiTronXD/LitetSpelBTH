@@ -118,7 +118,8 @@ void GameScene::init()
 	GameObject& cam = this->addGameObject("Player", ObjectTag::PLAYER);
 	this->setActiveCamera(cam.addComponent<Camera>());
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
-	cam.addComponent<Player>();
+	Player* play = cam.addComponent<Player>();
+	play->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
 	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
 	col->setBoxCollider(Vector3(0.5f, 0.5f, 0.5f));

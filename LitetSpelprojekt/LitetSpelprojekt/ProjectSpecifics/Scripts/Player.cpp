@@ -76,6 +76,11 @@ void Player::setJumpForce(float jumpForce)
 	this->jumpForce = jumpForce;
 }
 
+void Player::setMouseSensitivity(float mouseSensitivity)
+{
+	this->mouseSensitivity = mouseSensitivity;
+}
+
 void Player::init()
 {
 	this->rb = this->getObject().getComponent<Rigidbody>();
