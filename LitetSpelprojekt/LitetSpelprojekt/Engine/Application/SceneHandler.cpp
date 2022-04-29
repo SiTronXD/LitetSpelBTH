@@ -4,7 +4,6 @@
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
 	Window& window, PhysicsEngine& physicsEngine, Settings& settings)
-	Window& window, Settings& settings)
 	:scene(nullptr),
 	nextScene(nullptr),
 	resources(resources),

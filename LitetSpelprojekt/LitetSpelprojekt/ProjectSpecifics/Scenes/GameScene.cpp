@@ -213,10 +213,6 @@ void GameScene::init()
 	GameObject& ground = this->addGameObject("Ground", ObjectTag::GROUND);
 	mc = ground.addComponent<MeshComp>();
 	mc->setMesh("PlaneMesh", "testMaterial");
-	col = ground.addComponent<Collider>();
-	col->setBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
-	rb = ground.addComponent<Rigidbody>();
-	rb->setKinematicStatus(true);
 	ground.getComponent<Transform>()->setScaling({ 100.0f, 1.0f, 100.0f });
 	ground.getComponent<Transform>()->setPosition(0.0f, -10.0f, 0.0f);
 	rb = ground.addComponent<Rigidbody>();
@@ -231,8 +227,8 @@ void GameScene::init()
 		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
 		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
 		keyMc->setMesh("RealCubeMesh", "testMaterial");
-		Collider* keyCol = portalKey.addComponent<Collider>();
-		keyCol->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		/*Collider* keyCol = portalKey.addComponent<Collider>();
+		keyCol->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));*/
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, 2.0f);
 
@@ -243,8 +239,8 @@ void GameScene::init()
 	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
 	MeshComp* portalMc = portal.addComponent<MeshComp>();
 	portalMc->setMesh("RealCubeMesh", "portalMaterial");
-	Collider* portalCol = portal.addComponent<Collider>();
-	portalCol->setBoxCollider(Vector3(2.0f, 4.0f, 1.0f));
+	/*Collider* portalCol = portal.addComponent<Collider>();
+	portalCol->setBoxCollider(Vector3(2.0f, 4.0f, 1.0f));*/
 	portal.getComponent<Transform>()->setScaling({ 4.0f, 8.0f, 1.0f });
 	portal.getComponent<Transform>()->setPosition(-6.0f, -6.0f, -8.0f);
 
@@ -254,8 +250,8 @@ void GameScene::init()
 		GameObject& enemy = this->addGameObject("Enemy", ObjectTag::ENEMY);
 		MeshComp* enemyMc = enemy.addComponent<MeshComp>();
 		enemyMc->setMesh("Tetrahedron", "testMaterial");
-		Collider* enemyCollider = enemy.addComponent<Collider>();
-		enemyCollider->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		/*Collider* enemyCollider = enemy.addComponent<Collider>();
+		enemyCollider->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));*/
 		enemy.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
 		enemy.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, -6.0f);
 
