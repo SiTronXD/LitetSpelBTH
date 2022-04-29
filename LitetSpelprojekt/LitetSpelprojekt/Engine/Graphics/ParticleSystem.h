@@ -14,10 +14,11 @@ class ParticleSystem
 private:
 	struct Particle
 	{
-		DirectX::XMMATRIX worldMatrix;
+		DirectX::XMFLOAT4X4 worldMatrix;
 	}particleBufferStruct{};
 
 	Mesh* plane;
+	float timeTest;
 
 	DirectX::SimpleMath::Matrix m;
 

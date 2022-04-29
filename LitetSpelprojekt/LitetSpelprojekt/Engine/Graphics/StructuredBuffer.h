@@ -16,4 +16,5 @@ public:
 	void updateBuffer(void* bufferData);
 
 	bool createBuffer(UINT elementSize, UINT numElements, void* initialData);
+	inline SRV& getSrv() { return this->srv; }
 };

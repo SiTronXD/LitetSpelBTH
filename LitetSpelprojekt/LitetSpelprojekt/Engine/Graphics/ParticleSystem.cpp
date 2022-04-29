@@ -1,6 +1,8 @@
 #include "ParticleSystem.h"
 #include "Renderer.h"
 
+using namespace DirectX::SimpleMath;
+
 ParticleSystem::ParticleSystem(Renderer& renderer)
 	:renderer(renderer),
 	structBuffer(renderer, "particleComputeShader"),
@@ -28,11 +30,14 @@ void ParticleSystem::init()
 	for (int i = 0; i < this->numberOfParticles; i++)
 	{
 		Particle particle = {};
-		this->m = DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f) *
-			DirectX::XMMatrixRotationRollPitchYaw(10.0f, -8.0f, -6.0f) *
-			DirectX::XMMatrixTranslation(10.0f, -6.0f, 10.0f);
+		this->m = Matrix::CreateScale(1.0f, 1.0f, 1.0f) *
+			Matrix::CreateRotationX(10.0f) *
+			Matrix::CreateRotationY(-8.0f) *
+			Matrix::CreateRotationZ(1.0f) *
+			Matrix::CreateTranslation(7.0f, -8.0f, 6.0f);
+		particle.worldMatrix = this->m.Transpose();
 
-		particle.worldMatrix = this->m;
+		this->renderer.getCameraBufferStruct().modelMat = this->m.Transpose();
 		this->particles.push_back(particle);
 	}
 
@@ -55,13 +60,10 @@ void ParticleSystem::update()
 {
 }
 
+#include <ctime>
+
 void ParticleSystem::render(DirectX::SimpleMath::Matrix& vp, const DirectX::SimpleMath::Vector3& cameraRot)
 {
-	//Update world,view and proj matrix.
-	this->m = this->m * vp;
-
-	this->particles[0].worldMatrix = this->m.Transpose();
-
 	//Bind pipeline
 	ID3D11DeviceContext* deviceContext = this->renderer.getDeviceContext();
 	deviceContext->IASetInputLayout(this->particleVS.getInputLayout());
@@ -82,8 +84,26 @@ void ParticleSystem::render(DirectX::SimpleMath::Matrix& vp, const DirectX::Simp
 	deviceContext->VSSetShader(this->particleVS.getVS(), nullptr, 0);
 	deviceContext->PSSetShader(this->particlePS.getPS(), nullptr, 0);
 
+	//Bind constant buffer
+	
+	this->renderer.getCameraBufferStruct().modelMat = this->m.Transpose();
+	this->renderer.getCameraConstantBuffer().updateBuffer(&this->renderer.getCameraBufferStruct());
+	deviceContext->VSSetConstantBuffers(0, 1, &this->renderer.getCameraConstantBuffer().getBuffer());
+
+	/*this->timeTest += 0.001;
+
+	this->m = Matrix::CreateScale(1.0f, 1.0f, 1.0f) *
+		Matrix::CreateRotationX(10.0f) *
+		Matrix::CreateRotationY(-8.0f) *
+		Matrix::CreateRotationZ(1.0f) *
+		Matrix::CreateTranslation(7.0f, -8.0f, 6.0f);
+	
+	this->particles[0].worldMatrix = m.Transpose();*/
+
+	this->structBuffer.updateBuffer(&this->particleBufferStruct);
+
 	//Bind structur buffer
-	//deviceContext->VSSetShaderResources(0, 1, &this->structBuffer.getBuffer());
+	deviceContext->VSSetShaderResources(0, 1, &this->structBuffer.getSrv().getPtr());
 
 	deviceContext->DrawIndexed(this->plane->getIndexBuffer().getIndexCount(), 0, 0);
 	//deviceContext->DrawIndexedInstanced()

@@ -83,5 +83,7 @@ public:
 	inline ID3D11Device* getDevice() const { return this->device; }
 	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }
 	inline ConstantBuffer& getCompactCameraConstantBuffer() { return this->compactCameraConstantBuffer; }
+	inline ConstantBuffer& getCameraConstantBuffer() { return this->cameraConstantBuffer; }
+	inline CameraBufferData& getCameraBufferStruct() { return this->cameraBufferStruct; }
 	inline CompactCameraBufferData& getCompactCameraBufferStruct() { return this->compactCameraBufferStruct; }
 };
