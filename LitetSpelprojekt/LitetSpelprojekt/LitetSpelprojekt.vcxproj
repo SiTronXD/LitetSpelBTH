@@ -185,6 +185,7 @@
     <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\Player.cpp" />
     <ClCompile Include="Engine\Graphics\Material.cpp" />
@@ -248,6 +249,7 @@
     <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\Player.h" />
     <ClInclude Include="Engine\Graphics\Material.h" />

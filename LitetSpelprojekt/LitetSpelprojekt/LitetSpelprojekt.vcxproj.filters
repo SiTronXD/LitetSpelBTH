@@ -66,6 +66,7 @@
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Engine\Graphics\DSV.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -125,6 +126,7 @@
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />
     <ClInclude Include="Engine\Graphics\DSV.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />
