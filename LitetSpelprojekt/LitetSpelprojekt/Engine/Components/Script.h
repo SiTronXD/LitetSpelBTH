@@ -12,6 +12,12 @@ public:
 	virtual void init() = 0;
 	virtual void update() = 0;
 
+	virtual void onCollisionEnter(GameObject& other);
 	virtual void onCollisionStay(GameObject& other);
+	virtual void onCollisionExit(GameObject& other);
+
+
+	virtual void onTriggerEnter(GameObject& other);
 	virtual void onTriggerStay(GameObject& other);
+	virtual void onTriggerExit(GameObject& other);
 };

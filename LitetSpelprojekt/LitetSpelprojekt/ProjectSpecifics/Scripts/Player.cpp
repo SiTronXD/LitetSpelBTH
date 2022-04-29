@@ -7,7 +7,6 @@ using namespace DirectX::SimpleMath;
 
 void Player::move()
 {
-
 	Vector3 direction((float)(Input::isKeyDown(Keys::D) - Input::isKeyDown(Keys::A)), 0.0f, (float)(Input::isKeyDown(Keys::W) - Input::isKeyDown(Keys::S)));
 	direction.Normalize();
 
@@ -17,7 +16,10 @@ void Player::move()
 	Vector3 forward = this->getTransform()->forward();
 	forward.y = 0.0f;
 	forward.Normalize();
-	this->getTransform()->move((right * direction.x + forward * direction.z) * this->speed * Time::getDT());
+
+	Vector3 moveVec = (right * direction.x + forward * direction.z) * this->speed * Time::getDT();
+	moveVec.y = this->rb->getVelocity().y;
+	this->rb->setVelocity(moveVec);
 }
 
 void Player::jump()
@@ -44,7 +46,7 @@ void Player::fireWeapon()
 
 void Player::lookAround()
 {
-	Vector3 rotation = DirectX::SimpleMath::Vector3((float)Input::getCursorDeltaY(), (float)Input::getCursorDeltaX(), 0.0f);
+	Vector3 rotation((float)Input::getCursorDeltaY(), (float)Input::getCursorDeltaX(), 0.0f);
 	this->getTransform()->rotate(-rotation * this->mouseSensitivity);
 
 	Vector3 origRot = this->getTransform()->getRotation();
@@ -56,7 +58,8 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object):
-	Script(object), speed(10.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr)
+	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr), 
+	keyPickup(false), keyPieces(0), health(3), dead(false), healthCooldown(0.0f), portal(false)
 {
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
@@ -76,9 +79,19 @@ void Player::setJumpForce(float jumpForce)
 	this->jumpForce = jumpForce;
 }
 
+
 void Player::setMouseSensitivity(float mouseSensitivity)
 {
 	this->mouseSensitivity = mouseSensitivity;
+
+void Player::setHealth(int health)
+{
+	this->health = health;
+}
+
+void Player::addHealth(int health)
+{
+	this->health += health;
 }
 
 void Player::init()
@@ -95,16 +108,65 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
+	//Reset keypickup
+	if (this->keyPickup == true)
+		this->keyPickup = false;
+
+	//Rest portal
+	if (this->portal == true)
+		this->portal = false;
+
+	//Check if player is dead
+	if (this->health < 1)
+		this->dead = true;
+
+	//Update health cooldown
+	if (this->healthCooldown > 0)
+		this->healthCooldown--;
+
 	/*GameObject* g = nullptr;
 	float distance = 0.0f;
 	if (this->getObject().raycast(g, distance))
 		std::cout << "Hit Object: " << g->getName() << " Tag: " << (int)g->getTag() << " with distance of: " << distance << std::endl;*/
 }
 
+void Player::onCollisionEnter(GameObject& other)
+{
+	std::cout << "Player started hitting: " << other.getName() << std::endl;
+}
+
 void Player::onCollisionStay(GameObject& other)
 {
-	std::cout << "Player hit: " << other.getName() << std::endl;
+	std::cout << "Player still hitting: " << other.getName() << std::endl;
 
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
+	
+	if (other.getTag() == ObjectTag::KEY)
+	{
+		other.removeComponent<MeshComp>();
+		other.removeComponent<Collider>();
+		//other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
+		this->keyPieces++;
+		this->keyPickup = true;
+	}
+
+	//Test
+	if (other.getTag() == ObjectTag::ENEMY && healthCooldown == 0)
+	{
+		other.removeComponent<MeshComp>();
+		other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
+		this->health--;	
+		this->healthCooldown = 40;
+	}
+
+	//Poral
+	if (other.getTag() == ObjectTag::PORTAL)
+		this->portal = true;
+	
+}
+
+void Player::onCollisionExit(GameObject& other)
+{
+	std::cout << "Player stopped hitting: " << other.getName() << std::endl;
 }

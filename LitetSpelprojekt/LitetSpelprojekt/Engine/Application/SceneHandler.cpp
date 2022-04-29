@@ -22,7 +22,10 @@ SceneHandler::~SceneHandler()
 void SceneHandler::update()
 {
 	this->scene->update();
-	this->scene->getECS().update();
+	
+	if (this->scene->getPause() == false)
+		this->scene->getECS().update();
+		
 }
 
 void SceneHandler::updateToNextScene()

@@ -1,11 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <FxCompile Include="Resources\Shaders\PixelShader.hlsl" />
-    <FxCompile Include="Resources\Shaders\VertexShader.hlsl" />
+    <FxCompile Include="Resources\Shaders\Default_PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Default_VS.hlsl" />
     <FxCompile Include="Resources\Shaders\RenderUI_COMP.hlsl" />
     <FxCompile Include="Resources\Shaders\skybox_VS.hlsl" />
     <FxCompile Include="Resources\Shaders\skybox_PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\RenderTextUI_COMP.hlsl" />
+    <FxCompile Include="Resources\Shaders\ShadowMap_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Components\Collider.cpp" />
@@ -62,6 +64,9 @@
     <ClCompile Include="ProjectSpecifics\Scenes\SettingsScene.cpp" />
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
+    <ClCompile Include="Engine\Graphics\DSV.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -119,6 +124,9 @@
     <ClInclude Include="ProjectSpecifics\Scenes\SettingsScene.h" />
     <ClInclude Include="Engine\Graphics\Skybox.h" />
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />
+    <ClInclude Include="Engine\Graphics\DSV.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

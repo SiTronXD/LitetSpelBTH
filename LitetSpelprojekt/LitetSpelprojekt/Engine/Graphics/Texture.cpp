@@ -6,7 +6,7 @@
 #include "../Dev/Log.h"
 #include "Renderer.h"
 
-bool Texture::createSampler()
+bool Texture::createSampler(const D3D11_FILTER& filter)
 {
 	// Sampler description
 	D3D11_SAMPLER_DESC samplerDesc{};
@@ -22,7 +22,7 @@ bool Texture::createSampler()
 	samplerDesc.BorderColor[3] = 0;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.Filter = filter;
 
 	// Create sampler
 	HRESULT hr = this->renderer.getDevice()->CreateSamplerState(
@@ -44,18 +44,26 @@ Texture::Texture(Renderer& renderer)
 	samplerState(nullptr),
 	texture(nullptr),
 	textureDesc{},
+	pixels(nullptr),
 	width(0),
-	height(0)
+	height(0),
+	numChannels(0)
 {
 }
 
 Texture::~Texture()
 {
+	if (this->pixels)
+	{
+		stbi_image_free(this->pixels);
+		this->pixels = nullptr;
+	}
+
 	S_RELEASE(this->samplerState);
 	S_RELEASE(this->texture);
 }
 
-bool Texture::load(const std::string& fileName)
+bool Texture::load(const std::string& fileName, bool saveImageData)
 {
 	S_RELEASE(this->samplerState);
 	S_RELEASE(this->texture);
@@ -64,16 +72,13 @@ bool Texture::load(const std::string& fileName)
 	this->createSampler();
 
 	// Load image
-	int imageWidth = 0;
-	int imageHeight = 0;
-	int imageChannels = 0;
 	int imageDesiredChannels = 4;
 	unsigned char* imageData = stbi_load(
 		fileName.c_str(),
-		&imageWidth, &imageHeight,
-		&imageChannels, imageDesiredChannels
+		&this->width, &this->height,
+		&this->numChannels, imageDesiredChannels
 	);
-	int imagePitch = imageWidth * imageDesiredChannels;
+	int imagePitch = this->width * imageDesiredChannels;
 	if (!imageData)
 	{
 		Log::error("Failed to load image: " + fileName);
@@ -81,14 +86,10 @@ bool Texture::load(const std::string& fileName)
 		return false;
 	}
 
-	// Save size
-	this->width = imageWidth;
-	this->height = imageHeight;
-
 	// D3D texture description
 	this->textureDesc = {};
-	this->textureDesc.Width = imageWidth;
-	this->textureDesc.Height = imageHeight;
+	this->textureDesc.Width = this->width;
+	this->textureDesc.Height = this->height;
 	this->textureDesc.MipLevels = 1;
 	this->textureDesc.ArraySize = 1;
 	this->textureDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -106,7 +107,10 @@ bool Texture::load(const std::string& fileName)
 	HRESULT hr = this->renderer.getDevice()->CreateTexture2D(&this->textureDesc, &textureSubresourceData, &this->texture);
 
 	// Free image data
-	stbi_image_free(imageData);
+	if (!saveImageData)
+		stbi_image_free(imageData);
+	else
+		this->pixels = imageData;
 
 	if (FAILED(hr))
 	{
@@ -116,6 +120,57 @@ bool Texture::load(const std::string& fileName)
 
 	// Create texture SRV
 	return this->createShaderResourceView();
+}
+
+bool Texture::createAsDepthTexture(
+	int width, int height, const DXGI_FORMAT& format,
+	const UINT& additionalBindFlags,
+	bool shouldCreateSampler)
+{
+	this->width = width;
+	this->height = height;
+
+	// Deallocate old texture
+	S_RELEASE(this->samplerState);
+	S_RELEASE(this->texture);
+
+	// Create sampler
+	if(shouldCreateSampler)
+		this->createSampler(D3D11_FILTER_MIN_MAG_MIP_POINT);
+
+	// Description
+	D3D11_TEXTURE2D_DESC textureDesc{};
+	textureDesc.Width = width;
+	textureDesc.Height = height;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = format;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.SampleDesc.Quality = 0;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | additionalBindFlags;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+
+	// Create depth/stencil texture
+	HRESULT result = this->renderer.getDevice()->CreateTexture2D(
+		&textureDesc, nullptr, &this->texture
+	);
+	if (FAILED(result))
+	{
+		Log::resultFailed(
+			"Failed to create depth/stencil texture.",
+			result
+		);
+
+		return false;
+	}
+
+	// SRV
+	if ((additionalBindFlags & D3D11_BIND_SHADER_RESOURCE) == D3D11_BIND_SHADER_RESOURCE)
+		this->textureSRV.createTextureSRV(this->texture, DXGI_FORMAT_R32_FLOAT);
+
+	return true;
 }
 
 bool Texture::createCubemap(std::string fileName, std::string format)
@@ -143,7 +198,7 @@ bool Texture::createCubemap(std::string fileName, std::string format)
 	for (int i = 0; i < 6; i++)
 	{
 		//Load image
-		std::string tempPath = "Resources/Textures/"+ fileName + std::to_string(i + 1) + format;
+		std::string tempPath = "Resources/Textures/CubeMap/"+ fileName + std::to_string(i + 1) + format;
 		
 		imageData[i] = stbi_load(
 			tempPath.c_str(),
@@ -200,4 +255,26 @@ bool Texture::createCubemap(std::string fileName, std::string format)
 
 	// Free image data
 	stbi_image_free(imageData);
+}
+
+DirectX::XMFLOAT4 Texture::getPixel(int x, int y)
+{
+	return DirectX::XMFLOAT4(
+		(float) this->pixels[
+			this->width * this->numChannels * y + 
+			this->numChannels * x + 0
+		],
+		(float)this->pixels[
+			this->width * this->numChannels * y +
+			this->numChannels * x + 1
+		],
+				(float)this->pixels[
+			this->width * this->numChannels * y +
+			this->numChannels * x + 2
+		],
+		(float) this->pixels[
+			this->width * this->numChannels * y +
+			this->numChannels * x + 3
+		]
+	);
 }

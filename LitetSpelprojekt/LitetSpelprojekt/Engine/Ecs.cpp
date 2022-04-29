@@ -3,6 +3,47 @@
 #include "ECS.h"
 #include "GameObject.h"
 
+void ECS::removeComponents()
+{
+	for (int i = this->componentsToRemove.size() - 1; i >= 0; --i)
+	{
+		// Component information
+		ComponentInfo compInfo = this->componentsToRemove[i];
+		Component* comp = compInfo.component;
+		std::type_index compType = compInfo.componentType;
+		int gameObjectID = compInfo.gameObjectID;
+
+		// Erase from components
+		this->components.erase(std::pair<int, std::type_index>(gameObjectID, compType));
+
+		// Erase from active components
+		for (size_t i = 0; i < this->activeComponents[compType].size(); i++)
+		{
+			if (comp == this->activeComponents[compType][i])
+			{
+				this->activeComponents[compType].erase(this->activeComponents[compType].begin() + i);
+				break;
+			}
+		}
+
+		// Erase from script components
+		Script* sComp = dynamic_cast<Script*>(comp);
+		for (size_t i = 0; i < this->scriptComps.size(); i++)
+		{
+			if (sComp == this->scriptComps[i])
+			{
+				this->scriptComps.erase(this->scriptComps.begin() + i);
+				break;
+			}
+		}
+
+		delete comp;
+
+		// Remove element
+		this->componentsToRemove.erase(this->componentsToRemove.begin() + i);
+	}
+}
+
 ECS::ECS()
 {
 	// Add new vector for script component type
@@ -47,6 +88,8 @@ void ECS::update()
 	{
 		sComp->update();
 	}
+
+	this->removeComponents();
 }
 
 GameObject& ECS::addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTAGGED)
@@ -58,6 +101,11 @@ GameObject& ECS::addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTA
 	this->addComponent<Transform>(ID);
 
 	return *this->gameObjects.back();
+}
+
+GameObject& ECS::getGameObject(int gameObjectID)
+{
+	return this->getComponent<Transform>(gameObjectID)->getObject();
 }
 
 std::vector<Component*> ECS::getAllComponents(int gameObjectID)

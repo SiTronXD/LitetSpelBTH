@@ -22,8 +22,11 @@ private:
 	UIRenderer* uiRenderer;
 	Window* window;
 
+	bool pause;
+
 protected:
 	inline void setActiveCamera(Camera* cam) { this->activeCamera = cam; }
+	inline void setPause(bool pause) { this->pause = pause; }
 	inline GameObject& addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTAGGED) { return this->ecs.addGameObject(name, tag); }
 
 	inline SceneHandler& getSceneHandler() { return this->sceneHandler; }
@@ -46,6 +49,7 @@ public:
 	std::vector<T*> getActiveComponents();
 
 	inline ECS& getECS() { return this->ecs; }
+	inline bool getPause() const { return this->pause; }
 };
 
 template<typename T>

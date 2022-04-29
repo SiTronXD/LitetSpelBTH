@@ -22,6 +22,13 @@ private:
 		}
 	};
 
+	struct ComponentInfo
+	{
+		Component* component;
+		std::type_index componentType;
+		int gameObjectID;
+	};
+
 	std::vector<GameObject*> gameObjects;
 	std::vector<Script*> scriptComps;
 
@@ -32,6 +39,11 @@ private:
 	// Active components
 	// key: Component type, value: Component*
 	std::unordered_map<std::type_index, std::vector<Component*>> activeComponents;
+
+	// Components to be removed at the end of the frame
+	std::vector<ComponentInfo> componentsToRemove;
+
+	void removeComponents();
 
 	template <typename T>
 	bool hasComponent(int gameObjectID);
@@ -44,6 +56,7 @@ public:
 	void update();
 
 	GameObject& addGameObject(std::string name, ObjectTag tag);
+	GameObject& getGameObject(int gameObjectID);
 
 	template <typename T>
 	T* addComponent(int gameObjectID);
@@ -106,33 +119,21 @@ inline T* ECS::addComponent(int gameObjectID)
 template<typename T>
 inline bool ECS::removeComponent(int gameObjectID)
 {
-	// Don't have this component
-	if (!this->hasComponent<T>(gameObjectID))
+	// Don't have this component or type is Transform (not removeable)
+	if (!this->hasComponent<T>(gameObjectID) || typeid(T) == typeid(Transform))
 		return false;
 
 	Component* comp = this->components[std::pair<int, std::type_index>(gameObjectID, typeid(T))];
-	this->components.erase(std::pair<int, std::type_index>(gameObjectID, typeid(T)));
-
-	for (size_t i = 0; i < this->activeComponents[typeid(T)].size(); i++)
-	{
-		if (comp == this->activeComponents[typeid(T)][i])
-		{
-			this->activeComponents[typeid(T)].erase(this->activeComponents[typeid(T)].begin() + i);
-			break;
-		}
-	}
 	
-	Script* sComp = dynamic_cast<Script*>(comp);
-	for (size_t i = 0; i < this->scriptComps.size(); i++)
+	// Push component info
+	ComponentInfo compInfo
 	{
-		if (sComp == this->scriptComps[i])
-		{
-			this->scriptComps.erase(this->scriptComps.begin() + i);
-			break;
-		}
-	}
+		comp,
+		typeid(T),
+		gameObjectID
+	};
+	this->componentsToRemove.push_back(compInfo);
 
-	delete comp;
 	return true;
 }
 

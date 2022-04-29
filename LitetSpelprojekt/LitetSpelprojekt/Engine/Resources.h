@@ -32,7 +32,8 @@ public:
 
 	void addTexture(
 		const std::string& textureFilePath,
-		const std::string& textureName
+		const std::string& textureName,
+		bool saveImageData = false
 	);
 	void addMesh(
 		MeshData&& newMeshData, 
@@ -59,5 +60,6 @@ public:
 	Texture& getTexture(const char* textureName);
 	Mesh& getMesh(const char* meshName);
 	Material& getMaterial(const char* materialName);
+	VertexShader& getVertexShader(const char* vertexShaderName);
 	CubeMap& getCubemap(const char* cubemapName);
 };

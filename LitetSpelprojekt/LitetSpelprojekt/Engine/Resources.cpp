@@ -53,7 +53,8 @@ void Resources::init(Renderer* renderer)
 }
 
 void Resources::addTexture(
-	const std::string& textureFilePath, const std::string& textureName)
+	const std::string& textureFilePath, const std::string& textureName,
+	bool saveImageData)
 {
 	if (this->textures.count(textureName) > 0)
 	{
@@ -63,7 +64,7 @@ void Resources::addTexture(
 
 	// Create and load texture
 	Texture* newTexture = new Texture(*this->renderer);
-	newTexture->load(textureFilePath);
+	newTexture->load(textureFilePath, saveImageData);
 
 	// Insert texture
 	this->textures.insert(
@@ -211,6 +212,16 @@ Material& Resources::getMaterial(const char* materialName)
 		Log::error("Material has not been added: " + std::string(materialName));
 
 	return *foundMaterial;
+}
+
+VertexShader& Resources::getVertexShader(const char* vertexShaderName)
+{
+	VertexShader* foundVertexShader = this->vertexShaders[vertexShaderName];
+
+	if (!foundVertexShader)
+		Log::error("Vertex shader has not been added: " + std::string(vertexShaderName));
+
+	return *foundVertexShader;
 }
 
 CubeMap& Resources::getCubemap(const char* cubemapName)

@@ -7,6 +7,7 @@
 // Temp
 #include "../ProjectSpecifics/Scenes/GameScene.h"
 #include "../ProjectSpecifics/Scenes/SettingsScene.h"
+#include "../ProjectSpecifics/Scenes/GameOverScene.h"
 
 Engine::Engine()
 	: renderer(this->resources),
@@ -23,8 +24,9 @@ Engine::Engine()
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
-	this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
-	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
+	this->sceneHandler.setScene(new GameScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false));
 
 	// Default texture and material
 	this->resources.addTexture("Resources/Textures/Default.png", "Default.png");

@@ -1,22 +1,25 @@
 #pragma once
-
 #include "../../Engine/Application/Scene.h"
 #include "../../Engine/UI/Button.h"
-
 #include "../../Engine/Application/SceneHandler.h"
 
-class MenuScene : public Scene
+class GameOverScene : public Scene
 {
 private:
-	Button playButton;
-	Button settingsButton;
+	Button mainMenuButton;
 	Button exitButton;
-public:
-	MenuScene(SceneHandler& sceneHandler);
-	virtual ~MenuScene();
 
+	GameObject& cam;
+
+	bool winning;
+public:
+	GameOverScene(SceneHandler& sceneHandler, bool win);
+	virtual ~GameOverScene();
+
+	// Inherited via Scene
 	virtual void init() override;
 	virtual void update() override;
 	virtual void renderUI() override;
+
 };
 
