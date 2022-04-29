@@ -90,7 +90,7 @@ void GameScene::init()
 		"klmnopqrst",
 		"uvwxyz+-.'",
 		"0123456789",
-		"!?,<>:()¤/^",
+		"!?,<>:()Â¤/^",
 		"@*% "
 	};
 
@@ -157,8 +157,13 @@ void GameScene::init()
 	this->addLevelColliders(levelLoader);
   
 	this->setActiveCamera(cam.addComponent<Camera>());
+
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
+	Player* play = cam.addComponent<Player>();
+	play->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	cam.addComponent<Player>();
+
 	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
 	col->setSphereCollider(0.5f);

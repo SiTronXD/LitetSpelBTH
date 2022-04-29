@@ -20,6 +20,8 @@ MenuScene::~MenuScene()
 
 void MenuScene::init()
 {
+
+
 	this->getResources().addTexture("Resources/Textures/playButton.png", "playButton.png");
 	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
 	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");

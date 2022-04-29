@@ -8,6 +8,9 @@ Scene::Scene(SceneHandler& sceneHandler)
 	renderer(&sceneHandler.getRenderer()),
 	uiRenderer(&sceneHandler.getUIRenderer()),
 	window(&sceneHandler.getWindow()),
+
+	settings(&sceneHandler.getSettings())
+
 	pause(false)
 {
 }

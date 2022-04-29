@@ -3,13 +3,14 @@
 
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
-	Window& window)
+	Window& window, Settings& settings)
 	:scene(nullptr),
 	nextScene(nullptr),
 	resources(resources),
 	renderer(renderer),
 	uiRenderer(uiRenderer),
-	window(window)
+	window(window),
+	settings(settings)
 {
 }
 
