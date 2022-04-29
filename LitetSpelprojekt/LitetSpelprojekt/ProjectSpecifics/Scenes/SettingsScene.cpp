@@ -31,7 +31,7 @@ void SettingsScene::init()
 	resolutions.push_back("800");
 	resolutions.push_back("600");
 	resolutions.push_back("1280");
-	resolutions.push_back("840");
+	resolutions.push_back("720");
 	resolutions.push_back("1600");
 	resolutions.push_back("900");
 	resolutions.push_back("1920");
@@ -78,7 +78,7 @@ void SettingsScene::init()
 	resSlider.setPos(Vector2(0, 210));
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
-	resSlider.setMinVal(0.2);
+	resSlider.setMinVal(0.0);
 	resSlider.setCurVal(counter);
 	resSlider.setMaxVal(1.0);
 	resSlider.setPerFill(counter);
@@ -249,6 +249,9 @@ void SettingsScene::update()
 	}
 	else if (volSlider.isClicked())
 	{
+
+		//this->getSettings().getSettings().volume = volSlider.getCurVal();
+		
 		float divider = volSlider.getWidth() / 10.0;
 		int range = volSlider.getCurVal() / divider;
 		switch (range)
@@ -286,6 +289,7 @@ void SettingsScene::update()
 		default:
 			Log::write("Volume out of bounds.");
 		}
+		
 		Log::write("Volume set to: " + std::to_string(this->getSettings().getSettings().volume));
 		}
 	else if (exitButton.isClicked())

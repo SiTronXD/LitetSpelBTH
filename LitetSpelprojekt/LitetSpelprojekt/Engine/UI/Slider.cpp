@@ -46,6 +46,15 @@ bool Slider::isClicked()
 				this->currentValue = (this->width / 2.0 + internal.x);
 				this->percentFilled = (this->currentValue / this->width);
 				sliderClicked = true;
+
+				Log::write("IntX: " + std::to_string(internal.x) + "IntY:" + std::to_string(internal.y) + "CV: " + std::to_string(this->currentValue) + "PF: " + std::to_string(this->percentFilled));
+				/*
+				this->percentFilled = ((this->width / 2.0 + internal.x) / this->width);
+				this->currentValue = this->percentFilled * (maxValue - minValue);
+				
+				sliderClicked = true;
+				
+				*/
 			}
 		}
 	}
