@@ -9,9 +9,9 @@ rp3d::Transform Rigidbody::getConvertedTransform()
 {
 	Vector3 pos = this->transform.getPosition();
 	Vector4 quat = this->transform.getRotationQuat();
-	if (quat.x == 0.0f ||
-		quat.y == 0.0f ||
-		quat.z == 0.0f ||
+	if (quat.x == 0.0f &&
+		quat.y == 0.0f &&
+		quat.z == 0.0f &&
 		quat.w == 0.0f)
 	{
 		quat.w = 1.0f;
