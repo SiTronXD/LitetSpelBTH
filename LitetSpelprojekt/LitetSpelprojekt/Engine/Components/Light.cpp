@@ -11,7 +11,6 @@ using namespace DirectX::SimpleMath;
 
 Light::Light(GameObject& object)
 	: Component(object), 
-	camPositionOffset(-30, 10, -30),
 	type(LightType::DIRECTIONAL),
 	shadowMapDepthTexture(nullptr),
 	shadowMapDSV("shadowMapDSV"),
@@ -25,6 +24,7 @@ Light::~Light()
 {
 	delete this->shadowMapDepthTexture;
 	delete this->lightBuffer;
+	delete this->directionalLightBuffer;
 }
 
 void Light::init(Resources& resources, Renderer& renderer)
@@ -55,9 +55,14 @@ void Light::init(Resources& resources, Renderer& renderer)
 	this->resources->addVertexShader("ShadowMap_VS", inputLayoutDesc);
 	this->shadowMapVS = &this->resources->getVertexShader("ShadowMap_VS");
 
+	// Constant buffers
 	delete this->lightBuffer;
 	this->lightBuffer = new ConstantBuffer(renderer, "lightConstantBuffer");
 	this->lightBuffer->createBuffer(sizeof(LightBufferData));
+
+	delete this->directionalLightBuffer;
+	this->directionalLightBuffer = new ConstantBuffer(renderer, "directionalLightConstantBuffer");
+	this->directionalLightBuffer->createBuffer(sizeof(DirectionalLightBufferData));
 
 	switch (this->type)
 	{
@@ -72,11 +77,7 @@ void Light::init(Resources& resources, Renderer& renderer)
 		this->shadowMapViewport.MaxDepth = 1;
 
 		// Directional light direction
-		Vector3 dirLightDirection = Vector3(1, -1, 1);
-		dirLightDirection.Normalize();
-		this->dirLightProps.direction = dirLightDirection;
-
-		this->camPositionOffset = Vector3(-30,10,-30);
+		this->updateDirection(Vector3(1, -1, 1));
 
 		// Constant projection matrix
 		this->projectionMatrix = Matrix::CreateOrthographic(
@@ -93,8 +94,9 @@ void Light::init(Resources& resources, Renderer& renderer)
 void Light::render(Scene& scene)
 {
 	// Make position follow camera
-	Vector3 position = scene.getActiveCamera()->getTransform()->getPosition() + 
-		this->camPositionOffset;
+	Vector3 position = 
+		scene.getActiveCamera()->getTransform()->getPosition() -
+		this->dirLightBufferStruct.direction * 50.0f;
 
 	// Try to make the transition a bit easier
 	position.x = std::roundf(position.x * 0.5f) / 0.5f;
@@ -104,7 +106,7 @@ void Light::render(Scene& scene)
 	// View matrix
 	this->viewMatrix = Matrix::CreateLookAt(
 		position,
-		position + this->dirLightProps.direction,
+		position + this->dirLightBufferStruct.direction,
 		Vector3(0, 1, 0)
 	);
 	Matrix vpMatrix = this->viewMatrix * this->projectionMatrix;
@@ -173,7 +175,17 @@ void Light::render(Scene& scene)
 		);
 	}
 
-	// Update light buffer
+	// Update constant buffer
 	this->lightBufferStruct.vpMatrix = vpMatrix.Transpose();
 	this->lightBuffer->updateBuffer(&this->lightBufferStruct);
+}
+
+void Light::updateDirection(Vector3 newDir)
+{
+	// Update dir
+	newDir.Normalize();
+	this->dirLightBufferStruct.direction = newDir;
+
+	// Update constant buffer
+	this->directionalLightBuffer->updateBuffer(&this->dirLightBufferStruct);
 }

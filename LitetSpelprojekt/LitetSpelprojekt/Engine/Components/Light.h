@@ -27,12 +27,11 @@ private:
 		DirectX::XMFLOAT4X4 vpMatrix;
 	} lightBufferStruct{};
 
-	struct DirectionalLightProperties
+	struct DirectionalLightBufferData
 	{
 		DirectX::XMFLOAT3 direction;
-	} dirLightProps{};
-
-	DirectX::SimpleMath::Vector3 camPositionOffset;
+		float padding;
+	} dirLightBufferStruct{};
 
 	DirectX::SimpleMath::Matrix viewMatrix;
 	DirectX::SimpleMath::Matrix projectionMatrix;
@@ -45,6 +44,7 @@ private:
 	DSV shadowMapDSV;
 
 	ConstantBuffer* lightBuffer;
+	ConstantBuffer* directionalLightBuffer;
 
 	VertexShader* shadowMapVS;
 
@@ -59,6 +59,9 @@ public:
 
 	void render(Scene& scene);
 
+	void updateDirection(DirectX::SimpleMath::Vector3 newDir);
+
 	inline Texture& getShadowMapTexture() { return *this->shadowMapDepthTexture; }
 	inline ConstantBuffer& getLightBuffer() { return *this->lightBuffer; }
+	inline ConstantBuffer& getDirLightBuffer() { return *this->directionalLightBuffer; }
 };

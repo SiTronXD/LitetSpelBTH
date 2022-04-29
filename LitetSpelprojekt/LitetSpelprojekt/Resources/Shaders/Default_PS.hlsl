@@ -4,11 +4,17 @@ cbuffer LightBuffer : register(b0)
     matrix vpLightMatrix;
 };
 
+cbuffer DirLightBuffer : register(b1)
+{
+    float3 lightDir;
+    float padding;
+}
+
 struct Input
 { 
     float4 position : SV_POSITION;
     float3 worldPos : POSITION1;
-    float3 normal : NORMAL;
+    float3 worldNormal : NORMAL;
     float2 uv : UV;
 };
 
@@ -42,10 +48,24 @@ float4 main(Input input) : SV_TARGET
     // Interpolate
     float edge0 = lerp(lightDepth0, lightDepth1, fractLightPosCorner.x);
     float edge1 = lerp(lightDepth2, lightDepth3, fractLightPosCorner.x);
-    float shadowFactor = lerp(edge0, edge1, fractLightPosCorner.y);
+    float shadowMapFactor = lerp(edge0, edge1, fractLightPosCorner.y);
+
+    // Shadow map + diffuse light
+    float shadowFactor = lerp(
+        0.4f,
+        1.0f,
+        shadowMapFactor *
+            saturate(dot(input.worldNormal, -lightDir))
+    );
 
     float4 texCol = diffuseTexture.Sample(textureSampler, input.uv);
 
-    return texCol * lerp(0.4f, 1.0f, shadowFactor); /*
-        dot(input.normal, normalize(float3(1,1,1)));*/
+    /*if (input.worldNormal.y > 0.05f)
+        return float4(1, 1, 1, 1);
+    else if (input.worldNormal.y < -0.05f)
+        return float4(0, 0, 0, 1);
+    else
+        return float4(0.5f, 0.5f, 0.5f, 1.0f);*/
+
+    return texCol * shadowFactor;
 }

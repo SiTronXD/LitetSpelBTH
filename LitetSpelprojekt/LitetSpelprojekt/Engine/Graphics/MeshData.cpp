@@ -298,6 +298,12 @@ void MeshData::createDefault(DefaultMesh defaultMesh)
 	this->calculateNormals(defaultMesh);
 }
 
+void MeshData::calculateNormals()
+{
+	// Choose anything that's not a sphere
+	this->calculateNormals(DefaultMesh::TRIANGLE);
+}
+
 void MeshData::calculateNormals(DefaultMesh defaultMesh)
 {
 	if (defaultMesh != DefaultMesh::SPHERE)
@@ -315,7 +321,7 @@ void MeshData::calculateNormals(DefaultMesh defaultMesh)
 			XMVECTOR edge1 = vertPos1 - vertPos0;
 			XMVECTOR edge2 = vertPos2 - vertPos0;
 
-			XMVECTOR normal = XMVector3Normalize(XMVector3Cross(edge1, edge2));
+			XMVECTOR normal = XMVector3Normalize(XMVector3Cross(edge2, edge1));
 
 			// Add calculated normal to current list of vertex normals
 			XMStoreFloat3(

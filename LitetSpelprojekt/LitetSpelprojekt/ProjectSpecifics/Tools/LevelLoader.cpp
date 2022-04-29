@@ -291,6 +291,7 @@ bool LevelLoader::load(const std::string& levelName)
 	aiReleaseImport(scene);
 
 	this->megaMesh.invertFaces();
+	this->megaMesh.calculateNormals();
 
 	return true;
 }

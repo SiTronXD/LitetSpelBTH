@@ -16,7 +16,7 @@ struct Output
 {
     float4 position : SV_POSITION;
     float3 worldPos : POSITION1;
-    float3 normal : NORMAL;
+    float3 worldNormal : NORMAL;
     float2 uv : UV;
 };
 
@@ -27,7 +27,7 @@ Output main(Vertex input)
     output.position = mul(float4(input.position, 1.0f), modelMatrix);
     output.worldPos = output.position;
     output.position = mul(output.position, vpMatrix);
-    output.normal = input.normal;
+    output.worldNormal = mul(float4(input.normal, 0.0f), modelMatrix).xyz;
     output.uv = input.uv;
     
     return output;

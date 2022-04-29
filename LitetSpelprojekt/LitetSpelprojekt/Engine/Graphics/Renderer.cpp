@@ -97,10 +97,10 @@ bool Renderer::loadShaders()
 	inputLayoutDesc.add("UV", DXGI_FORMAT_R32G32_FLOAT);
 
 	// Vertex shader
-	this->vertexShader.loadVS("VertexShader", inputLayoutDesc);
+	this->vertexShader.loadVS("Default_VS", inputLayoutDesc);
 
 	// Pixel shader
-	this->pixelShader.loadPS("PixelShader");
+	this->pixelShader.loadPS("Default_PS");
 
 	return true;
 }
@@ -199,6 +199,7 @@ void Renderer::render(Scene& scene)
 	this->cameraBufferStruct.vpMat = vp.Transpose();
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
 	immediateContext->PSSetConstantBuffers(0, 1, &firstLight->getLightBuffer().getBuffer());
+	immediateContext->PSSetConstantBuffers(1, 1, &firstLight->getDirLightBuffer().getBuffer());
 
 	// Set shadow map
 	immediateContext->PSSetSamplers(

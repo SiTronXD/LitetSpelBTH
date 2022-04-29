@@ -156,7 +156,7 @@ void GameScene::init()
 
 	GameObject& ground = this->addGameObject("Ground", ObjectTag::GROUND);
 	mc = ground.addComponent<MeshComp>();
-	mc->setMesh("CubeMesh", "testMaterial");
+	mc->setMesh("PlaneMesh", "testMaterial");
 	col = ground.addComponent<Collider>();
 	col->setBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
 	rb = ground.addComponent<Rigidbody>();

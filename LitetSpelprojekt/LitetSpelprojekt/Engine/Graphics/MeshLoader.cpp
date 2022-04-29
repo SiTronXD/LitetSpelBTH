@@ -75,6 +75,7 @@ MeshData MeshLoader::loadModel(const std::string& fileName, bool flipVerticalUV)
 	aiReleaseImport(scene);
 
 	createdMeshData.invertFaces();
+	createdMeshData.calculateNormals();
 
 	return createdMeshData;
 }
