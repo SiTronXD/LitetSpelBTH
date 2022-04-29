@@ -60,5 +60,6 @@ public:
 	Texture& getTexture(const char* textureName);
 	Mesh& getMesh(const char* meshName);
 	Material& getMaterial(const char* materialName);
+	VertexShader& getVertexShader(const char* vertexShaderName);
 	CubeMap& getCubemap(const char* cubemapName);
 };
