@@ -67,6 +67,7 @@
     <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
     <ClCompile Include="Engine\Graphics\DSV.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -127,6 +128,7 @@
     <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />
     <ClInclude Include="Engine\Graphics\DSV.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHook.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

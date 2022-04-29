@@ -14,9 +14,6 @@ using namespace DirectX::SimpleMath;
 
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
 {
-	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
-	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
-
 	// Sphere colliders
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
 	{
@@ -124,6 +121,10 @@ void GameScene::init()
 	this->getResources().addMaterial("me.png", "testMaterial");
 	this->getResources().addMaterial("me.png", "portalMaterial");
 
+	// Default meshes for debugging
+	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
+
 	//Add cubemap
 	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
@@ -156,6 +157,7 @@ void GameScene::init()
 	);
 	this->addLevelColliders(levelLoader);
   
+	// Player
 	this->setActiveCamera(cam.addComponent<Camera>());
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	cam.addComponent<Player>();
@@ -166,11 +168,25 @@ void GameScene::init()
 		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
 
+	// Player weapon/rope
+	GameObject& grapplingHook = this->addGameObject("Grappling hook");
+	grapplingHook.getComponent<Transform>()->setPosition(Vector3(0,-8,0));
+	grapplingHook.getComponent<Transform>()->setScaling(Vector3(1, 1, 2));
+	MeshComp* mc = grapplingHook.addComponent<MeshComp>();
+	mc->setMesh("RealCubeMesh", "testMaterial");
+	grapplingHook.addComponent<GrapplingHook>();
+
+	GameObject& rope = this->addGameObject("Rope");
+	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
+	mc = rope.addComponent<MeshComp>();
+	mc->setMesh("RealCubeMesh", "testMaterial");
+
+
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
 	Rigidbody* rb = model.addComponent<Rigidbody>();
 	rb->addForce(Vector3(0, 2, -2));
-	MeshComp* mc = model.addComponent<MeshComp>();
+	mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 	col = model.addComponent<Collider>();
 	col->setSphereCollider(5.0f);
