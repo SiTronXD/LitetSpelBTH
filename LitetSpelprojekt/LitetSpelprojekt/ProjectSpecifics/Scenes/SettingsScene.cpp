@@ -30,7 +30,10 @@ void SettingsScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "healthBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBoxTwo.png", "healthBoxTwo.png");
 
-	
+	// Set Camera
+	GameObject& cam = this->addGameObject("Camera");
+	this->setActiveCamera(cam.addComponent<Camera>());
+
 	resolutions.push_back("800");
 	resolutions.push_back("600");
 	resolutions.push_back("1280");
@@ -63,10 +66,6 @@ void SettingsScene::init()
 	default:
 		Log::error("Unknown ResolutionX");
 	}
-
-	// Set Camera
-	GameObject& cam = this->addGameObject("Camera");
-	this->setActiveCamera(cam.addComponent<Camera>());
 
 	// Default values for sliders
 	int sliderHeight = 60;
@@ -127,6 +126,7 @@ void SettingsScene::update()
 	{
 		this->getSettings().getSettings().resolutionX = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2));
 		this->getSettings().getSettings().resolutionY = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2 + 1));
+		Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) + "+" + std::to_string(this->getSettings().getSettings().resolutionY));
 	}
 	else if (sensSlider.isClicked())
 	{
