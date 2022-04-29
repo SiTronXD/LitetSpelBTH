@@ -2,9 +2,9 @@
 #include "../../Engine/Application/Scene.h"
 #include "../../Engine/UI/Slider.h"
 #include "../../Engine/UI/Button.h"
-
 #include "../../Engine/Application/SceneHandler.h"
 #include "MenuScene.h"
+
 
 class SettingsScene : public Scene
 {
@@ -15,6 +15,7 @@ private:
 	Slider brightSlider;
 	Slider volSlider;
 	Button exitButton;
+	std::vector<std::string>resolutions;
 
 public:
 	SettingsScene(SceneHandler& sceneHandler);

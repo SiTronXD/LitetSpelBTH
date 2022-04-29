@@ -90,7 +90,7 @@ void GameScene::init()
 		"klmnopqrst",
 		"uvwxyz+-.'",
 		"0123456789",
-		"!?,<>:()¤/^",
+		"!?,<>:()Â¤/^",
 		"@*% "
 	};
 
@@ -157,11 +157,19 @@ void GameScene::init()
 	this->addLevelColliders(levelLoader);
   
 	this->setActiveCamera(cam.addComponent<Camera>());
+
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
+	Player* play = cam.addComponent<Player>();
+	play->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	cam.addComponent<Player>();
+
 	cam.addComponent<Rigidbody>();
 	Collider* col = cam.addComponent<Collider>();
 	col->setSphereCollider(0.5f);
+	cam.getComponent<Camera>()->updateAspectRatio(
+		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
+	);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
@@ -175,7 +183,12 @@ void GameScene::init()
 	// Level game object
 	GameObject& levelObject = this->addGameObject("LevelObject");
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
-	levelMeshComponent->setMesh("LevelMesh", "testMaterial");
+	levelMeshComponent->setMesh("LevelMesh", "");
+
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
 
 	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
@@ -186,7 +199,7 @@ void GameScene::init()
 
 	GameObject& ground = this->addGameObject("Ground", ObjectTag::GROUND);
 	mc = ground.addComponent<MeshComp>();
-	mc->setMesh("CubeMesh", "testMaterial");
+	mc->setMesh("PlaneMesh", "testMaterial");
 	col = ground.addComponent<Collider>();
 	col->setBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
 	rb = ground.addComponent<Rigidbody>();
@@ -276,7 +289,7 @@ void GameScene::update()
 		if (playerComp->onPortal() && this->currentKeys >= 4)
 		{
 			std::cout << "YOU HAVE WON!!" << std::endl;
-			//this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), true));
+			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), true));
 		}
 
 		//Text scaling effect

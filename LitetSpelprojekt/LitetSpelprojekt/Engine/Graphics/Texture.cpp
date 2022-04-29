@@ -6,7 +6,7 @@
 #include "../Dev/Log.h"
 #include "Renderer.h"
 
-bool Texture::createSampler()
+bool Texture::createSampler(const D3D11_FILTER& filter)
 {
 	// Sampler description
 	D3D11_SAMPLER_DESC samplerDesc{};
@@ -22,7 +22,7 @@ bool Texture::createSampler()
 	samplerDesc.BorderColor[3] = 0;
 	samplerDesc.MinLOD = 0;
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
-	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.Filter = filter;
 
 	// Create sampler
 	HRESULT hr = this->renderer.getDevice()->CreateSamplerState(
@@ -120,6 +120,57 @@ bool Texture::load(const std::string& fileName, bool saveImageData)
 
 	// Create texture SRV
 	return this->createShaderResourceView();
+}
+
+bool Texture::createAsDepthTexture(
+	int width, int height, const DXGI_FORMAT& format,
+	const UINT& additionalBindFlags,
+	bool shouldCreateSampler)
+{
+	this->width = width;
+	this->height = height;
+
+	// Deallocate old texture
+	S_RELEASE(this->samplerState);
+	S_RELEASE(this->texture);
+
+	// Create sampler
+	if(shouldCreateSampler)
+		this->createSampler(D3D11_FILTER_MIN_MAG_MIP_POINT);
+
+	// Description
+	D3D11_TEXTURE2D_DESC textureDesc{};
+	textureDesc.Width = width;
+	textureDesc.Height = height;
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = format;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.SampleDesc.Quality = 0;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | additionalBindFlags;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
+
+	// Create depth/stencil texture
+	HRESULT result = this->renderer.getDevice()->CreateTexture2D(
+		&textureDesc, nullptr, &this->texture
+	);
+	if (FAILED(result))
+	{
+		Log::resultFailed(
+			"Failed to create depth/stencil texture.",
+			result
+		);
+
+		return false;
+	}
+
+	// SRV
+	if ((additionalBindFlags & D3D11_BIND_SHADER_RESOURCE) == D3D11_BIND_SHADER_RESOURCE)
+		this->textureSRV.createTextureSRV(this->texture, DXGI_FORMAT_R32_FLOAT);
+
+	return true;
 }
 
 bool Texture::createCubemap(std::string fileName, std::string format)
