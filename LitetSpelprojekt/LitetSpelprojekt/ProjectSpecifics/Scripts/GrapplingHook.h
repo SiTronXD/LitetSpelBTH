@@ -5,7 +5,7 @@
 class GrapplingHook : public Script
 {
 private:
-	Transform* thisTransform;
+	Transform* transform;
 	Transform* playerTransform;
 
 public:
