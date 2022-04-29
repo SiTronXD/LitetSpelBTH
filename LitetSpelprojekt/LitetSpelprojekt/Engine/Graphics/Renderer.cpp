@@ -119,7 +119,8 @@ Renderer::Renderer(Resources& resources)
 
 	resources(resources),
 
-	skybox(*this)
+	skybox(*this),
+	particles(*this)
 
 	//activeCamera(nullptr)
 {
@@ -156,6 +157,7 @@ void Renderer::init(Window& window)
 	
 	//Init skybox
 	this->skybox.initialize();
+	this->particles.init();
 
 	// Topology won't change during runtime
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -301,6 +303,9 @@ void Renderer::render(Scene& scene)
 	immediateContext->DrawIndexed(
 		this->skybox.getMesh().getIndexBuffer().getIndexCount(), 0, 0
 	);
+
+	//Particles
+	this->particles.render(vp, scene.getActiveCamera()->getTransform()->getRotation());
 	
 	// Unbind render target
 	ID3D11RenderTargetView* nullRTV[1] = { nullptr };

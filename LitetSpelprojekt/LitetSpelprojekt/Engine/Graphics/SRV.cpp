@@ -14,6 +14,33 @@ SRV::~SRV()
 	S_RELEASE(this->resourceSRV);
 }
 
+bool SRV::createBufferSRV(
+	ID3D11Resource* resource, 
+	const DXGI_FORMAT& format, 
+	const unsigned int& numElements)
+{
+	S_RELEASE(this->resourceSRV);
+
+	// Create buffer SRV
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+	srvDesc.Buffer.FirstElement = 0;
+	srvDesc.Buffer.NumElements = numElements;
+
+	HRESULT result = this->renderer.getDevice()->CreateShaderResourceView(
+		resource, &srvDesc, &this->resourceSRV
+	);
+	if (FAILED(result))
+	{
+		Log::resultFailed("Failed creating buffer SRV: " + this->debugName, result);
+
+		return false;
+	}
+
+	return true;
+}
+
 bool SRV::createTextureSRV(ID3D11Resource* resource, const DXGI_FORMAT& format, const D3D11_SRV_DIMENSION& dimension)
 {
 	S_RELEASE(this->resourceSRV);
