@@ -27,7 +27,7 @@ void SettingsScene::init()
 	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
 	this->getResources().addTexture("Resources/Textures/HealthBar.png", "healthBar.png");
 	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
-
+	
 	resolutions.push_back("800");
 	resolutions.push_back("600");
 	resolutions.push_back("1280");
@@ -250,8 +250,8 @@ void SettingsScene::update()
 	else if (volSlider.isClicked())
 	{
 
-		//this->getSettings().getSettings().volume = volSlider.getCurVal();
-		
+		this->getSettings().getSettings().volume = volSlider.getCurVal();
+		/*
 		float divider = volSlider.getWidth() / 10.0;
 		int range = volSlider.getCurVal() / divider;
 		switch (range)
@@ -289,7 +289,7 @@ void SettingsScene::update()
 		default:
 			Log::write("Volume out of bounds.");
 		}
-		
+		*/
 		Log::write("Volume set to: " + std::to_string(this->getSettings().getSettings().volume));
 		}
 	else if (exitButton.isClicked())
