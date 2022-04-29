@@ -20,8 +20,6 @@ MenuScene::~MenuScene()
 
 void MenuScene::init()
 {
-
-
 	this->getResources().addTexture("Resources/Textures/playButton.png", "playButton.png");
 	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
 	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
@@ -96,10 +94,10 @@ void MenuScene::renderUI()
 	exitButton.render("exitButton.png");
 	
 	this->getUIRenderer().renderString(
-		"LazyFox", 
+		"grapple mayhem", 
 		0, 
-		0, 
-		100, 
-		100
+		400, 
+		50, 
+		50
 	);
 }

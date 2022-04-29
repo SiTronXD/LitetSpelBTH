@@ -45,26 +45,19 @@ void SettingsScene::init()
 	resolutions.push_back("2048");
 	resolutions.push_back("1080");
 
-	float counter = 0.0f;
-	switch (this->getSettings().getSettings().resolutionX)
+	int k = 0;
+	int resIndex = 0;
+	for (int i = 0; i < this->resolutions.size(); i+=2)
 	{
-	case 800:
-		counter = 0.2;
-		break;
-	case 1280:
-		counter = 0.4;
-		break;
-	case 1600:
-		counter = 0.6;
-		break;
-	case 1920:
-		counter = 0.8;
-		break;
-	case 2048:
-		counter = 1.0;
-		break;
-	default:
-		Log::error("Unknown ResolutionX");
+		k = i + 1;
+		if (stoi(this->resolutions.at(i)) == this->getSettings().getSettings().resolutionX)
+		{
+			if (stoi(this->resolutions.at(k)) == this->getSettings().getSettings().resolutionY)
+			{
+				resIndex = i;
+				break;
+			}
+		}
 	}
 
 	// Default values for sliders
@@ -80,10 +73,10 @@ void SettingsScene::init()
 	resSlider.setPos(Vector2(0, 210));
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
-	resSlider.setMinVal(0.1f);
-	resSlider.setCurVal(counter);
+	resSlider.setMinVal(0);
+	resSlider.setCurVal(resIndex);
 	resSlider.setMaxVal(this->resolutions.size()/2-1);
-	resSlider.setPerFill(counter);
+	resSlider.setPerFill(0.5f);
 
 	// Sensitivity Slider
 	sensSlider.setPos(Vector2(0, 70));
@@ -126,7 +119,7 @@ void SettingsScene::update()
 	{
 		this->getSettings().getSettings().resolutionX = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2));
 		this->getSettings().getSettings().resolutionY = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2 + 1));
-		Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) + "+" + std::to_string(this->getSettings().getSettings().resolutionY));
+		Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) + "x" + std::to_string(this->getSettings().getSettings().resolutionY));
 	}
 	else if (sensSlider.isClicked())
 	{
@@ -152,10 +145,34 @@ void SettingsScene::update()
 
 void SettingsScene::renderUI()
 {
-	settingsHeader.render("settingsButton.png");
+	//settingsHeader.render("settingsButton.png");
 	resSlider.render("healthBar.png");
 	sensSlider.render("healthBar.png");
 	brightSlider.render("healthBar.png");
 	volSlider.render("healthBar.png");
-	exitButton.render("exitButton.png");
+	exitButton.render("sliderBackground.png");
+
+	this->getUIRenderer().renderString(
+		"resolution:",
+		-10,
+		260,
+		30,
+		30
+	);
+
+	this->getUIRenderer().renderString(
+		"settings",
+		-10,
+		400,
+		50,
+		50
+	);
+
+	this->getUIRenderer().renderString(
+		"main menu",
+		-10,
+		-415,
+		30,
+		30
+	);
 }

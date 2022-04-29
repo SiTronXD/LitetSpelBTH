@@ -1,18 +1,10 @@
 ResolutionX
-1280
+1920
 ResolutionY
-720
+1080
 Sensitivity
-<<<<<<< Updated upstream
-0.70678
+0.48983
 Brightness
-0.205085
+0.527119
 Volume
-0.957627
-=======
-0.953814
-Brightness
-0.900424
-Volume
-0.662076
->>>>>>> Stashed changes
+0.486441
