@@ -25,8 +25,11 @@ void SettingsScene::init()
 {
 	// Load Textures
 	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
-	this->getResources().addTexture("Resources/Textures/HealthBar.png", "healthBar.png");
+	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "healthBar.png");
 	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
+	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "healthBox.png");
+	this->getResources().addTexture("Resources/Textures/Gui/HealthBoxTwo.png", "healthBoxTwo.png");
+
 	
 	resolutions.push_back("800");
 	resolutions.push_back("600");
@@ -78,7 +81,7 @@ void SettingsScene::init()
 	resSlider.setPos(Vector2(0, 210));
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
-	resSlider.setMinVal(0.0);
+	resSlider.setMinVal(0.1f);
 	resSlider.setCurVal(counter);
 	resSlider.setMaxVal(this->resolutions.size()/2-1);
 	resSlider.setPerFill(counter);
@@ -150,9 +153,9 @@ void SettingsScene::update()
 void SettingsScene::renderUI()
 {
 	settingsHeader.render("settingsButton.png");
-	resSlider.render("sliderBackground.png");
-	sensSlider.render("sliderBackground.png");
-	brightSlider.render("sliderBackground.png");
-	volSlider.render("sliderBackground.png");
+	resSlider.render("healthBar.png");
+	sensSlider.render("healthBar.png");
+	brightSlider.render("healthBar.png");
+	volSlider.render("healthBar.png");
 	exitButton.render("exitButton.png");
 }

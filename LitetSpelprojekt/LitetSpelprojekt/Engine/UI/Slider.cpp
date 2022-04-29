@@ -64,7 +64,7 @@ void Slider::render(std::string textureName)
 
 	// Render Slider border
 	uiRenderer.renderTexture(
-		"healthBar.png",
+		"healthBoxTwo.png",
 		this->pos.x,
 		this->pos.y,
 		this->width,

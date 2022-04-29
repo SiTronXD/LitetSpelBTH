@@ -3,8 +3,8 @@ ResolutionX
 ResolutionY
 900
 Sensitivity
-1
+0.190678
 Brightness
-1
+0.860169
 Volume
-1
+0.741525
