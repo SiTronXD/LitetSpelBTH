@@ -80,7 +80,7 @@ void SettingsScene::init()
 	resSlider.setHeight(sliderHeight);
 	resSlider.setMinVal(0.0);
 	resSlider.setCurVal(counter);
-	resSlider.setMaxVal(1.0);
+	resSlider.setMaxVal(this->resolutions.size()/2-1);
 	resSlider.setPerFill(counter);
 
 	// Sensitivity Slider
@@ -122,176 +122,24 @@ void SettingsScene::update()
 	
 	if (resSlider.isClicked())
 	{
-		if (resSlider.getCurVal() < (resSlider.getWidth() * 0.20))
-		{
-			this->getSettings().getSettings().resolutionX = stoi(resolutions.at(0));
-			this->getSettings().getSettings().resolutionY = stoi(resolutions.at(1));
-			Log::write("Set resolution to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
-						"x" + std::to_string(this->getSettings().getSettings().resolutionY));
-		}
-		else if (resSlider.getCurVal() >= (resSlider.getWidth() * 0.20) &&
-				 resSlider.getCurVal() < (resSlider.getWidth() * 0.40))
-		{
-			this->getSettings().getSettings().resolutionX = stoi(resolutions.at(2));
-			this->getSettings().getSettings().resolutionY = stoi(resolutions.at(3));
-			Log::write("Set resolution to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
-						"x" + std::to_string(this->getSettings().getSettings().resolutionY));
-		}
-		else if (resSlider.getCurVal() >= (resSlider.getWidth() * 0.40) &&
-				 resSlider.getCurVal() < (resSlider.getWidth() * 0.60))
-		{
-			this->getSettings().getSettings().resolutionX = stoi(resolutions.at(4));
-			this->getSettings().getSettings().resolutionY = stoi(resolutions.at(5));
-			Log::write("Set resolution to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
-						"x" + std::to_string(this->getSettings().getSettings().resolutionY));
-		}
-		else if (resSlider.getCurVal() >= (resSlider.getWidth() * 0.60) &&
-				 resSlider.getCurVal() < (resSlider.getWidth() * 0.80))
-		{
-			this->getSettings().getSettings().resolutionX = stoi(resolutions.at(6));
-			this->getSettings().getSettings().resolutionY = stoi(resolutions.at(7));
-			Log::write("Set resolution to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
-						"x" + std::to_string(this->getSettings().getSettings().resolutionY));
-		}
-		else if (resSlider.getCurVal() >= (resSlider.getWidth() * 0.80))
-		{
-			this->getSettings().getSettings().resolutionX = stoi(resolutions.at(8));
-			this->getSettings().getSettings().resolutionY = stoi(resolutions.at(9));
-			Log::write("Set resolution to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
-						"x" + std::to_string(this->getSettings().getSettings().resolutionY));
-		}
-		else
-		{
-			Log::error("Outside ResSlider");
-		}
+		this->getSettings().getSettings().resolutionX = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2));
+		this->getSettings().getSettings().resolutionY = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2 + 1));
 	}
 	else if (sensSlider.isClicked())
 	{
-		float divider = sensSlider.getWidth() / 10.0;
-		int range = sensSlider.getCurVal() / divider;
-		switch (range)
-		{
-		case 0:
-			this->getSettings().getSettings().sensitivity = 0.1f;
-			break;
-		case 1:
-			this->getSettings().getSettings().sensitivity = 0.2f;
-			break;
-		case 2:
-			this->getSettings().getSettings().sensitivity = 0.3f;
-			break;
-		case 3:
-			this->getSettings().getSettings().sensitivity = 0.4f;
-			break;
-		case 4:
-			this->getSettings().getSettings().sensitivity = 0.5f;
-			break;
-		case 5:
-			this->getSettings().getSettings().sensitivity = 0.6f;
-			break;
-		case 6:
-			this->getSettings().getSettings().sensitivity = 0.7f;
-			break;
-		case 7:
-			this->getSettings().getSettings().sensitivity = 0.8f;
-			break;
-		case 8:
-			this->getSettings().getSettings().sensitivity = 0.9f;
-			break;
-		case 9:
-			this->getSettings().getSettings().sensitivity = 1.0f;
-			break;
-		default:
-			Log::write("Sensitivity out of bounds");
-		}
+		this->getSettings().getSettings().sensitivity = sensSlider.getCurVal();
 		Log::write("Sensitivity set to: " + std::to_string(this->getSettings().getSettings().sensitivity));
 	}
 	else if (brightSlider.isClicked())
 	{
-		float divider = brightSlider.getWidth() / 10.0f;
-		int range = brightSlider.getCurVal() / divider;
-		switch (range)
-		{
-		case 0:
-			this->getSettings().getSettings().brightness = 0.1f;
-			break;
-		case 1:
-			this->getSettings().getSettings().brightness = 0.2f;
-			break;
-		case 2:
-			this->getSettings().getSettings().brightness = 0.3f;
-			break;
-		case 3:
-			this->getSettings().getSettings().brightness = 0.4f;
-			break;
-		case 4:
-			this->getSettings().getSettings().brightness = 0.5f;
-			break;
-		case 5:
-			this->getSettings().getSettings().brightness = 0.6f;
-			break;
-		case 6:
-			this->getSettings().getSettings().brightness = 0.7f;
-			break;
-		case 7:
-			this->getSettings().getSettings().brightness = 0.8f;
-			break;
-		case 8:
-			this->getSettings().getSettings().brightness = 0.9f;
-			break;
-		case 9:
-			this->getSettings().getSettings().brightness = 1.0f;
-			break;
-		default:
-			Log::write("Brightness out of bounds.");
-		}
+		this->getSettings().getSettings().brightness = brightSlider.getCurVal();
 		Log::write("Brightness set to: " + std::to_string(this->getSettings().getSettings().brightness));
 	}
 	else if (volSlider.isClicked())
 	{
-
 		this->getSettings().getSettings().volume = volSlider.getCurVal();
-		/*
-		float divider = volSlider.getWidth() / 10.0;
-		int range = volSlider.getCurVal() / divider;
-		switch (range)
-		{
-		case 0:
-			this->getSettings().getSettings().volume = 0.1f;
-			break;
-		case 1:
-			this->getSettings().getSettings().volume = 0.2f;
-			break;
-		case 2:
-			this->getSettings().getSettings().volume = 0.3f;
-			break;
-		case 3:
-			this->getSettings().getSettings().volume = 0.4f;
-			break;
-		case 4:
-			this->getSettings().getSettings().volume = 0.5f;
-			break;
-		case 5:
-			this->getSettings().getSettings().volume = 0.6f;
-			break;
-		case 6:
-			this->getSettings().getSettings().volume = 0.7f;
-			break;
-		case 7:
-			this->getSettings().getSettings().volume = 0.8f;
-			break;
-		case 8:
-			this->getSettings().getSettings().volume = 0.9f;
-			break;
-		case 9:
-			this->getSettings().getSettings().volume = 1.0f;
-			break;
-		default:
-			Log::write("Volume out of bounds.");
-		}
-		*/
 		Log::write("Volume set to: " + std::to_string(this->getSettings().getSettings().volume));
-		}
+	}
 	else if (exitButton.isClicked())
 	{
 		// Exit Game
