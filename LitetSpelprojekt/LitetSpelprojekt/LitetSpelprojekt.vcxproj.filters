@@ -7,6 +7,9 @@
     <FxCompile Include="Resources\Shaders\skybox_VS.hlsl" />
     <FxCompile Include="Resources\Shaders\skybox_PS.hlsl" />
     <FxCompile Include="Resources\Shaders\RenderTextUI_COMP.hlsl" />
+    <FxCompile Include="Resources\Shaders\Particle_COMP.hlsl" />
+    <FxCompile Include="Resources\Shaders\Particle_VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Particle_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Components\Collider.cpp" />
@@ -65,6 +68,7 @@
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
+    <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -124,6 +128,7 @@
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
+    <ClInclude Include="Engine\Graphics\ParticleSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

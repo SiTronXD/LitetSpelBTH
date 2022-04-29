@@ -253,8 +253,10 @@ void GameScene::update()
 {
 	if (this->getPause() == false)
 	{
+		Player* playerComp = cam.getComponent<Player>();
+		
 		//When they player pick up a key.
-		if (this->cam.getComponent<Player>()->isKeyPickUp())
+		if (playerComp->isKeyPickUp())
 		{
 			std::cout << "Key pickup!" << std::endl;
 			this->keyTextScale = 0.0f;
@@ -262,16 +264,16 @@ void GameScene::update()
 		}
 
 		//Check if player is dead or not
-		if (this->cam.getComponent<Player>()->isPlayerDead())
+		if (playerComp->isPlayerDead())
 		{
 			std::cout << "Player is dead NOOB!!" << std::endl;
-			//this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), false));
+			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), false));
 		}
 
-		this->currentKeys = this->cam.getComponent<Player>()->getCurrentKeys();
+		this->currentKeys = playerComp->getCurrentKeys();
 
 		//Player enters the portal and win.
-		if (this->cam.getComponent<Player>()->onPortal() && this->currentKeys >= 4)
+		if (playerComp->onPortal() && this->currentKeys >= 4)
 		{
 			std::cout << "YOU HAVE WON!!" << std::endl;
 			//this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), true));

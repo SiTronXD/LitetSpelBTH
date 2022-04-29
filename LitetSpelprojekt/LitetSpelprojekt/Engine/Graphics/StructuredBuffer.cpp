@@ -1,7 +1,8 @@
 #include "StructuredBuffer.h"
 
 StructuredBuffer::StructuredBuffer(Renderer& renderer, const std::string& debugName)
-	: Buffer(renderer, debugName)
+	: Buffer(renderer, debugName),
+	srv(renderer, "Structured Buffer SRV")
 {
 }
 
@@ -20,18 +21,23 @@ void StructuredBuffer::updateBuffer(void* bufferData)
 	Buffer::unmap();
 }
 
-bool StructuredBuffer::createBuffer()
+bool StructuredBuffer::createBuffer(
+	UINT elementSize, UINT numElements,
+	void* initialData)
 {
-	UINT elementSize = 0;
-	UINT numberOfElements = 0;
-
-	return Buffer::createBuffer(
+	bool success = Buffer::createBuffer(
 		D3D11_USAGE_DEFAULT,
 		D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE,
-		elementSize * numberOfElements,
-		NULL,
+		elementSize * numElements,
+		initialData,
 		0,
 		D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
 		elementSize
 	);
+
+	success = this->srv.createBufferSRV(
+		this->getBuffer(), DXGI_FORMAT_UNKNOWN, numElements
+	);
+
+	return success;
 }

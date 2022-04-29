@@ -18,6 +18,11 @@ public:
 	SRV(Renderer& renderer, const std::string& debugName);
 	virtual ~SRV();
 
+	bool createBufferSRV(
+		ID3D11Resource* resource, 
+		const DXGI_FORMAT& format, 
+		const unsigned int& numElements
+	);
 	bool createTextureSRV(
 		ID3D11Resource* resource, const DXGI_FORMAT& format, const D3D11_SRV_DIMENSION& dimension = D3D11_SRV_DIMENSION_TEXTURE2D
 	);
