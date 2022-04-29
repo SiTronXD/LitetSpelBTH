@@ -182,6 +182,8 @@ void Renderer::render(Scene& scene)
 	{
 		lightComponents[i]->render(scene);
 	}
+	if (lightComponents.size() <= 0)
+		return;
 	Light* firstLight = lightComponents[0];
 
 	// ----- Render meshes to back buffer -----
