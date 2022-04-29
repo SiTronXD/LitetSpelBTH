@@ -140,8 +140,8 @@ void Player::onCollisionStay(GameObject& other)
 	if (other.getTag() == ObjectTag::KEY)
 	{
 		other.removeComponent<MeshComp>();
-		//other.removeComponent<Collider>();
-		other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
+		other.removeComponent<Collider>();
+		//other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
 		this->keyPieces++;
 		this->keyPickup = true;
 	}

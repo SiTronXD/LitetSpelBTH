@@ -273,7 +273,7 @@ void GameScene::update()
 		if (this->cam.getComponent<Player>()->isPlayerDead())
 		{
 			std::cout << "Player is dead NOOB!!" << std::endl;
-			//this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), false));
+			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), false));
 		}
 
 		this->currentKeys = this->cam.getComponent<Player>()->getCurrentKeys();
@@ -282,7 +282,7 @@ void GameScene::update()
 		if (this->cam.getComponent<Player>()->onPortal() && this->currentKeys >= 4)
 		{
 			std::cout << "YOU HAVE WON!!" << std::endl;
-			//this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), true));
+			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), true));
 		}
 
 		//Text scaling effect
