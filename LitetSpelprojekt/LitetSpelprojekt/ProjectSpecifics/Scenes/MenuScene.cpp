@@ -94,7 +94,7 @@ void MenuScene::renderUI()
 	playButton.render("playButton.png");
 	settingsButton.render("settingsButton.png");
 	exitButton.render("exitButton.png");
-
+	
 	this->getUIRenderer().renderString(
 		"the quick brown fox jumps over the lazy dog", 
 		0, 
