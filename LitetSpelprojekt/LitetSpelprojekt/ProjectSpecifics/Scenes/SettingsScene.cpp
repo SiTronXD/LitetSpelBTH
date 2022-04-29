@@ -25,7 +25,7 @@ void SettingsScene::init()
 {
 	// Load Textures
 	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
-	this->getResources().addTexture("Resources/Textures/HealthBar.png", "healthBar.png");
+	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "healthBar.png");
 	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
 	
 	resolutions.push_back("800");

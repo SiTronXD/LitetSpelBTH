@@ -7,4 +7,4 @@ Sensitivity
 Brightness
 1
 Volume
-1
+0.1

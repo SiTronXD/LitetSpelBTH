@@ -163,7 +163,6 @@ void Renderer::init(Window& window)
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-float timer = 0.0f;
 void Renderer::render(Scene& scene)
 {
 #ifdef _DEBUG
@@ -178,15 +177,21 @@ void Renderer::render(Scene& scene)
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
 	immediateContext->ClearDepthStencilView(this->dsView.getPtr(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	// ----- Render shadow maps -----
+	// Update camera constant buffer
+	Matrix vp;
+	vp = scene.getActiveCamera()->getViewMatrix();
+	vp *= scene.getActiveCamera()->getProjectionMatrix();
+	this->cameraBufferStruct.vpMat = vp.Transpose();
+
 	std::vector<Light*> lightComponents = scene.getActiveComponents<Light>();
+	
+	// ----- Render shadow maps -----
 	for (unsigned int i = 0; i < lightComponents.size(); ++i)
 	{
 		lightComponents[i]->render(scene);
 	}
-	if (lightComponents.size() <= 0)
-		return;
-	Light* firstLight = lightComponents[0];
+	Light* firstLight = lightComponents.size() > 0?
+		lightComponents[0] : nullptr;
 
 	// ----- Render meshes to back buffer -----
 	immediateContext->RSSetViewports(1, &this->viewport);
@@ -196,22 +201,20 @@ void Renderer::render(Scene& scene)
 
 	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
 
-	// Update camera constant buffer
-	Matrix vp;
-	vp = scene.getActiveCamera()->getViewMatrix();
-	vp *= scene.getActiveCamera()->getProjectionMatrix();
-	this->cameraBufferStruct.vpMat = vp.Transpose();
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
-	immediateContext->PSSetConstantBuffers(0, 1, &firstLight->getLightBuffer().getBuffer());
-	immediateContext->PSSetConstantBuffers(1, 1, &firstLight->getDirLightBuffer().getBuffer());
+	if (firstLight != nullptr)
+	{
+		immediateContext->PSSetConstantBuffers(0, 1, &firstLight->getLightBuffer().getBuffer());
+		immediateContext->PSSetConstantBuffers(1, 1, &firstLight->getDirLightBuffer().getBuffer());
 
-	// Set shadow map
-	immediateContext->PSSetSamplers(
-		1, 1, &firstLight->getShadowMapTexture().getSampler()
-	);
-	immediateContext->PSSetShaderResources(
-		1, 1, &firstLight->getShadowMapTexture().getSRV().getPtr()
-	);
+		// Set shadow map
+		immediateContext->PSSetSamplers(
+			1, 1, &firstLight->getShadowMapTexture().getSampler()
+		);
+		immediateContext->PSSetShaderResources(
+			1, 1, &firstLight->getShadowMapTexture().getSRV().getPtr()
+		);
+	}
 
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
@@ -257,17 +260,17 @@ void Renderer::render(Scene& scene)
 				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
 			);
 
-		#ifdef _DEBUG
+#ifdef _DEBUG
 			numDrawCalls++;
-		#endif
+#endif
 		}
-	}
 
-	// Remove shadow map from slot 1
-	ID3D11ShaderResourceView* nullSRV[]{ nullptr };
-	immediateContext->PSSetShaderResources(
-		1, 1, nullSRV
-	);
+		// Remove shadow map from slot 1
+		ID3D11ShaderResourceView* nullSRV[]{ nullptr };
+		immediateContext->PSSetShaderResources(
+			1, 1, nullSRV
+		);
+	}
 
 	//Skybox
 	immediateContext->IASetInputLayout(this->skybox.getVertexShader().getInputLayout());
