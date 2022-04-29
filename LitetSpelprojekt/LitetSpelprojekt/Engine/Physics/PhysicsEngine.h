@@ -2,25 +2,30 @@
 
 #include "../ECS.h"
 #include "../Application/Scene.h"
+#include "PhysicsEventListener.h"
+#include "PhysicsRaycastCallback.h"
 
 class PhysicsEngine
 {
 private:
-	struct pair_hash
-	{
-		template <class T1, class T2>
-		std::size_t operator() (const std::pair<T1, T2>& pair) const {
-			return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
-		}
-	};
+	const float TIMESTEP = 1.0f / 60.0f;
+	float accumulator;
 
-	// key: ID of two intersecting objects, value: bool to check if collision is still active during update
-	std::unordered_map<std::pair<int, int>, bool, pair_hash> lastCollisionStatus;
+	rp3d::PhysicsCommon physCom;
+	rp3d::PhysicsWorld* world;
+	PhysicsEventListener listener;
+
+	Scene* scene;
 public:
 	PhysicsEngine();
 	virtual ~PhysicsEngine();
 
-	void updateCollisions(Scene& scene);
-	static bool raycast(ECS& ecs, DirectX::SimpleMath::Ray ray, GameObject*& hitObject, float& distance);
+	void init(Scene* scene);
+
+	rp3d::PhysicsCommon& getCommon();
+	rp3d::PhysicsWorld* getWorld();
+
+	void update();
+	RaycastInfo raycast(rp3d::Ray ray);
 };
 

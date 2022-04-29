@@ -6,6 +6,7 @@
 #include "../../Engine/Graphics/MeshLoader.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Graphics/UIRenderer.h"
+#include "../../Engine/Physics/PhysicsEngine.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -24,10 +25,14 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		);
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealSphereMesh", "testMaterial");
+
 		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
-		colliderObject.getComponent<Transform>()->setScaling(Vector3(1,1,1) * sphereInfo.radius);
-		Collider* col = colliderObject.addComponent<Collider>();
-		col->setSphereCollider(sphereInfo.radius);
+		colliderObject.getComponent<Transform>()->setScaling(Vector3(1, 1, 1) * sphereInfo.radius);
+
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->addSphereCollider(sphereInfo.radius);
+		rb->setType(rp3d::BodyType::STATIC);
 	}
 
 	// Box colliders
@@ -41,10 +46,14 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealCubeMesh", "testMaterial");
+
 		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
-		Collider* col = colliderObject.addComponent<Collider>();
-		col->setBoxCollider(boxInfo.extents);
+
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->addBoxCollider(boxInfo.extents);
+		rb->setType(rp3d::BodyType::STATIC);
 	}
 
 	// Oriented box colliders
@@ -58,11 +67,15 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		);
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealCubeMesh", "testMaterial");
+
 		colliderObject.getComponent<Transform>()->setPosition(orientedBoxInfo.pos);
 		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
 		colliderObject.getComponent<Transform>()->setScaling(orientedBoxInfo.extents * 2);
-		Collider* col = colliderObject.addComponent<Collider>();
-		col->setOrientedBoxCollider(orientedBoxInfo.extents);
+
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->addBoxCollider(orientedBoxInfo.extents);
+		rb->setType(rp3d::BodyType::STATIC);
 	}
 }
 
@@ -119,18 +132,21 @@ void GameScene::init()
 	this->setActiveCamera(cam.addComponent<Camera>());
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	cam.addComponent<Player>();
-	cam.addComponent<Rigidbody>();
-	Collider* col = cam.addComponent<Collider>();
-	col->setSphereCollider(0.5f);
+	Rigidbody* rb = cam.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addCapsuleCollider(1.0f, 2.0f);
+	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
+	rb->setMaterial(0.2f, 0.0f);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
-	Rigidbody* rb = model.addComponent<Rigidbody>();
-	rb->addForce(Vector3(0, 2, -2));
+	model.getComponent<Transform>()->setPosition(10.0f, -7.0f, 10.0f);
+	rb = model.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addSphereCollider(2.0f);
+	rb->setType(rp3d::BodyType::STATIC);
 	MeshComp* mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
-	col = model.addComponent<Collider>();
-	col->setSphereCollider(5.0f);
 
 	// Level game object
 	GameObject& levelObject = this->addGameObject("LevelObject");
@@ -141,25 +157,28 @@ void GameScene::init()
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
 	mc = model2.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
-	col = model2.addComponent<Collider>();
-	col->setSphereCollider(1.0f);
 
 	GameObject& ground = this->addGameObject("Ground", ObjectTag::GROUND);
 	mc = ground.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
-	col = ground.addComponent<Collider>();
-	col->setBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
-	rb = ground.addComponent<Rigidbody>();
-	rb->setKinematicStatus(true);
 	ground.getComponent<Transform>()->setScaling({ 100.0f, 1.0f, 100.0f });
 	ground.getComponent<Transform>()->setPosition(0.0f, -10.0f, 0.0f);
+	rb = ground.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
+	rb->setType(rp3d::BodyType::KINEMATIC);
+	rb->setMaterial(0.2f, 0.0f);
 
 	this->getECS().init();
 }
 
 void GameScene::update()
 {
-
+	RaycastInfo info = this->getPhysicsEngine().raycast(rp3d::Ray({ 0.0f, -10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
+	if (info.hit)
+	{
+		std::cout << "Hit " << info.gameObject->getName() << ": at worldPos (" << info.hitPoint.x << ", " << info.hitPoint.y << ", " << info.hitPoint.z << ")" << std::endl;
+	}
 }
 
 void GameScene::renderUI()

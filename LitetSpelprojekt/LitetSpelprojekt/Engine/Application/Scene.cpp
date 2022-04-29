@@ -7,7 +7,8 @@ Scene::Scene(SceneHandler& sceneHandler)
 	resources(&sceneHandler.getResources()),
 	renderer(&sceneHandler.getRenderer()),
 	uiRenderer(&sceneHandler.getUIRenderer()),
-	window(&sceneHandler.getWindow())
+	window(&sceneHandler.getWindow()),
+	physicsEngine(&sceneHandler.getPhysicsEngine())
 {
 }
 

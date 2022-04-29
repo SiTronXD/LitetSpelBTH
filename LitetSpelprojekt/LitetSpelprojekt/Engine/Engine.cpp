@@ -15,7 +15,8 @@ Engine::Engine()
 		this->resources, 
 		this->renderer, 
 		this->uiRenderer,
-		this->window
+		this->window,
+		this->physicsEngine
 	)
 {
 	this->settings.loadSettings();
@@ -53,7 +54,7 @@ void Engine::run()
 		// Update + render
 		this->sceneHandler.updateToNextScene();
 		this->sceneHandler.update();
-		this->physicsEngine.updateCollisions(*this->sceneHandler.getScene());
+		this->physicsEngine.update();
 		this->renderer.render(*this->sceneHandler.getScene());
 
 		// ---------- Stop tracking time

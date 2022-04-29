@@ -24,9 +24,10 @@ void Player::move()
 
 void Player::jump()
 {
-	if(Input::isKeyDown(Keys::SPACE) && this->onGround)
+	if(Input::isKeyJustPressed(Keys::SPACE) && this->onGround)
 	{
-		this->rb->addForce({ 0.0f, this->jumpForce, 0.0f });
+		//this->rb->addForce({ 0.0f, this->jumpForce, 0.0f });
+		this->rb->addVelocity({ 0.0f, this->jumpForce, 0.0f });
 		this->onGround = false;
 	}
 }
@@ -92,20 +93,18 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
-	/*GameObject* g = nullptr;
-	float distance = 0.0f;
-	if (this->getObject().raycast(g, distance))
-		std::cout << "Hit Object: " << g->getName() << " Tag: " << (int)g->getTag() << " with distance of: " << distance << std::endl;*/
 }
 
 void Player::onCollisionEnter(GameObject& other)
 {
-	std::cout << "Player started hitting: " << other.getName() << std::endl;
+	//std::cout << "Player started hitting: " << other.getName() << std::endl;
+	if (other.getTag() == ObjectTag::GROUND)
+		this->onGround = true;
 }
 
 void Player::onCollisionStay(GameObject& other)
 {
-	std::cout << "Player still hitting: " << other.getName() << std::endl;
+	//std::cout << "Player still hitting: " << other.getName() << std::endl;
 
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
@@ -113,5 +112,8 @@ void Player::onCollisionStay(GameObject& other)
 
 void Player::onCollisionExit(GameObject& other)
 {
-	std::cout << "Player stopped hitting: " << other.getName() << std::endl;
+	//std::cout << "Player stopped hitting: " << other.getName() << std::endl;
+
+	if (other.getTag() == ObjectTag::GROUND)
+		this->onGround = false;
 }
