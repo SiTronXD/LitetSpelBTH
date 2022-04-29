@@ -1,10 +1,10 @@
 ResolutionX
-1600
+800
 ResolutionY
-900
+600
 Sensitivity
 1
 Brightness
 1
 Volume
-1
+0.1
