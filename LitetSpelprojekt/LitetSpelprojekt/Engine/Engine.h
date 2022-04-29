@@ -6,6 +6,7 @@
 #include "Application/Window.h"
 #include "Graphics/Renderer.h"
 #include "Graphics/UIRenderer.h"
+#include "Graphics/Renderer.h"
 #include "Resources.h"
 #include "Application/SceneHandler.h"
 #include "Physics/PhysicsEngine.h"

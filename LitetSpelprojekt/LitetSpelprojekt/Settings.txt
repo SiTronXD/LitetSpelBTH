@@ -1,7 +1,7 @@
 ResolutionX
-1920
+1600
 ResolutionY
-1080
+900
 Sensitivity
 1
 Brightness
