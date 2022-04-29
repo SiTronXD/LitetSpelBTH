@@ -3,6 +3,7 @@
 
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
+	Window& window, PhysicsEngine& physicsEngine, Settings& settings)
 	Window& window, Settings& settings)
 	:scene(nullptr),
 	nextScene(nullptr),
@@ -10,6 +11,7 @@ SceneHandler::SceneHandler(
 	renderer(renderer),
 	uiRenderer(uiRenderer),
 	window(window),
+	physicsEngine(physicsEngine),
 	settings(settings)
 {
 }
@@ -47,7 +49,10 @@ void SceneHandler::updateToNextScene()
 void SceneHandler::setScene(Scene* scene)
 {
 	if (this->nextScene == nullptr)
+	{
 		this->nextScene = scene;
+		this->physicsEngine.init(scene);
+	}
 }
 
 Scene* SceneHandler::getScene() const

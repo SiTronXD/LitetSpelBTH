@@ -1,20 +1,149 @@
 #include "Rigidbody.h"
+#include "../Physics/PhysicsEngine.h"
 #include "../GameObject.h"
 #include "../Time.h"
 
 using namespace DirectX::SimpleMath;
 
-Rigidbody::Rigidbody(GameObject& object) :
-	Script(object),
-	transform(*this->getTransform()),
-	mass(1.0f),
-	kinematicStatus(false)
+rp3d::Transform Rigidbody::getConvertedTransform()
 {
-	this->acceleration = Vector3(0.0f, -9.82f, 0.0f);
+	Vector3 pos = this->transform.getPosition();
+	Vector4 quat = this->transform.getRotationQuat();
+	if (quat.x == 0.0f &&
+		quat.y == 0.0f &&
+		quat.z == 0.0f &&
+		quat.w == 0.0f)
+	{
+		quat.w = 1.0f;
+	}
+
+	rp3d::Transform transform;
+	transform.setPosition(rp3d::Vector3(pos.x, pos.y, pos.z));
+	transform.setOrientation(rp3d::Quaternion(quat.x, quat.y, quat.z, quat.w));
+	return transform;
+}
+
+Rigidbody::Rigidbody(GameObject& object) :
+	Script(object), transform(*this->getTransform()),
+	physEngine(nullptr), rb(nullptr)
+{
+	
 }
 
 Rigidbody::~Rigidbody()
 {
+	this->physEngine->getWorld()->destroyRigidBody(this->rb);
+}
+
+void Rigidbody::setPhysics(PhysicsEngine& physicsEngine)
+{
+	this->physEngine = &physicsEngine;
+	this->rb = this->physEngine->getWorld()->createRigidBody(this->getConvertedTransform());
+	this->rb->setType(rp3d::BodyType::DYNAMIC);
+	this->rb->setMass(1.0f);
+}
+
+void Rigidbody::addBoxCollider(DirectX::SimpleMath::Vector3 extents, DirectX::SimpleMath::Vector3 posOffset)
+{
+	rp3d::Transform transform = rp3d::Transform::identity();
+	transform.setPosition({ posOffset.x, posOffset.y, posOffset.z });
+
+	this->colliders.push_back(this->rb->addCollider(this->physEngine->getCommon().createBoxShape({ extents.x, extents.y, extents.z }), transform));
+	this->colliders.back()->getMaterial().setFrictionCoefficient(0.2f);
+	this->colliders.back()->getMaterial().setBounciness(0.0f);
+}
+
+void Rigidbody::addSphereCollider(float radius, DirectX::SimpleMath::Vector3 posOffset)
+{
+	rp3d::Transform transform = rp3d::Transform::identity();
+	transform.setPosition({ posOffset.x, posOffset.y, posOffset.z });
+
+	this->colliders.push_back(this->rb->addCollider(this->physEngine->getCommon().createSphereShape(radius), transform));
+	this->colliders.back()->getMaterial().setFrictionCoefficient(0.2f);
+	this->colliders.back()->getMaterial().setBounciness(0.0f);
+}
+
+void Rigidbody::addCapsuleCollider(float radius, float height, DirectX::SimpleMath::Vector3 posOffset)
+{
+	rp3d::Transform transform = rp3d::Transform::identity();
+	transform.setPosition({ posOffset.x, posOffset.y, posOffset.z });
+
+	this->colliders.push_back(this->rb->addCollider(this->physEngine->getCommon().createCapsuleShape(radius, height), transform));
+	this->colliders.back()->getMaterial().setFrictionCoefficient(0.2f);
+	this->colliders.back()->getMaterial().setBounciness(0.0f);
+}
+
+void Rigidbody::setMass(float mass)
+{
+	this->rb->setMass(mass);
+}
+
+void Rigidbody::setType(rp3d::BodyType type)
+{
+	this->rb->setType(type);
+}
+
+void Rigidbody::setMaterial(float frictionCoeff, float bounciness, float massDensity)
+{
+	if (!this->colliders.size())
+		return;
+
+	rp3d::Material mat = this->colliders[0]->getMaterial();
+	mat.setFrictionCoefficient(frictionCoeff);
+	mat.setBounciness(bounciness);
+	mat.setMassDensity(massDensity);
+
+	for (auto& col : this->colliders)
+	{
+		col->setMaterial(mat);
+	}
+	
+}
+
+void Rigidbody::setPosRestrict(DirectX::SimpleMath::Vector3 restrictVec)
+{
+	this->rb->setLinearLockAxisFactor({ restrictVec.x, restrictVec.y, restrictVec.z });
+}
+
+void Rigidbody::setRotRestrict(DirectX::SimpleMath::Vector3 restrictVec)
+{
+	this->rb->setAngularLockAxisFactor({ restrictVec.x, restrictVec.y, restrictVec.z });
+}
+
+DirectX::SimpleMath::Vector3 Rigidbody::getVelocity() const
+{
+	rp3d::Vector3 vel = this->rb->getLinearVelocity();
+	return Vector3(vel.x, vel.y, vel.z);
+}
+
+void Rigidbody::setVelocity(DirectX::SimpleMath::Vector3 vec)
+{
+	this->rb->setLinearVelocity({ vec.x, vec.y, vec.z });
+}
+
+void Rigidbody::setAngularVelocity(DirectX::SimpleMath::Vector3 vec)
+{
+	this->rb->setAngularVelocity({ vec.x, vec.y, vec.z });
+}
+
+void Rigidbody::addVelocity(DirectX::SimpleMath::Vector3 vec)
+{
+	this->rb->setLinearVelocity(this->rb->getLinearVelocity() + rp3d::Vector3(vec.x, vec.y, vec.z));
+}
+
+void Rigidbody::addForce(DirectX::SimpleMath::Vector3 vec, DirectX::SimpleMath::Vector3 posOffset)
+{
+	this->rb->applyLocalForceAtLocalPosition({ vec.x, vec.y, vec.z }, { posOffset.x, posOffset.y, posOffset.z });
+}
+
+void Rigidbody::addForceWorldSpace(DirectX::SimpleMath::Vector3 vec, DirectX::SimpleMath::Vector3 point)
+{
+	this->rb->applyLocalForceAtWorldPosition({ vec.x, vec.y, vec.z }, { point.x, point.y, point.z });
+}
+
+int Rigidbody::getID() const
+{
+	return this->rb->getEntity().id;
 }
 
 void Rigidbody::init()
@@ -23,73 +152,16 @@ void Rigidbody::init()
 
 void Rigidbody::update()
 {
-	if (!this->kinematicStatus)
+	if (this->rb->getLinearLockAxisFactor() != rp3d::Vector3::zero())
 	{
-		// Adjust position by velocity
-		transform.move(this->velocity * Time::getDT());
+		rp3d::Vector3 pos = this->rb->getTransform().getPosition();
+		this->transform.setPosition(pos.x, pos.y, pos.z);
+	}
 
-		// Adjust velocity by acceleration. Do this last because
-		// velocity could be manually set.
-		this->velocity += this->acceleration * Time::getDT();
+	if (this->rb->getAngularLockAxisFactor() != rp3d::Vector3::zero())
+	{
+		rp3d::Quaternion quat = this->rb->getTransform().getOrientation();
+		this->transform.setRotation({ quat.x, quat.y, quat.z, quat.w });
 	}
 }
 
-void Rigidbody::onCollisionEnter(GameObject& other)
-{
-	Rigidbody* otherRb = other.getComponent<Rigidbody>();
-
-	if (otherRb)
-	{
-		float e = 1.0f;
-		this->velocity = -(this->velocity * (this->mass - otherRb->mass * e) +
-			otherRb->velocity * otherRb->mass * (1.0f + e)) /
-			(this->mass + otherRb->mass);
-	}
-}
-
-void Rigidbody::onCollisionStay(GameObject& other)
-{
-	Rigidbody* otherRb = other.getComponent<Rigidbody>();
-
-	if (otherRb)
-	{
-		float e = 1.0f;
-		this->velocity = -(this->velocity * (this->mass - otherRb->mass * e) +
-			otherRb->velocity * otherRb->mass * (1.0f + e)) /
-			(this->mass + otherRb->mass);
-	}
-}
-
-void Rigidbody::onCollisionExit(GameObject& other)
-{
-}
-
-bool Rigidbody::isKinematic() const
-{
-	return this->kinematicStatus;
-}
-
-void Rigidbody::setKinematicStatus(bool kinematicStatus)
-{
-	this->kinematicStatus = kinematicStatus;
-}
-
-void Rigidbody::setMass(float newMass)
-{
-	this->mass = newMass;
-}
-
-DirectX::SimpleMath::Vector3 Rigidbody::getVelocity() const
-{
-	return this->velocity;
-}
-
-void Rigidbody::setVelocity(const DirectX::SimpleMath::Vector3& newVelocity)
-{
-	this->velocity = newVelocity;
-}
-
-void Rigidbody::addForce(const DirectX::SimpleMath::Vector3& newForce)
-{
-	this->velocity += newForce;
-}
