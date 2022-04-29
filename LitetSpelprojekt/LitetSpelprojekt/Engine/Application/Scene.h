@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../ECS.h"
+#include "../Settings.h"
 
 class SceneHandler;
 class Resources;
@@ -16,15 +17,18 @@ private:
 	Camera* activeCamera;
 
 	SceneHandler& sceneHandler;
-
+	Settings* settings;
 	Resources* resources;
 	Renderer* renderer;
 	UIRenderer* uiRenderer;
 	Window* window;
 	PhysicsEngine* physicsEngine;
 
+	bool pause;
+
 protected:
 	inline void setActiveCamera(Camera* cam) { this->activeCamera = cam; }
+	inline void setPause(bool pause) { this->pause = pause; }
 	inline GameObject& addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTAGGED) { return this->ecs.addGameObject(name, tag); }
 
 	inline SceneHandler& getSceneHandler() { return this->sceneHandler; }
@@ -33,6 +37,7 @@ protected:
 	inline UIRenderer& getUIRenderer() { return *this->uiRenderer; }
 	inline Window& getWindow() { return *this->window; }
 	inline PhysicsEngine& getPhysicsEngine() { return *this->physicsEngine; }
+	inline Settings& getSettings() { return *this->settings;  }
 
 public:
 	Scene(SceneHandler& sceneHandler);
@@ -47,6 +52,7 @@ public:
 	std::vector<T*> getActiveComponents();
 
 	inline ECS& getECS() { return this->ecs; }
+	inline bool getPause() const { return this->pause; }
 };
 
 template<typename T>

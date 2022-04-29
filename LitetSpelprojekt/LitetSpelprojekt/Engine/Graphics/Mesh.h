@@ -10,6 +10,7 @@ private:
 	IndexBuffer indexBuffer;
 
 	std::vector<Submesh> submeshes;
+	Submesh entireMesh;
 
 public:
 	Mesh(Renderer& renderer, MeshData&& meshData);
@@ -18,4 +19,5 @@ public:
 	inline VertexBuffer& getVertexBuffer() { return this->vertexBuffer; }
 	inline IndexBuffer& getIndexBuffer() { return this->indexBuffer; }
 	inline std::vector<Submesh>& getSubmeshes() { return this->submeshes; }
+	inline const Submesh& getEntireSubmesh() const { return this->entireMesh; }
 };

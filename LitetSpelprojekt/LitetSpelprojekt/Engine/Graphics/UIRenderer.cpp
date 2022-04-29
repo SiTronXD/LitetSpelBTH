@@ -153,8 +153,19 @@ void UIRenderer::renderTexture(
 	unsigned int textureWidth = texture.getWidth();
 	unsigned int textureHeight = texture.getHeight();
 
+	this->renderTexture(
+		texture.getSRV(),
+		x, y, uiWidth, uiHeight,
+		textureWidth, textureHeight
+	);
+}
+
+void UIRenderer::renderTexture(
+	SRV& srv, int x, int y, int uiWidth, int uiHeight,
+	int srvWidth, int srvHeight)
+{
 	// Set texture SRV
-	this->uiRenderComputeShader.setSRV(0, texture.getSRV());
+	this->uiRenderComputeShader.setSRV(0, srv);
 
 	// Transform from internal resolution to screen resolution
 	UIRectangle transformedRect = ResTranslator::transformRect(
@@ -166,8 +177,8 @@ void UIRenderer::renderTexture(
 	this->uiOrientationBufferStruct.position.y = transformedRect.y;
 	this->uiOrientationBufferStruct.uiSize.x = transformedRect.width;
 	this->uiOrientationBufferStruct.uiSize.y = transformedRect.height;
-	this->uiOrientationBufferStruct.textureSize.x = textureWidth;
-	this->uiOrientationBufferStruct.textureSize.y = textureHeight;
+	this->uiOrientationBufferStruct.textureSize.x = srvWidth;
+	this->uiOrientationBufferStruct.textureSize.y = srvHeight;
 	this->uiOrientationBuffer.updateBuffer(&this->uiOrientationBufferStruct);
 
 	// Set the number of thread groups to the resolution

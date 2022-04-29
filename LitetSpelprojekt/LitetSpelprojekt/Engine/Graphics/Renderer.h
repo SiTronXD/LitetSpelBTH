@@ -15,15 +15,23 @@
 #include "Texture.h"
 #include "../Resources.h"
 #include "UAV.h"
+#include "DSV.h"
 #include "Skybox.h"
+#include "ParticleSystem.h"
 
 class Renderer
 {
 private:
 	struct CameraBufferData
 	{
-		DirectX::XMFLOAT4X4 mvpMat;
+		DirectX::XMFLOAT4X4 modelMat;
+		DirectX::XMFLOAT4X4 vpMat;
 	} cameraBufferStruct{};
+
+	struct CompactCameraBufferData
+	{
+		DirectX::XMFLOAT4X4 mvpMat;
+	} compactCameraBufferStruct{};
 
 	ID3D11Device* device;
 	ID3D11DeviceContext* immediateContext;
@@ -34,11 +42,12 @@ private:
 
 	D3D11_VIEWPORT viewport;
 	ID3D11RenderTargetView* backBufferRTV;
-	ID3D11Texture2D* dsTexture;
-	ID3D11DepthStencilView* dsView;
+	Texture dsTexture;
 	ID3D11DepthStencilState* dsState;
+	DSV dsView;
 
 	ConstantBuffer cameraConstantBuffer;
+	ConstantBuffer compactCameraConstantBuffer;
 
 	Window* window;
 	Resources& resources;
@@ -46,6 +55,7 @@ private:
 	UAV backBufferUAV;
 
 	Skybox skybox;
+	ParticleSystem particles;
 
 	std::string skyboxName;
 
@@ -72,6 +82,6 @@ public:
 
 	inline ID3D11Device* getDevice() const { return this->device; }
 	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }
-
-
+	inline ConstantBuffer& getCompactCameraConstantBuffer() { return this->compactCameraConstantBuffer; }
+	inline CompactCameraBufferData& getCompactCameraBufferStruct() { return this->compactCameraBufferStruct; }
 };

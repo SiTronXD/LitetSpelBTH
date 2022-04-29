@@ -7,6 +7,7 @@
 // Temp
 #include "../ProjectSpecifics/Scenes/GameScene.h"
 #include "../ProjectSpecifics/Scenes/SettingsScene.h"
+#include "../ProjectSpecifics/Scenes/GameOverScene.h"
 
 Engine::Engine()
 	: renderer(this->resources),
@@ -16,16 +17,17 @@ Engine::Engine()
 		this->renderer, 
 		this->uiRenderer,
 		this->window,
-		this->physicsEngine
+		this->physicsEngine,
+		this->settings
 	)
 {
-	this->settings.loadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
-	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
-	this->sceneHandler.setScene(new GameScene(this->sceneHandler));
+	this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false));
 
 	// Default texture and material
 	this->resources.addTexture("Resources/Textures/Default.png", "Default.png");
@@ -38,6 +40,7 @@ Engine::~Engine()
 
 void Engine::run()
 {
+	
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
 	Time::init();
@@ -68,5 +71,5 @@ void Engine::run()
 		this->renderer.presentSC();
 	}
 
-	this->settings.saveSettings();
+	
 }

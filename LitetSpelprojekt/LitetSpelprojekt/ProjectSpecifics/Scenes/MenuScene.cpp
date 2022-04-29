@@ -20,6 +20,8 @@ MenuScene::~MenuScene()
 
 void MenuScene::init()
 {
+
+
 	this->getResources().addTexture("Resources/Textures/playButton.png", "playButton.png");
 	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
 	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
@@ -92,12 +94,12 @@ void MenuScene::renderUI()
 	playButton.render("playButton.png");
 	settingsButton.render("settingsButton.png");
 	exitButton.render("exitButton.png");
-
+	
 	this->getUIRenderer().renderString(
-		"the quick brown fox jumps over the lazy dog", 
+		"LazyFox", 
 		0, 
 		0, 
-		54, 
-		54
+		100, 
+		100
 	);
 }

@@ -43,8 +43,8 @@ bool Slider::isClicked()
 			// Left click inside the button
 			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
 			{
-				this->currentValue = (this->width / 2 + internal.x);
-				this->percentFilled = (this->currentValue / this->width);
+				this->percentFilled = ((this->width / 2.0 + internal.x) / this->width);
+				this->currentValue = this->percentFilled * (maxValue - minValue);
 				sliderClicked = true;
 			}
 		}
@@ -64,7 +64,7 @@ void Slider::render(std::string textureName)
 
 	// Render Slider border
 	uiRenderer.renderTexture(
-		"healthBar.png",
+		"healthBoxTwo.png",
 		this->pos.x,
 		this->pos.y,
 		this->width,

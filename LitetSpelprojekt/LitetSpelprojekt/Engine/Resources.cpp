@@ -214,6 +214,16 @@ Material& Resources::getMaterial(const char* materialName)
 	return *foundMaterial;
 }
 
+VertexShader& Resources::getVertexShader(const char* vertexShaderName)
+{
+	VertexShader* foundVertexShader = this->vertexShaders[vertexShaderName];
+
+	if (!foundVertexShader)
+		Log::error("Vertex shader has not been added: " + std::string(vertexShaderName));
+
+	return *foundVertexShader;
+}
+
 CubeMap& Resources::getCubemap(const char* cubemapName)
 {
 	CubeMap* foundMaterial = this->cubeMaps[cubemapName];

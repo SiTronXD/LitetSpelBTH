@@ -3,14 +3,16 @@
 
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
-	Window& window, PhysicsEngine& physicsEngine)
+	Window& window, PhysicsEngine& physicsEngine, Settings& settings)
+	Window& window, Settings& settings)
 	:scene(nullptr),
 	nextScene(nullptr),
 	resources(resources),
 	renderer(renderer),
 	uiRenderer(uiRenderer),
 	window(window),
-	physicsEngine(physicsEngine)
+	physicsEngine(physicsEngine),
+	settings(settings)
 {
 }
 
@@ -22,7 +24,10 @@ SceneHandler::~SceneHandler()
 void SceneHandler::update()
 {
 	this->scene->update();
-	this->scene->getECS().update();
+	
+	if (this->scene->getPause() == false)
+		this->scene->getECS().update();
+		
 }
 
 void SceneHandler::updateToNextScene()

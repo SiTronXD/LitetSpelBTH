@@ -11,12 +11,13 @@ class SceneHandler
 private:
 	Scene* scene;
 	Scene* nextScene;
-
+	
 	Resources& resources;
 	Renderer& renderer;
 	UIRenderer& uiRenderer;
 	Window& window;
 	PhysicsEngine& physicsEngine;
+	Settings& settings;
 
 public:
 	SceneHandler(
@@ -24,7 +25,8 @@ public:
 		Renderer& renderer, 
 		UIRenderer& uiRenderer,
 		Window& window,
-		PhysicsEngine& physicsEngine
+		PhysicsEngine& physicsEngine,
+		Settings& settings
 	);
 	~SceneHandler();
 
@@ -39,4 +41,5 @@ public:
 	inline UIRenderer& getUIRenderer() { return this->uiRenderer; }
 	inline Window& getWindow() { return this->window; }
 	inline PhysicsEngine& getPhysicsEngine() { return this->physicsEngine; }
+	inline Settings& getSettings() { return this->settings; }
 };
