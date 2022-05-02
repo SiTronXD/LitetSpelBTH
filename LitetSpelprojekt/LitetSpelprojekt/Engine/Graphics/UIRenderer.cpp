@@ -3,6 +3,7 @@
 #include "../ResTranslator.h"
 
 using namespace DirectX;
+using namespace DirectX::SimpleMath;
 
 UIRenderer::UIRenderer(
 	Renderer& renderer, Resources& resources)
@@ -147,7 +148,8 @@ void UIRenderer::setFontSpaceWidth(int spaceWidth)
 
 void UIRenderer::renderTexture(
 	const std::string& textureName, 
-	int x, int y, int uiWidth, int uiHeight)
+	int x, int y, int uiWidth, int uiHeight,
+	const DirectX::SimpleMath::Vector3& color)
 {
 	Texture& texture = this->resources.getTexture(textureName.c_str());
 	unsigned int textureWidth = texture.getWidth();
@@ -156,14 +158,21 @@ void UIRenderer::renderTexture(
 	this->renderTexture(
 		texture.getSRV(),
 		x, y, uiWidth, uiHeight,
-		textureWidth, textureHeight
+		textureWidth, textureHeight,
+		color
 	);
 }
 
 void UIRenderer::renderTexture(
 	SRV& srv, int x, int y, int uiWidth, int uiHeight,
-	int srvWidth, int srvHeight)
+	int srvWidth, int srvHeight,
+	const DirectX::SimpleMath::Vector3& color)
 {
+	// Set color
+	this->uiOrientationBufferStruct.color = Vector4(
+		color.x, color.y, color.z, 1.0f
+	);
+
 	// Set texture SRV
 	this->uiRenderComputeShader.setSRV(0, srv);
 
@@ -192,8 +201,14 @@ void UIRenderer::renderTexture(
 
 void UIRenderer::renderString(
 	const std::string& text, 
-	int x, int y, int characterWidth, int characterHeight)
+	int x, int y, int characterWidth, int characterHeight,
+	const DirectX::SimpleMath::Vector3& color)
 {
+	// Set color
+	this->textOrientationBufferStruct.color = Vector4(
+		color.x, color.y, color.z, 1.0f
+	);
+
 	// Get entire text width
 	float textWidth = 0;
 	for (int i = 0; i < text.length(); ++i)
