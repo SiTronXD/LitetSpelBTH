@@ -17,17 +17,14 @@ SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 }
 
 SettingsScene::~SettingsScene()
-{
-	
+{	
 }
 
 void SettingsScene::init()
 {
 	// Load Textures
-	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "healthBar.png");
 	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
-	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "healthBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBoxTwo.png", "healthBoxTwo.png");
 
 	// Set Camera
@@ -120,7 +117,8 @@ void SettingsScene::update()
 	{
 		this->getSettings().getSettings().resolutionX = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2));
 		this->getSettings().getSettings().resolutionY = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2 + 1));
-		Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) + "x" + std::to_string(this->getSettings().getSettings().resolutionY));
+		Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
+			"x" + std::to_string(this->getSettings().getSettings().resolutionY));
 	}
 	else if (sensSlider.isClicked())
 	{
