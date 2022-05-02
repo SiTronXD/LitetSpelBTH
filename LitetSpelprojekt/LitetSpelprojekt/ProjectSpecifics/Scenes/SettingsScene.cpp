@@ -55,10 +55,15 @@ void SettingsScene::init()
 			if (stoi(this->resolutions.at(k)) == this->getSettings().getSettings().resolutionY)
 			{
 				resIndex = i;
+				
 				break;
 			}
 		}
 	}
+	
+	Log::write("ResIndex: " + std::to_string(resIndex));
+	Log::write("ResolutionsSize: " + std::to_string(this->resolutions.size()));
+	
 
 	// Default values for sliders
 	int sliderHeight = 60;
@@ -74,9 +79,9 @@ void SettingsScene::init()
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
 	resSlider.setMinVal(0);
-	resSlider.setCurVal(resIndex);
-	resSlider.setMaxVal(this->resolutions.size()/2-1);
-	resSlider.setPerFill(0.5f);
+	resSlider.setCurVal(resIndex / 2.0f);
+	resSlider.setMaxVal(this->resolutions.size() / 2.0f);
+	resSlider.setPerFill(resIndex / (float)this->resolutions.size());
 
 	// Sensitivity Slider
 	sensSlider.setPos(Vector2(0, 70));
@@ -152,6 +157,7 @@ void SettingsScene::renderUI()
 	volSlider.render("healthBar.png");
 	exitButton.render("sliderBackground.png");
 
+	// Resolution Slider
 	this->getUIRenderer().renderString(
 		"resolution:",
 		-10,
@@ -160,6 +166,77 @@ void SettingsScene::renderUI()
 		30
 	);
 
+	// Resolution %
+	int resPer = resSlider.getPerFel() * 100;
+	this->getUIRenderer().renderString(
+		std::to_string(this->getSettings().getSettings().resolutionX) + "x" + std::to_string(this->getSettings().getSettings().resolutionY),
+		300,
+		210,
+		30,
+		30
+	);
+
+	// Sensitivity Slider
+	this->getUIRenderer().renderString(
+		"sensitivity:",
+		-10,
+		120,
+		30,
+		30
+	);
+
+	// Sensitivity %
+	int sensPer = sensSlider.getPerFel() * 100;
+	this->getUIRenderer().renderString(
+		std::to_string(sensPer) + "%",
+		220,
+		70,
+		30,
+		30
+	);
+
+
+	// Brightness Slider
+	this->getUIRenderer().renderString(
+		"brightness:",
+		-10,
+		-20,
+		30,
+		30
+	);
+
+	// Bright %
+	int brightPer = brightSlider.getPerFel() * 100;
+	this->getUIRenderer().renderString(
+		std::to_string(brightPer) + "%",
+		220,
+		-70,
+		30,
+		30
+	);
+
+
+	// Volume Slider
+	this->getUIRenderer().renderString(
+		"volume:",
+		-10,
+		-160,
+		30,
+		30
+	);
+
+	// Volume %
+	int volPer = volSlider.getPerFel() * 100;
+	this->getUIRenderer().renderString(
+		std::to_string(volPer) + "%",
+		220,
+		-210,
+		30,
+		30
+	);
+
+
+	// Setttings Header
 	this->getUIRenderer().renderString(
 		"settings",
 		-10,
@@ -168,6 +245,7 @@ void SettingsScene::renderUI()
 		50
 	);
 
+	// Main Menu Text
 	this->getUIRenderer().renderString(
 		"main menu",
 		-10,

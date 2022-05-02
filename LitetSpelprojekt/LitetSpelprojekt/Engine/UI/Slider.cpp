@@ -44,7 +44,9 @@ bool Slider::isClicked()
 			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
 			{
 				this->percentFilled = ((this->width / 2.0 + internal.x) / this->width);
-				this->currentValue = this->percentFilled * (maxValue - minValue);
+				Log::write("PerFil: " + std::to_string(this->percentFilled));
+				this->currentValue = this->percentFilled * (this->maxValue - this->minValue);
+				Log::write("CurVal: " + std::to_string(this->currentValue));
 				sliderClicked = true;
 			}
 		}
