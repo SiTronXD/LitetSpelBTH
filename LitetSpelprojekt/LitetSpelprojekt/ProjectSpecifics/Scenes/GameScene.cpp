@@ -159,6 +159,11 @@ void GameScene::init()
 		"Tetrahedron"
 	);
 
+	this->getResources().addMesh(
+		MeshData(DefaultMesh::SPHERE),
+		"SphereMesh"
+	);
+
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
 	levelLoader.load("Resources/Levels/testLevel.fbx");
@@ -172,10 +177,9 @@ void GameScene::init()
 	this->setActiveCamera(cam.addComponent<Camera>());
 
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
-	Player* play = cam.addComponent<Player>();
-	play->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
+	Player* player = cam.addComponent<Player>();
+	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
-	cam.addComponent<Player>();
 	Rigidbody* rb = cam.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addCapsuleCollider(1.0f, 2.0f);
@@ -185,6 +189,20 @@ void GameScene::init()
 		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
 
+	GameObject& hookObject = this->addGameObject("HookPoint");
+	HookPoint* hook = hookObject.addComponent<HookPoint>();
+	hookObject.getComponent<Transform>()->setScaling(0.25f, 0.25f, 0.25f);
+	rb = hookObject.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
+	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
+	rb->setMaterial(0.2f, 0.0f);
+	rb->setType(rp3d::BodyType::KINEMATIC);
+	//rb->setTrigger(true);
+	player->setHookPoint(hook);
+	MeshComp* mc = hookObject.addComponent<MeshComp>();
+	mc->setMesh("SphereMesh", "testMaterial");
+
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
 	model.getComponent<Transform>()->setPosition(10.0f, -7.0f, 10.0f);
@@ -192,7 +210,7 @@ void GameScene::init()
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addSphereCollider(2.0f);
 	rb->setType(rp3d::BodyType::STATIC);
-	MeshComp* mc = model.addComponent<MeshComp>();
+	mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 
 	// Level game object

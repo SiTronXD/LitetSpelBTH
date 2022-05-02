@@ -7,5 +7,6 @@
 #include "Rigidbody.h"
 #include "Script.h"
 #include "Transform.h"
+#include "HookPoint.h"
 
 enum class ObjectTag { UNTAGGED, GROUND, PLAYER, ENEMY, KEY, PORTAL, COUNT };

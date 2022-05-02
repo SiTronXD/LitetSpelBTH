@@ -90,8 +90,10 @@ public:
 
 	static bool isKeyDown(Keys keyCode);
 	static bool isKeyJustPressed(Keys keyCode);
+	static bool isKeyReleased(Keys keyCode);
 	static bool isMouseButtonDown(Mouse mouseCode);
 	static bool isMouseButtonJustPressed(Mouse mouseCode);
+	static bool isMouseButtonReleased(Mouse mouseCode);
 	static bool shouldLockCursor();
 	static bool isCursorVisible();
 	static bool cursorVisibilitySwitched();
