@@ -149,7 +149,7 @@ void SettingsScene::renderUI()
 	sensSlider.render("healthBar.png");
 	brightSlider.render("healthBar.png");
 	volSlider.render("healthBar.png");
-	exitButton.render("sliderBackground.png");
+	exitButton.render("NeatBox.png");
 
 	// Resolution Slider
 	this->getUIRenderer().renderString(

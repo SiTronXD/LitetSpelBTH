@@ -260,15 +260,15 @@ void GameScene::init()
 	}
 
 	//Buttons
-	this->resumeButton.setPos(Vector2(0, 300));
+	this->resumeButton.setPos(Vector2(0, 170));
 	this->resumeButton.setWidth(354);
 	this->resumeButton.setHeight(159);
 
-	this->mainMenuButton.setPos(Vector2(0, 150));
+	this->mainMenuButton.setPos(Vector2(0, 0));
 	this->mainMenuButton.setWidth(354);
 	this->mainMenuButton.setHeight(159);
 
-	this->exitButton.setPos(Vector2(0, 0));
+	this->exitButton.setPos(Vector2(0, -170));
 	this->exitButton.setWidth(354);
 	this->exitButton.setHeight(159);
 
@@ -416,13 +416,38 @@ void GameScene::renderUI()
 	}
 	else
 	{
+		/*
 		this->getUIRenderer().renderTexture(
 			"PauseMenu.png",
 			0, 50, 600, 800
 		);
-
+		*/
 		this->resumeButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"resume",
+			-10,
+			170,
+			30,
+			30
+		);
+
 		this->mainMenuButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"main menu",
+			-10,
+			0,
+			30,
+			30
+		);
+
+		
 		this->exitButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"exit",
+			-10,
+			-170,
+			30,
+			30
+		);
 	}
 }
