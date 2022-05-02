@@ -61,10 +61,6 @@ void SettingsScene::init()
 		}
 	}
 	
-	Log::write("ResIndex: " + std::to_string(resIndex));
-	Log::write("ResolutionsSize: " + std::to_string(this->resolutions.size()));
-	
-
 	// Default values for sliders
 	int sliderHeight = 60;
 	int sliderWidth = 354;
@@ -167,7 +163,7 @@ void SettingsScene::renderUI()
 	);
 
 	// Resolution %
-	int resPer = resSlider.getPerFel() * 100;
+	int resPer = resSlider.getPerFill() * 100;
 	this->getUIRenderer().renderString(
 		std::to_string(this->getSettings().getSettings().resolutionX) + "x" + std::to_string(this->getSettings().getSettings().resolutionY),
 		300,
@@ -186,7 +182,7 @@ void SettingsScene::renderUI()
 	);
 
 	// Sensitivity %
-	int sensPer = sensSlider.getPerFel() * 100;
+	int sensPer = sensSlider.getPerFill() * 100;
 	this->getUIRenderer().renderString(
 		std::to_string(sensPer) + "%",
 		220,
@@ -206,7 +202,7 @@ void SettingsScene::renderUI()
 	);
 
 	// Bright %
-	int brightPer = brightSlider.getPerFel() * 100;
+	int brightPer = brightSlider.getPerFill() * 100;
 	this->getUIRenderer().renderString(
 		std::to_string(brightPer) + "%",
 		220,
@@ -226,7 +222,7 @@ void SettingsScene::renderUI()
 	);
 
 	// Volume %
-	int volPer = volSlider.getPerFel() * 100;
+	int volPer = volSlider.getPerFill() * 100;
 	this->getUIRenderer().renderString(
 		std::to_string(volPer) + "%",
 		220,
