@@ -106,6 +106,7 @@ void GameScene::init()
 	//Object Textures
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
 	this->getResources().addTexture("Resources/Textures/RopeTexture.png", "RopeTexture.png");
+	this->getResources().addTexture("Resources/Textures/StingrayPBS1SG_Base_Color_1001.png", "GrapplingHookTexture");
 
 	//Gui textures
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
@@ -126,15 +127,19 @@ void GameScene::init()
 	this->getResources().addMaterial("me.png", "testMaterial");
 	this->getResources().addMaterial("me.png", "portalMaterial");
 	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
+	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
 
 	// Default meshes for debugging
 	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
 	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::PLANE), "PlaneMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::TETRAHEDRON), "Tetrahedron");
 
 	//Add cubemap
 	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
 
+	// Models
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
 	testMeshData.transformMesh(
 		Matrix::CreateScale(0.5f, 1.0f, 1.0f) * Matrix::CreateRotationZ(3.14f * 0.3f)
@@ -143,14 +148,10 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh" 
 	);
+	MeshData grapplingHookData = MeshLoader::loadModel("Resources/Models/MeyerWeaponOBJ.obj");
 	this->getResources().addMesh(
-		MeshData(DefaultMesh::PLANE),
-		"PlaneMesh"
-	);
-
-	this->getResources().addMesh(
-		MeshData(DefaultMesh::TETRAHEDRON),
-		"Tetrahedron"
+		std::move(grapplingHookData),
+		"GrapplingHookMesh"
 	);
 
 	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
@@ -190,9 +191,8 @@ void GameScene::init()
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
 	grapplingHook.getComponent<Transform>()->setPosition(Vector3(0,-8,0));
-	grapplingHook.getComponent<Transform>()->setScaling(Vector3(1, 1, 2));
 	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
-	amc->setMesh("RealCubeMesh", "testMaterial");
+	amc->setMesh("GrapplingHookMesh", "GrapplingHookMaterial");
 	GrapplingHook* grapplingHookComp = 
 		grapplingHook.addComponent<GrapplingHook>();
 	grapplingHookComp->setPlayerTransform(cam.getComponent<Transform>());

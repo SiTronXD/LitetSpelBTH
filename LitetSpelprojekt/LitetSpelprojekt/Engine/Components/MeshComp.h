@@ -1,10 +1,7 @@
 #pragma once
 
+#include <string>
 #include "Component.h"
-#include "../Graphics/Mesh.h"
-#include "Componentpch.h"
-
-class Renderer;
 
 class MeshComp : public Component
 {

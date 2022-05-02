@@ -1,23 +1,10 @@
 #pragma once
 
-#include <string>
-#include "Component.h"
-#include "Componentpch.h"
+#include "MeshComp.h"
 
-class AbsoluteMeshComp : public Component
+class AbsoluteMeshComp : public MeshComp
 {
-private:
-	std::string meshName;
-	std::string materialName;
-
 public:
 	AbsoluteMeshComp(GameObject& gameObject);
 	virtual ~AbsoluteMeshComp();
-
-	void setMesh(
-		const std::string& meshName,
-		const std::string& materialName);
-
-	inline const std::string& getMeshName() { return this->meshName; }
-	inline const std::string& getMaterialName() { return this->materialName; }
 };

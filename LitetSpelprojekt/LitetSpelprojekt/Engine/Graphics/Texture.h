@@ -27,7 +27,7 @@ private:
 	int numChannels;
 
 	bool createSampler(
-		const D3D11_FILTER& filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR
+		const D3D11_FILTER& filter = D3D11_FILTER_MIN_MAG_MIP_POINT
 	);
 
 public:
