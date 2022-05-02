@@ -20,9 +20,7 @@ MenuScene::~MenuScene()
 
 void MenuScene::init()
 {
-	this->getResources().addTexture("Resources/Textures/playButton.png", "playButton.png");
-	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
-	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
+	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
 
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =
@@ -51,7 +49,7 @@ void MenuScene::init()
 	this->setActiveCamera(cam.addComponent<Camera>());
 	
 	// Define Play Button's size and position
-	playButton.setPos(Vector2(0, 161));
+	playButton.setPos(Vector2(0, 170));
 	playButton.setWidth(354);
 	playButton.setHeight(159);
 
@@ -61,7 +59,7 @@ void MenuScene::init()
 	settingsButton.setHeight(159);
 
 	// Define Exit Button's size and position
-	exitButton.setPos(Vector2(0, -161));
+	exitButton.setPos(Vector2(0, -170));
 	exitButton.setWidth(354);
 	exitButton.setHeight(159);
 }
@@ -89,9 +87,9 @@ void MenuScene::update()
 void MenuScene::renderUI()
 {
 	// Send the buttons to the UIRenderer to display
-	playButton.render("playButton.png");
-	settingsButton.render("settingsButton.png");
-	exitButton.render("exitButton.png");
+	playButton.render("sliderBackground.png");
+	settingsButton.render("sliderBackground.png");
+	exitButton.render("sliderBackground.png");
 	
 	this->getUIRenderer().renderString(
 		"grapple mayhem", 
@@ -100,4 +98,29 @@ void MenuScene::renderUI()
 		50, 
 		50
 	);
+
+	this->getUIRenderer().renderString(
+		"play",
+		-10,
+		170,
+		50,
+		50
+	);
+
+	this->getUIRenderer().renderString(
+		"settings",
+		-10,
+		0,
+		50,
+		50
+	);
+
+	this->getUIRenderer().renderString(
+		"exit",
+		-10,
+		-170,
+		50,
+		50
+	);
+
 }
