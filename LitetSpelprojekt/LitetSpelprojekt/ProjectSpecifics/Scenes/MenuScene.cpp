@@ -21,7 +21,7 @@ MenuScene::~MenuScene()
 void MenuScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
-
+	this->getResources().addTexture("Resources/Textures/MenuGui/NeatBox.png", "NeatBox.png");
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =
 	{
@@ -87,9 +87,9 @@ void MenuScene::update()
 void MenuScene::renderUI()
 {
 	// Send the buttons to the UIRenderer to display
-	playButton.render("sliderBackground.png");
-	settingsButton.render("sliderBackground.png");
-	exitButton.render("sliderBackground.png");
+	playButton.render("NeatBox.png");
+	settingsButton.render("NeatBox.png");
+	exitButton.render("NeatBox.png");
 	
 	this->getUIRenderer().renderString(
 		"grapple mayhem", 
@@ -103,24 +103,24 @@ void MenuScene::renderUI()
 		"play",
 		-10,
 		170,
-		50,
-		50
+		30,
+		30
 	);
 
 	this->getUIRenderer().renderString(
 		"settings",
 		-10,
 		0,
-		50,
-		50
+		30,
+		30
 	);
 
 	this->getUIRenderer().renderString(
 		"exit",
 		-10,
 		-170,
-		50,
-		50
+		30,
+		30
 	);
 
 }
