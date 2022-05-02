@@ -32,7 +32,6 @@ Rigidbody::Rigidbody(GameObject& object) :
 
 Rigidbody::~Rigidbody()
 {
-	this->physEngine->getWorld()->destroyRigidBody(this->rb);
 }
 
 void Rigidbody::setPhysics(PhysicsEngine& physicsEngine)

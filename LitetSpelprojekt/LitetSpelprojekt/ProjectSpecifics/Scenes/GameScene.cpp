@@ -331,8 +331,8 @@ void GameScene::update()
 			this->setPause(false);
 		}
 
-		/*if (this->mainMenuButton.isClicked())
-			this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));*/
+		if (this->mainMenuButton.isClicked())
+			this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
 				
 		if (this->exitButton.isClicked())
 			this->getWindow().quit();
