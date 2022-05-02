@@ -185,6 +185,7 @@
     <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHookRope.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHook.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
@@ -250,6 +251,7 @@
     <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHookRope.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHook.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />

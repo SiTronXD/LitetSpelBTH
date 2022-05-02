@@ -1,16 +1,24 @@
 #include "GrapplingHook.h"
 #include "../../Engine/Dev/Log.h"
+#include "../../Engine/Time.h"
 #include "../../Engine/SMath.h"
 #include "../../Engine/GameObject.h"
 
 using namespace DirectX::SimpleMath;
+
+void GrapplingHook::setToArmPos(Vector3& result)
+{
+	result = this->playerTransform->getPosition() + 
+		this->playerTransform->forward() * 2.0f + 
+		this->playerTransform->right() * 2.1f +
+		this->playerTransform->up() * -1.5f;
+}
 
 GrapplingHook::GrapplingHook(GameObject& gameObject)
 	: Script(gameObject),
 	transform(nullptr),
 	playerTransform(nullptr)
 {
-	this->transform = gameObject.getComponent<Transform>();
 }
 
 GrapplingHook::~GrapplingHook()
@@ -20,33 +28,55 @@ GrapplingHook::~GrapplingHook()
 void GrapplingHook::setPlayerTransform(Transform* playerTransform)
 {
 	this->playerTransform = playerTransform;
+	this->setToArmPos(this->lastPos);
+}
+
+void GrapplingHook::setToShootPos(DirectX::SimpleMath::Vector3& result)
+{
+	result = this->transform->getPosition();
+	result += this->playerTransform->forward() * 0.7f;
 }
 
 void GrapplingHook::init()
 {
-
+	this->transform = Script::getObject().getComponent<Transform>();
 }
 
 void GrapplingHook::update()
 {
 	// Update position
-	Vector3 newPos = this->playerTransform->getPosition();
-	newPos += this->playerTransform->forward() * 3.0f;
+	Vector3 nextPos;
+	this->setToArmPos(nextPos);
+	
+	// Max distance
+	if (Vector3::DistanceSquared(this->lastPos, nextPos) > MAX_DIST * MAX_DIST)
+	{
+		Vector3 delta = nextPos - this->lastPos;
+		delta.Normalize();
+		this->lastPos = nextPos - delta * MAX_DIST;
+	}
+
+	// Sway
+	float swayT = SMath::clamp(
+		Time::getDT() * this->SWAY_FACTOR,
+		0.0f,
+		1.0f
+	);
+	Vector3 newPos = Vector3::Lerp(
+		this->lastPos, 
+		nextPos, 
+		swayT
+	);
 	this->transform->setPosition(newPos);
 
 	// Update rotation
-	Vector4 rotation = Quaternion::LookRotation(
-		this->playerTransform->right(),
-		Vector3(0, 1, 0)
-	);
-
-	Log::write(std::to_string(rotation.x) + " " +
-		std::to_string(rotation.y) + " " +
-		std::to_string(rotation.z) + " ");
-
+	Vector3 rotation = this->playerTransform->getRotation();
 	this->transform->setRotation(
 		rotation
 	);
+
+	// Update last pos
+	this->lastPos = newPos;
 }
 
 void GrapplingHook::onCollisionEnter(GameObject& other)

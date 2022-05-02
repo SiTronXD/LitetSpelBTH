@@ -26,7 +26,8 @@ enum class DefaultMesh
 	TETRAHEDRON,
 	CUBE,
 	PLANE,
-	SPHERE
+	SPHERE,
+	LOW_POLY_CYLINDER
 };
 
 class MeshData
@@ -41,6 +42,7 @@ private:
 	void createCube();
 	void createPlane(int resX = 10, int resY =  10);
 	void createSphere(int resX = 10, int resY = 10);
+	void createLowPolyCylinder();
 
 	void transformVector(
 		const DirectX::SimpleMath::Matrix& transform, 

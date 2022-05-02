@@ -3,12 +3,16 @@
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "GameOverScene.h"
+#include "../Scripts/Player.h"
+#include "../Scripts/GrapplingHook.h"
+#include "../Scripts/GrapplingHookRope.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Graphics/UIRenderer.h"
 #include "../../Engine/Time.h"
+#include "../../Engine/SMath.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -147,6 +151,13 @@ void GameScene::init()
 		"Tetrahedron"
 	);
 
+	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
+	ropeMesh.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	this->getResources().addMesh(
+		std::move(ropeMesh),
+		"RopeMesh"
+	);
+
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
 	levelLoader.load("Resources/Levels/testLevel.fbx");
@@ -168,7 +179,13 @@ void GameScene::init()
 		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
 
-	// Player weapon/rope
+	// Origin
+	GameObject& origin = this->addGameObject("Origin");
+	origin.getComponent<Transform>()->setScaling(Vector3(3,3,3));
+	MeshComp* originMC = origin.addComponent<MeshComp>();
+	originMC->setMesh("RealSphereMesh", "testMaterial");
+
+	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
 	grapplingHook.getComponent<Transform>()->setPosition(Vector3(0,-8,0));
 	grapplingHook.getComponent<Transform>()->setScaling(Vector3(1, 1, 2));
@@ -178,10 +195,14 @@ void GameScene::init()
 		grapplingHook.addComponent<GrapplingHook>();
 	grapplingHookComp->setPlayerTransform(cam.getComponent<Transform>());
 
+	// Grappling hook rope
 	GameObject& rope = this->addGameObject("Rope");
 	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
 	mc = rope.addComponent<MeshComp>();
-	mc->setMesh("RealCubeMesh", "testMaterial");
+	mc->setMesh("RopeMesh", "testMaterial");
+	GrapplingHookRope* grapplingHookRopeComp =
+		rope.addComponent<GrapplingHookRope>();
+	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
 
 
 	GameObject& model = this->addGameObject("Suzanne1");

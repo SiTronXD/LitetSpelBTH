@@ -17,6 +17,8 @@ private:
 	DirectX::SimpleMath::Vector3 upVec;
 	DirectX::SimpleMath::Vector3 forwardVec;
 	
+	bool useVectorRotation;
+
 	void updateWorldMatrix();
 	void updateDirectionalVectors();
 public:
@@ -37,6 +39,10 @@ public:
 
 	//Rotation
 	void setRotation(const DirectX::SimpleMath::Vector3& rot);
+	void setRotation(
+		const DirectX::SimpleMath::Vector3& newForward,
+		const DirectX::SimpleMath::Vector3& worldUp
+	);
 	void setRotation(const DirectX::SimpleMath::Vector4& quat);
 	void setRotation(float x, float y, float z);
 
