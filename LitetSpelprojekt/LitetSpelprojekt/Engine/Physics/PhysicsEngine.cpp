@@ -18,9 +18,11 @@ void PhysicsEngine::init(Scene* scene)
 {
 	this->scene = scene;
 
+	/*
 	this->physCom.destroyPhysicsWorld(this->world);
 	this->world = this->physCom.createPhysicsWorld();
 	this->world->setEventListener(&this->listener);
+	*/
 }
 
 rp3d::PhysicsCommon& PhysicsEngine::getCommon()

@@ -114,7 +114,7 @@ void Player::update()
 	if (this->keyPickup == true)
 		this->keyPickup = false;
 
-	//Rest portal
+	//Reset portal
 	if (this->portal == true)
 		this->portal = false;
 
@@ -132,6 +132,16 @@ void Player::onCollisionEnter(GameObject& other)
 	//std::cout << "Player started hitting: " << other.getName() << std::endl;
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
+
+	// Remove key mesh and rigidbody if collided by player
+	if (other.getTag() == ObjectTag::KEY)
+	{
+		other.removeComponent<MeshComp>();
+		other.removeComponent<Rigidbody>();
+		this->keyPieces++;
+		this->keyPickup = true;
+	}
+
 }
 
 void Player::onCollisionStay(GameObject& other)
@@ -141,25 +151,16 @@ void Player::onCollisionStay(GameObject& other)
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
 	
-	if (other.getTag() == ObjectTag::KEY)
-	{
-		other.removeComponent<MeshComp>();
-		//other.removeComponent<Collider>();
-		//other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
-		this->keyPieces++;
-		this->keyPickup = true;
-	}
-
 	//Test
 	if (other.getTag() == ObjectTag::ENEMY && healthCooldown == 0)
 	{
 		other.removeComponent<MeshComp>();
-		other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
+		other.removeComponent<Rigidbody>();
 		this->health--;	
 		this->healthCooldown = 40;
 	}
 
-	//Poral
+	//Portal
 	if (other.getTag() == ObjectTag::PORTAL)
 		this->portal = true;
 	
