@@ -23,7 +23,7 @@ SamplerState depthSampler : register(s1);
 Texture2D diffuseTexture : register(t0);
 Texture2D sunShadowMap : register(t1);
 
-#define SHADOW_BIAS 0.01f
+#define SHADOW_BIAS 0.012f
 #define SHADOW_MAP_SIZE 512.0f
 
 float4 main(Input input) : SV_TARGET

@@ -47,14 +47,6 @@ void GrapplingHook::update()
 	// Update position
 	Vector3 nextPos;
 	this->setToArmPos(nextPos);
-	
-	// Max distance
-	if (Vector3::DistanceSquared(this->lastPos, nextPos) > MAX_DIST * MAX_DIST)
-	{
-		Vector3 delta = nextPos - this->lastPos;
-		delta.Normalize();
-		this->lastPos = nextPos - delta * MAX_DIST;
-	}
 
 	// Sway
 	float swayT = SMath::clamp(
@@ -62,6 +54,17 @@ void GrapplingHook::update()
 		0.0f,
 		1.0f
 	);
+
+	// Max distance
+	if (Vector3::DistanceSquared(this->lastPos, nextPos) > MAX_DIST * MAX_DIST)
+	{
+		Vector3 delta = nextPos - this->lastPos;
+		delta.Normalize();
+		this->lastPos = nextPos - delta * MAX_DIST;
+		swayT = 0.0f;
+	}
+
+	swayT = std::max(swayT, 0.02f);
 	Vector3 newPos = Vector3::Lerp(
 		this->lastPos, 
 		nextPos, 

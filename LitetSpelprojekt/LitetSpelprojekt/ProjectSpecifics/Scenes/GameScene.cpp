@@ -105,7 +105,8 @@ void GameScene::init()
 	
 	//Object Textures
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
-	
+	this->getResources().addTexture("Resources/Textures/RopeTexture.png", "RopeTexture.png");
+
 	//Gui textures
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "HealthBox.png");
@@ -124,6 +125,7 @@ void GameScene::init()
 	//Materials
 	this->getResources().addMaterial("me.png", "testMaterial");
 	this->getResources().addMaterial("me.png", "portalMaterial");
+	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
 
 	// Default meshes for debugging
 	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
@@ -199,7 +201,7 @@ void GameScene::init()
 	GameObject& rope = this->addGameObject("Rope");
 	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
 	mc = rope.addComponent<MeshComp>();
-	mc->setMesh("RopeMesh", "testMaterial");
+	mc->setMesh("RopeMesh", "ropeMaterial");
 	GrapplingHookRope* grapplingHookRopeComp =
 		rope.addComponent<GrapplingHookRope>();
 	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
