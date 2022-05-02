@@ -190,7 +190,7 @@ void Renderer::render(Scene& scene)
 	{
 		lightComponents[i]->render(scene);
 	}
-	Light* firstLight = lightComponents.size() > 0?
+	Light* firstLight = lightComponents.size() > 0 ?
 		lightComponents[0] : nullptr;
 
 	// ----- Render meshes to back buffer -----
@@ -264,13 +264,13 @@ void Renderer::render(Scene& scene)
 			numDrawCalls++;
 #endif
 		}
-
-		// Remove shadow map from slot 1
-		ID3D11ShaderResourceView* nullSRV[]{ nullptr };
-		immediateContext->PSSetShaderResources(
-			1, 1, nullSRV
-		);
 	}
+
+	// Remove shadow map from slot 1
+	ID3D11ShaderResourceView* nullSRV[]{ nullptr };
+	immediateContext->PSSetShaderResources(
+		1, 1, nullSRV
+	);
 
 	//Skybox
 	immediateContext->IASetInputLayout(this->skybox.getVertexShader().getInputLayout());
