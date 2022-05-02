@@ -9,6 +9,7 @@ class Time
 {
 private:
 	friend class Engine;
+	friend class SceneHandler;
 
 	static float deltaTime;
 	static float timeSinceStart;

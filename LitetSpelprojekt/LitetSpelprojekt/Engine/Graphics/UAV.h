@@ -18,6 +18,8 @@ public:
 	UAV(Renderer& renderer, const std::string& debugName);
 	virtual ~UAV();
 
+	bool createBufferUAV(ID3D11Resource* buffer, const DXGI_FORMAT& format, const unsigned int& numElements);
+
 	bool createTextureUAV(
 		ID3D11Resource* buffer, const DXGI_FORMAT& format
 	);

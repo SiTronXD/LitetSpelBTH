@@ -15,7 +15,19 @@ private:
 	struct Particle
 	{
 		DirectX::XMFLOAT4X4 worldMatrix;
+		DirectX::XMFLOAT3 velocity;
+		float lifetime;
+		float scaleFactor;
+		DirectX::XMFLOAT3 padding;
 	}particleBufferStruct{};
+
+	struct CameraStruct
+	{
+		DirectX::XMFLOAT3 cameraPosition;
+		float deltaTime;
+		DirectX::XMFLOAT3 startPosition;
+		int start;
+	}cameraStruct{};
 
 	Mesh* plane;
 	float timeTest;
@@ -27,7 +39,7 @@ private:
 	StructuredBuffer structBuffer;
 	ComputeShader particleComputeShader;
 
-	ConstantBuffer testBuffer;
+	ConstantBuffer cPosCbuffer;
 
 	VertexShader particleVS;
 	PixelShader particlePS;
@@ -36,14 +48,20 @@ private:
 
 	int numberOfParticles;
 
+	bool active;
 public:
 	ParticleSystem(Renderer&  renderer);
 	~ParticleSystem();
 
 	void init();
 
-	void update();
-	void render(DirectX::SimpleMath::Matrix& vp, const DirectX::SimpleMath::Vector3& cameraRot);
+	void startParticleSystem(float x, float y, float z);
 
+	void update(const DirectX::XMFLOAT3& cameraPosition);
+	void render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFLOAT3& cameraPosition);
+
+private:
+	void initParticles();
+	void killParticles();
 };
 

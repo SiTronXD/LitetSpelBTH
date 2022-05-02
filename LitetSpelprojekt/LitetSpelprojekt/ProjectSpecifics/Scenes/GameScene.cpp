@@ -257,8 +257,6 @@ void GameScene::init()
 	this->exitButton.setPos(Vector2(0, 0));
 	this->exitButton.setWidth(354);
 	this->exitButton.setHeight(159);
-
-	this->getECS().init();
 }
 
 #include <iostream>

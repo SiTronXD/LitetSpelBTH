@@ -13,6 +13,32 @@ UAV::~UAV()
 	S_RELEASE(this->bufferUAV);
 }
 
+bool UAV::createBufferUAV(ID3D11Resource* buffer, const DXGI_FORMAT& format, const unsigned int& numElements)
+{
+	// Release old UAV
+	S_RELEASE(this->bufferUAV);
+
+	// UAV description
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+	uavDesc.Format = format;
+	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+	uavDesc.Buffer.FirstElement = 0;
+	uavDesc.Buffer.NumElements = numElements;
+
+	// Create UAV
+	HRESULT result = this->renderer.getDevice()->CreateUnorderedAccessView(
+		buffer, &uavDesc, &this->bufferUAV
+	);
+	if (FAILED(result))
+	{
+		Log::resultFailed("Failed creating buffer UAV: " + this->debugName, result);
+
+		return false;
+	}
+
+	return true;
+}
+
 bool UAV::createTextureUAV(ID3D11Resource* buffer, const DXGI_FORMAT& format)
 {
 	// Release old UAV

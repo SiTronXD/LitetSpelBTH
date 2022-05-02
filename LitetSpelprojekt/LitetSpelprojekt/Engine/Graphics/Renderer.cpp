@@ -307,7 +307,7 @@ void Renderer::render(Scene& scene)
 	);
 
 	//Particles
-	this->particles.render(vp, scene.getActiveCamera()->getTransform()->getRotation());
+	this->particles.render(vp, scene.getActiveCamera()->getTransform()->getPosition());
 	
 	// Unbind render target
 	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
