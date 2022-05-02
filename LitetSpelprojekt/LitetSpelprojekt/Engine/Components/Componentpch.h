@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "Collider.h"
 #include "Light.h"
+#include "AbsoluteMeshComp.h"
 #include "MeshComp.h"
 #include "ParticleEmitter.h"
 #include "Rigidbody.h"

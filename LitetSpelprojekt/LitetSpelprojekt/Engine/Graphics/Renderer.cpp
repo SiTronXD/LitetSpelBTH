@@ -176,7 +176,8 @@ void Renderer::render(Scene& scene)
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
 	immediateContext->ClearDepthStencilView(this->dsView.getPtr(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
-	// ----- Render shadow maps -----
+	// --------------------- Render shadow maps ---------------------
+
 	std::vector<Light*> lightComponents = scene.getActiveComponents<Light>();
 	for (unsigned int i = 0; i < lightComponents.size(); ++i)
 	{
@@ -184,7 +185,8 @@ void Renderer::render(Scene& scene)
 	}
 	Light* firstLight = lightComponents[0];
 
-	// ----- Render meshes to back buffer -----
+	// --------------------- Render meshes ---------------------
+
 	immediateContext->RSSetViewports(1, &this->viewport);
 	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
 	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
@@ -259,14 +261,9 @@ void Renderer::render(Scene& scene)
 		}
 	}
 
-	// Remove shadow map from slot 1
-	ID3D11ShaderResourceView* nullSRV[]{ nullptr };
-	immediateContext->PSSetShaderResources(
-		1, 1, nullSRV
-	);
+	// --------------------- Render skybox ---------------------
 
 	//Skybox
-	immediateContext->IASetInputLayout(this->skybox.getVertexShader().getInputLayout());
 	immediateContext->VSSetConstantBuffers(0, 1, &this->skybox.getConstantBuffer().getBuffer());
 
 	// Update mvp Matrix
@@ -301,14 +298,72 @@ void Renderer::render(Scene& scene)
 	immediateContext->DrawIndexed(
 		this->skybox.getMesh().getIndexBuffer().getIndexCount(), 0, 0
 	);
+
+	// --------------------- Render absolute meshes ---------------------
 	
+	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
+	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
+	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
+
+	immediateContext->ClearDepthStencilView(this->dsView.getPtr(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+
+	// Render all absolute meshes
+	std::vector<AbsoluteMeshComp*> absMeshComponents =
+		scene.getActiveComponents<AbsoluteMeshComp>();
+	for (unsigned int i = 0; i < absMeshComponents.size(); ++i)
+	{
+		Mesh& mesh = this->resources.getMesh(absMeshComponents[i]->getMeshName().c_str());
+
+		// Set mvp Matrix
+		Matrix m = absMeshComponents[i]->getTransform()->getWorldMatrix();
+		this->cameraBufferStruct.modelMat = m.Transpose();
+		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
+
+		// Set texture
+		for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)
+		{
+			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
+
+			Material& material = this->resources.getMaterial(
+				strcmp(currentSubmesh.materialName, "") ?
+				currentSubmesh.materialName :
+				meshComponents[i]->getMaterialName().c_str()
+			);
+			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName().c_str());
+			immediateContext->PSSetSamplers(
+				0, 1, &texture.getSampler()
+			);
+			immediateContext->PSSetShaderResources(
+				0, 1, &texture.getSRV().getPtr()
+			);
+
+			// Vertex/index buffer
+			immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
+			immediateContext->IASetVertexBuffers(
+				0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
+			immediateContext->IASetIndexBuffer(
+				mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
+			);
+
+			immediateContext->DrawIndexed(
+				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
+			);
+
+#ifdef _DEBUG
+			numDrawCalls++;
+#endif
+		}
+	}
+
+	// Remove shadow map from slot 1
+	ID3D11ShaderResourceView* nullSRV[]{ nullptr };
+	immediateContext->PSSetShaderResources(
+		1, 1, nullSRV
+	);
+
 	// Unbind render target
 	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
 	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);
-
-#ifdef _DEBUG
-	//Log::write("Num draw calls: " + std::to_string(numDrawCalls));
-#endif
 }
 
 void Renderer::presentSC()

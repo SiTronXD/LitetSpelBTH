@@ -69,6 +69,7 @@
     <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHook.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHookRope.cpp" />
+    <ClCompile Include="Engine\Components\AbsoluteMeshComp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -131,6 +132,7 @@
     <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHook.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHookRope.h" />
+    <ClInclude Include="Engine\Components\AbsoluteMeshComp.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

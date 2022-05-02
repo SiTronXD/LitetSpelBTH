@@ -191,8 +191,8 @@ void GameScene::init()
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
 	grapplingHook.getComponent<Transform>()->setPosition(Vector3(0,-8,0));
 	grapplingHook.getComponent<Transform>()->setScaling(Vector3(1, 1, 2));
-	MeshComp* mc = grapplingHook.addComponent<MeshComp>();
-	mc->setMesh("RealCubeMesh", "testMaterial");
+	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("RealCubeMesh", "testMaterial");
 	GrapplingHook* grapplingHookComp = 
 		grapplingHook.addComponent<GrapplingHook>();
 	grapplingHookComp->setPlayerTransform(cam.getComponent<Transform>());
@@ -200,7 +200,7 @@ void GameScene::init()
 	// Grappling hook rope
 	GameObject& rope = this->addGameObject("Rope");
 	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
-	mc = rope.addComponent<MeshComp>();
+	MeshComp* mc = rope.addComponent<MeshComp>();
 	mc->setMesh("RopeMesh", "ropeMaterial");
 	GrapplingHookRope* grapplingHookRopeComp =
 		rope.addComponent<GrapplingHookRope>();
