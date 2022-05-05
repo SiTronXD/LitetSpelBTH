@@ -243,14 +243,12 @@ void GameScene::init()
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
-	rb = model.addComponent<Rigidbody>();
-	rb->addForce(Vector3(0, 2, -2));
-	mc = model.addComponent<MeshComp>();
 	model.getComponent<Transform>()->setPosition(10.0f, -7.0f, 10.0f);
 	rb = model.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addSphereCollider(2.0f);
 	rb->setType(rp3d::BodyType::STATIC);
+	mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 
 	// Level game object

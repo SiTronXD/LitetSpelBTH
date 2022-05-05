@@ -73,5 +73,5 @@ float4 main(Input input) : SV_TARGET
     else
         return float4(0.5f, 0.5f, 0.5f, 1.0f);*/
 
-    return texCol /* shadowFactor*/ * float4(multiplyColor, 1.0f);
+    return texCol * shadowFactor * float4(multiplyColor, 1.0f);
 }

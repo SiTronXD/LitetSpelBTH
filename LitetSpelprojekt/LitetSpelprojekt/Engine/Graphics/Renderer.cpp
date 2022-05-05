@@ -180,6 +180,12 @@ void Renderer::render(Scene& scene)
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
 	immediateContext->ClearDepthStencilView(this->dsView.getPtr(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
+	// Update camera constant buffer
+	Matrix vp;
+	vp = scene.getActiveCamera()->getViewMatrix();
+	vp *= scene.getActiveCamera()->getProjectionMatrix();
+	this->cameraBufferStruct.vpMat = vp.Transpose();
+
 	// --------------------- Render shadow maps ---------------------
 
 	std::vector<Light*> lightComponents = scene.getActiveComponents<Light>();

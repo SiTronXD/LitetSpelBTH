@@ -37,13 +37,14 @@ rp3d::PhysicsWorld* PhysicsEngine::getWorld()
 
 void PhysicsEngine::update()
 {
+	this->listener.updateRigidbodyVector(this->scene->getECS().getActiveComponents<Rigidbody>());
+
 	this->accumulator += Time::getDT();
 	while (this->accumulator >= this->TIMESTEP)
 	{
 		this->world->update(this->TIMESTEP);
 		this->accumulator -= this->TIMESTEP;
 	}
-	this->listener.updateRigidbodyVector(this->scene->getECS().getActiveComponents<Rigidbody>());
 }
 
 RaycastInfo PhysicsEngine::raycast(rp3d::Ray ray)
