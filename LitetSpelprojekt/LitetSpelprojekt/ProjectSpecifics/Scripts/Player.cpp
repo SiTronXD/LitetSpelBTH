@@ -147,7 +147,7 @@ void Player::onCollisionStay(GameObject& other)
 	{
 		other.removeComponent<MeshComp>();
 		other.removeComponent<Collider>();
-		//other.getComponent<Transform>()->setPosition(0.0f, -100.0f, 0.0f);
+		other.getComponent<ParticleEmitter>()->explode(20, 40);
 		this->keyPieces++;
 		this->keyPickup = true;
 	}

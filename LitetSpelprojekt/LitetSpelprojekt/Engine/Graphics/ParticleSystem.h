@@ -8,6 +8,8 @@
 #include <SimpleMath.h>
 #include <vector>
 #include "ConstantBuffer.h"
+#include "Texture.h"
+#include "../Resources.h"
 
 class ParticleSystem
 {
@@ -18,7 +20,7 @@ private:
 		DirectX::XMFLOAT3 velocity;
 		float lifetime;
 		float scaleFactor;
-		DirectX::XMFLOAT3 padding;
+		DirectX::XMFLOAT3 color;
 	}particleBufferStruct{};
 
 	struct CameraStruct
@@ -27,41 +29,44 @@ private:
 		float deltaTime;
 		DirectX::XMFLOAT3 startPosition;
 		int start;
+		float speed;
+		float lifeTime;
+		DirectX::XMFLOAT2 padding;
+
 	}cameraStruct{};
 
 	Mesh* plane;
-	float timeTest;
+	Renderer* renderer;
+	Resources* resource;
+	Texture* texture;
 
 	DirectX::SimpleMath::Matrix m;
 
 	std::vector<Particle> particles;
 
-	StructuredBuffer structBuffer;
-	ComputeShader particleComputeShader;
+	StructuredBuffer* structBuffer;
+	ComputeShader* particleComputeShader;
 
-	ConstantBuffer cPosCbuffer;
+	ConstantBuffer* cPosCbuffer;
 
-	VertexShader particleVS;
-	PixelShader particlePS;
-
-	Renderer& renderer;
+	VertexShader* particleVS;
+	PixelShader* particlePS;
 
 	int numberOfParticles;
 
 	bool active;
 public:
-	ParticleSystem(Renderer&  renderer);
+	ParticleSystem();
 	~ParticleSystem();
 
-	void init();
+	void init(Renderer& renderer, Resources& resource, int nrOfParticles);
 
-	void startParticleSystem(float x, float y, float z);
+	void explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime);
 
-	void update(const DirectX::XMFLOAT3& cameraPosition);
 	void render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFLOAT3& cameraPosition);
 
 private:
 	void initParticles();
-	void killParticles();
+	void stopParticleSystem();
 };
 

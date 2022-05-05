@@ -112,6 +112,9 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
+
+	//Particle texture
+	this->getResources().addTexture("Resources/Textures/particle.png", "particle.png");
 	
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
@@ -207,17 +210,19 @@ void GameScene::init()
 	ground.getComponent<Transform>()->setScaling({ 100.0f, 1.0f, 100.0f });
 	ground.getComponent<Transform>()->setPosition(0.0f, -10.0f, 0.0f);
 
-	//Key objects
+	//Key objects and particles
 	for (int i = 0; i < 4; i++)
 	{
+		//Portal key objects
 		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
+		portalKey.addComponent<ParticleEmitter>();
 		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
 		keyMc->setMesh("RealCubeMesh", "testMaterial");
 		Collider* keyCol = portalKey.addComponent<Collider>();
 		keyCol->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, 2.0f);
-
+		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
 		this->portalKeys.push_back(&portalKey);
 	}
 
@@ -297,6 +302,16 @@ void GameScene::update()
 
 			if (this->keyTextScale < 64.0f)
 				this->keyTextScale += (150.0f * Time::getDT());
+		}
+
+		//Partcile update
+		if (Input::isKeyJustPressed(Keys::E))
+		{
+			std::vector<ParticleEmitter*> particleComponents = getActiveComponents<ParticleEmitter>();
+			for (unsigned int i = 0; i < particleComponents.size(); ++i)
+			{
+				particleComponents[i]->explode(10, 1);
+			}
 		}
 	}
 	else
