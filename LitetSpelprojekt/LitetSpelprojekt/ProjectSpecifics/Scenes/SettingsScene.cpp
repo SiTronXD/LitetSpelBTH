@@ -17,17 +17,14 @@ SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 }
 
 SettingsScene::~SettingsScene()
-{
-	
+{	
 }
 
 void SettingsScene::init()
 {
 	// Load Textures
-	this->getResources().addTexture("Resources/Textures/backgroundButton.png", "resSlider.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "healthBar.png");
 	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
-	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "healthBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBoxTwo.png", "healthBoxTwo.png");
 
 	// Set Camera
@@ -55,11 +52,12 @@ void SettingsScene::init()
 			if (stoi(this->resolutions.at(k)) == this->getSettings().getSettings().resolutionY)
 			{
 				resIndex = i;
+				
 				break;
 			}
 		}
 	}
-
+	
 	// Default values for sliders
 	int sliderHeight = 60;
 	int sliderWidth = 354;
@@ -74,9 +72,9 @@ void SettingsScene::init()
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
 	resSlider.setMinVal(0);
-	resSlider.setCurVal(resIndex);
-	resSlider.setMaxVal(this->resolutions.size()/2-1);
-	resSlider.setPerFill(0.5f);
+	resSlider.setCurVal(resIndex / 2.0f);
+	resSlider.setMaxVal(this->resolutions.size() / 2.0f);
+	resSlider.setPerFill(resIndex / (float)this->resolutions.size());
 
 	// Sensitivity Slider
 	sensSlider.setPos(Vector2(0, 70));
@@ -119,7 +117,8 @@ void SettingsScene::update()
 	{
 		this->getSettings().getSettings().resolutionX = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2));
 		this->getSettings().getSettings().resolutionY = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2 + 1));
-		Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) + "x" + std::to_string(this->getSettings().getSettings().resolutionY));
+		Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
+			"x" + std::to_string(this->getSettings().getSettings().resolutionY));
 	}
 	else if (sensSlider.isClicked())
 	{
@@ -150,8 +149,9 @@ void SettingsScene::renderUI()
 	sensSlider.render("healthBar.png");
 	brightSlider.render("healthBar.png");
 	volSlider.render("healthBar.png");
-	exitButton.render("sliderBackground.png");
+	exitButton.render("NeatBox.png");
 
+	// Resolution Slider
 	this->getUIRenderer().renderString(
 		"resolution:",
 		-10,
@@ -160,6 +160,77 @@ void SettingsScene::renderUI()
 		30
 	);
 
+	// Resolution %
+	int resPer = resSlider.getPerFill() * 100;
+	this->getUIRenderer().renderString(
+		std::to_string(this->getSettings().getSettings().resolutionX) + "x" + std::to_string(this->getSettings().getSettings().resolutionY),
+		300,
+		210,
+		30,
+		30
+	);
+
+	// Sensitivity Slider
+	this->getUIRenderer().renderString(
+		"sensitivity:",
+		-10,
+		120,
+		30,
+		30
+	);
+
+	// Sensitivity %
+	int sensPer = sensSlider.getPerFill() * 100;
+	this->getUIRenderer().renderString(
+		std::to_string(sensPer) + "%",
+		220,
+		70,
+		30,
+		30
+	);
+
+
+	// Brightness Slider
+	this->getUIRenderer().renderString(
+		"brightness:",
+		-10,
+		-20,
+		30,
+		30
+	);
+
+	// Bright %
+	int brightPer = brightSlider.getPerFill() * 100;
+	this->getUIRenderer().renderString(
+		std::to_string(brightPer) + "%",
+		220,
+		-70,
+		30,
+		30
+	);
+
+
+	// Volume Slider
+	this->getUIRenderer().renderString(
+		"volume:",
+		-10,
+		-160,
+		30,
+		30
+	);
+
+	// Volume %
+	int volPer = volSlider.getPerFill() * 100;
+	this->getUIRenderer().renderString(
+		std::to_string(volPer) + "%",
+		220,
+		-210,
+		30,
+		30
+	);
+
+
+	// Setttings Header
 	this->getUIRenderer().renderString(
 		"settings",
 		-10,
@@ -168,6 +239,7 @@ void SettingsScene::renderUI()
 		50
 	);
 
+	// Main Menu Text
 	this->getUIRenderer().renderString(
 		"main menu",
 		-10,

@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ProjectSpecifics\Scripts\CooldownIndicator.cpp" />
+    <ClCompile Include="Engine\Components\AbsoluteMeshComp.cpp" />
     <ClCompile Include="Engine\Graphics\DSV.cpp" />
     <ClCompile Include="Engine\Dev\Str.cpp" />
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
@@ -183,6 +185,8 @@
     <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHookRope.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHook.cpp" />
     <ClCompile Include="Engine\Physics\PhysicsEventListener.cpp" />
     <ClCompile Include="Engine\Physics\PhysicsRaycastCallback.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
@@ -220,6 +224,8 @@
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ProjectSpecifics\Scripts\CooldownIndicator.h" />
+    <ClInclude Include="Engine\Components\AbsoluteMeshComp.h" />
     <ClInclude Include="Engine\Graphics\DSV.h" />
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
     <ClInclude Include="Engine\Components\Componentpch.h" />
@@ -249,6 +255,8 @@
     <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHookRope.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHook.h" />
     <ClInclude Include="Engine\Physics\PhysicsEventListener.h" />
     <ClInclude Include="Engine\Physics\PhysicsRaycastCallback.h" />
     <ClInclude Include="Engine\Graphics\ParticleSystem.h" />

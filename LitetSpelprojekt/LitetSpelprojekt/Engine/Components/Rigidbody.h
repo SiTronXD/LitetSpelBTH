@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <Windows.h>
 #include <SimpleMath.h>
 #include <reactphysics3d/reactphysics3d.h>

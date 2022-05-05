@@ -5,6 +5,9 @@
 #include "GameOverScene.h"
 #include "../Scripts/Player.h"
 #include "../Scripts/HookPoint.h"
+#include "../Scripts/GrapplingHook.h"
+#include "../Scripts/GrapplingHookRope.h"
+#include "../Scripts/CooldownIndicator.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -12,15 +15,13 @@
 #include "../../Engine/Graphics/UIRenderer.h"
 #include "../../Engine/Physics/PhysicsEngine.h"
 #include "../../Engine/Time.h"
+#include "../../Engine/SMath.h"
 
 
 using namespace DirectX::SimpleMath;
 
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
 {
-	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
-	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
-
 	// Sphere colliders
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
 	{
@@ -120,7 +121,9 @@ void GameScene::init()
 	
 	//Object Textures
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
-	
+	this->getResources().addTexture("Resources/Textures/RopeTexture.png", "RopeTexture.png");
+	this->getResources().addTexture("Resources/Textures/StingrayPBS1SG_Base_Color_1001.png", "GrapplingHookTexture");
+
 	//Gui textures
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "HealthBox.png");
@@ -128,7 +131,8 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
-	
+	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
+
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
 
@@ -139,11 +143,21 @@ void GameScene::init()
 	//Materials
 	this->getResources().addMaterial("me.png", "testMaterial");
 	this->getResources().addMaterial("me.png", "portalMaterial");
+	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
+	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
+	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
+
+	// Default meshes
+	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::PLANE), "PlaneMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::TETRAHEDRON), "Tetrahedron");
 
 	//Add cubemap
 	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
 
+	// Models
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
 	testMeshData.transformMesh(
 		Matrix::CreateScale(0.5f, 1.0f, 1.0f) * Matrix::CreateRotationZ(3.14f * 0.3f)
@@ -152,14 +166,23 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh" 
 	);
+	MeshData grapplingHookData = MeshLoader::loadModel("Resources/Models/MeyerWeaponOBJEdit.obj");
 	this->getResources().addMesh(
-		MeshData(DefaultMesh::PLANE),
-		"PlaneMesh"
+		std::move(grapplingHookData),
+		"GrapplingHookMesh"
+	);
+	MeshData cooldownIndicatorMeshData(DefaultMesh::PLANE);
+	cooldownIndicatorMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	this->getResources().addMesh(
+		std::move(cooldownIndicatorMeshData), 
+		"CooldownIndicatorMesh"
 	);
 
+	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
+	ropeMesh.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
 	this->getResources().addMesh(
-		MeshData(DefaultMesh::TETRAHEDRON),
-		"Tetrahedron"
+		std::move(ropeMesh),
+		"RopeMesh"
 	);
 
 	this->getResources().addMesh(
@@ -177,6 +200,7 @@ void GameScene::init()
 	);
 	this->addLevelColliders(levelLoader);
   
+	// Player
 	this->setActiveCamera(cam.addComponent<Camera>());
 
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
@@ -205,6 +229,37 @@ void GameScene::init()
 	player->setHookPoint(hook);
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");
+
+	// Origin
+	GameObject& origin = this->addGameObject("Origin");
+	origin.getComponent<Transform>()->setScaling(Vector3(3,3,3));
+	MeshComp* originMC = origin.addComponent<MeshComp>();
+	originMC->setMesh("RealSphereMesh", "testMaterial");
+
+	// Grappling hook
+	GameObject& grapplingHook = this->addGameObject("Grappling hook");
+	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("GrapplingHookMesh", "GrapplingHookMaterial");
+	GrapplingHook* grapplingHookComp = 
+		grapplingHook.addComponent<GrapplingHook>();
+	grapplingHookComp->setPlayerTransform(cam.getComponent<Transform>());
+
+	// Grappling hook rope
+	GameObject& rope = this->addGameObject("Rope");
+	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
+	MeshComp* mc = rope.addComponent<MeshComp>();
+	mc->setMesh("RopeMesh", "ropeMaterial");
+	GrapplingHookRope* grapplingHookRopeComp =
+		rope.addComponent<GrapplingHookRope>();
+	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
+
+	// Grappling hook cooldown indicator
+	GameObject& cooldownIndicatorObject = this->addGameObject("Grappling Hook Cooldown Indicator");
+	amc = cooldownIndicatorObject.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("CooldownIndicatorMesh", "WhiteMaterial");
+	CooldownIndicator* cooldownIndicatorComp =
+		cooldownIndicatorObject.addComponent<CooldownIndicator>();
+	cooldownIndicatorComp->setup(grapplingHookComp);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
@@ -248,10 +303,12 @@ void GameScene::init()
 		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
 		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
 		keyMc->setMesh("RealCubeMesh", "testMaterial");
-		/*Collider* keyCol = portalKey.addComponent<Collider>();
-		keyCol->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));*/
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, 2.0f);
+		rb = portalKey.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::STATIC);
+		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 
 		this->portalKeys.push_back(&portalKey);
 	}
@@ -260,10 +317,12 @@ void GameScene::init()
 	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
 	MeshComp* portalMc = portal.addComponent<MeshComp>();
 	portalMc->setMesh("RealCubeMesh", "portalMaterial");
-	/*Collider* portalCol = portal.addComponent<Collider>();
-	portalCol->setBoxCollider(Vector3(2.0f, 4.0f, 1.0f));*/
 	portal.getComponent<Transform>()->setScaling({ 4.0f, 8.0f, 1.0f });
 	portal.getComponent<Transform>()->setPosition(-6.0f, -6.0f, -8.0f);
+	rb = portal.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->setType(rp3d::BodyType::STATIC);
+	rb->addBoxCollider(Vector3(2.0f, 4.0f, 1.0f));
 
 	//Test obstacle, taking damage etc
 	for (int i = 0; i < 3; i++)
@@ -271,25 +330,27 @@ void GameScene::init()
 		GameObject& enemy = this->addGameObject("Enemy", ObjectTag::ENEMY);
 		MeshComp* enemyMc = enemy.addComponent<MeshComp>();
 		enemyMc->setMesh("Tetrahedron", "testMaterial");
-		/*Collider* enemyCollider = enemy.addComponent<Collider>();
-		enemyCollider->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));*/
 		enemy.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
 		enemy.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, -6.0f);
+		rb = enemy.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::KINEMATIC);
+		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 
 		this->enemies.push_back(&enemy);
 
 	}
 
 	//Buttons
-	this->resumeButton.setPos(Vector2(0, 300));
+	this->resumeButton.setPos(Vector2(0, 170));
 	this->resumeButton.setWidth(354);
 	this->resumeButton.setHeight(159);
 
-	this->mainMenuButton.setPos(Vector2(0, 150));
+	this->mainMenuButton.setPos(Vector2(0, 0));
 	this->mainMenuButton.setWidth(354);
 	this->mainMenuButton.setHeight(159);
 
-	this->exitButton.setPos(Vector2(0, 0));
+	this->exitButton.setPos(Vector2(0, -170));
 	this->exitButton.setWidth(354);
 	this->exitButton.setHeight(159);
 
@@ -309,7 +370,7 @@ void GameScene::update()
 	{
 		Player* playerComp = cam.getComponent<Player>();
 		
-		//When they player pick up a key.
+		//When the player picks up a key.
 		if (playerComp->isKeyPickUp())
 		{
 			std::cout << "Key pickup!" << std::endl;
@@ -352,8 +413,8 @@ void GameScene::update()
 			this->setPause(false);
 		}
 
-		/*if (this->mainMenuButton.isClicked())
-			this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));*/
+		if (this->mainMenuButton.isClicked())
+			this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
 				
 		if (this->exitButton.isClicked())
 			this->getWindow().quit();
@@ -437,13 +498,41 @@ void GameScene::renderUI()
 	}
 	else
 	{
+		/*
 		this->getUIRenderer().renderTexture(
 			"PauseMenu.png",
 			0, 50, 600, 800
 		);
+		*/
 
+		// Resume Game
 		this->resumeButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"resume",
+			-10,
+			170,
+			30,
+			30
+		);
+
+		// Return to main menu
 		this->mainMenuButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"main menu",
+			-10,
+			0,
+			30,
+			30
+		);
+		
+		// Exit Game
 		this->exitButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"exit",
+			-10,
+			-170,
+			30,
+			30
+		);
 	}
 }

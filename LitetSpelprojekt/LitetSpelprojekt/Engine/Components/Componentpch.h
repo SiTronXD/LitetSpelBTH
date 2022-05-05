@@ -2,6 +2,7 @@
 #include "Script.h"
 #include "Camera.h"
 #include "Light.h"
+#include "AbsoluteMeshComp.h"
 #include "MeshComp.h"
 #include "ParticleEmitter.h"
 #include "Rigidbody.h"

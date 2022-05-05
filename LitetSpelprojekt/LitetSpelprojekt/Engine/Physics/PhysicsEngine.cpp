@@ -18,10 +18,12 @@ void PhysicsEngine::init(Scene* scene)
 {
 	this->scene = scene;
 
+	/*
 	this->physCom.destroyPhysicsWorld(this->world);
 	this->world = this->physCom.createPhysicsWorld();
 	this->world->setGravity(rp3d::Vector3(0.0f, -9.82f, 0.0f));
 	this->world->setEventListener(&this->listener);
+	*/
 }
 
 rp3d::PhysicsCommon& PhysicsEngine::getCommon()
@@ -36,13 +38,14 @@ rp3d::PhysicsWorld* PhysicsEngine::getWorld()
 
 void PhysicsEngine::update()
 {
+	this->listener.updateRigidbodyVector(this->scene->getECS().getActiveComponents<Rigidbody>());
+
 	this->accumulator += Time::getDT();
 	while (this->accumulator >= this->TIMESTEP)
 	{
 		this->world->update(this->TIMESTEP);
 		this->accumulator -= this->TIMESTEP;
 	}
-	this->listener.updateRigidbodyVector(this->scene->getECS().getActiveComponents<Rigidbody>());
 }
 
 RaycastInfo PhysicsEngine::raycast(rp3d::Ray ray)
