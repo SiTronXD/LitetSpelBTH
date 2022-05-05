@@ -1,6 +1,7 @@
 #include "MenuScene.h"
 #include "LoadingScene.h"
 #include "SettingsScene.h"
+#include "HighscoreScene.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Application/Window.h"
 
@@ -9,6 +10,7 @@ using namespace DirectX::SimpleMath;
 MenuScene::MenuScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
 	playButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
+	highscoreButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	settingsButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer())
 {
@@ -47,19 +49,24 @@ void MenuScene::init()
 	
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
-	
+
 	// Define Play Button's size and position
-	playButton.setPos(Vector2(0, 170));
+	playButton.setPos(Vector2(0, 210));
 	playButton.setWidth(354);
 	playButton.setHeight(159);
 
+	// Define Highscore Button's size and position
+	highscoreButton.setPos(Vector2(0, 0));
+	highscoreButton.setWidth(354);
+	highscoreButton.setHeight(159);
+
 	// Define Settings Button's size and position
-	settingsButton.setPos(Vector2(0, 0));
+	settingsButton.setPos(Vector2(0, -210));
 	settingsButton.setWidth(354);
 	settingsButton.setHeight(159);
 
 	// Define Exit Button's size and position
-	exitButton.setPos(Vector2(0, -170));
+	exitButton.setPos(Vector2(0, -420));
 	exitButton.setWidth(354);
 	exitButton.setHeight(159);
 }
@@ -71,6 +78,11 @@ void MenuScene::update()
 	{
 		// Change to Game Scene
 		this->getSceneHandler().setScene(new LoadingScene(this->getSceneHandler()));
+	}
+	else if (highscoreButton.isClicked())
+	{
+		// Load Settings Menu
+		this->getSceneHandler().setScene(new HighscoreScene(this->getSceneHandler()));
 	}
 	else if (settingsButton.isClicked())
 	{
@@ -88,27 +100,28 @@ void MenuScene::renderUI()
 {
 	// Send the buttons to the UIRenderer to display
 	playButton.render("NeatBox.png");
+	highscoreButton.render("NeatBox.png");
 	settingsButton.render("NeatBox.png");
 	exitButton.render("NeatBox.png");
-	
+
 	this->getUIRenderer().renderString(
-		"grapple mayhem", 
-		0, 
-		400, 
-		50, 
+		"grapple mayhem",
+		-10,
+		400,
+		50,
 		50
 	);
 
 	this->getUIRenderer().renderString(
 		"play",
 		-10,
-		170,
+		210,
 		30,
 		30
 	);
 
 	this->getUIRenderer().renderString(
-		"settings",
+		"highscore",
 		-10,
 		0,
 		30,
@@ -116,9 +129,17 @@ void MenuScene::renderUI()
 	);
 
 	this->getUIRenderer().renderString(
+		"settings",
+		-10,
+		-210,
+		30,
+		30
+	);
+
+	this->getUIRenderer().renderString(
 		"exit",
 		-10,
-		-170,
+		-420,
 		30,
 		30
 	);

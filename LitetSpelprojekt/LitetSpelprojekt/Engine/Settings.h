@@ -19,7 +19,7 @@ public:
 	~Settings();
 	bool loadSettings();
 	bool saveSettings();
-	SettingsStruct& getSettings() { return this->settingsList; }
+	inline SettingsStruct& getSettings() { return this->settingsList; }
 
 };
 

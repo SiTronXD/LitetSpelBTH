@@ -14,7 +14,7 @@
 class Engine
 {
 private:
-	Settings settings;
+
 	Window window;
 	Renderer renderer;
 	UIRenderer uiRenderer;
@@ -23,6 +23,8 @@ private:
 
 	SceneHandler sceneHandler;
 
+	Settings settings;
+	Highscore highscore;
 public:
 	Engine();
 	virtual ~Engine();
