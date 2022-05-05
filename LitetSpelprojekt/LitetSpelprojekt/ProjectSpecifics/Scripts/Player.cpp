@@ -3,6 +3,8 @@
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Time.h"
 #include "HookPoint.h"
+#include "GrapplingHook.h"
+#include "CooldownIndicator.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -23,7 +25,7 @@ void Player::move()
 	{
 		Vector3 vec = this->hookPoint->getTransform()->getPosition() - this->getTransform()->getPosition();
 		if (vec.Length() < 3.0f)
-			this->hookPoint->returnToPlayer(this->hookPointOffset);
+			this->hookPoint->returnToPlayer();
 		else
 		{
 			vec.Normalize();
@@ -52,19 +54,17 @@ void Player::fireWeapon()
 	Vector3 forward = this->getTransform()->forward();
 	if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON) && this->hookPoint->getState() == HookState::NOT_ACTIVE)
 	{
-		this->hookPoint->shoot(this->getTransform()->getPosition() + forward * 2, forward);
+		this->hookPoint->shoot(this->getTransform()->getPosition() + forward * 2.0f, forward);
 	}
 	else if (Input::isMouseButtonReleased(Mouse::LEFT_BUTTON) && this->hookPoint->getState() != HookState::NOT_ACTIVE)
 	{
-		this->hookPoint->returnToPlayer(this->hookPointOffset);
-		//this->hookPoint->shoot(this->hookPoint->getTransform()->getPosition(), -forward);
-		//this->hookPoint->getObject().getComponent<Rigidbody>()->setPosition(this->getTransform()->getPosition() + forward * this->hookPointOffset);
+		this->hookPoint->returnToPlayer();
 	}
 
-	if (Input::isMouseButtonDown(Mouse::RIGHT_BUTTON))
+	if (Input::isMouseButtonDown(Mouse::RIGHT_BUTTON) && this->pulseCannonCooldown <= 0.0f)
 	{
-		Log::writeVec(forward);
-		this->rb->addForce(forward * -200.0f);
+		this->rb->addVelocity(forward * -10.0f);
+		this->pulseCannonCooldown = 3.0f;
 	}
 }
 
@@ -82,8 +82,9 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object) :
-	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr), hookPoint(nullptr),
-	keyPickup(false), keyPieces(0), health(3), dead(false), healthCooldown(0.0f), portal(false), hookPointOffset(Vector3(0.0f, 0.0f, 3.0f))
+	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr),
+	keyPickup(false), keyPieces(0), health(3), dead(false), healthCooldown(0.0f), pulseCannonCooldown(0.0f), portal(false),
+	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr)
 {
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
@@ -118,10 +119,14 @@ void Player::addHealth(int health)
 	this->health += health;
 }
 
-void Player::setHookPoint(HookPoint* hp)
+void Player::setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIndicator* cooldown)
 {
 	this->hookPoint = hp;
 	this->hookPoint->setPlayer(this);
+	this->grapplingHook = grapHook;
+	this->grapplingHook->setPlayerTransform(this->getTransform());
+	this->cooldownIndicatior = cooldown;
+	this->cooldownIndicatior->setup(this->grapplingHook);
 }
 
 void Player::init()
@@ -138,29 +143,35 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
-	/*if (this->hooking && !this->hookPoint->inMotion() && !this->hookPoint->isConnected())
-		this->hooking = false;*/
+	if (this->hookPoint->getState() != HookState::NOT_ACTIVE)
+		this->grapplingHook->getRope()->setTargetPos(this->hookPoint->getTransform()->getPosition());
 
-	//Reset keypickup
+	this->cooldownIndicatior->setPercent(this->pulseCannonCooldown / 3.0f);
+	// Update pulse cannon cooldown
+	if (this->pulseCannonCooldown > 0.0f)
+		this->pulseCannonCooldown -= Time::getDT();
+	else
+		this->pulseCannonCooldown = 0.0f;
+
+	// Reset keypickup
 	if (this->keyPickup == true)
 		this->keyPickup = false;
 
-	//Reset portal
+	// Reset portal
 	if (this->portal == true)
 		this->portal = false;
 
-	//Check if player is dead
+	// Check if player is dead
 	if (this->health < 1)
 		this->dead = true;
 
-	//Update health cooldown
-	if (this->healthCooldown > 0)
+	// Update health cooldown
+	if (this->healthCooldown > 0.0f)
 		this->healthCooldown--;
 }
 
 void Player::onCollisionEnter(GameObject& other)
 {
-	//std::cout << "Player started hitting: " << other.getName() << std::endl;
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
 
@@ -177,12 +188,11 @@ void Player::onCollisionEnter(GameObject& other)
 
 void Player::onCollisionStay(GameObject& other)
 {
-	//std::cout << "Player still hitting: " << other.getName() << std::endl;
 
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
 	
-	//Test
+	// Test
 	if (other.getTag() == ObjectTag::ENEMY && healthCooldown == 0)
 	{
 		other.removeComponent<MeshComp>();
@@ -191,7 +201,7 @@ void Player::onCollisionStay(GameObject& other)
 		this->healthCooldown = 40;
 	}
 
-	//Portal
+	// Portal
 	if (other.getTag() == ObjectTag::PORTAL)
 		this->portal = true;
 	
@@ -199,8 +209,6 @@ void Player::onCollisionStay(GameObject& other)
 
 void Player::onCollisionExit(GameObject& other)
 {
-	//std::cout << "Player stopped hitting: " << other.getName() << std::endl;
-
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = false;
 }

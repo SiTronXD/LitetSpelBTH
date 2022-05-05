@@ -25,7 +25,7 @@ public:
 	void setPlayer(Player* player);
 
 	void shoot(const DirectX::SimpleMath::Vector3& orig, const DirectX::SimpleMath::Vector3& vec);
-	void returnToPlayer(DirectX::SimpleMath::Vector3 offset);
+	void returnToPlayer();
 
 	inline HookState getState() { return this->state; }
 	void setState(HookState newState);

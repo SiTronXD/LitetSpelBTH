@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <SimpleMath.h>
 #include "../../Engine/Components/Script.h"
+#include "GrapplingHookRope.h"
 
 class GrapplingHook : public Script
 {
@@ -12,8 +13,10 @@ private:
 
 	Transform* transform;
 	Transform* playerTransform;
+	GrapplingHookRope* rope;
 
 	DirectX::SimpleMath::Vector3 lastPos;
+	DirectX::SimpleMath::Vector3 offsetPos;
 
 	void setToArmPos(DirectX::SimpleMath::Vector3& result);
 
@@ -22,7 +25,10 @@ public:
 	virtual ~GrapplingHook();
 
 	void setPlayerTransform(Transform* playerTransform);
+	void setRope(GrapplingHookRope* rope);
 	void setToShootPos(DirectX::SimpleMath::Vector3& result);
+
+	inline GrapplingHookRope* getRope() { return this->rope; }
 
 	// Inherited via Script
 	virtual void init() override;

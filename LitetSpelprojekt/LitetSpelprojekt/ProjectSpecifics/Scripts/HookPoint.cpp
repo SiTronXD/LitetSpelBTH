@@ -7,9 +7,9 @@
 using namespace DirectX::SimpleMath;
 
 HookPoint::HookPoint(GameObject& gameObject):
-	Script(gameObject), state(HookState::NOT_ACTIVE), rb(nullptr), player(nullptr), speed(75.0f), shotTimer(0.0f)
+	Script(gameObject), state(HookState::NOT_ACTIVE), rb(nullptr), player(nullptr), speed(75.0f), shotTimer(0.0f),
+	returnOffset(2.1f, -1.5f, 2.0f)
 {
-	this->returnOffset = Vector3(0.0f, 0.0f, 3.0f);
 }
 
 HookPoint::~HookPoint()
@@ -29,9 +29,8 @@ void HookPoint::shoot(const DirectX::SimpleMath::Vector3& orig, const DirectX::S
 	this->state = HookState::SHOOTING;
 }
 
-void HookPoint::returnToPlayer(DirectX::SimpleMath::Vector3 offset)
+void HookPoint::returnToPlayer()
 {
-	this->returnOffset = offset;
 	this->state = HookState::RETURNING;
 }
 

@@ -8,16 +8,18 @@ using namespace DirectX::SimpleMath;
 
 void GrapplingHook::setToArmPos(Vector3& result)
 {
-	result = this->playerTransform->getPosition() + 
-		this->playerTransform->forward() * 2.0f + 
-		this->playerTransform->right() * 2.1f +
-		this->playerTransform->up() * -1.5f;
+	result = this->playerTransform->getPosition() +
+		this->playerTransform->right() * offsetPos.x +
+		this->playerTransform->up() * offsetPos.y +
+		this->playerTransform->forward() * offsetPos.z;
 }
 
 GrapplingHook::GrapplingHook(GameObject& gameObject)
 	: Script(gameObject),
 	transform(nullptr),
-	playerTransform(nullptr)
+	playerTransform(nullptr),
+	rope(nullptr),
+	offsetPos(2.1f, -1.5f, 2.0f)
 {
 }
 
@@ -31,6 +33,11 @@ void GrapplingHook::setPlayerTransform(Transform* playerTransform)
 	this->setToArmPos(this->lastPos);
 }
 
+void GrapplingHook::setRope(GrapplingHookRope* rope)
+{
+	this->rope = rope;
+}
+
 void GrapplingHook::setToShootPos(DirectX::SimpleMath::Vector3& result)
 {
 	result = this->transform->getPosition();
@@ -39,7 +46,7 @@ void GrapplingHook::setToShootPos(DirectX::SimpleMath::Vector3& result)
 
 void GrapplingHook::init()
 {
-	this->transform = Script::getObject().getComponent<Transform>();
+	this->transform = this->getTransform();
 	this->transform->setScaling(Vector3(0.5f, 0.5f, 0.5f));
 }
 
