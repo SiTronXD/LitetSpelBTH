@@ -17,6 +17,9 @@ private:
 	rp3d::RigidBody* rb;
 	std::vector<rp3d::Collider*> colliders;
 
+	DirectX::SimpleMath::Vector3 lastPos;
+	DirectX::SimpleMath::Vector3 nextPos;
+
 	rp3d::Transform getConvertedTransform();
 	
 public:
@@ -45,6 +48,8 @@ public:
 
 	void addForce(DirectX::SimpleMath::Vector3 vec, DirectX::SimpleMath::Vector3 posOffset = DirectX::SimpleMath::Vector3::Zero);
 	void addForceWorldSpace(DirectX::SimpleMath::Vector3 vec, DirectX::SimpleMath::Vector3 point = DirectX::SimpleMath::Vector3::Zero);
+
+	void updateStates();
 
 	int getID() const;
 

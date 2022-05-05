@@ -27,7 +27,8 @@ Rigidbody::Rigidbody(GameObject& object) :
 	Script(object), transform(*this->getTransform()),
 	physEngine(nullptr), rb(nullptr)
 {
-	
+	this->lastPos = this->transform.getPosition();
+	this->nextPos = this->lastPos;
 }
 
 Rigidbody::~Rigidbody()
@@ -114,7 +115,6 @@ void Rigidbody::setMaterial(float frictionCoeff, float bounciness, float massDen
 	{
 		col->setMaterial(mat);
 	}
-	
 }
 
 void Rigidbody::setPosition(DirectX::SimpleMath::Vector3 vec)
@@ -165,6 +165,18 @@ void Rigidbody::addForceWorldSpace(DirectX::SimpleMath::Vector3 vec, DirectX::Si
 	this->rb->applyLocalForceAtWorldPosition({ vec.x, vec.y, vec.z }, { point.x, point.y, point.z });
 }
 
+void Rigidbody::updateStates()
+{
+	if (this->rb->getLinearLockAxisFactor() != rp3d::Vector3::zero())
+	{
+		rp3d::Vector3 pos = this->rb->getTransform().getPosition();
+		this->lastPos = this->nextPos;
+		this->nextPos.x = pos.x;
+		this->nextPos.y = pos.y;
+		this->nextPos.z = pos.z;
+	}
+}
+
 int Rigidbody::getID() const
 {
 	return this->rb->getEntity().id;
@@ -178,8 +190,14 @@ void Rigidbody::update()
 {
 	if (this->rb->getLinearLockAxisFactor() != rp3d::Vector3::zero())
 	{
-		rp3d::Vector3 pos = this->rb->getTransform().getPosition();
-		this->transform.setPosition(pos.x, pos.y, pos.z);
+		// Set to interpolated position
+		this->transform.setPosition(
+			Vector3::Lerp(
+				this->lastPos,
+				this->nextPos,
+				PhysicsEngine::getInterpolationFactor()
+			)
+		);
 	}
 
 	if (this->rb->getAngularLockAxisFactor() != rp3d::Vector3::zero())

@@ -8,8 +8,8 @@
 class PhysicsEngine
 {
 private:
-	const float TIMESTEP = 1.0f / 60.0f;
-	float accumulator;
+	static const float TIMESTEP;
+	static float accumulator;
 
 	rp3d::PhysicsCommon physCom;
 	rp3d::PhysicsWorld* world;
@@ -27,5 +27,7 @@ public:
 
 	void update();
 	RaycastInfo raycast(rp3d::Ray ray);
-};
 
+	static const float& getInterpolationFactor()
+		{ return accumulator / TIMESTEP; }
+};

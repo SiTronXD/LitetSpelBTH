@@ -2,8 +2,11 @@
 #include "../GameObject.h"
 #include "../Time.h"
 
+const float PhysicsEngine::TIMESTEP = 1.0f / 60.0f;
+float PhysicsEngine::accumulator = 0.0f;
+
 PhysicsEngine::PhysicsEngine():
-	accumulator(0.0f), scene(nullptr)
+	scene(nullptr)
 {
 	this->world = this->physCom.createPhysicsWorld();
 	this->world->setEventListener(&this->listener);
@@ -31,13 +34,18 @@ rp3d::PhysicsWorld* PhysicsEngine::getWorld()
 
 void PhysicsEngine::update()
 {
-	this->listener.updateRigidbodyVector(this->scene->getECS().getActiveComponents<Rigidbody>());
+	std::vector<Rigidbody*> rigidbodies = this->scene->getECS().getActiveComponents<Rigidbody>();
+	this->listener.updateRigidbodyVector(rigidbodies);
 
-	this->accumulator += Time::getDT();
-	while (this->accumulator >= this->TIMESTEP)
+	PhysicsEngine::accumulator += Time::getDT();
+	while (accumulator >= this->TIMESTEP)
 	{
 		this->world->update(this->TIMESTEP);
-		this->accumulator -= this->TIMESTEP;
+		PhysicsEngine::accumulator -= this->TIMESTEP;
+
+		// Update rigidbody states
+		for (unsigned int i = 0; i < rigidbodies.size(); ++i)
+			rigidbodies[i]->updateStates();
 	}
 }
 
