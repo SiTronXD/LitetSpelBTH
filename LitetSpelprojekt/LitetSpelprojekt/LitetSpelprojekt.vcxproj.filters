@@ -71,7 +71,7 @@
     <ClCompile Include="Engine\Graphics\DSV.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
-    <ClCompile Include="Engine\Components\HookPoint.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\HookPoint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -133,7 +133,7 @@
     <ClInclude Include="Engine\Graphics\DSV.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
     <ClInclude Include="Engine\Graphics\ParticleSystem.h" />
-    <ClInclude Include="Engine\Components\HookPoint.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\HookPoint.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

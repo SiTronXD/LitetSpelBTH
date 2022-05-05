@@ -2,6 +2,7 @@
 #include "../../Engine/Application/Input.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Time.h"
+#include "HookPoint.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -18,15 +19,15 @@ void Player::move()
 	forward.Normalize();
 	Vector3 moveVec = (right * direction.x + forward * direction.z) * this->speed * Time::getDT();
 
-	if (this->hooking && this->hookPoint->isConnected())
+	if (this->hookPoint->getState() == HookState::CONNECTED)
 	{
 		Vector3 vec = this->hookPoint->getTransform()->getPosition() - this->getTransform()->getPosition();
 		if (vec.Length() < 3.0f)
-			this->hooking = false;
+			this->hookPoint->returnToPlayer(this->hookPointOffset);
 		else
 		{
 			vec.Normalize();
-			moveVec *= 0.25f;
+			moveVec *= 0.5f;
 			this->rb->setVelocity(vec * this->speed * Time::getDT() + moveVec);
 		}
 	}
@@ -49,15 +50,14 @@ void Player::jump()
 void Player::fireWeapon()
 {
 	Vector3 forward = this->getTransform()->forward();
-	if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON) && !this->hooking)
+	if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON) && this->hookPoint->getState() == HookState::NOT_ACTIVE)
 	{
-		this->hooking = true;
 		this->hookPoint->shoot(this->getTransform()->getPosition() + forward * 2, forward);
 	}
-	else if (Input::isMouseButtonReleased(Mouse::LEFT_BUTTON) && this->hooking)
+	else if (Input::isMouseButtonReleased(Mouse::LEFT_BUTTON) && this->hookPoint->getState() != HookState::NOT_ACTIVE)
 	{
-		this->hooking = true;
-		this->hookPoint->shoot(this->hookPoint->getTransform()->getPosition(), -forward);
+		this->hookPoint->returnToPlayer(this->hookPointOffset);
+		//this->hookPoint->shoot(this->hookPoint->getTransform()->getPosition(), -forward);
 		//this->hookPoint->getObject().getComponent<Rigidbody>()->setPosition(this->getTransform()->getPosition() + forward * this->hookPointOffset);
 	}
 
@@ -82,8 +82,8 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object) :
-	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), hooking(false), rb(nullptr), hookPoint(nullptr),
-	keyPickup(false), keyPieces(0), health(3), dead(false), healthCooldown(0.0f), portal(false), hookPointOffset(Vector3(0.0f, 0.0f, 2.0f))
+	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr), hookPoint(nullptr),
+	keyPickup(false), keyPieces(0), health(3), dead(false), healthCooldown(0.0f), portal(false), hookPointOffset(Vector3(0.0f, 0.0f, 3.0f))
 {
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
@@ -121,6 +121,7 @@ void Player::addHealth(int health)
 void Player::setHookPoint(HookPoint* hp)
 {
 	this->hookPoint = hp;
+	this->hookPoint->setPlayer(this);
 }
 
 void Player::init()
@@ -137,8 +138,8 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
-	if (this->hooking && !this->hookPoint->inMotion() && !this->hookPoint->isConnected())
-		this->hooking = false;
+	/*if (this->hooking && !this->hookPoint->inMotion() && !this->hookPoint->isConnected())
+		this->hooking = false;*/
 
 	//Reset keypickup
 	if (this->keyPickup == true)

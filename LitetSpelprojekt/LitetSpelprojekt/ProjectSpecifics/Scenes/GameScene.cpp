@@ -3,6 +3,8 @@
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "GameOverScene.h"
+#include "../Scripts/Player.h"
+#include "../Scripts/HookPoint.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -10,6 +12,7 @@
 #include "../../Engine/Graphics/UIRenderer.h"
 #include "../../Engine/Physics/PhysicsEngine.h"
 #include "../../Engine/Time.h"
+
 
 using namespace DirectX::SimpleMath;
 
@@ -198,7 +201,7 @@ void GameScene::init()
 	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
 	rb->setMaterial(0.2f, 0.0f);
 	rb->setType(rp3d::BodyType::KINEMATIC);
-	//rb->setTrigger(true);
+	rb->setTrigger(true);
 	player->setHookPoint(hook);
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");

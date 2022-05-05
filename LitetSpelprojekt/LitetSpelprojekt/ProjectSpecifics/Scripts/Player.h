@@ -21,7 +21,6 @@ private:
 	DirectX::SimpleMath::Vector3 hookPointOffset;
 
 	bool onGround;
-	bool hooking;
 	bool keyPickup;
 	bool dead;
 	bool portal;
