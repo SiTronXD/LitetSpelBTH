@@ -4,6 +4,7 @@
 #include "MenuScene.h"
 #include "GameOverScene.h"
 #include "../Scripts/Player.h"
+#include "../Scripts/HookPoint.h"
 #include "../Scripts/GrapplingHook.h"
 #include "../Scripts/GrapplingHookRope.h"
 #include "../Scripts/CooldownIndicator.h"
@@ -15,6 +16,7 @@
 #include "../../Engine/Physics/PhysicsEngine.h"
 #include "../../Engine/Time.h"
 #include "../../Engine/SMath.h"
+
 
 using namespace DirectX::SimpleMath;
 
@@ -183,6 +185,11 @@ void GameScene::init()
 		"RopeMesh"
 	);
 
+	this->getResources().addMesh(
+		MeshData(DefaultMesh::SPHERE),
+		"SphereMesh"
+	);
+
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
 	levelLoader.load("Resources/Levels/testLevel.fbx");
@@ -197,10 +204,9 @@ void GameScene::init()
 	this->setActiveCamera(cam.addComponent<Camera>());
 
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
-	Player* play = cam.addComponent<Player>();
-	play->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
+	Player* player = cam.addComponent<Player>();
+	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
-	cam.addComponent<Player>();
 	Rigidbody* rb = cam.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addCapsuleCollider(1.0f, 2.0f);
@@ -209,6 +215,20 @@ void GameScene::init()
 	cam.getComponent<Camera>()->updateAspectRatio(
 		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
+
+	GameObject& hookObject = this->addGameObject("HookPoint");
+	HookPoint* hook = hookObject.addComponent<HookPoint>();
+	hookObject.getComponent<Transform>()->setScaling(0.25f, 0.25f, 0.25f);
+	rb = hookObject.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
+	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
+	rb->setMaterial(0.2f, 0.0f);
+	rb->setType(rp3d::BodyType::KINEMATIC);
+	rb->setTrigger(true);
+	player->setHookPoint(hook);
+	MeshComp* mc = hookObject.addComponent<MeshComp>();
+	mc->setMesh("SphereMesh", "testMaterial");
 
 	// Origin
 	GameObject& origin = this->addGameObject("Origin");

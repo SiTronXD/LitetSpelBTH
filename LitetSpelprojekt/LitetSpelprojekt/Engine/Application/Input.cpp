@@ -98,6 +98,11 @@ bool Input::isKeyJustPressed(Keys keyCode)
 	return keys[(unsigned int)keyCode] && !lastPressedKeys[(unsigned int)keyCode];
 }
 
+bool Input::isKeyReleased(Keys keyCode)
+{
+	return !keys[(unsigned int)keyCode] && lastPressedKeys[(unsigned int)keyCode];
+}
+
 bool Input::isMouseButtonDown(Mouse mouseCode)
 {
 	return mouseButtons[(unsigned int)mouseCode];
@@ -106,6 +111,11 @@ bool Input::isMouseButtonDown(Mouse mouseCode)
 bool Input::isMouseButtonJustPressed(Mouse mouseCode)
 {
 	return mouseButtons[(unsigned int)mouseCode] && !lastPressedMouseButtons[(unsigned int)mouseCode];
+}
+
+bool Input::isMouseButtonReleased(Mouse mouseCode)
+{
+	return !mouseButtons[(unsigned int)mouseCode] && lastPressedMouseButtons[(unsigned int)mouseCode];
 }
 
 bool Input::shouldLockCursor()

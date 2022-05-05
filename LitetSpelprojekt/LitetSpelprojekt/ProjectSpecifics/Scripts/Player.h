@@ -3,6 +3,7 @@
 #include "../../Engine/Components/Componentpch.h"
 
 class Rigidbody;
+class HookPoint;
 
 class Player : public Script
 {
@@ -16,6 +17,8 @@ private:
 
 	float healthCooldown;
 
+	DirectX::SimpleMath::Vector3 hookPointOffset;
+
 	bool onGround;
 	bool keyPickup;
 	bool dead;
@@ -23,6 +26,9 @@ private:
 
 	// Component references
 	Rigidbody* rb;
+
+	// References to other gameObject components
+	HookPoint* hookPoint;
 	
 	void move();
 	void jump();
@@ -39,11 +45,11 @@ public:
 	inline float getJumpForce() const { return this->jumpForce; }
 	void setJumpForce(float jumpForce);
 
-
 	inline float getMouseSensitivity() const { return this->mouseSensitivity; }
 	void setMouseSensitivity(float mouseSensitivity);
 	void setHealth(int health);
 	void addHealth(int health);
+	void setHookPoint(HookPoint* hp);
 	
 	inline bool isOnGround() const { return this->onGround; }
 	inline bool isKeyPickUp() const { return this->keyPickup; }

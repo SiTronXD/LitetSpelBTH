@@ -21,6 +21,7 @@ void PhysicsEngine::init(Scene* scene)
 	/*
 	this->physCom.destroyPhysicsWorld(this->world);
 	this->world = this->physCom.createPhysicsWorld();
+	this->world->setGravity(rp3d::Vector3(0.0f, -9.82f, 0.0f));
 	this->world->setEventListener(&this->listener);
 	*/
 }

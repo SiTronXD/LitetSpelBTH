@@ -39,6 +39,7 @@ void Rigidbody::setPhysics(PhysicsEngine& physicsEngine)
 {
 	this->physEngine = &physicsEngine;
 	this->rb = this->physEngine->getWorld()->createRigidBody(this->getConvertedTransform());
+	this->rb->setLinearLockAxisFactor(rp3d::Vector3(1.0f, 1.0f, 1.0f));
 	this->rb->setType(rp3d::BodyType::DYNAMIC);
 	this->rb->setMass(1.0f);
 }
@@ -49,6 +50,7 @@ void Rigidbody::addBoxCollider(DirectX::SimpleMath::Vector3 extents, DirectX::Si
 	transform.setPosition({ posOffset.x, posOffset.y, posOffset.z });
 
 	this->colliders.push_back(this->rb->addCollider(this->physEngine->getCommon().createBoxShape({ extents.x, extents.y, extents.z }), transform));
+	this->rb->updateLocalCenterOfMassFromColliders();
 	this->colliders.back()->getMaterial().setFrictionCoefficient(0.2f);
 	this->colliders.back()->getMaterial().setBounciness(0.0f);
 }
@@ -59,6 +61,7 @@ void Rigidbody::addSphereCollider(float radius, DirectX::SimpleMath::Vector3 pos
 	transform.setPosition({ posOffset.x, posOffset.y, posOffset.z });
 
 	this->colliders.push_back(this->rb->addCollider(this->physEngine->getCommon().createSphereShape(radius), transform));
+	this->rb->updateLocalCenterOfMassFromColliders();
 	this->colliders.back()->getMaterial().setFrictionCoefficient(0.2f);
 	this->colliders.back()->getMaterial().setBounciness(0.0f);
 }
@@ -69,6 +72,7 @@ void Rigidbody::addCapsuleCollider(float radius, float height, DirectX::SimpleMa
 	transform.setPosition({ posOffset.x, posOffset.y, posOffset.z });
 
 	this->colliders.push_back(this->rb->addCollider(this->physEngine->getCommon().createCapsuleShape(radius, height), transform));
+	this->rb->updateLocalCenterOfMassFromColliders();
 	this->colliders.back()->getMaterial().setFrictionCoefficient(0.2f);
 	this->colliders.back()->getMaterial().setBounciness(0.0f);
 }
@@ -81,6 +85,19 @@ void Rigidbody::setMass(float mass)
 void Rigidbody::setType(rp3d::BodyType type)
 {
 	this->rb->setType(type);
+}
+
+void Rigidbody::setGravity(bool status)
+{
+	this->rb->enableGravity(status);
+}
+
+void Rigidbody::setTrigger(bool status)
+{
+	for (auto& col : this->colliders)
+	{
+		col->setIsTrigger(status);
+	}
 }
 
 void Rigidbody::setMaterial(float frictionCoeff, float bounciness, float massDensity)
@@ -98,6 +115,13 @@ void Rigidbody::setMaterial(float frictionCoeff, float bounciness, float massDen
 		col->setMaterial(mat);
 	}
 	
+}
+
+void Rigidbody::setPosition(DirectX::SimpleMath::Vector3 vec)
+{
+	rp3d::Transform transform = this->rb->getTransform();
+	transform.setPosition({ vec.x, vec.y, vec.z });
+	this->rb->setTransform(transform);
 }
 
 void Rigidbody::setPosRestrict(DirectX::SimpleMath::Vector3 restrictVec)
