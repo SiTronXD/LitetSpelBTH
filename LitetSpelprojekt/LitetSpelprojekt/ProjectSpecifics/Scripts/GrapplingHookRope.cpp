@@ -1,4 +1,5 @@
 #include "GrapplingHookRope.h"
+#include "GrapplingHook.h"
 #include "../../Engine/Time.h"
 #include "../../Engine/GameObject.h"
 
@@ -20,16 +21,22 @@ void GrapplingHookRope::setGrapplingHook(GrapplingHook* grapplingHook)
 	this->grapplingHook = grapplingHook;
 }
 
+void GrapplingHookRope::setTargetPos(DirectX::SimpleMath::Vector3 target)
+{
+	this->targetPos = target;
+	this->active = true;
+}
+
 void GrapplingHookRope::init()
 {
-	this->transform = Script::getObject().getComponent<Transform>();
+	this->transform = this->getTransform();
 	this->targetPos = Vector3(0,0,0);
 }
 
 void GrapplingHookRope::update()
 {
 	// Activate when grappling hook shoots
-	if (false)
+	if (this->active)
 	{
 		// Update position
 		Vector3 newPos;
@@ -43,6 +50,7 @@ void GrapplingHookRope::update()
 
 		// Update scale
 		this->transform->setScaling(0.1f, 0.1f, dir.Length());
+		this->active = false;
 	}
 	else
 	{

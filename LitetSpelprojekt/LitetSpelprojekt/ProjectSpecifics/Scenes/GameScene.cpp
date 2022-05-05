@@ -218,7 +218,7 @@ void GameScene::init()
 
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
-	hookObject.getComponent<Transform>()->setScaling(0.25f, 0.25f, 0.25f);
+	hookObject.getComponent<Transform>()->setScaling(0.1f, 0.1f, 0.1f);
 	rb = hookObject.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
@@ -226,23 +226,14 @@ void GameScene::init()
 	rb->setMaterial(0.2f, 0.0f);
 	rb->setType(rp3d::BodyType::KINEMATIC);
 	rb->setTrigger(true);
-	player->setHookPoint(hook);
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");
 
 	// Origin
 	GameObject& origin = this->addGameObject("Origin");
-	origin.getComponent<Transform>()->setScaling(Vector3(3,3,3));
+	origin.getComponent<Transform>()->setScaling(Vector3(3, 3, 3));
 	MeshComp* originMC = origin.addComponent<MeshComp>();
 	originMC->setMesh("RealSphereMesh", "testMaterial");
-
-	// Grappling hook
-	GameObject& grapplingHook = this->addGameObject("Grappling hook");
-	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
-	amc->setMesh("GrapplingHookMesh", "GrapplingHookMaterial");
-	GrapplingHook* grapplingHookComp = 
-		grapplingHook.addComponent<GrapplingHook>();
-	grapplingHookComp->setPlayerTransform(cam.getComponent<Transform>());
 
 	// Grappling hook rope
 	GameObject& rope = this->addGameObject("Rope");
@@ -251,6 +242,14 @@ void GameScene::init()
 	mc->setMesh("RopeMesh", "ropeMaterial");
 	GrapplingHookRope* grapplingHookRopeComp =
 		rope.addComponent<GrapplingHookRope>();
+
+	// Grappling hook
+	GameObject& grapplingHook = this->addGameObject("Grappling hook");
+	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("GrapplingHookMesh", "GrapplingHookMaterial");
+	GrapplingHook* grapplingHookComp = 
+		grapplingHook.addComponent<GrapplingHook>();
+	grapplingHookComp->setRope(grapplingHookRopeComp);
 	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
 
 	// Grappling hook cooldown indicator
@@ -259,7 +258,8 @@ void GameScene::init()
 	amc->setMesh("CooldownIndicatorMesh", "WhiteMaterial");
 	CooldownIndicator* cooldownIndicatorComp =
 		cooldownIndicatorObject.addComponent<CooldownIndicator>();
-	cooldownIndicatorComp->setup(grapplingHookComp);
+
+	player->setGrapplingHook(hook, grapplingHookComp, cooldownIndicatorComp);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);

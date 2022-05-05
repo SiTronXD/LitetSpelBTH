@@ -4,6 +4,8 @@
 
 class Rigidbody;
 class HookPoint;
+class GrapplingHook;
+class CooldownIndicator;
 
 class Player : public Script
 {
@@ -15,9 +17,8 @@ private:
 	int keyPieces;
 	int health;
 
+	float pulseCannonCooldown;
 	float healthCooldown;
-
-	DirectX::SimpleMath::Vector3 hookPointOffset;
 
 	bool onGround;
 	bool keyPickup;
@@ -29,6 +30,8 @@ private:
 
 	// References to other gameObject components
 	HookPoint* hookPoint;
+	GrapplingHook* grapplingHook;
+	CooldownIndicator* cooldownIndicatior;
 	
 	void move();
 	void jump();
@@ -49,7 +52,7 @@ public:
 	void setMouseSensitivity(float mouseSensitivity);
 	void setHealth(int health);
 	void addHealth(int health);
-	void setHookPoint(HookPoint* hp);
+	void setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIndicator* cooldown);
 	
 	inline bool isOnGround() const { return this->onGround; }
 	inline bool isKeyPickUp() const { return this->keyPickup; }
