@@ -3,6 +3,10 @@
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "GameOverScene.h"
+#include "../Scripts/Player.h"
+#include "../Scripts/GrapplingHook.h"
+#include "../Scripts/GrapplingHookRope.h"
+#include "../Scripts/CooldownIndicator.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -10,14 +14,12 @@
 #include "../../Engine/Graphics/UIRenderer.h"
 #include "../../Engine/Physics/PhysicsEngine.h"
 #include "../../Engine/Time.h"
+#include "../../Engine/SMath.h"
 
 using namespace DirectX::SimpleMath;
 
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
 {
-	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
-	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
-
 	// Sphere colliders
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
 	{
@@ -117,7 +119,9 @@ void GameScene::init()
 	
 	//Object Textures
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
-	
+	this->getResources().addTexture("Resources/Textures/RopeTexture.png", "RopeTexture.png");
+	this->getResources().addTexture("Resources/Textures/StingrayPBS1SG_Base_Color_1001.png", "GrapplingHookTexture");
+
 	//Gui textures
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "HealthBox.png");
@@ -125,7 +129,8 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
-	
+	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
+
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
 
@@ -136,11 +141,21 @@ void GameScene::init()
 	//Materials
 	this->getResources().addMaterial("me.png", "testMaterial");
 	this->getResources().addMaterial("me.png", "portalMaterial");
+	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
+	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
+	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
+
+	// Default meshes
+	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::PLANE), "PlaneMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::TETRAHEDRON), "Tetrahedron");
 
 	//Add cubemap
 	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
 
+	// Models
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
 	testMeshData.transformMesh(
 		Matrix::CreateScale(0.5f, 1.0f, 1.0f) * Matrix::CreateRotationZ(3.14f * 0.3f)
@@ -149,14 +164,23 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh" 
 	);
+	MeshData grapplingHookData = MeshLoader::loadModel("Resources/Models/MeyerWeaponOBJEdit.obj");
 	this->getResources().addMesh(
-		MeshData(DefaultMesh::PLANE),
-		"PlaneMesh"
+		std::move(grapplingHookData),
+		"GrapplingHookMesh"
+	);
+	MeshData cooldownIndicatorMeshData(DefaultMesh::PLANE);
+	cooldownIndicatorMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	this->getResources().addMesh(
+		std::move(cooldownIndicatorMeshData), 
+		"CooldownIndicatorMesh"
 	);
 
+	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
+	ropeMesh.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
 	this->getResources().addMesh(
-		MeshData(DefaultMesh::TETRAHEDRON),
-		"Tetrahedron"
+		std::move(ropeMesh),
+		"RopeMesh"
 	);
 
 	// Level loader
@@ -169,6 +193,7 @@ void GameScene::init()
 	);
 	this->addLevelColliders(levelLoader);
   
+	// Player
 	this->setActiveCamera(cam.addComponent<Camera>());
 
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
@@ -185,14 +210,47 @@ void GameScene::init()
 		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
 
+	// Origin
+	GameObject& origin = this->addGameObject("Origin");
+	origin.getComponent<Transform>()->setScaling(Vector3(3,3,3));
+	MeshComp* originMC = origin.addComponent<MeshComp>();
+	originMC->setMesh("RealSphereMesh", "testMaterial");
+
+	// Grappling hook
+	GameObject& grapplingHook = this->addGameObject("Grappling hook");
+	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("GrapplingHookMesh", "GrapplingHookMaterial");
+	GrapplingHook* grapplingHookComp = 
+		grapplingHook.addComponent<GrapplingHook>();
+	grapplingHookComp->setPlayerTransform(cam.getComponent<Transform>());
+
+	// Grappling hook rope
+	GameObject& rope = this->addGameObject("Rope");
+	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
+	MeshComp* mc = rope.addComponent<MeshComp>();
+	mc->setMesh("RopeMesh", "ropeMaterial");
+	GrapplingHookRope* grapplingHookRopeComp =
+		rope.addComponent<GrapplingHookRope>();
+	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
+
+	// Grappling hook cooldown indicator
+	GameObject& cooldownIndicatorObject = this->addGameObject("Grappling Hook Cooldown Indicator");
+	amc = cooldownIndicatorObject.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("CooldownIndicatorMesh", "WhiteMaterial");
+	CooldownIndicator* cooldownIndicatorComp =
+		cooldownIndicatorObject.addComponent<CooldownIndicator>();
+	cooldownIndicatorComp->setup(grapplingHookComp);
+
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
+	rb = model.addComponent<Rigidbody>();
+	rb->addForce(Vector3(0, 2, -2));
+	mc = model.addComponent<MeshComp>();
 	model.getComponent<Transform>()->setPosition(10.0f, -7.0f, 10.0f);
 	rb = model.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addSphereCollider(2.0f);
 	rb->setType(rp3d::BodyType::STATIC);
-	MeshComp* mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 
 	// Level game object

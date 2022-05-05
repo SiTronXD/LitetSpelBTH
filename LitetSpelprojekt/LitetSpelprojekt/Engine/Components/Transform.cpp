@@ -1,9 +1,26 @@
 #include "Transform.h"
 
+using namespace DirectX::SimpleMath;
+
 void Transform::updateWorldMatrix()
 {
+    // Manual rotation
+    if (this->useVectorRotation)
+    {
+        Matrix rotMat(
+            Vector4(this->rightVec.x,   this->rightVec.y,   this->rightVec.z,   0.0f),
+            Vector4(this->upVec.x,      this->upVec.y,      this->upVec.z,      0.0f),
+            Vector4(this->forwardVec.x, this->forwardVec.y, this->forwardVec.z, 0.0f),
+            Vector4(0.0f,               0.0f,               0.0f,               1.0f)
+        );
+
+        this->worldMatrix =
+            Matrix::CreateScale(this->scale.x, this->scale.y, this->scale.z) *
+            rotMat *
+            Matrix::CreateTranslation(this->pos.x, this->pos.y, this->pos.z);
+    }
     // Quaternion rotation
-    if (this->rotQuat.x != 0.0f ||
+    else if (this->rotQuat.x != 0.0f ||
         this->rotQuat.y != 0.0f ||
         this->rotQuat.z != 0.0f ||
         this->rotQuat.w != 0.0f)
@@ -36,7 +53,8 @@ Transform::Transform(GameObject& object):
     Component(object),
     pos(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f)),
     rot(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f)),
-    scale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f))
+    scale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f)),
+    useVectorRotation(false)
 {
     this->updateDirectionalVectors();
 }
@@ -83,6 +101,24 @@ void Transform::setRotation(const DirectX::SimpleMath::Vector3& rot)
 {
     this->rot = rot;
     this->updateDirectionalVectors();
+}
+
+void Transform::setRotation(
+    const DirectX::SimpleMath::Vector3& newForward, 
+    const DirectX::SimpleMath::Vector3& worldUp)
+{
+    this->useVectorRotation = true;
+
+    // Forward
+    this->forwardVec = newForward;
+    this->forwardVec.Normalize();
+
+    // Right
+    worldUp.Cross(this->forwardVec, this->rightVec);
+    this->rightVec.Normalize();
+
+    // Up
+    this->forwardVec.Cross(this->rightVec, this->upVec);
 }
 
 void Transform::setRotation(const DirectX::SimpleMath::Vector4& quat)

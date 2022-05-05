@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../Engine/Components/Script.h"
 #include "../../Engine/Components/Componentpch.h"
 
 class Rigidbody;

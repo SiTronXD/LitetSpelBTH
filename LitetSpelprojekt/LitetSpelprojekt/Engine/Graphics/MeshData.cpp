@@ -206,6 +206,51 @@ void MeshData::createSphere(int resX, int resY)
 	}
 }
 
+void MeshData::createLowPolyCylinder()
+{
+	// Vertices
+	this->vertices.push_back(this->makeVert(-0.866f, 0.0f, 0.5f, 0.0f, 1.0f));
+	this->vertices.push_back(this->makeVert(0.0f, 0.0f, -1.0f, 0.5f, 0.0f));
+	this->vertices.push_back(this->makeVert(0.866f, 0.0f, 0.5f, 1.0f, 1.0f));
+
+	this->vertices.push_back(this->makeVert(-0.866f, 1.0f, 0.5f, 0.0f, 1.0f));
+	this->vertices.push_back(this->makeVert(0.0f, 1.0f, -1.0f, 0.5f, 0.0f));
+	this->vertices.push_back(this->makeVert(0.866f, 1.0f, 0.5f, 1.0f, 1.0f));
+
+	// Indices
+	this->indices.push_back(0);
+	this->indices.push_back(1);
+	this->indices.push_back(2);
+
+	this->indices.push_back(3);
+	this->indices.push_back(5);
+	this->indices.push_back(4);
+
+	// Side 1
+	this->indices.push_back(0);
+	this->indices.push_back(3);
+	this->indices.push_back(1);
+	this->indices.push_back(1);
+	this->indices.push_back(3);
+	this->indices.push_back(4);
+
+	// Side 2
+	this->indices.push_back(1);
+	this->indices.push_back(4);
+	this->indices.push_back(2);
+	this->indices.push_back(2);
+	this->indices.push_back(4);
+	this->indices.push_back(5);
+
+	// Side 3
+	this->indices.push_back(2);
+	this->indices.push_back(5);
+	this->indices.push_back(0);
+	this->indices.push_back(0);
+	this->indices.push_back(5);
+	this->indices.push_back(3);
+}
+
 void MeshData::transformVector(
 	const DirectX::SimpleMath::Matrix& transform,
 	DirectX::XMFLOAT3& vec,
@@ -284,6 +329,12 @@ void MeshData::createDefault(DefaultMesh defaultMesh)
 	case DefaultMesh::SPHERE:
 
 		this->createSphere();
+
+		break;
+
+	case DefaultMesh::LOW_POLY_CYLINDER:
+
+		this->createLowPolyCylinder();
 
 		break;
 	}

@@ -70,6 +70,10 @@
     <ClCompile Include="Engine\Physics\PhysicsRaycastCallback.cpp" />
     <ClCompile Include="Engine\Graphics\DSV.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHook.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHookRope.cpp" />
+    <ClCompile Include="Engine\Components\AbsoluteMeshComp.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\CooldownIndicator.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +135,10 @@
     <ClInclude Include="Engine\Physics\PhysicsRaycastCallback.h" />
     <ClInclude Include="Engine\Graphics\DSV.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHook.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHookRope.h" />
+    <ClInclude Include="Engine\Components\AbsoluteMeshComp.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\CooldownIndicator.h" />
     <ClInclude Include="Engine\Graphics\ParticleSystem.h" />
   </ItemGroup>
   <ItemGroup>
