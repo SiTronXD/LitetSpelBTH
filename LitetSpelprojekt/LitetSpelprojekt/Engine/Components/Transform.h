@@ -18,7 +18,6 @@ private:
 	DirectX::SimpleMath::Vector3 forwardVec;
 	
 	bool useVectorRotation;
-	bool useRenderPos;
 
 	void updateWorldMatrix();
 	void updateDirectionalVectors();
