@@ -54,7 +54,8 @@ Transform::Transform(GameObject& object):
     pos(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f)),
     rot(DirectX::SimpleMath::Vector3(0.0f, 0.0f, 0.0f)),
     scale(DirectX::SimpleMath::Vector3(1.0f, 1.0f, 1.0f)),
-    useVectorRotation(false)
+    useVectorRotation(false),
+    useRenderPos(false)
 {
     this->updateDirectionalVectors();
 }
