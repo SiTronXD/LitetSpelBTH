@@ -17,6 +17,8 @@ private:
 		DirectX::XMINT2 uiSize;
 
 		DirectX::XMFLOAT2 padding2;
+
+		DirectX::XMFLOAT4 color;
 	} uiOrientationBufferStruct{};
 
 	struct TextOrientationBufferData
@@ -28,6 +30,8 @@ private:
 		DirectX::XMINT2 cutoutRectSize;
 
 		DirectX::XMFLOAT2 padding1;
+
+		DirectX::XMFLOAT4 color;
 	} textOrientationBufferStruct{};
 
 	struct CharacterRect
@@ -73,15 +77,21 @@ public:
 
 	void renderTexture(
 		const std::string& textureName,
-		int x, int y, int uiWidth, int uiHeight
+		int x, int y, int uiWidth, int uiHeight,
+		const DirectX::SimpleMath::Vector3& color =
+			DirectX::SimpleMath::Vector3(1, 1, 1)
 	);
 	void renderTexture(
 		SRV& srv,
 		int x, int y, int uiWidth, int uiHeight,
-		int srvWidth, int srvHeight
+		int srvWidth, int srvHeight,
+		const DirectX::SimpleMath::Vector3& color =
+			DirectX::SimpleMath::Vector3(1, 1, 1)
 	);
 	void renderString(
 		const std::string& text,
-		int x, int y, int characterWidth, int characterHeight
+		int x, int y, int characterWidth, int characterHeight,
+		const DirectX::SimpleMath::Vector3& color = 
+			DirectX::SimpleMath::Vector3(1,1,1)
 	);
 };

@@ -126,14 +126,14 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);NOMINMAX;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)External\assimp\Inc;$(ProjectDir)External\stbi</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)External\ReactPhysics3D\Inc;$(ProjectDir)External\assimp\Inc;$(ProjectDir)External\stbi</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;DirectXTK.lib;External\assimp\Libs\Deb\assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;DirectXTK.lib;External\assimp\Libs\Deb\assimp-vc143-mtd.lib;External\ReactPhysics3D\Libs\Deb\reactphysics3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <FxCompile>
       <ObjectFileOutput>$(OutDir)..\..\LitetSpelprojekt\CompiledShaders\%(Filename).cso</ObjectFileOutput>
@@ -146,24 +146,25 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);NOMINMAX;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)External\assimp\Inc;$(ProjectDir)External\stbi</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)External\ReactPhysics3D\Inc;$(ProjectDir)External\assimp\Inc;$(ProjectDir)External\stbi</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;DirectXTK.lib;External\assimp\Libs\Rel\assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;DirectXTK.lib;External\assimp\Libs\Rel\assimp-vc143-mt.lib;External\ReactPhysics3D\Libs\Rel\reactphysics3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ProjectSpecifics\Scripts\CooldownIndicator.cpp" />
+    <ClCompile Include="Engine\Components\AbsoluteMeshComp.cpp" />
     <ClCompile Include="Engine\Graphics\DSV.cpp" />
     <ClCompile Include="Engine\Dev\Str.cpp" />
     <ClCompile Include="Engine\Graphics\CubeMap.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\ComputeShader.cpp" />
-    <ClCompile Include="Engine\Components\Collider.cpp" />
     <ClCompile Include="Engine\Components\Camera.cpp" />
     <ClCompile Include="Engine\Components\Component.cpp" />
     <ClCompile Include="Engine\ECS.cpp" />
@@ -181,11 +182,15 @@
     <ClCompile Include="Engine\Graphics\MeshData.cpp" />
     <ClCompile Include="Engine\Graphics\InputLayoutDesc.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
-    <ClCompile Include="Engine\Physics\BoundingVolumes.cpp" />
     <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHookRope.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHook.cpp" />
+    <ClCompile Include="Engine\Physics\PhysicsEventListener.cpp" />
+    <ClCompile Include="Engine\Physics\PhysicsRaycastCallback.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\HookPoint.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\Player.cpp" />
@@ -219,6 +224,8 @@
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ProjectSpecifics\Scripts\CooldownIndicator.h" />
+    <ClInclude Include="Engine\Components\AbsoluteMeshComp.h" />
     <ClInclude Include="Engine\Graphics\DSV.h" />
     <ClInclude Include="Engine\Graphics\CubeMap.h" />
     <ClInclude Include="Engine\Components\Componentpch.h" />
@@ -227,7 +234,6 @@
     <ClInclude Include="Engine\Dev\Helpers.h" />
     <ClInclude Include="Engine\Graphics\ConstantBuffer.h" />
     <ClInclude Include="Engine\Graphics\Buffer.h" />
-    <ClInclude Include="Engine\Components\Collider.h" />
     <ClInclude Include="Engine\Components\Camera.h" />
     <ClInclude Include="Engine\Components\Component.h" />
     <ClInclude Include="Engine\ECS.h" />
@@ -246,11 +252,15 @@
     <ClInclude Include="Engine\Graphics\MeshData.h" />
     <ClInclude Include="Engine\Graphics\InputLayoutDesc.h" />
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
-    <ClInclude Include="Engine\Physics\BoundingVolumes.h" />
     <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHookRope.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHook.h" />
+    <ClInclude Include="Engine\Physics\PhysicsEventListener.h" />
+    <ClInclude Include="Engine\Physics\PhysicsRaycastCallback.h" />
     <ClInclude Include="Engine\Graphics\ParticleSystem.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\HookPoint.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\Player.h" />

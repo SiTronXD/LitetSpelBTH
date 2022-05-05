@@ -2,6 +2,7 @@
 
 float Time::deltaTime = 0.0f;
 float Time::timeSinceStart = 0.0f;
+bool Time::oneSecondPassed = false;
 
 std::chrono::system_clock::time_point Time::lastTime = std::chrono::system_clock::time_point();
 std::chrono::system_clock::time_point Time::currentTime = std::chrono::system_clock::time_point();
@@ -24,7 +25,11 @@ void Time::updateDeltaTime()
 	deltaTime = elapsedSeconds.count();
 
 	// Update time since start
+	unsigned int beforeTime = (unsigned int) timeSinceStart;
 	timeSinceStart += deltaTime;
+
+	// Update if a second has passed
+	oneSecondPassed = beforeTime != (unsigned int) timeSinceStart;
 }
 
 Time::Time()
