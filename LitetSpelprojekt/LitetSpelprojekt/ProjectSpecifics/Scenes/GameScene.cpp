@@ -247,7 +247,7 @@ void GameScene::init()
 	// Grappling hook rope
 	GameObject& rope = this->addGameObject("Rope");
 	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
-	MeshComp* mc = rope.addComponent<MeshComp>();
+	mc = rope.addComponent<MeshComp>();
 	mc->setMesh("RopeMesh", "ropeMaterial");
 	GrapplingHookRope* grapplingHookRopeComp =
 		rope.addComponent<GrapplingHookRope>();
