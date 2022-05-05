@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ProjectSpecifics\Scripts\CooldownIndicator.cpp" />
     <ClCompile Include="Engine\Components\AbsoluteMeshComp.cpp" />
     <ClCompile Include="Engine\Graphics\DSV.cpp" />
     <ClCompile Include="Engine\Dev\Str.cpp" />
@@ -221,6 +222,7 @@
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ProjectSpecifics\Scripts\CooldownIndicator.h" />
     <ClInclude Include="Engine\Components\AbsoluteMeshComp.h" />
     <ClInclude Include="Engine\Graphics\DSV.h" />
     <ClInclude Include="Engine\Graphics\CubeMap.h" />

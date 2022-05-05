@@ -7,7 +7,13 @@ cbuffer LightBuffer : register(b0)
 cbuffer DirLightBuffer : register(b1)
 {
     float3 lightDir;
-    float padding;
+    float padding0;
+}
+
+cbuffer PixelShaderBuffer : register(b2)
+{
+    float3 multiplyColor;
+    float padding1;
 }
 
 struct Input
@@ -67,5 +73,5 @@ float4 main(Input input) : SV_TARGET
     else
         return float4(0.5f, 0.5f, 0.5f, 1.0f);*/
 
-    return texCol * shadowFactor;
+    return texCol /* shadowFactor*/ * float4(multiplyColor, 1.0f);
 }

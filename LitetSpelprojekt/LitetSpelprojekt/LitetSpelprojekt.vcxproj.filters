@@ -70,6 +70,7 @@
     <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHook.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\GrapplingHookRope.cpp" />
     <ClCompile Include="Engine\Components\AbsoluteMeshComp.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\CooldownIndicator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -133,6 +134,7 @@
     <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHook.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\GrapplingHookRope.h" />
     <ClInclude Include="Engine\Components\AbsoluteMeshComp.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\CooldownIndicator.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

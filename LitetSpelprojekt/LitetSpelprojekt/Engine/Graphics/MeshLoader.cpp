@@ -40,7 +40,9 @@ MeshData MeshLoader::loadModel(const std::string& fileName, bool flipVerticalUV)
 			// Load data
 			aiVector3D pos = submesh->mVertices[j];
 			aiVector3D norm = submesh->mNormals[j];
-			aiVector3D uv = submesh->mTextureCoords[0][j];
+			aiVector3D uv = submesh->HasTextureCoords(0) ? 
+				submesh->mTextureCoords[0][j] : 
+				aiVector3D(0, 0, 0);
 
 			if (flipVerticalUV)
 				uv.y = 1.0f - uv.y;
@@ -57,7 +59,11 @@ MeshData MeshLoader::loadModel(const std::string& fileName, bool flipVerticalUV)
 		// Loop through each index
 		for (unsigned int j = 0; j < submesh->mNumFaces; ++j)
 		{
-			assert(submesh->mFaces[j].mNumIndices == 3u);
+			//assert(submesh->mFaces[j].mNumIndices == 3u);
+			if (submesh->mFaces[j].mNumIndices != 3u)
+			{
+				continue;
+			}
 
 			createdMeshData.addIndex(submesh->mFaces[j].mIndices[0]);
 			createdMeshData.addIndex(submesh->mFaces[j].mIndices[1]);
@@ -76,6 +82,12 @@ MeshData MeshLoader::loadModel(const std::string& fileName, bool flipVerticalUV)
 
 	createdMeshData.invertFaces();
 	createdMeshData.calculateNormals();
+
+	// Print some stats
+	Log::write(
+		"Triangles in " + fileName + ": " + 
+		std::to_string(createdMeshData.getVertices().size())
+	);
 
 	return createdMeshData;
 }

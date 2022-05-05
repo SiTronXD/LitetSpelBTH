@@ -32,6 +32,12 @@ private:
 		DirectX::XMFLOAT4X4 mvpMat;
 	} compactCameraBufferStruct{};
 
+	struct PixelShaderBufferData
+	{
+		DirectX::XMFLOAT3 color;
+		float padding;
+	} pixelShaderBufferStruct{};
+
 	ID3D11Device* device;
 	ID3D11DeviceContext* immediateContext;
 	IDXGISwapChain* swapChain;
@@ -45,8 +51,13 @@ private:
 	ID3D11DepthStencilState* dsState;
 	DSV dsView;
 
+	ID3D11Buffer* nullConstantBuffer[1]{ nullptr };
+	ID3D11ShaderResourceView* nullSRV[1]{ nullptr };
+	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
+
 	ConstantBuffer cameraConstantBuffer;
 	ConstantBuffer compactCameraConstantBuffer;
+	ConstantBuffer pixelShaderConstantBuffer;
 
 	Window* window;
 	Resources& resources;

@@ -40,6 +40,7 @@ void GrapplingHook::setToShootPos(DirectX::SimpleMath::Vector3& result)
 void GrapplingHook::init()
 {
 	this->transform = Script::getObject().getComponent<Transform>();
+	this->transform->setScaling(Vector3(0.5f, 0.5f, 0.5f));
 }
 
 void GrapplingHook::update()

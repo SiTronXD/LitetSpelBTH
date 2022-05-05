@@ -6,6 +6,7 @@
 #include "../Scripts/Player.h"
 #include "../Scripts/GrapplingHook.h"
 #include "../Scripts/GrapplingHookRope.h"
+#include "../Scripts/CooldownIndicator.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -115,7 +116,8 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
-	
+	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
+
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
 
@@ -128,8 +130,9 @@ void GameScene::init()
 	this->getResources().addMaterial("me.png", "portalMaterial");
 	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
 	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
+	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
 
-	// Default meshes for debugging
+	// Default meshes
 	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
 	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
 	this->getResources().addMesh(MeshData(DefaultMesh::PLANE), "PlaneMesh");
@@ -148,10 +151,16 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh" 
 	);
-	MeshData grapplingHookData = MeshLoader::loadModel("Resources/Models/MeyerWeaponOBJ.obj");
+	MeshData grapplingHookData = MeshLoader::loadModel("Resources/Models/MeyerWeaponOBJEdit.obj");
 	this->getResources().addMesh(
 		std::move(grapplingHookData),
 		"GrapplingHookMesh"
+	);
+	MeshData cooldownIndicatorMeshData(DefaultMesh::PLANE);
+	cooldownIndicatorMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	this->getResources().addMesh(
+		std::move(cooldownIndicatorMeshData), 
+		"CooldownIndicatorMesh"
 	);
 
 	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
@@ -190,7 +199,6 @@ void GameScene::init()
 
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
-	grapplingHook.getComponent<Transform>()->setPosition(Vector3(0,-8,0));
 	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
 	amc->setMesh("GrapplingHookMesh", "GrapplingHookMaterial");
 	GrapplingHook* grapplingHookComp = 
@@ -206,6 +214,13 @@ void GameScene::init()
 		rope.addComponent<GrapplingHookRope>();
 	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
 
+	// Grappling hook cooldown indicator
+	GameObject& cooldownIndicatorObject = this->addGameObject("Grappling Hook Cooldown Indicator");
+	amc = cooldownIndicatorObject.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("CooldownIndicatorMesh", "WhiteMaterial");
+	CooldownIndicator* cooldownIndicatorComp =
+		cooldownIndicatorObject.addComponent<CooldownIndicator>();
+	cooldownIndicatorComp->setup(grapplingHookComp);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);

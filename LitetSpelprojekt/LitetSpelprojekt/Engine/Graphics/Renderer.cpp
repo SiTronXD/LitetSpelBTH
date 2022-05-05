@@ -1,5 +1,6 @@
 #include "Renderer.h"
 #include "../Dev/Log.h"
+#include "../Dev/Helpers.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -115,6 +116,7 @@ Renderer::Renderer(Resources& resources)
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
 	compactCameraConstantBuffer(*this, "compactCameraConstantBuffer"),
+	pixelShaderConstantBuffer(*this, "pixelShaderConstantBuffer"),
 	backBufferUAV(*this, "backBufferUAV"),
 
 	resources(resources),
@@ -127,12 +129,12 @@ Renderer::Renderer(Resources& resources)
 
 Renderer::~Renderer()
 {
-	this->device->Release();
-	this->immediateContext->Release();
-	this->swapChain->Release();
+	S_RELEASE(this->device);
+	S_RELEASE(this->immediateContext);
+	S_RELEASE(this->swapChain);
 
-	this->backBufferRTV->Release();
-	this->dsState->Release();
+	S_RELEASE(this->backBufferRTV);
+	S_RELEASE(this->dsState);
 }
 
 void Renderer::init(Window& window)
@@ -153,7 +155,8 @@ void Renderer::init(Window& window)
 	// Constant buffers
 	this->cameraConstantBuffer.createBuffer(sizeof(CameraBufferData));
 	this->compactCameraConstantBuffer.createBuffer(sizeof(CompactCameraBufferData));
-	
+	this->pixelShaderConstantBuffer.createBuffer(sizeof(PixelShaderBufferData));
+
 	//Init skybox
 	this->skybox.initialize();
 
@@ -161,7 +164,6 @@ void Renderer::init(Window& window)
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-float timer = 0.0f;
 void Renderer::render(Scene& scene)
 {
 #ifdef _DEBUG
@@ -214,14 +216,28 @@ void Renderer::render(Scene& scene)
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
 	{
-		Mesh& mesh = this->resources.getMesh(meshComponents[i]->getMeshName().c_str());
+		MeshComp* currentMeshComp = meshComponents[i];
+		Mesh& mesh = this->resources.getMesh(currentMeshComp->getMeshName().c_str());
 
 		// Set mvp Matrix
-		Matrix m = meshComponents[i]->getTransform()->getWorldMatrix();
+		Matrix m = currentMeshComp->getTransform()->getWorldMatrix();
 		this->cameraBufferStruct.modelMat = m.Transpose();
 		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 
-		// Set texture
+		// Vertex/index buffer
+		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
+		immediateContext->IASetVertexBuffers(
+			0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
+		immediateContext->IASetIndexBuffer(
+			mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
+		);
+
+		// Pixel shader constant buffer
+		this->pixelShaderBufferStruct.color = currentMeshComp->getColor();
+		this->pixelShaderConstantBuffer.updateBuffer(&this->pixelShaderBufferStruct);
+		immediateContext->PSSetConstantBuffers(2, 1, &this->pixelShaderConstantBuffer.getBuffer());
+
+		// Render submeshes
 		for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)
 		{
 			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
@@ -231,20 +247,13 @@ void Renderer::render(Scene& scene)
 				currentSubmesh.materialName :
 				meshComponents[i]->getMaterialName().c_str()
 			);
+			// Set texture
 			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName().c_str());
 			immediateContext->PSSetSamplers(
 				0, 1, &texture.getSampler()
 			);
 			immediateContext->PSSetShaderResources(
 				0, 1, &texture.getSRV().getPtr()
-			);
-
-			// Vertex/index buffer
-			immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
-			immediateContext->IASetVertexBuffers(
-				0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
-			immediateContext->IASetIndexBuffer(
-				mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
 			);
 
 			/*immediateContext->DrawIndexed(
@@ -260,6 +269,9 @@ void Renderer::render(Scene& scene)
 		#endif
 		}
 	}
+
+	// Remove third constant buffer
+	immediateContext->PSSetConstantBuffers(2, 1, this->nullConstantBuffer);
 
 	// --------------------- Render skybox ---------------------
 
@@ -312,14 +324,29 @@ void Renderer::render(Scene& scene)
 		scene.getActiveComponents<AbsoluteMeshComp>();
 	for (unsigned int i = 0; i < absMeshComponents.size(); ++i)
 	{
-		Mesh& mesh = this->resources.getMesh(absMeshComponents[i]->getMeshName().c_str());
+		AbsoluteMeshComp* currentMeshComp = absMeshComponents[i];
+		Mesh& mesh = this->resources.getMesh(currentMeshComp->getMeshName().c_str());
 
 		// Set mvp Matrix
-		Matrix m = absMeshComponents[i]->getTransform()->getWorldMatrix();
+		Matrix m = currentMeshComp->getTransform()->getWorldMatrix();
 		this->cameraBufferStruct.modelMat = m.Transpose();
 		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 
-		// Set texture
+		// Vertex/index buffer
+		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
+		immediateContext->IASetVertexBuffers(
+			0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
+		immediateContext->IASetIndexBuffer(
+			mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
+		);
+
+		// Pixel shader constant buffer
+		this->pixelShaderBufferStruct.color = currentMeshComp->getColor();
+		this->pixelShaderConstantBuffer.updateBuffer(&this->pixelShaderBufferStruct);
+		immediateContext->PSSetConstantBuffers(2, 1, &this->pixelShaderConstantBuffer.getBuffer());
+
+
+		// Render submeshes
 		for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)
 		{
 			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
@@ -337,14 +364,6 @@ void Renderer::render(Scene& scene)
 				0, 1, &texture.getSRV().getPtr()
 			);
 
-			// Vertex/index buffer
-			immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
-			immediateContext->IASetVertexBuffers(
-				0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
-			immediateContext->IASetIndexBuffer(
-				mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
-			);
-
 			immediateContext->DrawIndexed(
 				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
 			);
@@ -355,15 +374,16 @@ void Renderer::render(Scene& scene)
 		}
 	}
 
+	// Remove third constant buffer
+	immediateContext->PSSetConstantBuffers(2, 1, nullConstantBuffer);
+
 	// Remove shadow map from slot 1
-	ID3D11ShaderResourceView* nullSRV[]{ nullptr };
 	immediateContext->PSSetShaderResources(
-		1, 1, nullSRV
+		1, 1, this->nullSRV
 	);
 
 	// Unbind render target
-	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
-	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);
+	immediateContext->OMSetRenderTargets(1, this->nullRTV, nullptr);
 }
 
 void Renderer::presentSC()
