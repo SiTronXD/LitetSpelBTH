@@ -1,9 +1,13 @@
 #pragma once
 
 #include "Buffer.h"
+#include "SRV.h"
 
 class StructuredBuffer : public Buffer
 {
+private:
+	SRV srv;
+
 public:
 	StructuredBuffer(Renderer& renderer,
 		const std::string& debugName);
@@ -11,5 +15,5 @@ public:
 
 	void updateBuffer(void* bufferData);
 
-	bool createBuffer();
+	bool createBuffer(UINT elementSize, UINT numElements, void* initialData);
 };

@@ -23,10 +23,10 @@ bool Button::isClicked()
 	bool buttonClicked = false;
 
 	// Button boundries
-	int maxPosX = this->pos.x + (this->width / 2);
-	int minPosX = this->pos.x - (this->width / 2);
-	int maxPosY = this->pos.y + (this->height / 2);
-	int minPosY = this->pos.y - (this->height / 2);
+	int maxPosX = this->pos.x + (this->width / 2.0);
+	int minPosX = this->pos.x - (this->width / 2.0);
+	int maxPosY = this->pos.y + (this->height / 2.0);
+	int minPosY = this->pos.y - (this->height / 2.0);
 
 	// Transform resolution to internal positions
 	DirectX::XMFLOAT2 internal = ResTranslator::toInternalPos(DirectX::XMFLOAT2(Input::getCursorX(), Input::getCursorY()));

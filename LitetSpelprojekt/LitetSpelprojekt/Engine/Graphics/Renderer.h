@@ -17,6 +17,7 @@
 #include "UAV.h"
 #include "DSV.h"
 #include "Skybox.h"
+#include "ParticleSystem.h"
 
 class Renderer
 {
@@ -65,6 +66,7 @@ private:
 	UAV backBufferUAV;
 
 	Skybox skybox;
+	ParticleSystem particles;
 
 	std::string skyboxName;
 

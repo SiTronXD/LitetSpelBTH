@@ -16,16 +16,17 @@ Engine::Engine()
 		this->resources, 
 		this->renderer, 
 		this->uiRenderer,
-		this->window
+		this->window,
+		this->physicsEngine,
+		this->settings
 	)
 {
-	this->settings.loadSettings();
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
-	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
-	this->sceneHandler.setScene(new GameScene(this->sceneHandler));
+	this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
 	//this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false));
 
 	// Default texture and material
@@ -39,6 +40,7 @@ Engine::~Engine()
 
 void Engine::run()
 {
+	
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
 	Time::init();
@@ -55,7 +57,7 @@ void Engine::run()
 		// Update + render
 		this->sceneHandler.updateToNextScene();
 		this->sceneHandler.update();
-		this->physicsEngine.updateCollisions(*this->sceneHandler.getScene());
+		this->physicsEngine.update();
 		this->renderer.render(*this->sceneHandler.getScene());
 
 		// ---------- Stop tracking time
@@ -69,5 +71,5 @@ void Engine::run()
 		this->renderer.presentSC();
 	}
 
-	this->settings.saveSettings();
+	
 }

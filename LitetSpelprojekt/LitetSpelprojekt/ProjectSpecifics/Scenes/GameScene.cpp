@@ -12,6 +12,7 @@
 #include "../../Engine/Graphics/MeshLoader.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Graphics/UIRenderer.h"
+#include "../../Engine/Physics/PhysicsEngine.h"
 #include "../../Engine/Time.h"
 #include "../../Engine/SMath.h"
 
@@ -29,10 +30,14 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		);
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealSphereMesh", "testMaterial");
+
 		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
-		colliderObject.getComponent<Transform>()->setScaling(Vector3(1,1,1) * sphereInfo.radius);
-		Collider* col = colliderObject.addComponent<Collider>();
-		col->setSphereCollider(sphereInfo.radius);
+		colliderObject.getComponent<Transform>()->setScaling(Vector3(1, 1, 1) * sphereInfo.radius);
+
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->addSphereCollider(sphereInfo.radius);
+		rb->setType(rp3d::BodyType::STATIC);
 	}
 
 	// Box colliders
@@ -46,10 +51,14 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealCubeMesh", "testMaterial");
+
 		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
-		Collider* col = colliderObject.addComponent<Collider>();
-		col->setBoxCollider(boxInfo.extents);
+
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->addBoxCollider(boxInfo.extents);
+		rb->setType(rp3d::BodyType::STATIC);
 	}
 
 	// Oriented box colliders
@@ -63,11 +72,15 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		);
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealCubeMesh", "testMaterial");
+
 		colliderObject.getComponent<Transform>()->setPosition(orientedBoxInfo.pos);
 		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
 		colliderObject.getComponent<Transform>()->setScaling(orientedBoxInfo.extents * 2);
-		Collider* col = colliderObject.addComponent<Collider>();
-		col->setOrientedBoxCollider(orientedBoxInfo.extents);
+
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->addBoxCollider(orientedBoxInfo.extents);
+		rb->setType(rp3d::BodyType::STATIC);
 	}
 }
 
@@ -92,7 +105,7 @@ void GameScene::init()
 		"klmnopqrst",
 		"uvwxyz+-.'",
 		"0123456789",
-		"!?,<>:()¤/^",
+		"!?,<>:()Â¤/^",
 		"@*% "
 	};
 
@@ -182,11 +195,17 @@ void GameScene::init()
   
 	// Player
 	this->setActiveCamera(cam.addComponent<Camera>());
+
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
+	Player* play = cam.addComponent<Player>();
+	play->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	cam.addComponent<Player>();
-	cam.addComponent<Rigidbody>();
-	Collider* col = cam.addComponent<Collider>();
-	col->setSphereCollider(0.5f);
+	Rigidbody* rb = cam.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addCapsuleCollider(1.0f, 2.0f);
+	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
+	rb->setMaterial(0.2f, 0.0f);
 	cam.getComponent<Camera>()->updateAspectRatio(
 		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
@@ -224,12 +243,15 @@ void GameScene::init()
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
-	Rigidbody* rb = model.addComponent<Rigidbody>();
+	rb = model.addComponent<Rigidbody>();
 	rb->addForce(Vector3(0, 2, -2));
 	mc = model.addComponent<MeshComp>();
+	model.getComponent<Transform>()->setPosition(10.0f, -7.0f, 10.0f);
+	rb = model.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addSphereCollider(2.0f);
+	rb->setType(rp3d::BodyType::STATIC);
 	mc->setMesh("CubeMesh", "testMaterial");
-	col = model.addComponent<Collider>();
-	col->setSphereCollider(5.0f);
 
 	// Level game object
 	GameObject& levelObject = this->addGameObject("LevelObject");
@@ -245,18 +267,17 @@ void GameScene::init()
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
 	mc = model2.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
-	col = model2.addComponent<Collider>();
-	col->setSphereCollider(1.0f);
 
 	GameObject& ground = this->addGameObject("Ground", ObjectTag::GROUND);
 	mc = ground.addComponent<MeshComp>();
 	mc->setMesh("PlaneMesh", "testMaterial");
-	col = ground.addComponent<Collider>();
-	col->setBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
-	rb = ground.addComponent<Rigidbody>();
-	rb->setKinematicStatus(true);
 	ground.getComponent<Transform>()->setScaling({ 100.0f, 1.0f, 100.0f });
 	ground.getComponent<Transform>()->setPosition(0.0f, -10.0f, 0.0f);
+	rb = ground.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
+	rb->setType(rp3d::BodyType::KINEMATIC);
+	rb->setMaterial(0.2f, 0.0f);
 
 	//Key objects
 	for (int i = 0; i < 4; i++)
@@ -264,10 +285,12 @@ void GameScene::init()
 		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
 		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
 		keyMc->setMesh("RealCubeMesh", "testMaterial");
-		Collider* keyCol = portalKey.addComponent<Collider>();
-		keyCol->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, 2.0f);
+		rb = portalKey.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::STATIC);
+		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 
 		this->portalKeys.push_back(&portalKey);
 	}
@@ -276,10 +299,12 @@ void GameScene::init()
 	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
 	MeshComp* portalMc = portal.addComponent<MeshComp>();
 	portalMc->setMesh("RealCubeMesh", "portalMaterial");
-	Collider* portalCol = portal.addComponent<Collider>();
-	portalCol->setBoxCollider(Vector3(2.0f, 4.0f, 1.0f));
 	portal.getComponent<Transform>()->setScaling({ 4.0f, 8.0f, 1.0f });
 	portal.getComponent<Transform>()->setPosition(-6.0f, -6.0f, -8.0f);
+	rb = portal.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->setType(rp3d::BodyType::STATIC);
+	rb->addBoxCollider(Vector3(2.0f, 4.0f, 1.0f));
 
 	//Test obstacle, taking damage etc
 	for (int i = 0; i < 3; i++)
@@ -287,25 +312,27 @@ void GameScene::init()
 		GameObject& enemy = this->addGameObject("Enemy", ObjectTag::ENEMY);
 		MeshComp* enemyMc = enemy.addComponent<MeshComp>();
 		enemyMc->setMesh("Tetrahedron", "testMaterial");
-		Collider* enemyCollider = enemy.addComponent<Collider>();
-		enemyCollider->setBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 		enemy.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
 		enemy.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, -6.0f);
+		rb = enemy.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::KINEMATIC);
+		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 
 		this->enemies.push_back(&enemy);
 
 	}
 
 	//Buttons
-	this->resumeButton.setPos(Vector2(0, 300));
+	this->resumeButton.setPos(Vector2(0, 170));
 	this->resumeButton.setWidth(354);
 	this->resumeButton.setHeight(159);
 
-	this->mainMenuButton.setPos(Vector2(0, 150));
+	this->mainMenuButton.setPos(Vector2(0, 0));
 	this->mainMenuButton.setWidth(354);
 	this->mainMenuButton.setHeight(159);
 
-	this->exitButton.setPos(Vector2(0, 0));
+	this->exitButton.setPos(Vector2(0, -170));
 	this->exitButton.setWidth(354);
 	this->exitButton.setHeight(159);
 
@@ -315,10 +342,18 @@ void GameScene::init()
 #include <iostream>
 void GameScene::update()
 {
+	RaycastInfo info = this->getPhysicsEngine().raycast(rp3d::Ray({ 0.0f, -10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
+	if (info.hit)
+	{
+		std::cout << "Hit " << info.gameObject->getName() << ": at worldPos (" << info.hitPoint.x << ", " << info.hitPoint.y << ", " << info.hitPoint.z << ")" << std::endl;
+  }
+  
 	if (this->getPause() == false)
 	{
-		//When they player pick up a key.
-		if (this->cam.getComponent<Player>()->isKeyPickUp())
+		Player* playerComp = cam.getComponent<Player>();
+		
+		//When the player picks up a key.
+		if (playerComp->isKeyPickUp())
 		{
 			std::cout << "Key pickup!" << std::endl;
 			this->keyTextScale = 0.0f;
@@ -326,16 +361,16 @@ void GameScene::update()
 		}
 
 		//Check if player is dead or not
-		if (this->cam.getComponent<Player>()->isPlayerDead())
+		if (playerComp->isPlayerDead())
 		{
 			std::cout << "Player is dead NOOB!!" << std::endl;
 			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), false));
 		}
 
-		this->currentKeys = this->cam.getComponent<Player>()->getCurrentKeys();
+		this->currentKeys = playerComp->getCurrentKeys();
 
 		//Player enters the portal and win.
-		if (this->cam.getComponent<Player>()->onPortal() && this->currentKeys >= 4)
+		if (playerComp->onPortal() && this->currentKeys >= 4)
 		{
 			std::cout << "YOU HAVE WON!!" << std::endl;
 			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), true));
@@ -360,8 +395,8 @@ void GameScene::update()
 			this->setPause(false);
 		}
 
-		/*if (this->mainMenuButton.isClicked())
-			this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));*/
+		if (this->mainMenuButton.isClicked())
+			this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
 				
 		if (this->exitButton.isClicked())
 			this->getWindow().quit();
@@ -445,13 +480,41 @@ void GameScene::renderUI()
 	}
 	else
 	{
+		/*
 		this->getUIRenderer().renderTexture(
 			"PauseMenu.png",
 			0, 50, 600, 800
 		);
+		*/
 
+		// Resume Game
 		this->resumeButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"resume",
+			-10,
+			170,
+			30,
+			30
+		);
+
+		// Return to main menu
 		this->mainMenuButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"main menu",
+			-10,
+			0,
+			30,
+			30
+		);
+		
+		// Exit Game
 		this->exitButton.render("NeatBox.png");
+		this->getUIRenderer().renderString(
+			"exit",
+			-10,
+			-170,
+			30,
+			30
+		);
 	}
 }

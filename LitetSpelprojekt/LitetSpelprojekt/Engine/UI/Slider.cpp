@@ -26,10 +26,10 @@ bool Slider::isClicked()
 	bool sliderClicked = false;
 
 	// Slider boundries
-	int maxPosX = this->pos.x + (this->width / 2.0);
-	int minPosX = this->pos.x - (this->width / 2.0);
-	int maxPosY = this->pos.y + (this->height / 2.0);
-	int minPosY = this->pos.y - (this->height / 2.0);
+	int maxPosX = this->pos.x + (this->width / 2);
+	int minPosX = this->pos.x - (this->width / 2);
+	int maxPosY = this->pos.y + (this->height / 2);
+	int minPosY = this->pos.y - (this->height / 2);
 
 	// Transform resolution to internal positions
 	DirectX::XMFLOAT2 internal = ResTranslator::toInternalPos(DirectX::XMFLOAT2(Input::getCursorX(), Input::getCursorY()));
@@ -43,8 +43,8 @@ bool Slider::isClicked()
 			// Left click inside the button
 			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
 			{
-				this->currentValue = (this->width / 2 + internal.x);
-				this->percentFilled = (this->currentValue / this->width);
+				this->percentFilled = (float)((this->width / 2.0 + internal.x) / this->width);
+				this->currentValue = this->percentFilled * (this->maxValue - this->minValue);
 				sliderClicked = true;
 			}
 		}
@@ -57,16 +57,16 @@ void Slider::render(std::string textureName)
 	// Render Filled out Slider texture
 	uiRenderer.renderTexture(
 		textureName,
-		this->pos.x - ((this->width - this->width * this->percentFilled) / 2),
-		this->pos.y,
-		this->width * this->percentFilled,
+		(int)(this->pos.x - ((this->width - this->width * this->percentFilled) / 2)),
+		(int)this->pos.y,
+		(int)(this->width * this->percentFilled),
 		this->height);
 
 	// Render Slider border
 	uiRenderer.renderTexture(
-		"healthBar.png",
-		this->pos.x,
-		this->pos.y,
+		"healthBoxTwo.png",
+		(int)this->pos.x,
+		(int)this->pos.y,
 		this->width,
 		this->height);
 }

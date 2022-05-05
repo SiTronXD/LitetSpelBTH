@@ -2,7 +2,6 @@
 
 #include "Script.h"
 #include "Camera.h"
-#include "Collider.h"
 #include "Light.h"
 #include "AbsoluteMeshComp.h"
 #include "MeshComp.h"

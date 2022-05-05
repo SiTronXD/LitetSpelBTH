@@ -1,12 +1,14 @@
 #pragma once
 
 #include "../ECS.h"
+#include "../Settings.h"
 
 class SceneHandler;
 class Resources;
 class Renderer;
 class UIRenderer;
 class Window;
+class PhysicsEngine;
 
 class Scene
 {
@@ -15,11 +17,12 @@ private:
 	Camera* activeCamera;
 
 	SceneHandler& sceneHandler;
-
+	Settings* settings;
 	Resources* resources;
 	Renderer* renderer;
 	UIRenderer* uiRenderer;
 	Window* window;
+	PhysicsEngine* physicsEngine;
 
 	bool pause;
 
@@ -33,6 +36,8 @@ protected:
 	inline Renderer& getRenderer() { return *this->renderer; }
 	inline UIRenderer& getUIRenderer() { return *this->uiRenderer; }
 	inline Window& getWindow() { return *this->window; }
+	inline PhysicsEngine& getPhysicsEngine() { return *this->physicsEngine; }
+	inline Settings& getSettings() { return *this->settings;  }
 
 public:
 	Scene(SceneHandler& sceneHandler);

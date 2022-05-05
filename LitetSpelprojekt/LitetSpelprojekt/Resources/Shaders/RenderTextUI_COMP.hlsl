@@ -7,7 +7,9 @@ cbuffer TextOrientationBuffer : register(b0)
     int2 cutoutRectPos;
     int2 cutoutRectSize;
 
-    float2 padding2;
+    float2 padding0;
+
+    float4 color;
 }
 
 Texture2D<float4> imageTexture : register(t0);
@@ -21,7 +23,7 @@ void main(uint3 dispatchThreadID : SV_DispatchThreadID)
     float4 col = imageTexture[cutoutRectPos.xy + imagePos];
 
     if (col.a > 0.5f)
-        outputTexture[position + dispatchThreadID.xy] = float4(col.rgb, 1.0f);
+        outputTexture[position + dispatchThreadID.xy] = float4(col.rgb, 1.0f) * color;
     /*else
         outputTexture[position + dispatchThreadID.xy] = float4(float2(dispatchThreadID.xy) / uiSize, 0.0f, 1.0f);*/
 }

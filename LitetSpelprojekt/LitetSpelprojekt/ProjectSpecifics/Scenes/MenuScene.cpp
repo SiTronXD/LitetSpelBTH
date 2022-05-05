@@ -20,10 +20,8 @@ MenuScene::~MenuScene()
 
 void MenuScene::init()
 {
-	this->getResources().addTexture("Resources/Textures/playButton.png", "playButton.png");
-	this->getResources().addTexture("Resources/Textures/settingsButton.png", "settingsButton.png");
-	this->getResources().addTexture("Resources/Textures/exitButton.png", "exitButton.png");
-
+	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
+	this->getResources().addTexture("Resources/Textures/MenuGui/NeatBox.png", "NeatBox.png");
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =
 	{
@@ -51,7 +49,7 @@ void MenuScene::init()
 	this->setActiveCamera(cam.addComponent<Camera>());
 	
 	// Define Play Button's size and position
-	playButton.setPos(Vector2(0, 161));
+	playButton.setPos(Vector2(0, 170));
 	playButton.setWidth(354);
 	playButton.setHeight(159);
 
@@ -61,7 +59,7 @@ void MenuScene::init()
 	settingsButton.setHeight(159);
 
 	// Define Exit Button's size and position
-	exitButton.setPos(Vector2(0, -161));
+	exitButton.setPos(Vector2(0, -170));
 	exitButton.setWidth(354);
 	exitButton.setHeight(159);
 }
@@ -89,15 +87,40 @@ void MenuScene::update()
 void MenuScene::renderUI()
 {
 	// Send the buttons to the UIRenderer to display
-	playButton.render("playButton.png");
-	settingsButton.render("settingsButton.png");
-	exitButton.render("exitButton.png");
+	playButton.render("NeatBox.png");
+	settingsButton.render("NeatBox.png");
+	exitButton.render("NeatBox.png");
+	
+	this->getUIRenderer().renderString(
+		"grapple mayhem", 
+		0, 
+		400, 
+		50, 
+		50
+	);
 
 	this->getUIRenderer().renderString(
-		"the quick brown fox jumps over the lazy dog", 
-		0, 
-		0, 
-		54, 
-		54
+		"play",
+		-10,
+		170,
+		30,
+		30
 	);
+
+	this->getUIRenderer().renderString(
+		"settings",
+		-10,
+		0,
+		30,
+		30
+	);
+
+	this->getUIRenderer().renderString(
+		"exit",
+		-10,
+		-170,
+		30,
+		30
+	);
+
 }

@@ -121,7 +121,8 @@ Renderer::Renderer(Resources& resources)
 
 	resources(resources),
 
-	skybox(*this)
+	skybox(*this),
+	particles(*this)
 
 	//activeCamera(nullptr)
 {
@@ -159,6 +160,7 @@ void Renderer::init(Window& window)
 
 	//Init skybox
 	this->skybox.initialize();
+	this->particles.init();
 
 	// Topology won't change during runtime
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -181,11 +183,14 @@ void Renderer::render(Scene& scene)
 	// --------------------- Render shadow maps ---------------------
 
 	std::vector<Light*> lightComponents = scene.getActiveComponents<Light>();
+	
+	// ----- Render shadow maps -----
 	for (unsigned int i = 0; i < lightComponents.size(); ++i)
 	{
 		lightComponents[i]->render(scene);
 	}
-	Light* firstLight = lightComponents[0];
+	Light* firstLight = lightComponents.size() > 0 ?
+		lightComponents[0] : nullptr;
 
 	// --------------------- Render meshes ---------------------
 
@@ -196,22 +201,20 @@ void Renderer::render(Scene& scene)
 
 	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
 
-	// Update camera constant buffer
-	Matrix vp;
-	vp = scene.getActiveCamera()->getViewMatrix();
-	vp *= scene.getActiveCamera()->getProjectionMatrix();
-	this->cameraBufferStruct.vpMat = vp.Transpose();
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
-	immediateContext->PSSetConstantBuffers(0, 1, &firstLight->getLightBuffer().getBuffer());
-	immediateContext->PSSetConstantBuffers(1, 1, &firstLight->getDirLightBuffer().getBuffer());
+	if (firstLight != nullptr)
+	{
+		immediateContext->PSSetConstantBuffers(0, 1, &firstLight->getLightBuffer().getBuffer());
+		immediateContext->PSSetConstantBuffers(1, 1, &firstLight->getDirLightBuffer().getBuffer());
 
-	// Set shadow map
-	immediateContext->PSSetSamplers(
-		1, 1, &firstLight->getShadowMapTexture().getSampler()
-	);
-	immediateContext->PSSetShaderResources(
-		1, 1, &firstLight->getShadowMapTexture().getSRV().getPtr()
-	);
+		// Set shadow map
+		immediateContext->PSSetSamplers(
+			1, 1, &firstLight->getShadowMapTexture().getSampler()
+		);
+		immediateContext->PSSetShaderResources(
+			1, 1, &firstLight->getShadowMapTexture().getSRV().getPtr()
+		);
+	}
 
 	// Render all meshes
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
@@ -264,9 +267,9 @@ void Renderer::render(Scene& scene)
 				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
 			);
 
-		#ifdef _DEBUG
+#ifdef _DEBUG
 			numDrawCalls++;
-		#endif
+#endif
 		}
 	}
 
@@ -311,8 +314,10 @@ void Renderer::render(Scene& scene)
 		this->skybox.getMesh().getIndexBuffer().getIndexCount(), 0, 0
 	);
 
+  // --------------------- Render particles ---------------------
+	this->particles.render(vp, scene.getActiveCamera()->getTransform()->getRotation());
+  
 	// --------------------- Render absolute meshes ---------------------
-	
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
 	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
 	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);

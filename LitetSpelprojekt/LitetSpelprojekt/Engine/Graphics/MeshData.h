@@ -40,7 +40,7 @@ private:
 	void createTriangle();
 	void createTetrahedron();
 	void createCube();
-	void createPlane(int resX = 10, int resY =  10);
+	void createPlane(int resX = 2, int resY =  2);
 	void createSphere(int resX = 10, int resY = 10);
 	void createLowPolyCylinder();
 
