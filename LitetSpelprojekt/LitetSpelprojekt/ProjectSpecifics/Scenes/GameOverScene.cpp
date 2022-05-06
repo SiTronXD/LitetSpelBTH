@@ -68,6 +68,7 @@ void GameOverScene::update()
 
 	if (this->exitButton.isClicked())
 		this->getWindow().quit();
+
 }
 
 void GameOverScene::renderUI()

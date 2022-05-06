@@ -1,5 +1,6 @@
 #include "SceneHandler.h"
 #include "../Ecs.h"
+#include "../Time.h"
 
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
@@ -42,6 +43,8 @@ void SceneHandler::updateToNextScene()
 		this->scene = this->nextScene;
 		this->nextScene = nullptr;
 		this->scene->init();
+		this->scene->getECS().init();
+		Time::init();
 	}
 }
 

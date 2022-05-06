@@ -43,7 +43,6 @@ void Engine::run()
 	
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
-	Time::init();
 	ResTranslator::init(this->window.getWidth(), this->window.getHeight());
 
 	while (this->window.isRunning())

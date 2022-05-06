@@ -131,6 +131,10 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
+
+
+	//Particle texture
+	this->getResources().addTexture("Resources/Textures/particle.png", "particle.png");
 	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
 
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
@@ -297,19 +301,21 @@ void GameScene::init()
 	rb->setType(rp3d::BodyType::KINEMATIC);
 	rb->setMaterial(0.2f, 0.0f);
 
-	//Key objects
+	//Key objects and particles
 	for (int i = 0; i < 4; i++)
 	{
+		//Portal key objects
 		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
+		portalKey.addComponent<ParticleEmitter>();
 		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
 		keyMc->setMesh("RealCubeMesh", "testMaterial");
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, 2.0f);
+		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
 		rb = portalKey.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
-
 		this->portalKeys.push_back(&portalKey);
 	}
 
@@ -353,8 +359,6 @@ void GameScene::init()
 	this->exitButton.setPos(Vector2(0, -170));
 	this->exitButton.setWidth(354);
 	this->exitButton.setHeight(159);
-
-	this->getECS().init();
 }
 
 #include <iostream>
@@ -401,6 +405,16 @@ void GameScene::update()
 
 			if (this->keyTextScale < 64.0f)
 				this->keyTextScale += (150.0f * Time::getDT());
+		}
+
+		//Partcile update
+		if (Input::isKeyJustPressed(Keys::E))
+		{
+			std::vector<ParticleEmitter*> particleComponents = getActiveComponents<ParticleEmitter>();
+			for (unsigned int i = 0; i < particleComponents.size(); ++i)
+			{
+				particleComponents[i]->explode(10, 1);
+			}
 		}
 	}
 	else
