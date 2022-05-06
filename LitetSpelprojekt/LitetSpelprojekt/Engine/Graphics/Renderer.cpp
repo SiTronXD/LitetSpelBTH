@@ -161,9 +161,6 @@ void Renderer::init(Window& window)
 	//Init skybox
 	this->skybox.initialize();
 
-	//Init particles
-	//this->particles.init();
-
 	// Topology won't change during runtime
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
@@ -322,7 +319,8 @@ void Renderer::render(Scene& scene)
 		this->skybox.getMesh().getIndexBuffer().getIndexCount(), 0, 0
 	);
 
-	//Particles
+
+	// --------------------- Render particles ---------------------
 	DirectX::SimpleMath::Vector3 cameraPos = scene.getActiveCamera()->getTransform()->getPosition();
 
 	std::vector<ParticleEmitter*> particleComponents = scene.getActiveComponents<ParticleEmitter>();
@@ -331,13 +329,6 @@ void Renderer::render(Scene& scene)
 		particleComponents[i]->render(vp, cameraPos);
 	}
 	
-	// Unbind render target
-	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
-	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);
-
-  // --------------------- Render particles ---------------------
-	this->particles.render(vp, scene.getActiveCamera()->getTransform()->getRotation());
-  
 	// --------------------- Render absolute meshes ---------------------
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
 	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);

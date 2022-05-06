@@ -66,11 +66,8 @@ private:
 	UAV backBufferUAV;
 
 	Skybox skybox;
-	ParticleSystem particles;
 
 	std::string skyboxName;
-
-	//Camera* activeCamera;
 
 	// Functions
 	bool createInterfaces();
