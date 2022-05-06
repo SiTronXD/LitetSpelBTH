@@ -60,10 +60,15 @@ bool Renderer::evaluateAdapterModes()
 		&numModes, displayModeList
 	);
 
+	// Add resolutions to vector
 	for (unsigned int i = 0; i < numModes; ++i)
 	{
 		Log::write("res: " + std::to_string(displayModeList[i].Width) + 
-			" x " + std::to_string(displayModeList[i].Height));
+			" x " + std::to_string(displayModeList[i].Height) + 
+			" - " + std::to_string(
+				(float)displayModeList[i].RefreshRate.Numerator / displayModeList[i].RefreshRate.Denominator));
+
+		// this->supportedResolutions.pushBack();
 	}
 
 

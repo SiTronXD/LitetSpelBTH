@@ -69,6 +69,8 @@ private:
 
 	std::string skyboxName;
 
+	std::vector<DirectX::XMFLOAT2> supportedResolutions;
+
 	// Functions
 	bool evaluateAdapterModes();
 	bool createInterfaces();
