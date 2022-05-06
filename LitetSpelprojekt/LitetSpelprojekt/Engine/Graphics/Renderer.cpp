@@ -4,8 +4,83 @@
 
 using namespace DirectX::SimpleMath;
 
+bool Renderer::evaluateAdapterModes()
+{
+	HRESULT result;
+
+	// Create a graphics interface factory
+	IDXGIFactory* factory = nullptr;
+	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+	if (FAILED(result))
+	{
+		Log::error("Failed to create DXGI factory.");
+
+		return false;
+	}
+
+	// Create an adapter
+	IDXGIAdapter* adapter = nullptr;
+	result = factory->EnumAdapters(0, &adapter);
+	if (FAILED(result))
+	{
+		Log::error("Failed to create adapter.");
+
+		return false;
+	}
+
+	// Get adapter output
+	IDXGIOutput* adapterOutput = nullptr;
+	result = adapter->EnumOutputs(0, &adapterOutput);
+	if (FAILED(result))
+	{
+		Log::error("Failed to create adapter output.");
+
+		return false;
+	}
+
+	// Get appropriate number of modes
+	unsigned int numModes = 0;
+	result = adapterOutput->GetDisplayModeList(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_ENUM_MODES_INTERLACED,
+		&numModes, NULL
+	);
+	if (FAILED(result))
+	{
+		Log::error("Failed to get display modes");
+
+		return false;
+	}
+
+	// Array of display modes
+	DXGI_MODE_DESC* displayModeList = new DXGI_MODE_DESC[numModes];
+	result = adapterOutput->GetDisplayModeList(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_ENUM_MODES_INTERLACED,
+		&numModes, displayModeList
+	);
+
+	for (unsigned int i = 0; i < numModes; ++i)
+	{
+		Log::write("res: " + std::to_string(displayModeList[i].Width) + 
+			" x " + std::to_string(displayModeList[i].Height));
+	}
+
+
+	delete[] displayModeList;
+	displayModeList = nullptr;
+
+	// Deallocate old objects
+	S_RELEASE(adapterOutput);
+	S_RELEASE(adapter);
+	S_RELEASE(factory);
+
+	return true;
+}
+
 bool Renderer::createInterfaces()
 {
+	// Device, device context and swapchain creation
 	UINT flags = 0;
 #ifdef _DEBUG
 	flags = D3D11_CREATE_DEVICE_DEBUG;
@@ -142,6 +217,7 @@ void Renderer::init(Window& window)
 {
 	this->window = &window;
 
+	this->evaluateAdapterModes();
 	createInterfaces();
 	createViews();
 	loadShaders();

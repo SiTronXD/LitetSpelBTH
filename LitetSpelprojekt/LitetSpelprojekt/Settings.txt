@@ -1,7 +1,7 @@
 ResolutionX
-1280
+1600
 ResolutionY
-720
+900
 Sensitivity
 0.513559
 Brightness

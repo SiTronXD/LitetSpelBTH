@@ -70,6 +70,7 @@ private:
 	std::string skyboxName;
 
 	// Functions
+	bool evaluateAdapterModes();
 	bool createInterfaces();
 	bool createViews();
 
