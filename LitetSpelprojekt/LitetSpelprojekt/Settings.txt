@@ -3,7 +3,7 @@ ResolutionX
 ResolutionY
 720
 Sensitivity
-0.513559
+0.504237
 Brightness
 0.25
 Volume

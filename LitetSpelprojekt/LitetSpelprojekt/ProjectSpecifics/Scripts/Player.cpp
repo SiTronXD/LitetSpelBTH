@@ -24,19 +24,42 @@ void Player::move()
 	if (this->hookPoint->getState() == HookState::CONNECTED)
 	{
 		Vector3 vec = this->hookPoint->getTransform()->getPosition() - this->getTransform()->getPosition();
-		if (vec.Length() < 3.0f)
+		if (vec.LengthSquared() < 9.0f)
 			this->hookPoint->returnToPlayer();
 		else
 		{
 			vec.Normalize();
-			moveVec *= 0.5f;
-			this->rb->setVelocity(vec * this->speed * Time::getDT() + moveVec);
+			moveVec *= 0.25f;
+			this->rb->addForce(vec * 5.0f * this->speed * Time::getDT() + moveVec);
 		}
 	}
-	else
+	else if (this->onGround)
 	{
 		moveVec.y = this->rb->getVelocity().y;
 		this->rb->setVelocity(moveVec);
+	}
+	else if (moveVec != Vector3::Zero)
+	{
+		this->rb->addForce(0.5f * moveVec);
+
+		Vector3 vel = this->rb->getVelocity();
+		vel.y = 0.0f;
+		float velLength = vel.Length();
+		if(velLength != 0.0f)
+			vel /= velLength; // Normalise
+		moveVec.Normalize();
+
+		if (vel.Dot(moveVec) <= -0.25f)
+		{
+			moveVec *= velLength;
+			this->rb->addVelocity(moveVec);
+		}
+		else
+		{
+			moveVec *= velLength;
+			moveVec.y = this->rb->getVelocity().y;
+			this->rb->setVelocity(moveVec);
+		}
 	}
 }
 
@@ -44,7 +67,7 @@ void Player::jump()
 {
 	if(Input::isKeyJustPressed(Keys::SPACE) && this->onGround)
 	{
-		this->rb->addVelocity({ 0.0f, this->jumpForce, 0.0f });
+		this->rb->setVelocity({ 0.0f, this->jumpForce, 0.0f });
 		this->onGround = false;
 	}
 }
@@ -63,8 +86,8 @@ void Player::fireWeapon()
 
 	if (Input::isMouseButtonDown(Mouse::RIGHT_BUTTON) && this->pulseCannonCooldown <= 0.0f)
 	{
-		this->rb->addVelocity(forward * -10.0f);
-		this->pulseCannonCooldown = 3.0f;
+		this->rb->addVelocity(forward * -20.0f);
+		this->pulseCannonCooldown = this->maxPulseCannonCooldown;
 	}
 }
 
@@ -82,8 +105,9 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object) :
-	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), onGround(false), rb(nullptr),
-	keyPickup(false), keyPieces(0), health(3), dead(false), healthCooldown(0.0f), pulseCannonCooldown(0.0f), portal(false),
+	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), maxVelocity(35.0f),
+	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
+	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
 	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr)
 {
 	Input::setCursorVisible(false);
@@ -143,31 +167,37 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
+	if (this->rb->getVelocity().LengthSquared() > this->maxVelocity * this->maxVelocity)
+	{
+		Vector3 vel = this->rb->getVelocity();
+		vel.Normalize();
+		vel *= this->maxVelocity;
+		this->rb->setVelocity(vel);
+	}
+
 	if (this->hookPoint->getState() != HookState::NOT_ACTIVE)
 		this->grapplingHook->getRope()->setTargetPos(this->hookPoint->getTransform()->getPosition());
 
-	this->cooldownIndicatior->setPercent(1.0f - this->pulseCannonCooldown / 3.0f);
+	this->cooldownIndicatior->setPercent(1.0f - this->pulseCannonCooldown / this->maxPulseCannonCooldown);
 	// Update pulse cannon cooldown
 	if (this->pulseCannonCooldown > 0.0f)
 		this->pulseCannonCooldown -= Time::getDT();
-	else
-		this->pulseCannonCooldown = 0.0f;
 
 	// Reset keypickup
-	if (this->keyPickup == true)
+	if (this->keyPickup)
 		this->keyPickup = false;
 
 	// Reset portal
-	if (this->portal == true)
+	if (this->portal)
 		this->portal = false;
 
 	// Check if player is dead
-	if (this->health < 1)
+	if (this->health <= 0)
 		this->dead = true;
 
 	// Update health cooldown
 	if (this->healthCooldown > 0.0f)
-		this->healthCooldown--;
+		this->healthCooldown -= Time::getDT();
 }
 
 void Player::onCollisionEnter(GameObject& other)
@@ -184,28 +214,23 @@ void Player::onCollisionEnter(GameObject& other)
 		this->keyPieces++;
 		this->keyPickup = true;
 	}
-
+	// Test
+	else if (other.getTag() == ObjectTag::ENEMY && healthCooldown <= 0.0f)
+	{
+		other.removeComponent<MeshComp>();
+		other.removeComponent<Rigidbody>();
+		this->health--;
+		this->healthCooldown = 0.5f;
+	}
+	// Portal
+	else if (other.getTag() == ObjectTag::PORTAL)
+		this->portal = true;
 }
 
 void Player::onCollisionStay(GameObject& other)
 {
-
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
-	
-	// Test
-	if (other.getTag() == ObjectTag::ENEMY && healthCooldown == 0)
-	{
-		other.removeComponent<MeshComp>();
-		other.removeComponent<Rigidbody>();
-		this->health--;	
-		this->healthCooldown = 40;
-	}
-
-	// Portal
-	if (other.getTag() == ObjectTag::PORTAL)
-		this->portal = true;
-	
 }
 
 void Player::onCollisionExit(GameObject& other)
