@@ -290,6 +290,7 @@ void Renderer::render(Scene& scene)
 	this->skybox.update(scene.getActiveCamera()->getTransform()->getPosition(), vp);
 	
 	//Bind skybox
+	immediateContext->IASetInputLayout(this->skybox.getVertexShader().getInputLayout());
 	immediateContext->IASetVertexBuffers(
 		0, 1,
 		&this->skybox.getMesh().getVertexBuffer().getBuffer(), 
