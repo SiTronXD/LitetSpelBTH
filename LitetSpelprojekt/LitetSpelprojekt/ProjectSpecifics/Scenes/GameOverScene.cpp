@@ -7,8 +7,8 @@ using namespace DirectX::SimpleMath;
 
 GameOverScene::GameOverScene(SceneHandler& sceneHandler, bool win, float highscoreTime)
 	:Scene(sceneHandler),
-	winning(true),
-	highscoreTime(3.345632),
+	winning(win),
+	highscoreTime(highscoreTime),
 	mainMenuButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	cam(this->addGameObject("Camera"))
