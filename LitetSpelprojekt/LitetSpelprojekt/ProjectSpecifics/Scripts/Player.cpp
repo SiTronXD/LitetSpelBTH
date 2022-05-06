@@ -24,7 +24,7 @@ void Player::move()
 	if (this->hookPoint->getState() == HookState::CONNECTED)
 	{
 		Vector3 vec = this->hookPoint->getTransform()->getPosition() - this->getTransform()->getPosition();
-		if (vec.Length() < 3.0f)
+		if (vec.LengthSquared() < 9.0f)
 			this->hookPoint->returnToPlayer();
 		else
 		{
@@ -33,14 +33,33 @@ void Player::move()
 			this->rb->addForce(vec * 5.0f * this->speed * Time::getDT() + moveVec);
 		}
 	}
-	else if (this->onGround)
+	else if (this->onGround/* || (!this->onGround && moveVec != Vector3::Zero)*/)
 	{
 		moveVec.y = this->rb->getVelocity().y;
 		this->rb->setVelocity(moveVec);
 	}
-	else
+	else if (moveVec != Vector3::Zero)
 	{
-		this->rb->addForce(0.75f * moveVec);
+		this->rb->addForce(0.5f * moveVec);
+
+		Vector3 vel = this->rb->getVelocity();
+		vel.y = 0.0f;
+		float velLength = vel.Length();
+		if(velLength != 0.0f)
+			vel /= velLength; // Normalise
+		moveVec.Normalize();
+
+		if (vel.Dot(moveVec) <= -0.25f)
+		{
+			moveVec *= velLength;
+			this->rb->addVelocity(moveVec);
+		}
+		else
+		{
+			moveVec *= velLength;
+			moveVec.y = this->rb->getVelocity().y;
+			this->rb->setVelocity(moveVec);
+		}
 	}
 }
 
@@ -148,7 +167,7 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
-	if (this->rb->getVelocity().Length() > this->maxVelocity)
+	if (this->rb->getVelocity().LengthSquared() > this->maxVelocity * this->maxVelocity)
 	{
 		Vector3 vel = this->rb->getVelocity();
 		vel.Normalize();
