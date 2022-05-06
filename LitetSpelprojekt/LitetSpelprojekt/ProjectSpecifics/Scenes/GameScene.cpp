@@ -333,6 +333,7 @@ void GameScene::init()
 		);
 		MeshComp* lightMesh = pointLightObject.addComponent<MeshComp>();
 		lightMesh->setMesh("QuadMesh", "LightBloomMaterial");
+		lightMesh->setColor(Vector3(i % 2, (int) (i / 2), 0));
 		lightMesh->setShouldShade(false);
 		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
 		pointLight->setTarget(cam);

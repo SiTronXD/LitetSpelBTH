@@ -9,6 +9,8 @@ private:
 	Transform* transform;
 	Transform* targetTransform;
 
+	float rotateTimer;
+
 public:
 	PointLight(GameObject& gameObject);
 	virtual ~PointLight();
