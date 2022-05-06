@@ -146,7 +146,7 @@ void Player::update()
 	if (this->hookPoint->getState() != HookState::NOT_ACTIVE)
 		this->grapplingHook->getRope()->setTargetPos(this->hookPoint->getTransform()->getPosition());
 
-	this->cooldownIndicatior->setPercent(this->pulseCannonCooldown / 3.0f);
+	this->cooldownIndicatior->setPercent(1.0f - this->pulseCannonCooldown / 3.0f);
 	// Update pulse cannon cooldown
 	if (this->pulseCannonCooldown > 0.0f)
 		this->pulseCannonCooldown -= Time::getDT();

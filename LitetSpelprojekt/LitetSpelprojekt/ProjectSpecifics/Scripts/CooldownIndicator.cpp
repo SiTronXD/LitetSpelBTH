@@ -29,7 +29,7 @@ void CooldownIndicator::setup(GrapplingHook* grapplingHook)
 
 void CooldownIndicator::setPercent(float percent)
 {
-	this->percent = SMath::clamp(0, 1, percent);
+	this->percent = SMath::clamp(percent, 0, 1);
 }
 
 void CooldownIndicator::init()
