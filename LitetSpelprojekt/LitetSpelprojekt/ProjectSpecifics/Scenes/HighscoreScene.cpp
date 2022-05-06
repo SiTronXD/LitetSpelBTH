@@ -23,7 +23,7 @@ void HighscoreScene::init()
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
-
+	this->getHighscore().displayHighscore();
 	this->getHighscore().loadHighscore();
 	this->getHighscore().displayHighscore();
 

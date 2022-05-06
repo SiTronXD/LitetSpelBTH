@@ -7,8 +7,8 @@ using namespace DirectX::SimpleMath;
 
 GameOverScene::GameOverScene(SceneHandler& sceneHandler, bool win, float highscoreTime)
 	:Scene(sceneHandler),
-	winning(win),
-	highscoreTime(highscoreTime),
+	winning(true),
+	highscoreTime(3.345632),
 	mainMenuButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	cam(this->addGameObject("Camera"))
@@ -107,7 +107,7 @@ void GameOverScene::renderUI()
 		int minutes = seconds / 60;
 		int printSeconds = seconds - (minutes * 60);
 		std::string minSec = std::to_string(minutes) + ":" + std::to_string(printSeconds);
-
+		
 		if (this->getHighscore().newHighscore(this->highscoreTime))
 		{
 			this->getUIRenderer().renderString(
@@ -118,7 +118,7 @@ void GameOverScene::renderUI()
 				30
 			);
 		}
-		
+
 		// TimerText
 		this->getUIRenderer().renderString(
 			("time: " + minSec),

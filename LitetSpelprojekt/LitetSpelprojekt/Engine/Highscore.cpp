@@ -1,6 +1,8 @@
 #include "Highscore.h"
 #include "Dev/Log.h"
 #include <fstream>
+#include <Bits.h>
+#include <algorithm>
 
 Highscore::Highscore()
 {
@@ -56,21 +58,23 @@ void Highscore::displayHighscore() const
 {
 	for (int i = 0; i < 10; i++)
 	{
-		
-		Log::write((i+1) + ":" + std::to_string(this->highscoreList.times[i]));
+		Log::write(std::to_string((i+1)) + ": " +  std::to_string(this->highscoreList.times[i]));
 	}
 }
 
 bool Highscore::newHighscore(float time)
 {
-	for (int i = 9; i > 0; i--)
+	this->highscoreList.times[10] = time;
+	std::sort(this->highscoreList.times, this->highscoreList.times + 11);
+	if (time == this->highscoreList.times[10])
 	{
-		if (time < this->highscoreList.times[i])
-		{
-			return false;
-		}
-
+		return false;
 	}
+	
+	Log::write("Time: " + std::to_string(time));
+	Log::write("First Time: " + std::to_string(this->highscoreList.times[0]));
+	Log::write("Last Time: " + std::to_string(this->highscoreList.times[9]));
+	Log::write("11th: " + std::to_string(this->highscoreList.times[10]));
 	
 	return true;
 }

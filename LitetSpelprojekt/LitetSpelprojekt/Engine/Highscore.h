@@ -2,7 +2,7 @@
 #include <iostream>
 struct HighscoreList
 {
-	float times[10];
+	float times[11];
 };
 
 class Highscore

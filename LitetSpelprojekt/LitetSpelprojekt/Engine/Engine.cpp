@@ -22,10 +22,13 @@ Engine::Engine()
 		this->highscore
 	)
 {
+	
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
+	this->highscore.loadHighscore();
+	
 	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
 	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
 	this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false, 0.0f));
