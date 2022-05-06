@@ -1,9 +1,11 @@
 #pragma once
 
-#include "../../Engine/Components/Script.h"
 #include "../../Engine/Components/Componentpch.h"
 
 class Rigidbody;
+class HookPoint;
+class GrapplingHook;
+class CooldownIndicator;
 
 class Player : public Script
 {
@@ -15,6 +17,7 @@ private:
 	int keyPieces;
 	int health;
 
+	float pulseCannonCooldown;
 	float healthCooldown;
 
 	bool onGround;
@@ -24,6 +27,11 @@ private:
 
 	// Component references
 	Rigidbody* rb;
+
+	// References to other gameObject components
+	HookPoint* hookPoint;
+	GrapplingHook* grapplingHook;
+	CooldownIndicator* cooldownIndicatior;
 	
 	void move();
 	void jump();
@@ -40,11 +48,11 @@ public:
 	inline float getJumpForce() const { return this->jumpForce; }
 	void setJumpForce(float jumpForce);
 
-
 	inline float getMouseSensitivity() const { return this->mouseSensitivity; }
 	void setMouseSensitivity(float mouseSensitivity);
 	void setHealth(int health);
 	void addHealth(int health);
+	void setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIndicator* cooldown);
 	
 	inline bool isOnGround() const { return this->onGround; }
 	inline bool isKeyPickUp() const { return this->keyPickup; }

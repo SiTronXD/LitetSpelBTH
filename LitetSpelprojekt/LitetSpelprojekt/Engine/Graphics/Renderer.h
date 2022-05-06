@@ -33,6 +33,12 @@ private:
 		DirectX::XMFLOAT4X4 mvpMat;
 	} compactCameraBufferStruct{};
 
+	struct PixelShaderBufferData
+	{
+		DirectX::XMFLOAT3 color;
+		int shade;
+	} pixelShaderBufferStruct{};
+
 	ID3D11Device* device;
 	ID3D11DeviceContext* immediateContext;
 	IDXGISwapChain* swapChain;
@@ -46,8 +52,13 @@ private:
 	ID3D11DepthStencilState* dsState;
 	DSV dsView;
 
+	ID3D11Buffer* nullConstantBuffer[1]{ nullptr };
+	ID3D11ShaderResourceView* nullSRV[1]{ nullptr };
+	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
+
 	ConstantBuffer cameraConstantBuffer;
 	ConstantBuffer compactCameraConstantBuffer;
+	ConstantBuffer pixelShaderConstantBuffer;
 
 	Window* window;
 	Resources& resources;
@@ -55,11 +66,8 @@ private:
 	UAV backBufferUAV;
 
 	Skybox skybox;
-	ParticleSystem particles;
 
 	std::string skyboxName;
-
-	//Camera* activeCamera;
 
 	// Functions
 	bool createInterfaces();
@@ -83,5 +91,7 @@ public:
 	inline ID3D11Device* getDevice() const { return this->device; }
 	inline ID3D11DeviceContext* getDeviceContext() const { return this->immediateContext; }
 	inline ConstantBuffer& getCompactCameraConstantBuffer() { return this->compactCameraConstantBuffer; }
+	inline ConstantBuffer& getCameraConstantBuffer() { return this->cameraConstantBuffer; }
+	inline CameraBufferData& getCameraBufferStruct() { return this->cameraBufferStruct; }
 	inline CompactCameraBufferData& getCompactCameraBufferStruct() { return this->compactCameraBufferStruct; }
 };

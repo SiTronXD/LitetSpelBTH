@@ -16,5 +16,6 @@ public:
 	void updateRigidbodyVector(std::vector<Rigidbody*> rbs);
 
 	virtual void onContact(const rp3d::CollisionCallback::CallbackData& callbackData) override;
+	virtual void onTrigger(const rp3d::OverlapCallback::CallbackData& callbackData) override;
 };
 

@@ -2,7 +2,8 @@
 
 StructuredBuffer::StructuredBuffer(Renderer& renderer, const std::string& debugName)
 	: Buffer(renderer, debugName),
-	srv(renderer, "Structured Buffer SRV")
+	srv(renderer, "Structured Buffer SRV"),
+	uav(renderer, "Structured Buffer UAV")
 {
 }
 
@@ -38,6 +39,8 @@ bool StructuredBuffer::createBuffer(
 	success = this->srv.createBufferSRV(
 		this->getBuffer(), DXGI_FORMAT_UNKNOWN, numElements
 	);
+
+	success = this->uav.createBufferUAV(this->getBuffer(), DXGI_FORMAT_UNKNOWN, numElements);
 
 	return success;
 }

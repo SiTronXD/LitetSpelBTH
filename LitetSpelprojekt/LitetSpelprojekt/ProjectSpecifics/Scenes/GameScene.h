@@ -10,6 +10,7 @@ class GameScene : public Scene
 private:
 	GameObject& cam;
 	std::vector<GameObject*> portalKeys;
+	std::vector<GameObject*> particlesObject;
 	std::vector<GameObject*> enemies; //Just for testing
 	
 	int currentKeys;

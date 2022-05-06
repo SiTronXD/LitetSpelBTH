@@ -3,6 +3,12 @@
 #include "GameScene.h"
 #include "MenuScene.h"
 #include "GameOverScene.h"
+#include "../Scripts/Player.h"
+#include "../Scripts/HookPoint.h"
+#include "../Scripts/GrapplingHook.h"
+#include "../Scripts/GrapplingHookRope.h"
+#include "../Scripts/CooldownIndicator.h"
+#include "../Scripts/PointLight.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -10,14 +16,13 @@
 #include "../../Engine/Graphics/UIRenderer.h"
 #include "../../Engine/Physics/PhysicsEngine.h"
 #include "../../Engine/Time.h"
+#include "../../Engine/SMath.h"
+
 
 using namespace DirectX::SimpleMath;
 
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
 {
-	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
-	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
-
 	// Sphere colliders
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
 	{
@@ -122,7 +127,9 @@ void GameScene::init()
 	
 	//Object Textures
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
-	
+	this->getResources().addTexture("Resources/Textures/RopeTexture.png", "RopeTexture.png");
+	this->getResources().addTexture("Resources/Textures/StingrayPBS1SG_Base_Color_1001.png", "GrapplingHookTexture");
+
 	//Gui textures
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "HealthBox.png");
@@ -130,7 +137,13 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
-	
+
+
+	//Particle texture
+	this->getResources().addTexture("Resources/Textures/particle.png", "particle.png");
+	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
+	this->getResources().addTexture("Resources/Textures/LightBloom.png", "LightBloom.png");
+
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
 
@@ -141,11 +154,22 @@ void GameScene::init()
 	//Materials
 	this->getResources().addMaterial("me.png", "testMaterial");
 	this->getResources().addMaterial("me.png", "portalMaterial");
+	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
+	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
+	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
+	this->getResources().addMaterial("LightBloom.png", "LightBloomMaterial");
+
+	// Default meshes
+	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::SPHERE), "RealSphereMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::PLANE), "PlaneMesh");
+	this->getResources().addMesh(MeshData(DefaultMesh::TETRAHEDRON), "Tetrahedron");
 
 	//Add cubemap
 	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
 
+	// Models
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
 	testMeshData.transformMesh(
 		Matrix::CreateScale(0.5f, 1.0f, 1.0f) * Matrix::CreateRotationZ(3.14f * 0.3f)
@@ -154,14 +178,31 @@ void GameScene::init()
 		std::move(testMeshData), //MeshData(DefaultMesh::CUBE),
 		"CubeMesh" 
 	);
+	MeshData grapplingHookData = MeshLoader::loadModel("Resources/Models/MeyerWeaponOBJEdit.obj");
 	this->getResources().addMesh(
-		MeshData(DefaultMesh::PLANE),
-		"PlaneMesh"
+		std::move(grapplingHookData),
+		"GrapplingHookMesh"
+	);
+	MeshData cooldownIndicatorMeshData(DefaultMesh::PLANE);
+	cooldownIndicatorMeshData.transformMesh(
+		Matrix::CreateRotationX(SMath::PI * 0.5f) *
+		Matrix::CreateRotationZ(SMath::PI)
+	);
+	this->getResources().addMesh(
+		std::move(cooldownIndicatorMeshData), 
+		"QuadMesh"
+	);
+
+	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
+	ropeMesh.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	this->getResources().addMesh(
+		std::move(ropeMesh),
+		"RopeMesh"
 	);
 
 	this->getResources().addMesh(
-		MeshData(DefaultMesh::TETRAHEDRON),
-		"Tetrahedron"
+		MeshData(DefaultMesh::SPHERE),
+		"SphereMesh"
 	);
 
 	// Level loader
@@ -174,13 +215,13 @@ void GameScene::init()
 	);
 	this->addLevelColliders(levelLoader);
   
+	// Player
 	this->setActiveCamera(cam.addComponent<Camera>());
 
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
-	Player* play = cam.addComponent<Player>();
-	play->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
+	Player* player = cam.addComponent<Player>();
+	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
-	cam.addComponent<Player>();
 	Rigidbody* rb = cam.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addCapsuleCollider(1.0f, 2.0f);
@@ -190,6 +231,53 @@ void GameScene::init()
 		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
 
+	GameObject& hookObject = this->addGameObject("HookPoint");
+	HookPoint* hook = hookObject.addComponent<HookPoint>();
+	hookObject.getComponent<Transform>()->setScaling(0.1f, 0.1f, 0.1f);
+	rb = hookObject.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
+	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
+	rb->setMaterial(0.2f, 0.0f);
+	rb->setType(rp3d::BodyType::KINEMATIC);
+	rb->setTrigger(true);
+	MeshComp* mc = hookObject.addComponent<MeshComp>();
+	mc->setMesh("SphereMesh", "testMaterial");
+
+	// Origin
+	GameObject& origin = this->addGameObject("Origin");
+	origin.getComponent<Transform>()->setScaling(Vector3(3, 3, 3));
+	MeshComp* originMC = origin.addComponent<MeshComp>();
+	originMC->setMesh("RealSphereMesh", "testMaterial");
+
+	// Grappling hook rope
+	GameObject& rope = this->addGameObject("Rope");
+	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
+	mc = rope.addComponent<MeshComp>();
+	mc->setMesh("RopeMesh", "ropeMaterial");
+	GrapplingHookRope* grapplingHookRopeComp =
+		rope.addComponent<GrapplingHookRope>();
+
+	// Grappling hook
+	GameObject& grapplingHook = this->addGameObject("Grappling hook");
+	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("GrapplingHookMesh", "GrapplingHookMaterial");
+	amc->setCastShadow(false);
+	GrapplingHook* grapplingHookComp = 
+		grapplingHook.addComponent<GrapplingHook>();
+	grapplingHookComp->setRope(grapplingHookRopeComp);
+	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
+
+	// Grappling hook cooldown indicator
+	GameObject& cooldownIndicatorObject = this->addGameObject("Grappling Hook Cooldown Indicator");
+	amc = cooldownIndicatorObject.addComponent<AbsoluteMeshComp>();
+	amc->setMesh("QuadMesh", "WhiteMaterial");
+	amc->setShouldShade(false);
+	CooldownIndicator* cooldownIndicatorComp =
+		cooldownIndicatorObject.addComponent<CooldownIndicator>();
+
+	player->setGrapplingHook(hook, grapplingHookComp, cooldownIndicatorComp);
+
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
 	model.getComponent<Transform>()->setPosition(10.0f, -7.0f, 10.0f);
@@ -197,7 +285,7 @@ void GameScene::init()
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addSphereCollider(2.0f);
 	rb->setType(rp3d::BodyType::STATIC);
-	MeshComp* mc = model.addComponent<MeshComp>();
+	mc = model.addComponent<MeshComp>();
 	mc->setMesh("CubeMesh", "testMaterial");
 
 	// Level game object
@@ -226,20 +314,34 @@ void GameScene::init()
 	rb->setType(rp3d::BodyType::KINEMATIC);
 	rb->setMaterial(0.2f, 0.0f);
 
-	//Key objects
+	//Key objects and particles
 	for (int i = 0; i < 4; i++)
 	{
+		//Portal key objects
 		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
+		portalKey.addComponent<ParticleEmitter>();
 		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
 		keyMc->setMesh("RealCubeMesh", "testMaterial");
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, 2.0f);
+		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
 		rb = portalKey.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
-
 		this->portalKeys.push_back(&portalKey);
+
+		// Point light
+		GameObject& pointLightObject = this->addGameObject("Point light");
+		pointLightObject.getComponent<Transform>()->setPosition(
+			portalKey.getComponent<Transform>()->getPosition()
+		);
+		MeshComp* lightMesh = pointLightObject.addComponent<MeshComp>();
+		lightMesh->setMesh("QuadMesh", "LightBloomMaterial");
+		lightMesh->setColor(Vector3(i % 2, (int) (i / 2), 0));
+		lightMesh->setShouldShade(false);
+		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
+		pointLight->setTarget(cam);
 	}
 
 	//Portal
@@ -281,8 +383,6 @@ void GameScene::init()
 	this->exitButton.setPos(Vector2(0, -170));
 	this->exitButton.setWidth(354);
 	this->exitButton.setHeight(159);
-
-	this->getECS().init();
 }
 
 #include <iostream>
@@ -334,6 +434,16 @@ void GameScene::update()
 
 			if (this->keyTextScale < 64.0f)
 				this->keyTextScale += (150.0f * Time::getDT());
+		}
+
+		//Partcile update
+		if (Input::isKeyJustPressed(Keys::E))
+		{
+			std::vector<ParticleEmitter*> particleComponents = getActiveComponents<ParticleEmitter>();
+			for (unsigned int i = 0; i < particleComponents.size(); ++i)
+			{
+				particleComponents[i]->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
+			}
 		}
 	}
 	else
