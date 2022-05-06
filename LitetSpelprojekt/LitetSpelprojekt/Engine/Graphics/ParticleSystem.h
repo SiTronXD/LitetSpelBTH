@@ -23,17 +23,17 @@ private:
 		DirectX::XMFLOAT3 color;
 	}particleBufferStruct{};
 
-	struct CameraStruct
+	struct ParticleSystemStruct
 	{
 		DirectX::XMFLOAT3 cameraPosition;
 		float deltaTime;
 		DirectX::XMFLOAT3 startPosition;
-		int start;
+		int32_t start;
 		float speed;
 		float lifeTime;
 		DirectX::XMFLOAT2 padding;
 
-	}cameraStruct{};
+	}particleSystemStruct{};
 
 	Mesh* plane;
 	Renderer* renderer;
@@ -67,6 +67,5 @@ public:
 
 private:
 	void initParticles();
-	void stopParticleSystem();
 };
 

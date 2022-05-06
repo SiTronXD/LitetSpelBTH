@@ -77,12 +77,11 @@ void ParticleSystem::init(Renderer& renderer, Resources& resource, int nrOfParti
 	data.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5));
 	this->plane = new Mesh(renderer, std::move(data));
 
-
 	//Init structured buffer
 	this->structBuffer->createBuffer(sizeof(Particle), numberOfParticles, this->particles.data());
 
 	//Constant buffers
-	this->cPosCbuffer->createBuffer(sizeof(CameraStruct));
+	this->cPosCbuffer->createBuffer(sizeof(ParticleSystemStruct));
 
 	//Set inputlayout
 	InputLayoutDesc inputLayoutDesc;
@@ -104,10 +103,10 @@ void ParticleSystem::init(Renderer& renderer, Resources& resource, int nrOfParti
 
 void ParticleSystem::explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime)
 {
-	this->cameraStruct.startPosition = position;
-	this->cameraStruct.speed = speed;
-	this->cameraStruct.lifeTime = lifetime;
-	this->cameraStruct.start = 1;
+	this->particleSystemStruct.startPosition = position;
+	this->particleSystemStruct.speed = speed;
+	this->particleSystemStruct.lifeTime = lifetime;
+	this->particleSystemStruct.start = 1;
 
 	this->active = true;
 }
@@ -139,9 +138,9 @@ void ParticleSystem::render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFL
 		deviceContext->PSSetShader(this->particlePS->getPS(), nullptr, 0);
 
 		//Update constant buffer
-		this->cameraStruct.cameraPosition = cameraPosition;
-		this->cameraStruct.deltaTime = Time::getDT();
-		this->cPosCbuffer->updateBuffer(&this->cameraStruct);
+		this->particleSystemStruct.cameraPosition = cameraPosition;
+		this->particleSystemStruct.deltaTime = Time::getDT();
+		this->cPosCbuffer->updateBuffer(&this->particleSystemStruct);
 
 		//Bind constant buffer
 		this->renderer->getCameraBufferStruct().modelMat = this->m.Transpose();
@@ -169,7 +168,7 @@ void ParticleSystem::render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFL
 		ID3D11ShaderResourceView* nullsrv[] = { nullptr };
 		deviceContext->VSSetShaderResources(0, 1, nullsrv);
 
-		this->cameraStruct.start = 0;
+		this->particleSystemStruct.start = 0;
 	}
 }
 
@@ -191,9 +190,4 @@ void ParticleSystem::initParticles()
 		this->renderer->getCameraBufferStruct().modelMat = this->m.Transpose();
 		this->particles.push_back(particle);
 	}
-}
-
-void ParticleSystem::stopParticleSystem()
-{
-	
 }
