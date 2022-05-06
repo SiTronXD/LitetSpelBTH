@@ -31,6 +31,11 @@ void Log::writeMat(const DirectX::SimpleMath::Matrix& mat)
 	Log::write("");
 }
 
+void Log::writeVec(const DirectX::SimpleMath::Vector3& vec)
+{
+	Log::write("(" + std::to_string(vec.x) + ", " + std::to_string(vec.y) + ", " + std::to_string(vec.z) + ")");
+}
+
 void Log::write(const std::string& message)
 {
 	std::cout << "[Log]: " << message << std::endl;

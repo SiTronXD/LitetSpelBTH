@@ -17,4 +17,10 @@ public:
 		aiMatrix4x4& assimpMat, 
 		DirectX::SimpleMath::Matrix& outMat
 	);
+
+	static float clamp(
+		const float& value, 
+		const float& min, 
+		const float& max
+	);
 };

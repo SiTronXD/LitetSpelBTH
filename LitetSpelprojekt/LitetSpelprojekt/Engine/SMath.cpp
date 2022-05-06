@@ -28,3 +28,11 @@ void SMath::assimpToMat(
 	outMat._34 = assimpMat.d3;
 	outMat._44 = assimpMat.d4;
 }
+
+float SMath::clamp(const float& value, const float& min, const float& max)
+{
+	if (value < min) return min;
+	else if (value > max) return max;
+
+	return value;
+}

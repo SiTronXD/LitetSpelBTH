@@ -25,7 +25,7 @@ public:
 	inline float getMinVal() const { return this->minValue; }
 	inline float getCurVal() const { return this->currentValue; }
 	inline float getMaxVal() const { return this->maxValue; }
-	inline float getPerFel() const { return this->percentFilled; }
+	inline float getPerFill() const { return this->percentFilled; }
 	
 	// Set
 	inline void setPos(DirectX::SimpleMath::Vector2 newPos) { this->pos = newPos; }
