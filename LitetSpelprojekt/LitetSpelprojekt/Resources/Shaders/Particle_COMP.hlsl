@@ -31,7 +31,7 @@ struct particle
     float3 color;
 };
 
-cbuffer CameraBuffer : register(b0)
+cbuffer ParticleSystemBuffer : register(b0)
 {
     float3 cameraPosition;
     float deltaTime;

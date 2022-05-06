@@ -179,7 +179,6 @@ void Player::onCollisionEnter(GameObject& other)
 	if (other.getTag() == ObjectTag::KEY)
 	{
 		other.removeComponent<MeshComp>();
-		other.removeComponent<Collider>();
 		other.getComponent<ParticleEmitter>()->explode(20, 40);
 		other.removeComponent<Rigidbody>();
 		this->keyPieces++;

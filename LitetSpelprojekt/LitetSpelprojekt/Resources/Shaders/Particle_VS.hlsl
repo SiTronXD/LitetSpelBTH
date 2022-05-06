@@ -1,4 +1,4 @@
-cbuffer CameraBuffer : register(b0)
+cbuffer ParticleSystemBuffer : register(b0)
 {
     matrix modelMatrix;
     matrix vpMatrix;
