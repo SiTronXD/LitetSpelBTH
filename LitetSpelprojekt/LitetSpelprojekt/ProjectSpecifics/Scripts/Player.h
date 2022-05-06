@@ -18,6 +18,7 @@ private:
 	int keyPieces;
 	int health;
 
+	float maxPulseCannonCooldown;
 	float pulseCannonCooldown;
 	float healthCooldown;
 

@@ -33,7 +33,7 @@ void Player::move()
 			this->rb->addForce(vec * 5.0f * this->speed * Time::getDT() + moveVec);
 		}
 	}
-	else if (this->onGround/* || (!this->onGround && moveVec != Vector3::Zero)*/)
+	else if (this->onGround)
 	{
 		moveVec.y = this->rb->getVelocity().y;
 		this->rb->setVelocity(moveVec);
@@ -87,7 +87,7 @@ void Player::fireWeapon()
 	if (Input::isMouseButtonDown(Mouse::RIGHT_BUTTON) && this->pulseCannonCooldown <= 0.0f)
 	{
 		this->rb->addVelocity(forward * -20.0f);
-		this->pulseCannonCooldown = 2.5f;
+		this->pulseCannonCooldown = this->maxPulseCannonCooldown;
 	}
 }
 
@@ -107,7 +107,7 @@ void Player::lookAround()
 Player::Player(GameObject& object) :
 	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), maxVelocity(35.0f),
 	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
-	healthCooldown(0.0f), pulseCannonCooldown(0.0f),
+	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
 	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr)
 {
 	Input::setCursorVisible(false);
@@ -178,7 +178,7 @@ void Player::update()
 	if (this->hookPoint->getState() != HookState::NOT_ACTIVE)
 		this->grapplingHook->getRope()->setTargetPos(this->hookPoint->getTransform()->getPosition());
 
-	this->cooldownIndicatior->setPercent(1.0f - this->pulseCannonCooldown / 2.5f);
+	this->cooldownIndicatior->setPercent(1.0f - this->pulseCannonCooldown / this->maxPulseCannonCooldown);
 	// Update pulse cannon cooldown
 	if (this->pulseCannonCooldown > 0.0f)
 		this->pulseCannonCooldown -= Time::getDT();
