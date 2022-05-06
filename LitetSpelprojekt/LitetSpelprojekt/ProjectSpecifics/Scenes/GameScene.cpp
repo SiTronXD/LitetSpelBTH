@@ -8,6 +8,7 @@
 #include "../Scripts/GrapplingHook.h"
 #include "../Scripts/GrapplingHookRope.h"
 #include "../Scripts/CooldownIndicator.h"
+#include "../Scripts/PointLight.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -136,6 +137,7 @@ void GameScene::init()
 	//Particle texture
 	this->getResources().addTexture("Resources/Textures/particle.png", "particle.png");
 	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
+	this->getResources().addTexture("Resources/Textures/LightBloom.png", "LightBloom.png");
 
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
@@ -150,6 +152,7 @@ void GameScene::init()
 	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
 	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
 	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
+	this->getResources().addMaterial("LightBloom.png", "LightBloomMaterial");
 
 	// Default meshes
 	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
@@ -176,10 +179,13 @@ void GameScene::init()
 		"GrapplingHookMesh"
 	);
 	MeshData cooldownIndicatorMeshData(DefaultMesh::PLANE);
-	cooldownIndicatorMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	cooldownIndicatorMeshData.transformMesh(
+		Matrix::CreateRotationX(SMath::PI * 0.5f) *
+		Matrix::CreateRotationZ(SMath::PI)
+	);
 	this->getResources().addMesh(
 		std::move(cooldownIndicatorMeshData), 
-		"CooldownIndicatorMesh"
+		"QuadMesh"
 	);
 
 	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
@@ -251,6 +257,7 @@ void GameScene::init()
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
 	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
 	amc->setMesh("GrapplingHookMesh", "GrapplingHookMaterial");
+	amc->setCastShadow(false);
 	GrapplingHook* grapplingHookComp = 
 		grapplingHook.addComponent<GrapplingHook>();
 	grapplingHookComp->setRope(grapplingHookRopeComp);
@@ -259,7 +266,8 @@ void GameScene::init()
 	// Grappling hook cooldown indicator
 	GameObject& cooldownIndicatorObject = this->addGameObject("Grappling Hook Cooldown Indicator");
 	amc = cooldownIndicatorObject.addComponent<AbsoluteMeshComp>();
-	amc->setMesh("CooldownIndicatorMesh", "WhiteMaterial");
+	amc->setMesh("QuadMesh", "WhiteMaterial");
+	amc->setShouldShade(false);
 	CooldownIndicator* cooldownIndicatorComp =
 		cooldownIndicatorObject.addComponent<CooldownIndicator>();
 
@@ -317,6 +325,17 @@ void GameScene::init()
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 		this->portalKeys.push_back(&portalKey);
+
+		// Point light
+		GameObject& pointLightObject = this->addGameObject("Point light");
+		pointLightObject.getComponent<Transform>()->setPosition(
+			portalKey.getComponent<Transform>()->getPosition()
+		);
+		MeshComp* lightMesh = pointLightObject.addComponent<MeshComp>();
+		lightMesh->setMesh("QuadMesh", "LightBloomMaterial");
+		lightMesh->setShouldShade(false);
+		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
+		pointLight->setTarget(cam);
 	}
 
 	//Portal

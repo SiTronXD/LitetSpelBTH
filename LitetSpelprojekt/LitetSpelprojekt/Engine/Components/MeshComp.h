@@ -13,6 +13,9 @@ private:
 
 	DirectX::SimpleMath::Vector3 color;
 
+	bool shouldShade;
+	bool castShadow;
+
 public:
 	MeshComp(GameObject& object);
 	virtual ~MeshComp();
@@ -24,8 +27,12 @@ public:
 	void setColor(
 		const DirectX::SimpleMath::Vector3& color
 	);
+	void setShouldShade(bool shade);
+	void setCastShadow(bool cast);
 
 	inline const std::string& getMeshName() { return this->meshName; }
 	inline const std::string& getMaterialName() { return this->materialName; }
 	inline const DirectX::SimpleMath::Vector3& getColor() { return this->color; }
+	inline const bool getShouldShade() { return this->shouldShade; }
+	inline const bool getCastShadow() { return this->castShadow; }
 };

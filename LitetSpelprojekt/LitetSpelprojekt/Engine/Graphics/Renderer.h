@@ -36,7 +36,7 @@ private:
 	struct PixelShaderBufferData
 	{
 		DirectX::XMFLOAT3 color;
-		float padding;
+		int shade;
 	} pixelShaderBufferStruct{};
 
 	ID3D11Device* device;

@@ -41,7 +41,8 @@ void GrapplingHook::setRope(GrapplingHookRope* rope)
 void GrapplingHook::setToShootPos(DirectX::SimpleMath::Vector3& result)
 {
 	result = this->transform->getPosition();
-	result += this->playerTransform->forward() * 0.7f;
+	result += this->playerTransform->forward() * 1.5f +
+		this->transform->up() * 0.5f;
 }
 
 void GrapplingHook::init()
