@@ -23,9 +23,12 @@ void HighscoreScene::init()
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
-	this->getHighscore().displayHighscore();
+
+	// Load in from file
 	this->getHighscore().loadHighscore();
-	this->getHighscore().displayHighscore();
+	
+	// Display Highscore List in Log
+	//this->getHighscore().displayHighscore();
 
 	exitButton.setPos(Vector2(0, -420));
 	exitButton.setWidth(354);
@@ -53,8 +56,7 @@ void HighscoreScene::renderUI()
 		30,
 		30
 	);
-	
-	
+
 	this->getUIRenderer().renderString(
 		"highscore",
 		0,
@@ -62,4 +64,22 @@ void HighscoreScene::renderUI()
 		50,
 		50
 	);
+
+	// Print the list
+	for (int i = 0; i < 10; i++)
+	{
+		// Get Minutes:Seconds Format
+		int seconds = this->getHighscore().getHighscoreList().times[i];
+		int minutes = seconds / 60;
+		int printSeconds = seconds - (minutes * 60);
+		std::string minSec = std::to_string(minutes) + ":" + std::to_string(printSeconds);
+		
+		this->getUIRenderer().renderString(
+		std::to_string((i + 1)) + ": " + minSec,
+		0,
+		250 - (i * 50),
+		30,
+		30
+		);
+	}		
 }

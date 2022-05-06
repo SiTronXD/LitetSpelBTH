@@ -8,6 +8,7 @@ using namespace DirectX::SimpleMath;
 GameOverScene::GameOverScene(SceneHandler& sceneHandler, bool win, float highscoreTime)
 	:Scene(sceneHandler),
 	winning(win),
+	newHighscore(false),
 	highscoreTime(highscoreTime),
 	mainMenuButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
@@ -59,6 +60,8 @@ void GameOverScene::init()
 	);
 	this->getUIRenderer().setFontCharacterSpacing(5);
 	this->getUIRenderer().setFontSpaceWidth(10);
+
+	newHighscore = this->getHighscore().newHighscore(this->highscoreTime);
 }
 
 void GameOverScene::update()
@@ -96,7 +99,7 @@ void GameOverScene::renderUI()
 	{
 		this->getUIRenderer().renderString(
 			"you won",
-			-10,
+			-20,
 			400,
 			64,
 			64
@@ -108,12 +111,12 @@ void GameOverScene::renderUI()
 		int printSeconds = seconds - (minutes * 60);
 		std::string minSec = std::to_string(minutes) + ":" + std::to_string(printSeconds);
 		
-		if (this->getHighscore().newHighscore(this->highscoreTime))
+		if (newHighscore)
 		{
 			this->getUIRenderer().renderString(
 				"new highscore!",
 				0,
-				100,
+				170,
 				30,
 				30
 			);
@@ -122,8 +125,8 @@ void GameOverScene::renderUI()
 		// TimerText
 		this->getUIRenderer().renderString(
 			("time: " + minSec),
-			0,
-			170,
+			-10,
+			240,
 			50,
 			50
 		);
@@ -132,7 +135,7 @@ void GameOverScene::renderUI()
 	{
 		this->getUIRenderer().renderString(
 			"you died",
-			-10,
+			-20,
 			400,
 			64,
 			64
@@ -153,5 +156,4 @@ void GameOverScene::renderUI()
 			50
 		);
 	}
-	
 }

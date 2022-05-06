@@ -6,14 +6,14 @@
 
 Highscore::Highscore()
 {
-	
-	
+	for (int i = 0; i < 10; i++)
+	{
+		this->highscoreList.times[i] = 0.000000f;
+	}
 }
 
 Highscore::~Highscore()
 {
-	
-
 }
 
 bool Highscore::loadHighscore()
@@ -64,6 +64,11 @@ void Highscore::displayHighscore() const
 
 bool Highscore::newHighscore(float time)
 {
+	if (time == 0.0f)
+	{
+		return false;
+	}
+
 	this->highscoreList.times[10] = time;
 	std::sort(this->highscoreList.times, this->highscoreList.times + 11);
 	if (time == this->highscoreList.times[10])
@@ -71,10 +76,18 @@ bool Highscore::newHighscore(float time)
 		return false;
 	}
 	
+	/* DEBUGGING
 	Log::write("Time: " + std::to_string(time));
 	Log::write("First Time: " + std::to_string(this->highscoreList.times[0]));
 	Log::write("Last Time: " + std::to_string(this->highscoreList.times[9]));
 	Log::write("11th: " + std::to_string(this->highscoreList.times[10]));
-	
+	*/
+
+
+	if (!saveHighscore())
+	{
+		Log::error("Save Highscore returned false");
+	}
+
 	return true;
 }
