@@ -84,7 +84,7 @@ void Light::init(Resources& resources, Renderer& renderer)
 			100,
 			100,
 			0.1f,
-			100.0f
+			200.0f
 		);
 
 		break;
