@@ -76,6 +76,7 @@
     <ClCompile Include="ProjectSpecifics\Scripts\CooldownIndicator.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\HookPoint.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\PointLight.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -142,6 +143,7 @@
     <ClInclude Include="ProjectSpecifics\Scripts\CooldownIndicator.h" />
     <ClInclude Include="Engine\Graphics\ParticleSystem.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\HookPoint.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\PointLight.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

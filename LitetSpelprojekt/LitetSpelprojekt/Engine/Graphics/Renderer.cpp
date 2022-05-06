@@ -242,6 +242,7 @@ void Renderer::render(Scene& scene)
 
 		// Pixel shader constant buffer
 		this->pixelShaderBufferStruct.color = currentMeshComp->getColor();
+		this->pixelShaderBufferStruct.shade = currentMeshComp->getShouldShade();
 		this->pixelShaderConstantBuffer.updateBuffer(&this->pixelShaderBufferStruct);
 		immediateContext->PSSetConstantBuffers(2, 1, &this->pixelShaderConstantBuffer.getBuffer());
 
@@ -360,6 +361,7 @@ void Renderer::render(Scene& scene)
 
 		// Pixel shader constant buffer
 		this->pixelShaderBufferStruct.color = currentMeshComp->getColor();
+		this->pixelShaderBufferStruct.shade = currentMeshComp->getShouldShade();
 		this->pixelShaderConstantBuffer.updateBuffer(&this->pixelShaderBufferStruct);
 		immediateContext->PSSetConstantBuffers(2, 1, &this->pixelShaderConstantBuffer.getBuffer());
 

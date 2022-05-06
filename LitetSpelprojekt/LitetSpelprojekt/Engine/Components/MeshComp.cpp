@@ -4,7 +4,9 @@
 using namespace DirectX::SimpleMath;
 
 MeshComp::MeshComp(GameObject& object):
-	Component(object)
+	Component(object),
+	shouldShade(true),
+	castShadow(true)
 {
 	this->setColor(Vector3(1,1,1));
 }
@@ -22,4 +24,14 @@ void MeshComp::setMesh(const std::string& meshName, const std::string& materialN
 void MeshComp::setColor(const DirectX::SimpleMath::Vector3& color)
 {
 	this->color = color;
+}
+
+void MeshComp::setShouldShade(bool shade)
+{
+	this->shouldShade = shade;
+}
+
+void MeshComp::setCastShadow(bool cast)
+{
+	this->castShadow = cast;
 }

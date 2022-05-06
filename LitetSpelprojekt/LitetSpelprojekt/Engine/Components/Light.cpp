@@ -111,7 +111,14 @@ void Light::render(Scene& scene)
 	);
 	Matrix vpMatrix = this->viewMatrix * this->projectionMatrix;
 
+	// Find meshes
 	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
+	std::vector<AbsoluteMeshComp*> absoluteMeshComponents = scene.getActiveComponents<AbsoluteMeshComp>();
+	meshComponents.insert(
+		meshComponents.end(),
+		absoluteMeshComponents.begin(),
+		absoluteMeshComponents.end()
+	);
 
 	ID3D11DeviceContext* immediateContext =
 		this->renderer->getDeviceContext();
@@ -154,11 +161,17 @@ void Light::render(Scene& scene)
 
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
 	{
-		Mesh& mesh = this->resources->getMesh(meshComponents[i]->getMeshName().c_str());
+		MeshComp* currentMeshComp = meshComponents[i];
+
+		// This mesh doesn't cast a shadow
+		if (!currentMeshComp->getCastShadow())
+			continue;
+
+		Mesh& mesh = this->resources->getMesh(currentMeshComp->getMeshName().c_str());
 		unsigned int numIndices = mesh.getEntireSubmesh().numIndices;
 
 		// Set mvp Matrix
-		Matrix m = meshComponents[i]->getTransform()->getWorldMatrix() * vpMatrix;
+		Matrix m = currentMeshComp->getTransform()->getWorldMatrix() * vpMatrix;
 		this->renderer->getCompactCameraBufferStruct().mvpMat = m.Transpose();
 		this->renderer->getCompactCameraConstantBuffer().updateBuffer(&this->renderer->getCompactCameraBufferStruct());
 
