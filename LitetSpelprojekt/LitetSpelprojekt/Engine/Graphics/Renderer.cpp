@@ -121,8 +121,8 @@ Renderer::Renderer(Resources& resources)
 
 	resources(resources),
 
-	skybox(*this),
-	particles(*this)
+	skybox(*this)
+	//particles(*this, resources)
 
 	//activeCamera(nullptr)
 {
@@ -160,7 +160,9 @@ void Renderer::init(Window& window)
 
 	//Init skybox
 	this->skybox.initialize();
-	this->particles.init();
+
+	//Init particles
+	//this->particles.init();
 
 	// Topology won't change during runtime
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -320,6 +322,19 @@ void Renderer::render(Scene& scene)
 		this->skybox.getMesh().getIndexBuffer().getIndexCount(), 0, 0
 	);
 
+	//Particles
+	DirectX::SimpleMath::Vector3 cameraPos = scene.getActiveCamera()->getTransform()->getPosition();
+
+	std::vector<ParticleEmitter*> particleComponents = scene.getActiveComponents<ParticleEmitter>();
+	for (unsigned int i = 0; i < particleComponents.size(); ++i)
+	{
+		particleComponents[i]->render(vp, cameraPos);
+	}
+	
+	// Unbind render target
+	ID3D11RenderTargetView* nullRTV[1] = { nullptr };
+	immediateContext->OMSetRenderTargets(1, nullRTV, nullptr);
+
   // --------------------- Render particles ---------------------
 	this->particles.render(vp, scene.getActiveCamera()->getTransform()->getRotation());
   
@@ -355,7 +370,6 @@ void Renderer::render(Scene& scene)
 		this->pixelShaderBufferStruct.color = currentMeshComp->getColor();
 		this->pixelShaderConstantBuffer.updateBuffer(&this->pixelShaderBufferStruct);
 		immediateContext->PSSetConstantBuffers(2, 1, &this->pixelShaderConstantBuffer.getBuffer());
-
 
 		// Render submeshes
 		for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)

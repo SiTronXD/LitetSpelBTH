@@ -2,11 +2,13 @@
 
 #include "Buffer.h"
 #include "SRV.h"
+#include "UAV.h"
 
 class StructuredBuffer : public Buffer
 {
 private:
 	SRV srv;
+	UAV uav;
 
 public:
 	StructuredBuffer(Renderer& renderer,
@@ -16,4 +18,6 @@ public:
 	void updateBuffer(void* bufferData);
 
 	bool createBuffer(UINT elementSize, UINT numElements, void* initialData);
+	inline SRV& getSrv() { return this->srv; }
+	inline UAV& getUav() { return this->uav; }
 };
