@@ -58,7 +58,7 @@ void HookPoint::update()
 			this->returnOffset.y * playerTransform->up() +
 			this->returnOffset.z * playerTransform->forward()) - 
 			this->getTransform()->getPosition();
-		if (vec.Length() < 1.0f)
+		if (vec.Length() < 3.0f)
 		{
 			this->state = HookState::NOT_ACTIVE;
 			this->rb->setVelocity(Vector3::Zero);

@@ -13,6 +13,7 @@ private:
 	float speed;
 	float jumpForce;
 	float mouseSensitivity;
+	float maxVelocity;
 
 	int keyPieces;
 	int health;
