@@ -24,8 +24,8 @@ bool Settings::loadSettings()
 	if (!reader.is_open())
 	{
 		Log::error("Unable to load settings file");
-		this->settingsList.resolutionX = 600;
-		this->settingsList.resolutionY = 480;
+		this->settingsList.resolutionX = 1280;
+		this->settingsList.resolutionY = 720;
 		this->settingsList.sensitivity = 3.0f;
 		this->settingsList.brightness = 3.0f;
 		this->settingsList.volume = 3.0f;

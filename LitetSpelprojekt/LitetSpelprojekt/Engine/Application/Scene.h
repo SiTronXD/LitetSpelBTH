@@ -2,6 +2,7 @@
 
 #include "../ECS.h"
 #include "../Settings.h"
+#include "../Highscore.h"
 
 class SceneHandler;
 class Resources;
@@ -17,12 +18,14 @@ private:
 	Camera* activeCamera;
 
 	SceneHandler& sceneHandler;
-	Settings* settings;
 	Resources* resources;
 	Renderer* renderer;
 	UIRenderer* uiRenderer;
 	Window* window;
 	PhysicsEngine* physicsEngine;
+
+	Settings* settings;
+	Highscore* highscore;
 
 	bool pause;
 
@@ -38,6 +41,7 @@ protected:
 	inline Window& getWindow() { return *this->window; }
 	inline PhysicsEngine& getPhysicsEngine() { return *this->physicsEngine; }
 	inline Settings& getSettings() { return *this->settings;  }
+	inline Highscore& getHighscore() { return *this->highscore; }
 
 public:
 	Scene(SceneHandler& sceneHandler);

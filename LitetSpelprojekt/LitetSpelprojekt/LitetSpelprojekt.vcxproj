@@ -183,6 +183,7 @@
     <ClCompile Include="Engine\Graphics\MeshData.cpp" />
     <ClCompile Include="Engine\Graphics\InputLayoutDesc.cpp" />
     <ClCompile Include="Engine\Graphics\Shaders\PixelShader.cpp" />
+    <ClCompile Include="Engine\Highscore.cpp" />
     <ClCompile Include="Engine\Physics\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Mesh.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\HookPoint.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\GameOverScene.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scenes\HighscoreScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scenes\LoadingScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\Player.cpp" />
     <ClCompile Include="Engine\Graphics\Material.cpp" />
@@ -254,6 +256,7 @@
     <ClInclude Include="Engine\Graphics\MeshData.h" />
     <ClInclude Include="Engine\Graphics\InputLayoutDesc.h" />
     <ClInclude Include="Engine\Graphics\Shaders\PixelShader.h" />
+    <ClInclude Include="Engine\Highscore.h" />
     <ClInclude Include="Engine\Physics\PhysicsEngine.h" />
     <ClInclude Include="Engine\Settings.h" />
     <ClInclude Include="Engine\Graphics\Mesh.h" />
@@ -264,6 +267,7 @@
     <ClInclude Include="Engine\Graphics\ParticleSystem.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\HookPoint.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\GameOverScene.h" />
+    <ClInclude Include="ProjectSpecifics\Scenes\HighscoreScene.h" />
     <ClInclude Include="ProjectSpecifics\Scenes\LoadingScene.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\Player.h" />
     <ClInclude Include="Engine\Graphics\Material.h" />
