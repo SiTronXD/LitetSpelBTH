@@ -20,7 +20,8 @@ private:
 		DirectX::XMFLOAT3 velocity;
 		float lifetime;
 		float scaleFactor;
-		DirectX::XMFLOAT3 color;
+		DirectX::XMFLOAT3 finalColor;
+	
 	}particleBufferStruct{};
 
 	struct ParticleSystemStruct
@@ -29,9 +30,12 @@ private:
 		float deltaTime;
 		DirectX::XMFLOAT3 startPosition;
 		int32_t start;
+		DirectX::XMFLOAT3 color1;
 		float speed;
+		DirectX::XMFLOAT3 color2;
 		float lifeTime;
-		DirectX::XMFLOAT2 padding;
+		float randomTimer;
+		DirectX::XMFLOAT3 padding;
 
 	}particleSystemStruct{};
 
@@ -61,7 +65,7 @@ public:
 
 	void init(Renderer& renderer, Resources& resource, int nrOfParticles);
 
-	void explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime);
+	void explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime, DirectX::SimpleMath::Vector3 color1, DirectX::SimpleMath::Vector3 color2);
 
 	void render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFLOAT3& cameraPosition);
 

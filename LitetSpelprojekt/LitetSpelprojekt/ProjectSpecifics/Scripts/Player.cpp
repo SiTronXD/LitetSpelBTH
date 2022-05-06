@@ -179,7 +179,7 @@ void Player::onCollisionEnter(GameObject& other)
 	if (other.getTag() == ObjectTag::KEY)
 	{
 		other.removeComponent<MeshComp>();
-		other.getComponent<ParticleEmitter>()->explode(20, 40);
+		other.getComponent<ParticleEmitter>()->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
 		other.removeComponent<Rigidbody>();
 		this->keyPieces++;
 		this->keyPickup = true;

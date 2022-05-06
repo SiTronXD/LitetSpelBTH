@@ -101,12 +101,19 @@ void ParticleSystem::init(Renderer& renderer, Resources& resource, int nrOfParti
 	this->particleComputeShader->addConstantBuffer(*this->cPosCbuffer);
 }
 
-void ParticleSystem::explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime)
+void ParticleSystem::explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime,
+	DirectX::SimpleMath::Vector3 color1, DirectX::SimpleMath::Vector3 color2)
 {
 	this->particleSystemStruct.startPosition = position;
 	this->particleSystemStruct.speed = speed;
 	this->particleSystemStruct.lifeTime = lifetime;
+
+	this->particleSystemStruct.color1 = color1;
+	this->particleSystemStruct.color2 = color2;
+	
 	this->particleSystemStruct.start = 1;
+
+	this->particleSystemStruct.randomTimer = std::rand() % 1000;
 
 	this->active = true;
 }

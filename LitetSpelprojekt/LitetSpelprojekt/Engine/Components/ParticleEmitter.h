@@ -14,7 +14,7 @@ public:
 
 	void init(Renderer& renderer, Resources& resources, int nrOfParticles);
 	void render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFLOAT3& cameraPosition);
-	void explode(float speed, float lifetime);
+	void explode(float speed, float lifetime, DirectX::SimpleMath::Vector3 color1, DirectX::SimpleMath::Vector3 color2);
 
 	inline ParticleSystem& getParticleSystem() { return this->system; }
 };

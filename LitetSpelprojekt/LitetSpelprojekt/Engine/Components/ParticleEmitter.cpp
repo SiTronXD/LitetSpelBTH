@@ -20,9 +20,9 @@ void ParticleEmitter::render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMF
 	this->system.render(vp, cameraPosition);
 }
 
-void ParticleEmitter::explode(float speed, float lifetime)
+void ParticleEmitter::explode(float speed, float lifetime, DirectX::SimpleMath::Vector3 color1, DirectX::SimpleMath::Vector3 color2)
 {
 	DirectX::SimpleMath::Vector3 position = this->getTransform()->getPosition();
 	
-	this->system.explode(position, speed, lifetime);
+	this->system.explode(position, speed, lifetime, color1, color2);
 }

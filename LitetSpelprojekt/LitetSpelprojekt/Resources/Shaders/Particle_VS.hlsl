@@ -18,14 +18,14 @@ struct particle
     float3 velocity;
     float lifetime;
     float scaleFactor;
-    float3 color;
+    float3 finalColor;
 };
 
 struct Output
 {
     float4 position : SV_Position;
     float2 uv : UV;
-    float3 color : COLOR;
+    float4 color : COLOR;
 };
 
 StructuredBuffer<particle> particle_OUT : register(t0);
@@ -36,6 +36,6 @@ Output main(Vertex input)
     out_put.position = mul(float4(input.position, 1.0f), particle_OUT[input.instanceID].worldMatrix);
     out_put.position = mul(out_put.position, vpMatrix);
     out_put.uv = input.uv;
-    out_put.color = particle_OUT[input.instanceID].color;
+    out_put.color = float4(particle_OUT[input.instanceID].finalColor, 1.0f);
     return out_put;
 }

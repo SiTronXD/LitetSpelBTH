@@ -28,7 +28,7 @@ struct particle
     float3 velocity;
     float lifetime;
     float scaleFactor;
-    float3 color;
+    float3 finalColor;
 };
 
 cbuffer ParticleSystemBuffer : register(b0)
@@ -37,9 +37,12 @@ cbuffer ParticleSystemBuffer : register(b0)
     float deltaTime;
     float3 startPosition;
     int start;
+    float3 color1;
     float speed;
+    float3 color2;
     float lifeTime;
-    float2 padding;
+    float randomTimer;
+    float3 padding;
 };
 
 RWStructuredBuffer<particle> buffer : register(u0);
@@ -51,12 +54,13 @@ void main( uint3 DTid : SV_DispatchThreadID )
     //Reset all if recreated the particle system
     if (start == 1)
     {
+        //Set explosion to a circel
         buffer[DTid.x].worldMatrix[3].xyz = startPosition;
-        buffer[DTid.x].lifetime = randomFloat(DTid.x) * lifeTime;
-        buffer[DTid.x].scaleFactor = 0.2 + randomFloat(DTid.x) * 0.4;
+        buffer[DTid.x].lifetime = randomFloat(DTid.x * randomTimer) * lifeTime;;
+        buffer[DTid.x].scaleFactor = 0.2 + randomFloat(DTid.x * randomTimer) * 0.4;
         
-        float angle1 = randomFloat(DTid.x) * 360.0 / 180.0 * 3.14;
-        float angle2 = randomFloat(DTid.x + 1) * 360.0 / 180.0 * 3.14;
+        float angle1 = randomFloat(DTid.x * 2 * randomTimer) * 360.0 / 180.0 * 3.14;
+        float angle2 = randomFloat((DTid.x + 1 * 2) * randomTimer) * 360.0 / 180.0 * 3.14;
         float radius = 1 + randomFloat(DTid.x) * speed;
         
         buffer[DTid.x].velocity.x = radius * cos(angle1) * sin(angle2);
@@ -74,9 +78,13 @@ void main( uint3 DTid : SV_DispatchThreadID )
         //buffer[DTid.x].velocity += float3(0.0f, 1.0f, 0.0f);
         //buffer[DTid.x].velocity = normalize(buffer[DTid.x].velocity) * radius;
         
-        buffer[DTid.x].color.x = randomFloat(DTid.x * 3);
-        buffer[DTid.x].color.y = randomFloat(DTid.x * 3 + 1);
-        buffer[DTid.x].color.z = randomFloat(DTid.x * 3 + 2);
+        //Update color
+        float randomColorValue = randomFloat(DTid.x * randomTimer);
+        buffer[DTid.x].finalColor = (float4(lerp(color1, color2, randomColorValue), 1.0f));
+ 
+        //buffer[DTid.x].color.x = randomFloat(DTid.x * 3);
+        //buffer[DTid.x].color.y = randomFloat(DTid.x * 3 + 1);
+        //buffer[DTid.x].color.z = randomFloat(DTid.x * 3 + 2);
            
     }
     
@@ -102,14 +110,17 @@ void main( uint3 DTid : SV_DispatchThreadID )
         }
             
         //Update lifetime
-        buffer[DTid.x].lifetime -= 1 * deltaTime;
+        buffer[DTid.x].lifetime -= 2 * deltaTime;
     }
     //If lifetime is 0 we remove them by setting scale to 0.
-    if (buffer[DTid.x].lifetime-- < 0.0f)
+    if (buffer[DTid.x].lifetime < 0.0f)
     {
         if (buffer[DTid.x].scaleFactor > 0.0f)
             buffer[DTid.x].scaleFactor -= 0.8f * deltaTime;
 
     }
+    //Update color
+    float fadingValue = buffer[DTid.x].lifetime / lifeTime;
+    buffer[DTid.x].finalColor = (float4(lerp(color1, color2, fadingValue), 1.0f));
    
 }

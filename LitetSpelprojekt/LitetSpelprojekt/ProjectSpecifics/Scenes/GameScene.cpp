@@ -413,7 +413,7 @@ void GameScene::update()
 			std::vector<ParticleEmitter*> particleComponents = getActiveComponents<ParticleEmitter>();
 			for (unsigned int i = 0; i < particleComponents.size(); ++i)
 			{
-				particleComponents[i]->explode(10, 1);
+				particleComponents[i]->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
 			}
 		}
 	}
