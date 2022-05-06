@@ -26,10 +26,10 @@ Engine::Engine()
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
-	this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
+	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
 	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
-	//this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false, 0.0f));
-
+	this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false, 0.0f));
+	
 	// Default texture and material
 	this->resources.addTexture("Resources/Textures/Default.png", "Default.png");
 	this->resources.addMaterial("Default.png", "");
