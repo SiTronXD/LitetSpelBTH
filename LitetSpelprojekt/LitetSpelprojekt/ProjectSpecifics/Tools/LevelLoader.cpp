@@ -8,6 +8,20 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
+void LevelLoader::switchFloats(Vector3& vec)
+{
+	float t = vec.y;
+	vec.y = vec.z;
+	vec.z = t;
+}
+
+void LevelLoader::switchFloats(XMFLOAT3& vec)
+{
+	float t = vec.y;
+	vec.y = vec.z;
+	vec.z = t;
+}
+
 void LevelLoader::traverseStructure(
 	aiNode* node,
 	const DirectX::SimpleMath::Matrix& parentTransform)
@@ -59,6 +73,7 @@ void LevelLoader::traverseStructure(
 			LevelColliderBox newColliderBox{};
 			newColliderBox.pos = nodePosition;
 			newColliderBox.extents = nodeScale;
+			this->switchFloats(newColliderBox.extents);
 			this->boxColliders.push_back(newColliderBox);
 		}
 		// Oriented box
@@ -69,6 +84,7 @@ void LevelLoader::traverseStructure(
 			newColliderOrientedBox.pos = nodePosition;
 			newColliderOrientedBox.extents = nodeScale;
 			newColliderOrientedBox.orientation = nodeRotationQuaternion;
+			this->switchFloats(newColliderOrientedBox.extents);
 			this->orientedBoxColliders.push_back(newColliderOrientedBox);
 		}
 	}

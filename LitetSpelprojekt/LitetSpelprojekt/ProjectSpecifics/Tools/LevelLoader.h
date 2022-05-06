@@ -45,6 +45,9 @@ private:
 	std::vector<LevelColliderBox> boxColliders;
 	std::vector<LevelColliderOrientedBox> orientedBoxColliders;
 
+	void switchFloats(DirectX::SimpleMath::Vector3& vec);
+	void switchFloats(DirectX::XMFLOAT3& vec);
+
 	void traverseStructure(
 		aiNode* node,
 		const DirectX::SimpleMath::Matrix& parentTransform
