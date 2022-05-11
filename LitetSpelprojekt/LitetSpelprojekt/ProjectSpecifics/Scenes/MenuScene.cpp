@@ -25,6 +25,7 @@ void MenuScene::init()
 	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/shinyGray.png", "grayButton.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/highlightGray.png", "grayscale.png");
+	
 
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =

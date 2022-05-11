@@ -21,10 +21,7 @@ GameOverScene::~GameOverScene()
 }
 
 void GameOverScene::init()
-{
-	//Add textures
-	this->getResources().addTexture("Resources/Textures/MenuGui/grayButton.png", "grayButton.png");
-	
+{	
 	//Set cubemap/skybox
 	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
 	this->getRenderer().setSkyBoxName("menubox");

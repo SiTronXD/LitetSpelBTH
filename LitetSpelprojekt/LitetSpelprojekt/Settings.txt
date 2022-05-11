@@ -2,9 +2,9 @@ ResolutionX
 1280
 ResolutionY
 720
+Graphics
+0.415254
 Sensitivity
-0.504237
-Brightness
-0.25
+0.216102
 Volume
-0.716102
+0.326271
