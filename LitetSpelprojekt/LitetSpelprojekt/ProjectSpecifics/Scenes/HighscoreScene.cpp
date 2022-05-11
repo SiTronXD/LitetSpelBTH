@@ -5,7 +5,7 @@ using namespace DirectX::SimpleMath;
 
 HighscoreScene::HighscoreScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer())
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer())
 {
 }
 
@@ -15,11 +15,6 @@ HighscoreScene::~HighscoreScene()
 
 void HighscoreScene::init()
 {
-	// Load Textures
-	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "healthBar.png");
-	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
-	this->getResources().addTexture("Resources/Textures/Gui/HealthBoxTwo.png", "healthBoxTwo.png");
-
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
@@ -47,7 +42,7 @@ void HighscoreScene::update()
 
 void HighscoreScene::renderUI()
 {
-	exitButton.render("NeatBox.png");
+	exitButton.render("buttonBackground.png");
 	
 	this->getUIRenderer().renderString(
 		"main menu",

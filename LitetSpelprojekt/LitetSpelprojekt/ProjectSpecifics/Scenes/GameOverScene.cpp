@@ -10,8 +10,8 @@ GameOverScene::GameOverScene(SceneHandler& sceneHandler, bool win, float highsco
 	winning(win),
 	newHighscore(false),
 	highscoreTime(highscoreTime),
-	mainMenuButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
+	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
 	cam(this->addGameObject("Camera"))
 {
 }
@@ -21,10 +21,7 @@ GameOverScene::~GameOverScene()
 }
 
 void GameOverScene::init()
-{
-	//Add textures
-	this->getResources().addTexture("Resources/Textures/MenuGui/NeatBox.png", "NeatBox.png");
-	
+{	
 	//Set cubemap/skybox
 	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
 	this->getRenderer().setSkyBoxName("menubox");
@@ -37,7 +34,7 @@ void GameOverScene::init()
 	this->mainMenuButton.setWidth(354);
 	this->mainMenuButton.setHeight(159);
 
-	this->exitButton.setPos(Vector2(0, -170));
+	this->exitButton.setPos(Vector2(0, -210));
 	this->exitButton.setWidth(354);
 	this->exitButton.setHeight(159);
 
@@ -78,7 +75,7 @@ void GameOverScene::update()
 
 void GameOverScene::renderUI()
 {
-	this->mainMenuButton.render("NeatBox.png");
+	this->mainMenuButton.render("buttonBackground.png");
 	this->getUIRenderer().renderString(
 		"main menu",
 		-10,
@@ -87,11 +84,11 @@ void GameOverScene::renderUI()
 		30
 	);
 
-	this->exitButton.render("NeatBox.png");
+	this->exitButton.render("buttonBackground.png");
 	this->getUIRenderer().renderString(
 		"exit",
 		-10,
-		-170,
+		-210,
 		30,
 		30
 	);

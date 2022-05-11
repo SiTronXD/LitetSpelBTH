@@ -4,8 +4,8 @@ struct SettingsStruct
 {
 	unsigned int resolutionX;
 	unsigned int resolutionY;
+	float graphics;
 	float sensitivity;
-	float brightness;
 	float volume;
 	bool fullscreen;
 };
@@ -21,7 +21,6 @@ public:
 	bool loadSettings();
 	bool saveSettings();
 	inline SettingsStruct& getSettings() { return this->settingsList; }
-
 };
 
 
