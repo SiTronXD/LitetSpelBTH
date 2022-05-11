@@ -17,6 +17,8 @@ private:
 	float keyTextTimer;
 	float keyTextScale;
 
+	float highscoreTime;
+
 	void addLevelColliders(LevelLoader& levelLoader);
 
 	Button resumeButton;

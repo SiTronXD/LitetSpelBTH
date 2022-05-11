@@ -7,7 +7,7 @@
 using namespace DirectX::SimpleMath;
 
 HookPoint::HookPoint(GameObject& gameObject):
-	Script(gameObject), state(HookState::NOT_ACTIVE), rb(nullptr), player(nullptr), speed(75.0f), shotTimer(0.0f),
+	Script(gameObject), state(HookState::NOT_ACTIVE), rb(nullptr), player(nullptr), speed(125.0f), shotTimer(0.0f),
 	returnOffset(2.1f, -1.5f, 2.0f)
 {
 }
@@ -58,7 +58,7 @@ void HookPoint::update()
 			this->returnOffset.y * playerTransform->up() +
 			this->returnOffset.z * playerTransform->forward()) - 
 			this->getTransform()->getPosition();
-		if (vec.Length() < 1.0f)
+		if (vec.LengthSquared() < 9.0f)
 		{
 			this->state = HookState::NOT_ACTIVE;
 			this->rb->setVelocity(Vector3::Zero);

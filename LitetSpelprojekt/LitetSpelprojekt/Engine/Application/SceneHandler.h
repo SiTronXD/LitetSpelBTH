@@ -18,6 +18,7 @@ private:
 	Window& window;
 	PhysicsEngine& physicsEngine;
 	Settings& settings;
+	Highscore& highscore;
 
 public:
 	SceneHandler(
@@ -26,7 +27,8 @@ public:
 		UIRenderer& uiRenderer,
 		Window& window,
 		PhysicsEngine& physicsEngine,
-		Settings& settings
+		Settings& settings,
+		Highscore& highscore
 	);
 	~SceneHandler();
 
@@ -42,4 +44,5 @@ public:
 	inline Window& getWindow() { return this->window; }
 	inline PhysicsEngine& getPhysicsEngine() { return this->physicsEngine; }
 	inline Settings& getSettings() { return this->settings; }
+	inline Highscore& getHighscore() { return this->highscore; }
 };

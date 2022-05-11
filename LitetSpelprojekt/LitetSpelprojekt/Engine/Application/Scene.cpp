@@ -10,6 +10,7 @@ Scene::Scene(SceneHandler& sceneHandler)
 	window(&sceneHandler.getWindow()),
 	physicsEngine(&sceneHandler.getPhysicsEngine()),
 	settings(&sceneHandler.getSettings()),
+	highscore(&sceneHandler.getHighscore()),
 	pause(false)
 {
 }

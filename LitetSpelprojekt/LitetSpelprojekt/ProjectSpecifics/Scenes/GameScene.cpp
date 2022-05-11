@@ -88,7 +88,12 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 }
 
 GameScene::GameScene(SceneHandler& sceneHandler)
-	: Scene(sceneHandler), cam(this->addGameObject("Player", ObjectTag::PLAYER)), currentKeys(0), keyTextTimer(0.0f), keyTextScale(0.0f),
+	: Scene(sceneHandler),
+	cam(this->addGameObject("Player", ObjectTag::PLAYER)),
+	currentKeys(0),
+	keyTextTimer(0.0f),
+	keyTextScale(0.0f),
+	highscoreTime(0.0f),
 	resumeButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
 	mainMenuButton(Vector2(0, 0), 0, 0, this->getUIRenderer())
@@ -364,7 +369,6 @@ void GameScene::init()
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 
 		this->enemies.push_back(&enemy);
-
 	}
 
 	//Buttons
@@ -388,12 +392,13 @@ void GameScene::update()
 	if (info.hit)
 	{
 		std::cout << "Hit " << info.gameObject->getName() << ": at worldPos (" << info.hitPoint.x << ", " << info.hitPoint.y << ", " << info.hitPoint.z << ")" << std::endl;
-  }
+	}
   
 	if (this->getPause() == false)
 	{
 		Player* playerComp = cam.getComponent<Player>();
-		
+		this->highscoreTime += Time::getDT();
+
 		//When the player picks up a key.
 		if (playerComp->isKeyPickUp())
 		{
@@ -406,7 +411,9 @@ void GameScene::update()
 		if (playerComp->isPlayerDead())
 		{
 			std::cout << "Player is dead NOOB!!" << std::endl;
-			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), false));
+			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), false, this->highscoreTime));
+			Input::setLockCursorPosition(false);
+			Input::setCursorVisible(true);
 		}
 
 		this->currentKeys = playerComp->getCurrentKeys();
@@ -415,7 +422,9 @@ void GameScene::update()
 		if (playerComp->onPortal() && this->currentKeys >= 4)
 		{
 			std::cout << "YOU HAVE WON!!" << std::endl;
-			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), true));
+			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), true, this->highscoreTime));
+			Input::setLockCursorPosition(false);
+			Input::setCursorVisible(true);
 		}
 
 		//Text scaling effect
@@ -454,13 +463,13 @@ void GameScene::update()
 			this->getWindow().quit();
 	}
 
-	//Pause
+	// Unpause
 	if (Input::isKeyJustPressed(Keys::P) && this->getPause() == true)
 	{
 		Input::setLockCursorPosition(true);
 		Input::setCursorVisible(false);
 		this->setPause(false);
-	}
+	} // Pause
 	else if (Input::isKeyJustPressed(Keys::P) && this->getPause() == false)
 	{
 		Input::setLockCursorPosition(false);
@@ -512,13 +521,28 @@ void GameScene::renderUI()
 			}
 		}
 
-		//Timer
+		// Timer
 		this->getUIRenderer().renderTexture(
 			"TimerBox.png",
 			-832, 420, 256, 256
 		);
 
-		//Key pick up text
+		// Get Minutes:Seconds Format
+		int seconds = this->highscoreTime;
+		int minutes = seconds / 60;
+		int printSeconds = seconds - (minutes * 60);
+		std::string minSec = std::to_string(minutes) + ":" + std::to_string(printSeconds);
+	
+		// TimerText
+		this->getUIRenderer().renderString(
+			(minSec),
+			-845,
+			410,
+			35,
+			35
+		);
+
+		// Key pick up text
 		if (this->keyTextTimer > 0)
 		{
 			this->getUIRenderer().renderString(

@@ -1,23 +1,17 @@
 #pragma once
-
 #include "../../Engine/Application/Scene.h"
+#include "../../Engine/Application/SceneHandler.h"
 #include "../../Engine/UI/Button.h"
 
-#include "../../Engine/Application/SceneHandler.h"
-
-class MenuScene : public Scene
+class HighscoreScene : public Scene
 {
 private:
-	Button playButton;
-	Button highscoreButton;
-	Button settingsButton;
 	Button exitButton;
 public:
-	MenuScene(SceneHandler& sceneHandler);
-	virtual ~MenuScene();
+	HighscoreScene(SceneHandler& sceneHandler);
+	virtual ~HighscoreScene();
 
 	virtual void init() override;
 	virtual void update() override;
 	virtual void renderUI() override;
 };
-

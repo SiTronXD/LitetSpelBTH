@@ -4,15 +4,16 @@
 
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
-	Window& window, PhysicsEngine& physicsEngine, Settings& settings)
-	:scene(nullptr),
+	Window& window, PhysicsEngine& physicsEngine, Settings& settings, Highscore& highscore):
+	scene(nullptr),
 	nextScene(nullptr),
 	resources(resources),
 	renderer(renderer),
 	uiRenderer(uiRenderer),
 	window(window),
 	physicsEngine(physicsEngine),
-	settings(settings)
+	settings(settings),
+	highscore(highscore)
 {
 }
 

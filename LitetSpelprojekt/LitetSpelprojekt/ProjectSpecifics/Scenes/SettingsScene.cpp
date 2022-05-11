@@ -161,7 +161,6 @@ void SettingsScene::update()
 
 void SettingsScene::renderUI()
 {
-	//settingsHeader.render("settingsButton.png");
 	resSlider.render("healthBar.png");
 	sensSlider.render("healthBar.png");
 	brightSlider.render("healthBar.png");

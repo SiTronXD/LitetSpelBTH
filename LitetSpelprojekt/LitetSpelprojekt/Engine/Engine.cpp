@@ -18,17 +18,20 @@ Engine::Engine()
 		this->uiRenderer,
 		this->window,
 		this->physicsEngine,
-		this->settings
+		this->settings,
+		this->highscore
 	)
 {
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Grapple Mayhem", this->settings.getSettings().fullscreen);
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
-	this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
+	this->highscore.loadHighscore();
+	
+	//this->sceneHandler.setScene(new MenuScene(this->sceneHandler));
 	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
-	//this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false));
-
+	this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false, 0.0f));
+	
 	// Default texture and material
 	this->resources.addTexture("Resources/Textures/Default.png", "Default.png");
 	this->resources.addMaterial("Default.png", "");

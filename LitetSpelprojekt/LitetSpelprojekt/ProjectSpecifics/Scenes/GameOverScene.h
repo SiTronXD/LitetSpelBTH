@@ -12,8 +12,11 @@ private:
 	GameObject& cam;
 
 	bool winning;
+	bool newHighscore;
+	float highscoreTime;
+	
 public:
-	GameOverScene(SceneHandler& sceneHandler, bool win);
+	GameOverScene(SceneHandler& sceneHandler, bool win, float highscoreTime);
 	virtual ~GameOverScene();
 
 	// Inherited via Scene
