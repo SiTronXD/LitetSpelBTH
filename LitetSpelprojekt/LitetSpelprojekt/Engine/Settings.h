@@ -7,6 +7,7 @@ struct SettingsStruct
 	float graphics;
 	float sensitivity;
 	float volume;
+	bool fullscreen;
 };
 
 class Settings

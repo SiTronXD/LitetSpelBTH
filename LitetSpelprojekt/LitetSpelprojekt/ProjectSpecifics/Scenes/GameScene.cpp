@@ -24,12 +24,13 @@ using namespace DirectX::SimpleMath;
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
 {
 	// Sphere colliders
+	Rigidbody* rb = nullptr;
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
 	{
 		LevelColliderSphere sphereInfo = levelLoader.getSphereColliders()[i];
 
 		GameObject& colliderObject = this->addGameObject(
-			"LevelSphereCollider: " + i
+			"LevelSphereCollider: " + i, ObjectTag::GROUND
 		);
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealSphereMesh", "testMaterial");
@@ -37,7 +38,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(Vector3(1, 1, 1) * sphereInfo.radius);
 
-		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb = colliderObject.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->addSphereCollider(sphereInfo.radius);
 		rb->setType(rp3d::BodyType::STATIC);
@@ -49,7 +50,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		LevelColliderBox boxInfo = levelLoader.getBoxColliders()[i];
 
 		GameObject& colliderObject = this->addGameObject(
-			"LevelBoxCollider: " + i
+			"LevelBoxCollider: " + i, ObjectTag::GROUND
 		);
 
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
@@ -58,7 +59,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
 
-		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb = colliderObject.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->addBoxCollider(boxInfo.extents);
 		rb->setType(rp3d::BodyType::STATIC);
@@ -71,7 +72,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 			levelLoader.getOrientedBoxColliders()[i];
 
 		GameObject& colliderObject = this->addGameObject(
-			"LevelOrientedBoxColldier: " + i
+			"LevelOrientedBoxColldier: " + i, ObjectTag::GROUND
 		);
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealCubeMesh", "testMaterial");
@@ -80,11 +81,74 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
 		colliderObject.getComponent<Transform>()->setScaling(orientedBoxInfo.extents * 2);
 
-		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
+		rb = colliderObject.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->addBoxCollider(orientedBoxInfo.extents);
 		rb->setType(rp3d::BodyType::STATIC);
 	}
+
+	// Spikes
+	for (unsigned int i = 0; i < levelLoader.getSpikes().size(); ++i)
+	{
+		SpikeInfo currentSpikeInfo = levelLoader.getSpikes()[i];
+
+		GameObject& spike = this->addGameObject("Spike " + std::to_string(i), ObjectTag::ENEMY);
+		MeshComp* mc = spike.addComponent<MeshComp>();
+		mc->setMesh("SpikeMesh", "testMaterial");
+		spike.getComponent<Transform>()->setPosition(currentSpikeInfo.position);
+		spike.getComponent<Transform>()->setRotation(currentSpikeInfo.rotation);
+		//spike.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
+		rb = spike.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::KINEMATIC);
+		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+	}
+
+	// Keys
+	for (unsigned int i = 0; i < levelLoader.getKeys().size(); ++i)
+	{
+		KeyInfo currentKeyInfo = levelLoader.getKeys()[i];
+		Vector3 keyPos = currentKeyInfo.position;
+		Vector3 keyColor = currentKeyInfo.color;
+
+		//Portal key objects
+		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
+		portalKey.addComponent<ParticleEmitter>();
+		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
+		keyMc->setMesh("RealCubeMesh", "testMaterial");
+		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
+		portalKey.getComponent<Transform>()->setPosition(keyPos);
+		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
+		rb = portalKey.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::STATIC);
+		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		this->portalKeys.push_back(&portalKey);
+
+		// Point light
+		GameObject& pointLightObject = this->addGameObject("Point light");
+		pointLightObject.getComponent<Transform>()->setPosition(
+			portalKey.getComponent<Transform>()->getPosition()
+		);
+		MeshComp* lightMesh = pointLightObject.addComponent<MeshComp>();
+		lightMesh->setMesh("QuadMesh", "LightBloomMaterial");
+		lightMesh->setColor(keyColor);
+		lightMesh->setShouldShade(false);
+		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
+		pointLight->setTarget(cam);
+	}
+
+	// Portal
+	PortalInfo portalInfo = levelLoader.getPortal();
+	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
+	MeshComp* portalMc = portal.addComponent<MeshComp>();
+	portalMc->setMesh("RealCubeMesh", "portalMaterial");
+	portal.getComponent<Transform>()->setPosition(portalInfo.position);
+	portal.getComponent<Transform>()->setScaling(portalInfo.scale);
+	rb = portal.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->setType(rp3d::BodyType::STATIC);
+	rb->addBoxCollider(portalInfo.scale * 0.5f);
 }
 
 GameScene::GameScene(SceneHandler& sceneHandler)
@@ -187,6 +251,12 @@ void GameScene::init()
 	this->getResources().addMesh(
 		std::move(cooldownIndicatorMeshData), 
 		"QuadMesh"
+	);
+	MeshData spikeMeshData(DefaultMesh::TETRAHEDRON);
+	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	this->getResources().addMesh(
+		std::move(spikeMeshData),
+		"SpikeMesh"
 	);
 
 	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
@@ -310,47 +380,6 @@ void GameScene::init()
 	rb->setType(rp3d::BodyType::KINEMATIC);
 	rb->setMaterial(0.2f, 0.0f);
 
-	//Key objects and particles
-	for (int i = 0; i < 4; i++)
-	{
-		//Portal key objects
-		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
-		portalKey.addComponent<ParticleEmitter>();
-		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
-		keyMc->setMesh("RealCubeMesh", "testMaterial");
-		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
-		portalKey.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, 2.0f);
-		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
-		rb = portalKey.addComponent<Rigidbody>();
-		rb->setPhysics(this->getPhysicsEngine());
-		rb->setType(rp3d::BodyType::STATIC);
-		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
-		this->portalKeys.push_back(&portalKey);
-
-		// Point light
-		GameObject& pointLightObject = this->addGameObject("Point light");
-		pointLightObject.getComponent<Transform>()->setPosition(
-			portalKey.getComponent<Transform>()->getPosition()
-		);
-		MeshComp* lightMesh = pointLightObject.addComponent<MeshComp>();
-		lightMesh->setMesh("QuadMesh", "LightBloomMaterial");
-		lightMesh->setColor(Vector3(i % 2, (int) (i / 2), 0));
-		lightMesh->setShouldShade(false);
-		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
-		pointLight->setTarget(cam);
-	}
-
-	//Portal
-	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
-	MeshComp* portalMc = portal.addComponent<MeshComp>();
-	portalMc->setMesh("RealCubeMesh", "portalMaterial");
-	portal.getComponent<Transform>()->setScaling({ 4.0f, 8.0f, 1.0f });
-	portal.getComponent<Transform>()->setPosition(-6.0f, -6.0f, -8.0f);
-	rb = portal.addComponent<Rigidbody>();
-	rb->setPhysics(this->getPhysicsEngine());
-	rb->setType(rp3d::BodyType::STATIC);
-	rb->addBoxCollider(Vector3(2.0f, 4.0f, 1.0f));
-
 	//Test obstacle, taking damage etc
 	for (int i = 0; i < 3; i++)
 	{
@@ -363,8 +392,6 @@ void GameScene::init()
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::KINEMATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
-
-		this->enemies.push_back(&enemy);
 	}
 
 	//Buttons

@@ -22,12 +22,18 @@ private:
 	std::string title;
 
 	bool running;
+	bool fullscreen;
 
 public:
 	Window();
 	~Window();
 
-	bool init(unsigned int width, unsigned int height, const std::string title);
+	bool init(
+		unsigned int width, 
+		unsigned int height, 
+		const std::string title,
+		const bool isFullscreen = false
+	);
 	const bool& isRunning();
 
 	void setTitle(const std::string& title);
@@ -35,6 +41,7 @@ public:
 
 	inline HWND& getWindowHandle() { return this->windowHandle; }
 	inline const bool isFocus() { return GetFocus() != NULL; }
+	inline const bool& getIsFullscreen() { return this->fullscreen; }
 	inline const unsigned int getWidth() { return this->width; }
 	inline const unsigned int getHeight() { return this->height; }
 };
