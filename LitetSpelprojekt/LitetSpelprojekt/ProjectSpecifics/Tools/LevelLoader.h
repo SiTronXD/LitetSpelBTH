@@ -46,6 +46,7 @@ struct SpikeInfo
 {
 	DirectX::SimpleMath::Vector3 position;
 	DirectX::SimpleMath::Vector4 rotation;
+	DirectX::SimpleMath::Vector3 scale;
 };
 
 class LevelLoader

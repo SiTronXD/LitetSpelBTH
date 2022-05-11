@@ -97,11 +97,11 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		mc->setMesh("SpikeMesh", "testMaterial");
 		spike.getComponent<Transform>()->setPosition(currentSpikeInfo.position);
 		spike.getComponent<Transform>()->setRotation(currentSpikeInfo.rotation);
-		//spike.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
+		spike.getComponent<Transform>()->setScaling(currentSpikeInfo.scale);
 		rb = spike.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::KINEMATIC);
-		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		rb->addBoxCollider(currentSpikeInfo.scale * 0.5f);
 	}
 
 	// Keys
@@ -257,7 +257,7 @@ void GameScene::init()
 		"QuadMesh"
 	);
 	MeshData spikeMeshData(DefaultMesh::TETRAHEDRON);
-	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	spikeMeshData.transformMesh(Matrix::CreateTranslation(0.0f, -1.0f, 0.0f) * Matrix::CreateRotationX(SMath::PI * 0.5f));
 	this->getResources().addMesh(
 		std::move(spikeMeshData),
 		"SpikeMesh"
