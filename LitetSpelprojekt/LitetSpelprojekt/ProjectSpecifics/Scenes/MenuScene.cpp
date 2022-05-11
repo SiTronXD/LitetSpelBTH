@@ -22,11 +22,8 @@ MenuScene::~MenuScene()
 
 void MenuScene::init()
 {
-	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
-	this->getResources().addTexture("Resources/Textures/MenuGui/shinyGray.png", "grayButton.png");
-	this->getResources().addTexture("Resources/Textures/MenuGui/highlightGray.png", "grayscale.png");
+	this->getResources().addTexture("Resources/Textures/MenuGui/buttonBackground.png", "buttonBackground.png");
 	
-
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =
 	{
@@ -102,10 +99,10 @@ void MenuScene::update()
 void MenuScene::renderUI()
 {
 	// Send the buttons to the UIRenderer to display
-	playButton.render("grayscale.png");
-	highscoreButton.render("grayscale.png");
-	settingsButton.render("grayscale.png");
-	exitButton.render("grayscale.png");
+	playButton.render("buttonBackground.png");
+	highscoreButton.render("buttonBackground.png");
+	settingsButton.render("buttonBackground.png");
+	exitButton.render("buttonBackground.png");
 
 	this->getUIRenderer().renderString(
 		"grapple mayhem",

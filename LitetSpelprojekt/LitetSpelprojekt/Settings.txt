@@ -3,8 +3,8 @@ ResolutionX
 ResolutionY
 720
 Graphics
-0.415254
+0.944068
 Sensitivity
-0.216102
+0.269492
 Volume
-0.326271
+0.452542

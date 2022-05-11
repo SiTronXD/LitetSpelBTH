@@ -75,7 +75,7 @@ void GameOverScene::update()
 
 void GameOverScene::renderUI()
 {
-	this->mainMenuButton.render("grayscale.png");
+	this->mainMenuButton.render("buttonBackground.png");
 	this->getUIRenderer().renderString(
 		"main menu",
 		-10,
@@ -84,7 +84,7 @@ void GameOverScene::renderUI()
 		30
 	);
 
-	this->exitButton.render("grayscale.png");
+	this->exitButton.render("buttonBackground.png");
 	this->getUIRenderer().renderString(
 		"exit",
 		-10,

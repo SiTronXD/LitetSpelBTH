@@ -147,7 +147,7 @@ void SettingsScene::renderUI()
 	sensSlider.render("settingsSlider.png");
 	graphicsSlider.render("settingsSlider.png");
 	volSlider.render("settingsSlider.png");
-	exitButton.render("grayscale.png");
+	exitButton.render("buttonBackground.png");
 	// ------------------------------------------------
 	// Resolution Slider
 	this->getUIRenderer().renderString(

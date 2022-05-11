@@ -147,9 +147,6 @@ void GameScene::init()
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
 
-	//Menu textures
-	this->getResources().addTexture("Resources/Textures/MenuGui/PauseMenu.png", "PauseMenu.png");
-	
 	//Materials
 	this->getResources().addMaterial("me.png", "testMaterial");
 	this->getResources().addMaterial("me.png", "portalMaterial");
