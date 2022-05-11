@@ -7,4 +7,4 @@ Sensitivity
 Brightness
 0.25
 Volume
-0.716102
+0.686441

@@ -2,6 +2,7 @@
 #include "../Dev/Log.h"
 #include "../Dev/Helpers.h"
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
 bool Renderer::evaluateAdapterModes()
@@ -61,14 +62,30 @@ bool Renderer::evaluateAdapterModes()
 	);
 
 	// Add resolutions to vector
+	UINT lastWidth = 0;
+	UINT lastHeight = 0;
 	for (unsigned int i = 0; i < numModes; ++i)
 	{
-		Log::write("res: " + std::to_string(displayModeList[i].Width) + 
-			" x " + std::to_string(displayModeList[i].Height) + 
-			" - " + std::to_string(
-				(float)displayModeList[i].RefreshRate.Numerator / displayModeList[i].RefreshRate.Denominator));
+		if (displayModeList[i].Width != lastWidth ||
+			displayModeList[i].Height != lastHeight)
+		{
+			// Updaste last resolution
+			lastWidth = displayModeList[i].Width;
+			lastHeight = displayModeList[i].Height;
 
-		// this->supportedResolutions.pushBack();
+			Log::write("res: " + std::to_string(displayModeList[i].Width) +
+				" x " + std::to_string(displayModeList[i].Height) +
+				" - " + std::to_string(
+					(float)displayModeList[i].RefreshRate.Numerator / displayModeList[i].RefreshRate.Denominator));
+
+			// Add resolution
+			this->supportedResolutions.push_back(
+				XMFLOAT2(
+					displayModeList[i].Width, 
+					displayModeList[i].Height
+				)
+			);
+		}
 	}
 
 

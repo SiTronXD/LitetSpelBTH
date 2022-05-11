@@ -97,4 +97,5 @@ public:
 	inline ConstantBuffer& getCameraConstantBuffer() { return this->cameraConstantBuffer; }
 	inline CameraBufferData& getCameraBufferStruct() { return this->cameraBufferStruct; }
 	inline CompactCameraBufferData& getCompactCameraBufferStruct() { return this->compactCameraBufferStruct; }
+	inline std::vector<DirectX::XMFLOAT2>& getSupportedResolutions() { return supportedResolutions; }
 };
