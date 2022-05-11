@@ -28,12 +28,15 @@ void ECS::removeComponents()
 
 		// Erase from script components
 		Script* sComp = dynamic_cast<Script*>(comp);
-		for (size_t i = 0; i < this->scriptComps.size(); i++)
+		if (sComp != nullptr)
 		{
-			if (sComp == this->scriptComps[i])
+			for (size_t i = 0; i < this->scriptComps.size(); i++)
 			{
-				this->scriptComps.erase(this->scriptComps.begin() + i);
-				break;
+				if (sComp == this->scriptComps[i])
+				{
+					this->scriptComps.erase(this->scriptComps.begin() + i);
+					break;
+				}
 			}
 		}
 

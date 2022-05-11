@@ -33,11 +33,19 @@ Rigidbody::Rigidbody(GameObject& object) :
 
 Rigidbody::~Rigidbody()
 {
-	this->physEngine->getWorld()->destroyRigidBody(this->rb);
+	//this->physEngine->getWorld()->destroyRigidBody(this->rb);
+	//this->rb->enableGravity(false);
+	this->rb->setIsSleeping(true);
+
+	/*for(int i = this->rb->getNbColliders() - 1; i >= 0; --i)
+		this->rb->removeCollider(this->rb->getCollider(i));*/
 }
 
 void Rigidbody::setPhysics(PhysicsEngine& physicsEngine)
 {
+	if (this->physEngine != nullptr)
+		return;
+
 	this->physEngine = &physicsEngine;
 	this->rb = this->physEngine->getWorld()->createRigidBody(this->getConvertedTransform());
 	this->rb->setLinearLockAxisFactor(rp3d::Vector3(1.0f, 1.0f, 1.0f));
