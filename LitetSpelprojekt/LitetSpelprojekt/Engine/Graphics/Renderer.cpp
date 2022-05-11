@@ -170,7 +170,7 @@ void Renderer::init(Window& window)
 	this->outlineComputeShader.addConstantBuffer(this->outlineInfoConstantBuffer);
 	this->outlineInfoBufferStruct.width = this->window->getWidth();
 	this->outlineInfoBufferStruct.height = this->window->getHeight();
-	this->outlineInfoBufferStruct.thickness = 0.00075f;
+	this->outlineInfoBufferStruct.thickness = 0.0025f;
 
 	// Topology won't change during runtime
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -425,7 +425,7 @@ void Renderer::render(Scene& scene)
 	immediateContext->OMSetRenderTargets(1, this->nullRTV, nullptr);
 
 	// --------------------- Render outlines ---------------------
-	this->outlineComputeShader.run();
+	//this->outlineComputeShader.run();
 }
 
 void Renderer::presentSC()
