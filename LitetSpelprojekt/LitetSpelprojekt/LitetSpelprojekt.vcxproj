@@ -296,6 +296,7 @@
     <ClInclude Include="Engine\Graphics\Skybox.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Highscore.txt" />
     <Text Include="Settings.txt" />
   </ItemGroup>
   <ItemGroup>

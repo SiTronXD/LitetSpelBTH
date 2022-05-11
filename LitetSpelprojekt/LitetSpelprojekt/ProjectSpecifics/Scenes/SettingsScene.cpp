@@ -6,12 +6,12 @@ using namespace DirectX::SimpleMath;
 
 SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	settingsHeader(Vector2(0, 0), 0, 0, this->getUIRenderer()),
+	settingsHeader(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
 	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
 	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
 	brightSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
 	volSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer())
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer())
 {
 	resolutions = {};
 }
@@ -149,7 +149,7 @@ void SettingsScene::renderUI()
 	sensSlider.render("healthBar.png");
 	brightSlider.render("healthBar.png");
 	volSlider.render("healthBar.png");
-	exitButton.render("NeatBox.png");
+	exitButton.render("grayscale.png");
 
 	// Resolution Slider
 	this->getUIRenderer().renderString(
