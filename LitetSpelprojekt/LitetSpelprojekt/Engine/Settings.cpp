@@ -73,8 +73,6 @@ bool Settings::loadSettings()
 		"ResY: " + std::to_string(settingsList.resolutionY) +
 		"Graphics: " + std::to_string(settingsList.graphics) +
 		"Sens: " + std::to_string(settingsList.sensitivity) +
-		"Volume: " + std::to_string(settingsList.volume));
-		"Bright: " + std::to_string(settingsList.brightness) +
 		"Volume: " + std::to_string(settingsList.volume) + 
 		"Fullscreen: " + (settingsList.fullscreen ? "true" : "false"));
 
@@ -98,8 +96,6 @@ bool Settings::saveSettings()
 		<< "\nResolutionY\n" << settingsList.resolutionY 
 		<< "\nGraphics\n" << settingsList.graphics
 		<< "\nSensitivity\n" << settingsList.sensitivity
-		<< "\nVolume\n" << settingsList.volume;
-		<< "\nBrightness\n" << settingsList.brightness
 		<< "\nVolume\n" << settingsList.volume
 		<< "\nFullscreen\n" << (settingsList.fullscreen ? "true" : "false");
 
@@ -107,8 +103,6 @@ bool Settings::saveSettings()
 		"ResY: " + std::to_string(settingsList.resolutionY) +
 		"Graphics: " + std::to_string(settingsList.graphics) +
 		"Sens: " + std::to_string(settingsList.sensitivity) +
-		"Volume: " + std::to_string(settingsList.volume));
-		"Bright: " + std::to_string(settingsList.brightness) +
 		"Volume: " + std::to_string(settingsList.volume) +
 		"Fullscreen: " + (settingsList.fullscreen ? "true" : "false"));
 
