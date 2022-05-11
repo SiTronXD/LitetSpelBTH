@@ -30,6 +30,18 @@ struct LevelColliderOrientedBox
 	DirectX::XMFLOAT4 orientation;
 };
 
+struct KeyInfo
+{
+	DirectX::SimpleMath::Vector3 position;
+	DirectX::SimpleMath::Vector3 color;
+};
+
+struct PortalInfo
+{
+	DirectX::SimpleMath::Vector3 position;
+	DirectX::SimpleMath::Vector3 scale;
+};
+
 class LevelLoader
 {
 private:
@@ -43,10 +55,12 @@ private:
 
 	DirectX::SimpleMath::Vector3 playerStartPos;
 
+	PortalInfo portal;
+
 	std::vector<LevelColliderSphere> sphereColliders;
 	std::vector<LevelColliderBox> boxColliders;
 	std::vector<LevelColliderOrientedBox> orientedBoxColliders;
-	std::vector<DirectX::SimpleMath::Vector3> keyPositions;
+	std::vector<KeyInfo> keys;
 
 	void switchFloats(DirectX::SimpleMath::Vector3& vec);
 	void switchFloats(DirectX::XMFLOAT3& vec);
@@ -71,9 +85,9 @@ public:
 	inline MeshData& getMeshData() { return this->megaMesh; }
 
 	inline DirectX::SimpleMath::Vector3& getPlayerStartPos() { return this->playerStartPos; }
-
+	inline PortalInfo& getPortal() { return this->portal; }
 	inline std::vector<LevelColliderSphere>& getSphereColliders() { return this->sphereColliders; }
 	inline std::vector<LevelColliderBox>& getBoxColliders() { return this->boxColliders; }
 	inline std::vector<LevelColliderOrientedBox>& getOrientedBoxColliders() { return this->orientedBoxColliders; }
-	inline std::vector<DirectX::SimpleMath::Vector3>& getKeyPositions() { return this->keyPositions; }
+	inline std::vector<KeyInfo>& getKeys() { return this->keys; }
 };
