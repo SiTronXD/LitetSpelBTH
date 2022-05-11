@@ -1,9 +1,8 @@
+#include <iostream>
 #include "LevelLoader.h"
 #include "../../Engine/Dev/Log.h"
 #include "../../Engine/Dev/Str.h"
 #include "../../Engine/SMath.h"
-
-#include <DirectXMath.h>
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -93,6 +92,15 @@ void LevelLoader::traverseStructure(
 	{
 		this->playerStartPos = nodePosition;
 	}
+	// Keys
+	else if (nodeName.find("interactable_key") != std::string::npos)
+	{
+		// Get key index
+		nodeName.erase(0, 16);
+		unsigned int keyIndex = std::stoi(nodeName);
+
+		this->keyPositions[keyIndex] = nodePosition;
+	}
 	// Mesh
 	else
 	{
@@ -177,6 +185,7 @@ LevelLoader::LevelLoader(Resources& resources)
 	: resources(resources),
 	playerStartPos(0,0,0)
 {
+	this->keyPositions.resize(this->NUM_KEYS);
 }
 
 LevelLoader::~LevelLoader()

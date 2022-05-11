@@ -85,6 +85,45 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		rb->addBoxCollider(orientedBoxInfo.extents);
 		rb->setType(rp3d::BodyType::STATIC);
 	}
+
+	// Keys
+	Vector3 keyColors[4]
+	{
+		Vector3(1.0f, 1.0f, 0.0f),
+		Vector3(0.0f, 1.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 1.0f),
+		Vector3(1.0f, 0.0f, 1.0f)
+	};
+	for (unsigned int i = 0; i < levelLoader.getKeyPositions().size(); ++i)
+	{
+		Vector3 keyPos = levelLoader.getKeyPositions()[i];
+
+		//Portal key objects
+		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
+		portalKey.addComponent<ParticleEmitter>();
+		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
+		keyMc->setMesh("RealCubeMesh", "testMaterial");
+		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
+		portalKey.getComponent<Transform>()->setPosition(keyPos);
+		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
+		Rigidbody* rb = portalKey.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::STATIC);
+		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		this->portalKeys.push_back(&portalKey);
+
+		// Point light
+		GameObject& pointLightObject = this->addGameObject("Point light");
+		pointLightObject.getComponent<Transform>()->setPosition(
+			portalKey.getComponent<Transform>()->getPosition()
+		);
+		MeshComp* lightMesh = pointLightObject.addComponent<MeshComp>();
+		lightMesh->setMesh("QuadMesh", "LightBloomMaterial");
+		lightMesh->setColor(keyColors[i]);
+		lightMesh->setShouldShade(false);
+		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
+		pointLight->setTarget(cam);
+	}
 }
 
 GameScene::GameScene(SceneHandler& sceneHandler)
@@ -207,7 +246,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
+	levelLoader.load("Resources/Levels/testLevel.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
@@ -315,7 +354,7 @@ void GameScene::init()
 	rb->setMaterial(0.2f, 0.0f);
 
 	//Key objects and particles
-	for (int i = 0; i < 4; i++)
+	/*for (int i = 0; i < 4; i++)
 	{
 		//Portal key objects
 		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
@@ -342,7 +381,7 @@ void GameScene::init()
 		lightMesh->setShouldShade(false);
 		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
 		pointLight->setTarget(cam);
-	}
+	}*/
 
 	//Portal
 	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);

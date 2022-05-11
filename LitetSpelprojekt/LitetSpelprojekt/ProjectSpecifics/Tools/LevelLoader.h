@@ -33,6 +33,8 @@ struct LevelColliderOrientedBox
 class LevelLoader
 {
 private:
+	const unsigned int NUM_KEYS = 4;
+
 	Resources& resources;
 
 	std::vector<MeshData*> allMeshes;
@@ -44,6 +46,7 @@ private:
 	std::vector<LevelColliderSphere> sphereColliders;
 	std::vector<LevelColliderBox> boxColliders;
 	std::vector<LevelColliderOrientedBox> orientedBoxColliders;
+	std::vector<DirectX::SimpleMath::Vector3> keyPositions;
 
 	void switchFloats(DirectX::SimpleMath::Vector3& vec);
 	void switchFloats(DirectX::XMFLOAT3& vec);
@@ -72,4 +75,5 @@ public:
 	inline std::vector<LevelColliderSphere>& getSphereColliders() { return this->sphereColliders; }
 	inline std::vector<LevelColliderBox>& getBoxColliders() { return this->boxColliders; }
 	inline std::vector<LevelColliderOrientedBox>& getOrientedBoxColliders() { return this->orientedBoxColliders; }
+	inline std::vector<DirectX::SimpleMath::Vector3>& getKeyPositions() { return this->keyPositions; }
 };
