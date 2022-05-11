@@ -18,6 +18,7 @@ SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 
 SettingsScene::~SettingsScene()
 {	
+	
 }
 
 void SettingsScene::init()

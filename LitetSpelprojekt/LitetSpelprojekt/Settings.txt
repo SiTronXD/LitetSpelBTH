@@ -8,3 +8,5 @@ Brightness
 0.25
 Volume
 0.686441
+Fullscreen
+false

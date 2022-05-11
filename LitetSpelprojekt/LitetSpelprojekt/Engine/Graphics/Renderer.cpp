@@ -126,7 +126,7 @@ bool Renderer::createInterfaces()
 	swapChainDesc.BufferUsage = DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.BufferCount = 1;
 	swapChainDesc.OutputWindow = this->window->getWindowHandle();
-	swapChainDesc.Windowed = true;
+	swapChainDesc.Windowed = !this->window->getIsFullscreen();
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Flags = 0;
 
@@ -227,6 +227,9 @@ Renderer::Renderer(Resources& resources)
 
 Renderer::~Renderer()
 {
+	// Switch to windowed mode
+	this->swapChain->SetFullscreenState(false, NULL);
+
 	S_RELEASE(this->device);
 	S_RELEASE(this->immediateContext);
 	S_RELEASE(this->swapChain);
