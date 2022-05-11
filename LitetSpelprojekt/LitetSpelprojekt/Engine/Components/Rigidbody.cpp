@@ -33,12 +33,17 @@ Rigidbody::Rigidbody(GameObject& object) :
 
 Rigidbody::~Rigidbody()
 {
+	// 1.
 	//this->physEngine->getWorld()->destroyRigidBody(this->rb);
+	 
+	// 2. 
 	//this->rb->enableGravity(false);
-	this->rb->setIsSleeping(true);
-
 	/*for(int i = this->rb->getNbColliders() - 1; i >= 0; --i)
 		this->rb->removeCollider(this->rb->getCollider(i));*/
+
+	// 3.
+	// TODO: recreate physics world
+	this->rb->setIsSleeping(true);
 }
 
 void Rigidbody::setPhysics(PhysicsEngine& physicsEngine)
