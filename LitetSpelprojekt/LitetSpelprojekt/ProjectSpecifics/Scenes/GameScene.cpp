@@ -220,6 +220,7 @@ void GameScene::init()
 
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	Player* player = cam.addComponent<Player>();
+	player->setStartPosition(levelLoader.getPlayerStartPos());
 	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	Rigidbody* rb = cam.addComponent<Rigidbody>();
@@ -405,6 +406,18 @@ void GameScene::update()
 			std::cout << "Key pickup!" << std::endl;
 			this->keyTextScale = 0.0f;
 			this->keyTextTimer = 200.0f;
+		}
+
+		Rigidbody* rb = cam.getComponent<Rigidbody>();
+
+		//Player fall down from a building
+		if (rb->getTransform()->getPosition().y <= 0.0f)
+		{
+			//Reset position
+			rb->setPosition(playerComp->getStartPosition());
+
+			//Reduce one health
+			playerComp->addHealth(-1);
 		}
 
 		//Check if player is dead or not
