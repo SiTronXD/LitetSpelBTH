@@ -18,6 +18,7 @@ SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 
 SettingsScene::~SettingsScene()
 {	
+	
 }
 
 void SettingsScene::init()
@@ -32,7 +33,22 @@ void SettingsScene::init()
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
 
-	resolutions.push_back("800");
+	// Get supported resolutions from the renderer
+	std::vector<DirectX::XMFLOAT2>& supportedResolutions =
+		Scene::getRenderer().getSupportedResolutions();
+
+	// Add supported resolutions
+	for (unsigned int i = 0; i < supportedResolutions.size(); ++i)
+	{
+		resolutions.push_back(
+			std::to_string(supportedResolutions[i].x)
+		);
+		resolutions.push_back(
+			std::to_string(supportedResolutions[i].y)
+		);
+	}
+
+	/*resolutions.push_back("800");
 	resolutions.push_back("600");
 	resolutions.push_back("1280");
 	resolutions.push_back("720");
@@ -41,7 +57,7 @@ void SettingsScene::init()
 	resolutions.push_back("1920");
 	resolutions.push_back("1080");
 	resolutions.push_back("2048");
-	resolutions.push_back("1080");
+	resolutions.push_back("1080");*/
 
 	int k = 0;
 	int resIndex = 0;

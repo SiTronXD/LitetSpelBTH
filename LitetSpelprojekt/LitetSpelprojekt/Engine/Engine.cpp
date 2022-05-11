@@ -22,8 +22,7 @@ Engine::Engine()
 		this->highscore
 	)
 {
-	
-	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Litet Spelprojekt");
+	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Grapple Mayhem", this->settings.getSettings().fullscreen);
 	this->renderer.init(this->window);
 	this->resources.init(&this->renderer);
 	this->uiRenderer.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY);
@@ -44,7 +43,6 @@ Engine::~Engine()
 
 void Engine::run()
 {
-	
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
 	ResTranslator::init(this->window.getWidth(), this->window.getHeight());

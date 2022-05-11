@@ -87,11 +87,23 @@ Window::~Window()
 	this->windowHandle = 0;
 }
 
-bool Window::init(unsigned int width, unsigned int height, const std::string title)
+bool Window::init(
+	unsigned int width, 
+	unsigned int height, 
+	const std::string title,
+	const bool isFullscreen)
 {
 	this->width = width;
 	this->height = height;
 	this->title = title;
+	this->fullscreen = isFullscreen;
+
+	// Set resolution to monitor if fullscreen
+	if (isFullscreen)
+	{
+		this->width = GetSystemMetrics(SM_CXSCREEN);
+		this->height = GetSystemMetrics(SM_CYSCREEN);
+	}
 
 	// Window class
 	const char CLASS_NAME[] = "MyWindowClass";
@@ -102,6 +114,7 @@ bool Window::init(unsigned int width, unsigned int height, const std::string tit
 	this->wc.style = CS_HREDRAW | CS_VREDRAW;
 	this->wc.hInstance = NULL;
 	this->wc.lpszClassName = CLASS_NAME;
+	if(fullscreen) this->wc.hbrBackground = (HBRUSH) COLOR_WINDOW;
 	if (!RegisterClass(&this->wc))
 	{
 		Log::error("Window class registration failed.");
