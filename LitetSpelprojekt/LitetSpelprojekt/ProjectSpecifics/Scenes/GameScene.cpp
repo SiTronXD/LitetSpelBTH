@@ -29,7 +29,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		LevelColliderSphere sphereInfo = levelLoader.getSphereColliders()[i];
 
 		GameObject& colliderObject = this->addGameObject(
-			"LevelSphereCollider: " + i
+			"LevelSphereCollider: " + i, ObjectTag::GROUND
 		);
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealSphereMesh", "testMaterial");
@@ -49,7 +49,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		LevelColliderBox boxInfo = levelLoader.getBoxColliders()[i];
 
 		GameObject& colliderObject = this->addGameObject(
-			"LevelBoxCollider: " + i
+			"LevelBoxCollider: " + i, ObjectTag::GROUND
 		);
 
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
@@ -71,7 +71,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 			levelLoader.getOrientedBoxColliders()[i];
 
 		GameObject& colliderObject = this->addGameObject(
-			"LevelOrientedBoxColldier: " + i
+			"LevelOrientedBoxColldier: " + i, ObjectTag::GROUND
 		);
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealCubeMesh", "testMaterial");
@@ -207,7 +207,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevel.fbx");
+	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
