@@ -112,6 +112,15 @@ void LevelLoader::traverseStructure(
 		this->portal.scale = nodeScale * 2.0f;
 		this->switchFloats(this->portal.scale);
 	}
+	// Spikes
+	else if (nodeName.find("interactable_spike") != std::string::npos)
+	{
+		SpikeInfo newSpikeInfo{};
+		newSpikeInfo.position = nodePosition;
+		newSpikeInfo.rotation = nodeRotationQuaternion;
+
+		this->spikes.push_back(newSpikeInfo);
+	}
 	// Mesh
 	else
 	{

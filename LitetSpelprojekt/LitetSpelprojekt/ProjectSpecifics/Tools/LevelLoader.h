@@ -42,6 +42,12 @@ struct PortalInfo
 	DirectX::SimpleMath::Vector3 scale;
 };
 
+struct SpikeInfo
+{
+	DirectX::SimpleMath::Vector3 position;
+	DirectX::SimpleMath::Vector4 rotation;
+};
+
 class LevelLoader
 {
 private:
@@ -61,6 +67,7 @@ private:
 	std::vector<LevelColliderBox> boxColliders;
 	std::vector<LevelColliderOrientedBox> orientedBoxColliders;
 	std::vector<KeyInfo> keys;
+	std::vector<SpikeInfo> spikes;
 
 	void switchFloats(DirectX::SimpleMath::Vector3& vec);
 	void switchFloats(DirectX::XMFLOAT3& vec);
@@ -90,4 +97,5 @@ public:
 	inline std::vector<LevelColliderBox>& getBoxColliders() { return this->boxColliders; }
 	inline std::vector<LevelColliderOrientedBox>& getOrientedBoxColliders() { return this->orientedBoxColliders; }
 	inline std::vector<KeyInfo>& getKeys() { return this->keys; }
+	inline std::vector<SpikeInfo>& getSpikes() { return this->spikes; }
 };

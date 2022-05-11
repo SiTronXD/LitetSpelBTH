@@ -87,6 +87,23 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		rb->setType(rp3d::BodyType::STATIC);
 	}
 
+	// Spikes
+	for (unsigned int i = 0; i < levelLoader.getSpikes().size(); ++i)
+	{
+		SpikeInfo currentSpikeInfo = levelLoader.getSpikes()[i];
+
+		GameObject& spike = this->addGameObject("Spike " + std::to_string(i), ObjectTag::ENEMY);
+		MeshComp* mc = spike.addComponent<MeshComp>();
+		mc->setMesh("SpikeMesh", "testMaterial");
+		spike.getComponent<Transform>()->setPosition(currentSpikeInfo.position);
+		spike.getComponent<Transform>()->setRotation(currentSpikeInfo.rotation);
+		//spike.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
+		rb = spike.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::KINEMATIC);
+		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+	}
+
 	// Keys
 	for (unsigned int i = 0; i < levelLoader.getKeys().size(); ++i)
 	{
@@ -239,6 +256,12 @@ void GameScene::init()
 		std::move(cooldownIndicatorMeshData), 
 		"QuadMesh"
 	);
+	MeshData spikeMeshData(DefaultMesh::TETRAHEDRON);
+	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	this->getResources().addMesh(
+		std::move(spikeMeshData),
+		"SpikeMesh"
+	);
 
 	MeshData ropeMesh(DefaultMesh::LOW_POLY_CYLINDER);
 	ropeMesh.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
@@ -373,8 +396,6 @@ void GameScene::init()
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::KINEMATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
-
-		this->enemies.push_back(&enemy);
 	}
 
 	//Buttons
