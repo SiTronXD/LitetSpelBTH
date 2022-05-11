@@ -63,7 +63,8 @@ bool Renderer::createViews()
 	// Depth/stencil texture
 	this->dsTexture.createAsDepthTexture(
 		this->window->getWidth(), this->window->getHeight(),
-		DXGI_FORMAT_R32_TYPELESS
+		DXGI_FORMAT_R32_TYPELESS,
+		D3D11_BIND_SHADER_RESOURCE
 	);
 
 	// Depth/stencil view
@@ -103,6 +104,8 @@ bool Renderer::loadShaders()
 	// Pixel shader
 	this->pixelShader.loadPS("Default_PS");
 
+	this->outlineComputeShader.init("Outlines_COMP", this->window->getWidth() / 32, this->window->getHeight() / 32, 1);
+
 	return true;
 }
 
@@ -113,18 +116,17 @@ Renderer::Renderer(Resources& resources)
 
 	vertexShader(*this),
 	pixelShader(*this),
+	outlineComputeShader(*this, "outlinesComputeShader"),
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
 	compactCameraConstantBuffer(*this, "compactCameraConstantBuffer"),
 	pixelShaderConstantBuffer(*this, "pixelShaderConstantBuffer"),
+	outlineInfoConstantBuffer(*this, "outlineInfoConstantBuffer"),
 	backBufferUAV(*this, "backBufferUAV"),
 
 	resources(resources),
 
 	skybox(*this)
-	//particles(*this, resources)
-
-	//activeCamera(nullptr)
 {
 }
 
@@ -157,9 +159,18 @@ void Renderer::init(Window& window)
 	this->cameraConstantBuffer.createBuffer(sizeof(CameraBufferData));
 	this->compactCameraConstantBuffer.createBuffer(sizeof(CompactCameraBufferData));
 	this->pixelShaderConstantBuffer.createBuffer(sizeof(PixelShaderBufferData));
+	this->outlineInfoConstantBuffer.createBuffer(sizeof(OutlineInfoBufferData));
 
-	//Init skybox
+	// Init skybox
 	this->skybox.initialize();
+
+	// Outlines compute shader
+	this->outlineComputeShader.addUAV(this->backBufferUAV);
+	this->outlineComputeShader.addSRV(this->dsTexture.getSRV());
+	this->outlineComputeShader.addConstantBuffer(this->outlineInfoConstantBuffer);
+	this->outlineInfoBufferStruct.width = this->window->getWidth();
+	this->outlineInfoBufferStruct.height = this->window->getHeight();
+	this->outlineInfoBufferStruct.thickness = 0.00075f;
 
 	// Topology won't change during runtime
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -321,7 +332,6 @@ void Renderer::render(Scene& scene)
 		this->skybox.getMesh().getIndexBuffer().getIndexCount(), 0, 0
 	);
 
-
 	// --------------------- Render particles ---------------------
 	DirectX::SimpleMath::Vector3 cameraPos = scene.getActiveCamera()->getTransform()->getPosition();
 
@@ -330,7 +340,17 @@ void Renderer::render(Scene& scene)
 	{
 		particleComponents[i]->render(vp, cameraPos);
 	}
-	
+
+	// --------------------- Render outlines ---------------------
+	immediateContext->OMSetRenderTargets(1, this->nullRTV, nullptr);
+
+	// Update Constant buffer
+	this->outlineInfoBufferStruct.projectionInv = scene.getActiveCamera()->getInvProjectionMatrix().Transpose();
+	this->outlineInfoConstantBuffer.updateBuffer(&this->outlineInfoBufferStruct);
+	this->outlineComputeShader.run();
+
+	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView.getPtr());
+
 	// --------------------- Render absolute meshes ---------------------
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
 	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
@@ -403,6 +423,9 @@ void Renderer::render(Scene& scene)
 
 	// Unbind render target
 	immediateContext->OMSetRenderTargets(1, this->nullRTV, nullptr);
+
+	// --------------------- Render outlines ---------------------
+	this->outlineComputeShader.run();
 }
 
 void Renderer::presentSC()

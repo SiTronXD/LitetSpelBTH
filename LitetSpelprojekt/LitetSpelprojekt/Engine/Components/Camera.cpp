@@ -33,4 +33,5 @@ void Camera::updateAspectRatio(float aspectRatio)
 		0.1f,
 		100.0f
 	);
+	this->invProjectionMatrix = this->projectionMatrix.Invert();
 }
