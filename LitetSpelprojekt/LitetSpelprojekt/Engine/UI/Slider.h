@@ -12,10 +12,15 @@ private:
 	float currentValue;
 	float maxValue;
 	float percentFilled;
+	DirectX::SimpleMath::Vector3 buttonClr;
+	DirectX::SimpleMath::Vector3 changedClr;
+	bool changed;
 	UIRenderer& uiRenderer;
 
 public:
-	Slider(DirectX::SimpleMath::Vector2 p, int w, int h, float minVal, float curVal, float maxVal, float percentFilled, UIRenderer& r);
+	Slider(DirectX::SimpleMath::Vector2 p, int w, int h, float minVal, float curVal, float maxVal,
+		float percentFilled, DirectX::SimpleMath::Vector3 bClr,
+		DirectX::SimpleMath::Vector3 cClr, bool cha, UIRenderer& r);
 	~Slider();
  
 	// Get
