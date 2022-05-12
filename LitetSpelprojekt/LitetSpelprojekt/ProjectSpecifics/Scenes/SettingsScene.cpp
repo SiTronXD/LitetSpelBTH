@@ -1,4 +1,4 @@
-#include "SettingsScene.h"
+﻿#include "SettingsScene.h"
 #include "../../Engine/GameObject.h"
 #include "SimpleMath.h"
 #include "../Scripts/Player.h"
@@ -6,6 +6,7 @@ using namespace DirectX::SimpleMath;
 
 SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
+	fullscreenBox(Vector2(0,0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
 	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
 	graphicsSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
 	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
@@ -25,7 +26,7 @@ void SettingsScene::init()
 	// Load Textures
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSliderGray.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
-
+	this->getResources().addTexture("Resources/Textures/MenuGui/checkBox.png", "checkBox.png");
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
@@ -65,8 +66,13 @@ void SettingsScene::init()
 	int sliderHeight = 60;
 	int sliderWidth = 354;
 
+	// Fullscreen Checkbox
+	fullscreenBox.setPos(Vector2(220, 270));
+	fullscreenBox.setHeight(50);
+	fullscreenBox.setWidth(50);
+
 	// Resolution Slider
-	resSlider.setPos(Vector2(0, 210));
+	resSlider.setPos(Vector2(0, 130));
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
 	resSlider.setMinVal(0);
@@ -74,8 +80,8 @@ void SettingsScene::init()
 	resSlider.setMaxVal(this->resolutions.size() / 2.0f);
 	resSlider.setPerFill(resIndex / (float)this->resolutions.size());
 
-	// graphicsness� Slider - 
-	graphicsSlider.setPos(Vector2(0, 70));
+	// graphicsness™ Slider - 
+	graphicsSlider.setPos(Vector2(0, -10));
 	graphicsSlider.setWidth(sliderWidth);
 	graphicsSlider.setHeight(sliderHeight);
 	graphicsSlider.setMinVal(0.1f);
@@ -84,7 +90,7 @@ void SettingsScene::init()
 	graphicsSlider.setPerFill(this->getSettings().getSettings().graphics);
 
 	// Sensitivity Slider
-	sensSlider.setPos(Vector2(0, -70));
+	sensSlider.setPos(Vector2(0, -150));
 	sensSlider.setWidth(sliderWidth);
 	sensSlider.setHeight(sliderHeight);
 	sensSlider.setMinVal(0.1f);
@@ -93,7 +99,7 @@ void SettingsScene::init()
 	sensSlider.setPerFill(this->getSettings().getSettings().sensitivity);
 
 	// Volume Slider
-	volSlider.setPos(Vector2(0, -210));
+	volSlider.setPos(Vector2(0, -290));
 	volSlider.setWidth(sliderWidth);
 	volSlider.setHeight(sliderHeight);
 	volSlider.setMinVal(0.1f);
@@ -138,21 +144,57 @@ void SettingsScene::update()
 		// Exit Game
 		this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
 	}
+	else if (fullscreenBox.isClicked())
+	{
+		if (this->getSettings().getSettings().fullscreen == true)
+		{
+			this->getSettings().getSettings().fullscreen = false;
+		}
+		else
+		{
+			this->getSettings().getSettings().fullscreen = true;
+		}
+		
+	}
 }
 
 void SettingsScene::renderUI()
 {
+	
+
+	fullscreenBox.render("buttonBackground.png");
 	resSlider.render("settingsSlider.png");
 	sensSlider.render("settingsSlider.png");
 	graphicsSlider.render("settingsSlider.png");
 	volSlider.render("settingsSlider.png");
 	exitButton.render("buttonBackground.png");
 	// ------------------------------------------------
+	// Fullscreen Box
+	this->getUIRenderer().renderString(
+		"fullscreen:",
+		-10,
+		270,
+		30,
+		30
+	);
+	
+	if (this->getSettings().getSettings().fullscreen == true)
+	{
+		this->getUIRenderer().renderString(
+			"x",
+			210,
+			270,
+			30,
+			30
+		);
+	}
+	
+	// ------------------------------------------------
 	// Resolution Slider
 	this->getUIRenderer().renderString(
 		"resolution:",
 		-10,
-		260,
+		180,
 		30,
 		30
 	);
@@ -162,7 +204,7 @@ void SettingsScene::renderUI()
 	this->getUIRenderer().renderString(
 		std::to_string(this->getSettings().getSettings().resolutionX) + "x" + std::to_string(this->getSettings().getSettings().resolutionY),
 		300,
-		210,
+		130,
 		30,
 		30
 	);
@@ -172,7 +214,7 @@ void SettingsScene::renderUI()
 	this->getUIRenderer().renderString(
 		"graphics:",
 		-10,
-		120,
+		40,
 		30,
 		30
 	);
@@ -180,8 +222,8 @@ void SettingsScene::renderUI()
 	int graphicsPer = graphicsSlider.getPerFill() * 100;
 	this->getUIRenderer().renderString(
 		std::to_string(graphicsPer) + "%",
-		220,
-		70,
+		230,
+		-10,
 		30,
 		30
 	);
@@ -190,7 +232,7 @@ void SettingsScene::renderUI()
 	this->getUIRenderer().renderString(
 		"sensitivity:",
 		- 10,
-		-20,
+		-100,
 		30,
 		30
 	);
@@ -198,8 +240,8 @@ void SettingsScene::renderUI()
 	int sensPer = sensSlider.getPerFill() * 100;
 	this->getUIRenderer().renderString(
 		std::to_string(sensPer) + "%",
-		220,
-		-70,
+		230,
+		-150,
 		30,
 		30
 	);
@@ -209,7 +251,7 @@ void SettingsScene::renderUI()
 	this->getUIRenderer().renderString(
 		"volume:",
 		-10,
-		-160,
+		-240,
 		30,
 		30
 	);
@@ -218,8 +260,8 @@ void SettingsScene::renderUI()
 	int volPer = volSlider.getPerFill() * 100;
 	this->getUIRenderer().renderString(
 		std::to_string(volPer) + "%",
-		220,
-		-210,
+		230,
+		-290,
 		30,
 		30
 	);
