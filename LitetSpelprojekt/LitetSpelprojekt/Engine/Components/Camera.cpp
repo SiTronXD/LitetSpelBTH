@@ -31,6 +31,7 @@ void Camera::updateAspectRatio(float aspectRatio)
 		SMath::PI * 0.5f,
 		aspectRatio,
 		0.1f,
-		100.0f
+		200.0f
 	);
+	this->invProjectionMatrix = this->projectionMatrix.Invert();
 }

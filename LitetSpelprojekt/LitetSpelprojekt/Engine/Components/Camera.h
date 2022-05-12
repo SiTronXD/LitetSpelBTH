@@ -11,6 +11,7 @@ class Camera : public Component
 private:
 	DirectX::SimpleMath::Matrix viewMatrix;
 	DirectX::SimpleMath::Matrix projectionMatrix;
+	DirectX::SimpleMath::Matrix invProjectionMatrix;
 
 	void updateViewMatrix();
 
@@ -26,4 +27,5 @@ public:
 		return this->viewMatrix; 
 	}
 	inline const DirectX::SimpleMath::Matrix& getProjectionMatrix() { return this->projectionMatrix; }
+	inline const DirectX::SimpleMath::Matrix& getInvProjectionMatrix() { return this->invProjectionMatrix; }
 };

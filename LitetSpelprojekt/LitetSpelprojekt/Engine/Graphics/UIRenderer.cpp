@@ -14,7 +14,6 @@ UIRenderer::UIRenderer(
 	uiRenderComputeShader(renderer, "uiRenderComputeShader"),
 	textRenderComputeShader(renderer, "textRenderComputeShader")
 {	
-
 }
 
 UIRenderer::~UIRenderer()

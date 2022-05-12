@@ -39,12 +39,22 @@ private:
 		int shade;
 	} pixelShaderBufferStruct{};
 
+	struct OutlineInfoBufferData
+	{
+		DirectX::XMFLOAT4X4 projectionInv;
+		float width;
+		float height;
+		float thickness;
+		float pad;
+	} outlineInfoBufferStruct{};
+
 	ID3D11Device* device;
 	ID3D11DeviceContext* immediateContext;
 	IDXGISwapChain* swapChain;
 
 	VertexShader vertexShader;
 	PixelShader pixelShader;
+	ComputeShader outlineComputeShader;
 
 	D3D11_VIEWPORT viewport;
 	ID3D11RenderTargetView* backBufferRTV;
@@ -59,6 +69,7 @@ private:
 	ConstantBuffer cameraConstantBuffer;
 	ConstantBuffer compactCameraConstantBuffer;
 	ConstantBuffer pixelShaderConstantBuffer;
+	ConstantBuffer outlineInfoConstantBuffer;
 
 	Window* window;
 	Resources& resources;

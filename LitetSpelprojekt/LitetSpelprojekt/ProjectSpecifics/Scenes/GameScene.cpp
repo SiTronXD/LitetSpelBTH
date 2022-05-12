@@ -157,9 +157,9 @@ GameScene::GameScene(SceneHandler& sceneHandler)
 	keyTextTimer(0.0f),
 	keyTextScale(0.0f),
 	highscoreTime(0.0f),
-	resumeButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
-	mainMenuButton(Vector2(0, 0), 0, 0, this->getUIRenderer())
+	resumeButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
+	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer())
 {
 }
 
@@ -210,10 +210,6 @@ void GameScene::init()
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
 
-	//Menu textures
-	this->getResources().addTexture("Resources/Textures/MenuGui/PauseMenu.png", "PauseMenu.png");
-	this->getResources().addTexture("Resources/Textures/MenuGui/NeatBox.png", "NeatBox.png");
-	
 	//Materials
 	this->getResources().addMaterial("me.png", "testMaterial");
 	this->getResources().addMaterial("me.png", "portalMaterial");
@@ -289,6 +285,7 @@ void GameScene::init()
 
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	Player* player = cam.addComponent<Player>();
+	player->setStartPosition(levelLoader.getPlayerStartPos());
 	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
 	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	Rigidbody* rb = cam.addComponent<Rigidbody>();
@@ -430,6 +427,18 @@ void GameScene::update()
 			std::cout << "Key pickup!" << std::endl;
 			this->keyTextScale = 0.0f;
 			this->keyTextTimer = 200.0f;
+		}
+
+		Rigidbody* rb = cam.getComponent<Rigidbody>();
+
+		//Player fall down from a building
+		if (rb->getTransform()->getPosition().y <= 0.0f)
+		{
+			//Reset position
+			rb->setPosition(playerComp->getStartPosition());
+
+			//Reduce one health
+			playerComp->takeDamage(1.0f);
 		}
 
 		//Check if player is dead or not
