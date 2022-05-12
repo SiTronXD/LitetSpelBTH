@@ -24,7 +24,7 @@ SettingsScene::~SettingsScene()
 void SettingsScene::init()
 {
 	// Load Textures
-	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSliderGray.png", "settingsSlider.png");
+	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
 
 	// Set Camera
