@@ -9,6 +9,7 @@
 #include "../Scripts/GrapplingHookRope.h"
 #include "../Scripts/CooldownIndicator.h"
 #include "../Scripts/PointLight.h"
+#include "../Scripts/Key.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -18,6 +19,7 @@
 #include "../../Engine/Time.h"
 #include "../../Engine/SMath.h"
 
+#define RENDER_COLLIDERS
 
 using namespace DirectX::SimpleMath;
 
@@ -31,8 +33,11 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelSphereCollider: " + i, ObjectTag::GROUND
 		);
-		//MeshComp* mc = colliderObject.addComponent<MeshComp>();
-		//mc->setMesh("RealSphereMesh", "testMaterial");
+
+#ifdef RENDER_COLLIDERS
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealSphereMesh", "testMaterial");
+#endif
 
 		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(Vector3(1, 1, 1) * sphereInfo.radius);
@@ -52,8 +57,10 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 			"LevelBoxCollider: " + i, ObjectTag::GROUND
 		);
 
-		//MeshComp* mc = colliderObject.addComponent<MeshComp>();
-		//mc->setMesh("RealCubeMesh", "testMaterial");
+#ifdef RENDER_COLLIDERS
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealCubeMesh", "testMaterial");
+#endif
 
 		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
@@ -73,8 +80,11 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelOrientedBoxColldier: " + i, ObjectTag::GROUND
 		);
-		//MeshComp* mc = colliderObject.addComponent<MeshComp>();
-		//mc->setMesh("RealCubeMesh", "testMaterial");
+
+#ifdef RENDER_COLLIDERS
+		MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		mc->setMesh("RealCubeMesh", "testMaterial");
+#endif
 
 		colliderObject.getComponent<Transform>()->setPosition(orientedBoxInfo.pos);
 		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
@@ -122,6 +132,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		Key* keyScript = portalKey.addComponent<Key>();
 		this->portalKeys.push_back(&portalKey);
 
 		// Point light
@@ -135,6 +146,8 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		lightMesh->setShouldShade(false);
 		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
 		pointLight->setTarget(cam);
+
+		keyScript->setPointLight(&pointLightObject);
 	}
 
 	// Portal
@@ -275,7 +288,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelSimon.fbx");
+	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
@@ -413,11 +426,11 @@ void GameScene::init()
 #include <iostream>
 void GameScene::update()
 {
-	RaycastInfo info = this->getPhysicsEngine().raycast(rp3d::Ray({ 0.0f, -10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
+	/*RaycastInfo info = this->getPhysicsEngine().raycast(rp3d::Ray({ 0.0f, -10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
 	if (info.hit)
 	{
 		std::cout << "Hit " << info.gameObject->getName() << ": at worldPos (" << info.hitPoint.x << ", " << info.hitPoint.y << ", " << info.hitPoint.z << ")" << std::endl;
-	}
+	}*/
   
 	if (this->getPause() == false)
 	{
