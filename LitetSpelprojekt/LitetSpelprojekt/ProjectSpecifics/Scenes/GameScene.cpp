@@ -97,11 +97,11 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		mc->setMesh("SpikeMesh", "testMaterial");
 		spike.getComponent<Transform>()->setPosition(currentSpikeInfo.position);
 		spike.getComponent<Transform>()->setRotation(currentSpikeInfo.rotation);
-		//spike.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
+		spike.getComponent<Transform>()->setScaling(currentSpikeInfo.scale);
 		rb = spike.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::KINEMATIC);
-		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		rb->addBoxCollider(currentSpikeInfo.scale * 0.5);
 	}
 
 	// Keys
@@ -252,7 +252,8 @@ void GameScene::init()
 		std::move(cooldownIndicatorMeshData), 
 		"QuadMesh"
 	);
-	MeshData spikeMeshData(DefaultMesh::TETRAHEDRON);
+
+	MeshData spikeMeshData = MeshLoader::loadModel("Resources/Models/spike.obj");
 	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
 	this->getResources().addMesh(
 		std::move(spikeMeshData),
@@ -273,7 +274,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevel.fbx");
+	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
@@ -436,11 +437,7 @@ void GameScene::update()
 		//Player fall down from a building
 		if (rb->getTransform()->getPosition().y <= 0.0f)
 		{
-			//Reset position
-			rb->setPosition(playerComp->getStartPosition());
-
-			//Reduce one health
-			playerComp->takeDamage(1.0f);
+			playerComp->resetPlayer(playerComp->getStartPosition());
 		}
 
 		//Check if player is dead or not

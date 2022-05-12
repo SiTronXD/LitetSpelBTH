@@ -118,6 +118,7 @@ void LevelLoader::traverseStructure(
 		SpikeInfo newSpikeInfo{};
 		newSpikeInfo.position = nodePosition;
 		newSpikeInfo.rotation = nodeRotationQuaternion;
+		newSpikeInfo.scale = nodeScale;
 
 		this->spikes.push_back(newSpikeInfo);
 	}

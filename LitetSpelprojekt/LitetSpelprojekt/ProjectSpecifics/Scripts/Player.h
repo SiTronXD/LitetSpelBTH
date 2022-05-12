@@ -15,7 +15,7 @@ private:
 	float speed;
 	float jumpForce;
 	float mouseSensitivity;
-	float maxVelocity;
+	DirectX::SimpleMath::Vector3 maxVelocity;
 
 	int keyPieces;
 	int health;
@@ -69,6 +69,7 @@ public:
 	inline bool onPortal() const { return this->portal; }
 
 	void takeDamage(float damage);
+	void resetPlayer(DirectX::SimpleMath::Vector3 pos);
 
 	// Inherited via Script
 	virtual void init() override;
