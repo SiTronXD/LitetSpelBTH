@@ -8,7 +8,7 @@ Highscore::Highscore()
 {
 	for (int i = 0; i < 10; i++)
 	{
-		this->highscoreList.times[i] = 0.000000f;
+		this->highscoreList.times[i] = 99.9999f;
 	}
 }
 

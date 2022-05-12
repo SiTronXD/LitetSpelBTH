@@ -1,12 +1,25 @@
+#include <iostream>
 #include "LevelLoader.h"
 #include "../../Engine/Dev/Log.h"
 #include "../../Engine/Dev/Str.h"
 #include "../../Engine/SMath.h"
 
-#include <DirectXMath.h>
-
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
+
+void LevelLoader::switchFloats(Vector3& vec)
+{
+	float t = vec.y;
+	vec.y = vec.z;
+	vec.z = t;
+}
+
+void LevelLoader::switchFloats(XMFLOAT3& vec)
+{
+	float t = vec.y;
+	vec.y = vec.z;
+	vec.z = t;
+}
 
 void LevelLoader::traverseStructure(
 	aiNode* node,
@@ -59,6 +72,7 @@ void LevelLoader::traverseStructure(
 			LevelColliderBox newColliderBox{};
 			newColliderBox.pos = nodePosition;
 			newColliderBox.extents = nodeScale;
+			this->switchFloats(newColliderBox.extents);
 			this->boxColliders.push_back(newColliderBox);
 		}
 		// Oriented box
@@ -69,6 +83,7 @@ void LevelLoader::traverseStructure(
 			newColliderOrientedBox.pos = nodePosition;
 			newColliderOrientedBox.extents = nodeScale;
 			newColliderOrientedBox.orientation = nodeRotationQuaternion;
+			this->switchFloats(newColliderOrientedBox.extents);
 			this->orientedBoxColliders.push_back(newColliderOrientedBox);
 		}
 	}
@@ -76,6 +91,35 @@ void LevelLoader::traverseStructure(
 	else if (nodeName == "PlayerStartPos")
 	{
 		this->playerStartPos = nodePosition;
+	}
+	// Keys
+	else if (nodeName.find("interactable_key") != std::string::npos)
+	{
+		// Get key index
+		nodeName.erase(0, 16);
+		unsigned int keyIndex = std::stoi(nodeName);
+
+		// Set key position
+		if (keyIndex < this->NUM_KEYS)
+		{
+			this->keys[keyIndex].position = nodePosition;
+		}
+	}
+	// Portal
+	else if (nodeName == "interactable_portal")
+	{
+		this->portal.position = nodePosition;
+		this->portal.scale = nodeScale * 2.0f;
+		this->switchFloats(this->portal.scale);
+	}
+	// Spikes
+	else if (nodeName.find("interactable_spike") != std::string::npos)
+	{
+		SpikeInfo newSpikeInfo{};
+		newSpikeInfo.position = nodePosition;
+		newSpikeInfo.rotation = nodeRotationQuaternion;
+
+		this->spikes.push_back(newSpikeInfo);
 	}
 	// Mesh
 	else
@@ -161,6 +205,13 @@ LevelLoader::LevelLoader(Resources& resources)
 	: resources(resources),
 	playerStartPos(0,0,0)
 {
+	this->keys.resize(this->NUM_KEYS);
+
+	// Colors
+	this->keys[0].color = Vector3(1.0f, 1.0f, 0.0f);
+	this->keys[1].color = Vector3(0.0f, 1.0f, 0.0f);
+	this->keys[2].color = Vector3(0.0f, 0.0f, 1.0f);
+	this->keys[3].color = Vector3(1.0f, 0.0f, 1.0f);
 }
 
 LevelLoader::~LevelLoader()
@@ -226,9 +277,6 @@ bool LevelLoader::load(const std::string& levelName)
 	{
 		aiMesh* submesh = scene->mMeshes[i];
 
-		// std::string submeshName = std::string(submesh->mName.C_Str());
-		// Log::write("Mesh: " + std::string(submesh->mName.C_Str()));
-
 		MeshData* newMeshData = new MeshData();
 
 		// Loop through each vertex
@@ -277,12 +325,6 @@ bool LevelLoader::load(const std::string& levelName)
 
 	// Place all meshes in mega mesh
 	this->traverseStructure(scene->mRootNode, Matrix());
-
-	// Merge all separate meshes into one single mesh
-	/*for (unsigned int i = 0; i < this->allMeshes.size(); ++i)
-	{
-		this->addMeshToMegaMesh(*this->allMeshes[i], Matrix());
-	}*/
 
 	// Deallocate all old meshes
 	for (MeshData* meshData : allMeshes)

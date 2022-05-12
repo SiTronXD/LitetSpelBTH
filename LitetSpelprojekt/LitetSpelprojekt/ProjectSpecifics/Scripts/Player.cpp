@@ -108,7 +108,7 @@ Player::Player(GameObject& object) :
 	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), maxVelocity(35.0f),
 	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
 	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
-	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr)
+	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr), startPosition(0.0f, 0.0f, 0.0f)
 {
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
@@ -116,6 +116,11 @@ Player::Player(GameObject& object) :
 
 Player::~Player()
 {
+}
+
+void Player::setStartPosition(DirectX::SimpleMath::Vector3 pos)
+{
+	this->startPosition = pos;
 }
 
 void Player::setSpeed(float speed)
@@ -151,6 +156,15 @@ void Player::setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIn
 	this->grapplingHook->setPlayerTransform(this->getTransform());
 	this->cooldownIndicatior = cooldown;
 	this->cooldownIndicatior->setup(this->grapplingHook);
+}
+
+void Player::takeDamage(float damage)
+{
+	if (this->healthCooldown <= 0.0f)
+	{
+		this->health--;
+		this->healthCooldown = 0.5f;
+	}
 }
 
 void Player::init()
@@ -219,8 +233,7 @@ void Player::onCollisionEnter(GameObject& other)
 	{
 		other.removeComponent<MeshComp>();
 		other.removeComponent<Rigidbody>();
-		this->health--;
-		this->healthCooldown = 0.5f;
+		this->takeDamage(1.0f);
 	}
 	// Portal
 	else if (other.getTag() == ObjectTag::PORTAL)

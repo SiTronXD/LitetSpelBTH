@@ -2,10 +2,107 @@
 #include "../Dev/Log.h"
 #include "../Dev/Helpers.h"
 
+using namespace DirectX;
 using namespace DirectX::SimpleMath;
+
+bool Renderer::evaluateAdapterModes()
+{
+	HRESULT result;
+
+	// Create a graphics interface factory
+	IDXGIFactory* factory = nullptr;
+	result = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&factory);
+	if (FAILED(result))
+	{
+		Log::error("Failed to create DXGI factory.");
+
+		return false;
+	}
+
+	// Create an adapter
+	IDXGIAdapter* adapter = nullptr;
+	result = factory->EnumAdapters(0, &adapter);
+	if (FAILED(result))
+	{
+		Log::error("Failed to create adapter.");
+
+		return false;
+	}
+
+	// Get adapter output
+	IDXGIOutput* adapterOutput = nullptr;
+	result = adapter->EnumOutputs(0, &adapterOutput);
+	if (FAILED(result))
+	{
+		Log::error("Failed to create adapter output.");
+
+		return false;
+	}
+
+	// Get appropriate number of modes
+	unsigned int numModes = 0;
+	result = adapterOutput->GetDisplayModeList(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_ENUM_MODES_INTERLACED,
+		&numModes, NULL
+	);
+	if (FAILED(result))
+	{
+		Log::error("Failed to get display modes");
+
+		return false;
+	}
+
+	// Array of display modes
+	DXGI_MODE_DESC* displayModeList = new DXGI_MODE_DESC[numModes];
+	result = adapterOutput->GetDisplayModeList(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		DXGI_ENUM_MODES_INTERLACED,
+		&numModes, displayModeList
+	);
+
+	// Add resolutions to vector
+	UINT lastWidth = 0;
+	UINT lastHeight = 0;
+	for (unsigned int i = 0; i < numModes; ++i)
+	{
+		if (displayModeList[i].Width != lastWidth ||
+			displayModeList[i].Height != lastHeight)
+		{
+			// Updaste last resolution
+			lastWidth = displayModeList[i].Width;
+			lastHeight = displayModeList[i].Height;
+
+			Log::write("res: " + std::to_string(displayModeList[i].Width) +
+				" x " + std::to_string(displayModeList[i].Height) +
+				" - " + std::to_string(
+					(float)displayModeList[i].RefreshRate.Numerator / displayModeList[i].RefreshRate.Denominator));
+
+			// Add resolution
+			this->supportedResolutions.push_back(
+				XMFLOAT2(
+					displayModeList[i].Width, 
+					displayModeList[i].Height
+				)
+			);
+		}
+	}
+
+
+	delete[] displayModeList;
+	displayModeList = nullptr;
+
+	// Deallocate old objects
+	S_RELEASE(adapterOutput);
+	S_RELEASE(adapter);
+	S_RELEASE(factory);
+
+	return true;
+}
 
 bool Renderer::createInterfaces()
 {
+	// Device, device context and swapchain creation
 	UINT flags = 0;
 #ifdef _DEBUG
 	flags = D3D11_CREATE_DEVICE_DEBUG;
@@ -29,7 +126,7 @@ bool Renderer::createInterfaces()
 	swapChainDesc.BufferUsage = DXGI_USAGE_UNORDERED_ACCESS | DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	swapChainDesc.BufferCount = 1;
 	swapChainDesc.OutputWindow = this->window->getWindowHandle();
-	swapChainDesc.Windowed = true;
+	swapChainDesc.Windowed = !this->window->getIsFullscreen();
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	swapChainDesc.Flags = 0;
 
@@ -132,6 +229,9 @@ Renderer::Renderer(Resources& resources)
 
 Renderer::~Renderer()
 {
+	// Switch to windowed mode
+	this->swapChain->SetFullscreenState(false, NULL);
+
 	S_RELEASE(this->device);
 	S_RELEASE(this->immediateContext);
 	S_RELEASE(this->swapChain);
@@ -144,6 +244,7 @@ void Renderer::init(Window& window)
 {
 	this->window = &window;
 
+	this->evaluateAdapterModes();
 	createInterfaces();
 	createViews();
 	loadShaders();

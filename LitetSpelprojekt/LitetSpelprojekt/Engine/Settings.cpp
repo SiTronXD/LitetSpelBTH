@@ -26,9 +26,10 @@ bool Settings::loadSettings()
 		Log::error("Unable to load settings file");
 		this->settingsList.resolutionX = 1280;
 		this->settingsList.resolutionY = 720;
+		this->settingsList.graphics = 3.0f;
 		this->settingsList.sensitivity = 3.0f;
-		this->settingsList.brightness = 3.0f;
 		this->settingsList.volume = 3.0f;
+		this->settingsList.fullscreen = true;
 		return false;
 	}
 
@@ -45,29 +46,36 @@ bool Settings::loadSettings()
 			getline(reader, gameSettings);
 			settingsList.resolutionY = stoi(gameSettings);
 		}
+		else if (gameSettings == "Graphics")
+		{
+			getline(reader, gameSettings);
+			settingsList.graphics = stof(gameSettings);
+		}
 		else if (gameSettings == "Sensitivity")
 		{
 			getline(reader, gameSettings);
 			settingsList.sensitivity = stof(gameSettings);
-		}
-		else if (gameSettings == "Brightness")
-		{
-			getline(reader, gameSettings);
-			settingsList.brightness = stof(gameSettings);
 		}
 		else if (gameSettings == "Volume")
 		{
 			getline(reader, gameSettings);
 			settingsList.volume = stof(gameSettings);
 		}
+		else if (gameSettings == "Fullscreen")
+		{
+			getline(reader, gameSettings);
+			settingsList.fullscreen = gameSettings == "true";
+		}
 	}
 	reader.close();
 
 	Log::write("ResX: " + std::to_string(settingsList.resolutionX) +
 		"ResY: " + std::to_string(settingsList.resolutionY) +
+		"Graphics: " + std::to_string(settingsList.graphics) +
 		"Sens: " + std::to_string(settingsList.sensitivity) +
-		"Bright: " + std::to_string(settingsList.brightness) +
-		"Volume: " + std::to_string(settingsList.volume));
+		"Volume: " + std::to_string(settingsList.volume) + 
+		"Fullscreen: " + (settingsList.fullscreen ? "true" : "false"));
+
 	return true;
 }
 
@@ -86,16 +94,18 @@ bool Settings::saveSettings()
 	// Write settings to file
 	writer << "ResolutionX\n" << settingsList.resolutionX 
 		<< "\nResolutionY\n" << settingsList.resolutionY 
+		<< "\nGraphics\n" << settingsList.graphics
 		<< "\nSensitivity\n" << settingsList.sensitivity
-		<< "\nBrightness\n" << settingsList.brightness
-		<< "\nVolume\n" << settingsList.volume;
+		<< "\nVolume\n" << settingsList.volume
+		<< "\nFullscreen\n" << (settingsList.fullscreen ? "true" : "false");
 
 	Log::write("ResX: " + std::to_string(settingsList.resolutionX) +
 		"ResY: " + std::to_string(settingsList.resolutionY) +
+		"Graphics: " + std::to_string(settingsList.graphics) +
 		"Sens: " + std::to_string(settingsList.sensitivity) +
-		"Bright: " + std::to_string(settingsList.brightness) +
-		"Volume: " + std::to_string(settingsList.volume));
-	
+		"Volume: " + std::to_string(settingsList.volume) +
+		"Fullscreen: " + (settingsList.fullscreen ? "true" : "false"));
+
 	writer.close();
 	return true;
 }

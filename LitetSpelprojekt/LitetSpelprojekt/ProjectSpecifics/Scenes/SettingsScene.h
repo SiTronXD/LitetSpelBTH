@@ -11,8 +11,8 @@ class SettingsScene : public Scene
 private:
 	Button settingsHeader;
 	Slider resSlider;
+	Slider graphicsSlider;
 	Slider sensSlider;
-	Slider brightSlider;
 	Slider volSlider;
 	Button exitButton;
 	std::vector<std::string>resolutions;
