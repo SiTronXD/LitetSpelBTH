@@ -5,8 +5,6 @@
 #include <SimpleMath.h>
 #include <fstream>
 
-//#include "../Components/Camera.h"
-//#include "../Components/MeshComp.h"
 #include "../Application/Scene.h"
 #include "ConstantBuffer.h"
 #include "Shaders/VertexShader.h"
