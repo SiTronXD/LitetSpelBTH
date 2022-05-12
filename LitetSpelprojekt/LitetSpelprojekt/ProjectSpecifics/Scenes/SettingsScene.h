@@ -9,7 +9,6 @@
 class SettingsScene : public Scene
 {
 private:
-	Button settingsHeader;
 	Slider resSlider;
 	Slider graphicsSlider;
 	Slider sensSlider;

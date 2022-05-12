@@ -6,12 +6,11 @@ using namespace DirectX::SimpleMath;
 
 SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	settingsHeader(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
-	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
-	graphicsSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
-	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
-	volSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer())
+	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
+	graphicsSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
+	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
+	volSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer())
 {
 	resolutions = {};
 }
@@ -24,7 +23,7 @@ SettingsScene::~SettingsScene()
 void SettingsScene::init()
 {
 	// Load Textures
-	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
+	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSliderGray.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
 
 	// Set Camera
@@ -46,17 +45,6 @@ void SettingsScene::init()
 		);
 	}
 
-	/*resolutions.push_back("800");
-	resolutions.push_back("600");
-	resolutions.push_back("1280");
-	resolutions.push_back("720");
-	resolutions.push_back("1600");
-	resolutions.push_back("900");
-	resolutions.push_back("1920");
-	resolutions.push_back("1080");
-	resolutions.push_back("2048");
-	resolutions.push_back("1080");*/
-
 	int k = 0;
 	int resIndex = 0;
 	for (int i = 0; i < this->resolutions.size(); i+=2)
@@ -76,11 +64,6 @@ void SettingsScene::init()
 	// Default values for sliders
 	int sliderHeight = 60;
 	int sliderWidth = 354;
-
-	// Settings Header
-	settingsHeader.setPos(Vector2(0, 420));
-	settingsHeader.setWidth(sliderWidth);
-	settingsHeader.setHeight(159);
 
 	// Resolution Slider
 	resSlider.setPos(Vector2(0, 210));
@@ -220,7 +203,8 @@ void SettingsScene::renderUI()
 		30,
 		30
 	);
-
+	// ------------------------------------------------
+	
 	// Volume Slider
 	this->getUIRenderer().renderString(
 		"volume:",
@@ -240,7 +224,7 @@ void SettingsScene::renderUI()
 		30
 	);
 
-
+	// -----------------------------------------------
 	// Setttings Header
 	this->getUIRenderer().renderString(
 		"settings",
