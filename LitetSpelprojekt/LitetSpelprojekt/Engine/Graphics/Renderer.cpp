@@ -78,6 +78,10 @@ bool Renderer::evaluateAdapterModes()
 				" - " + std::to_string(
 					(float)displayModeList[i].RefreshRate.Numerator / displayModeList[i].RefreshRate.Denominator));
 
+			// Filter away smaller aspect ratios
+			if ((float) displayModeList[i].Width / displayModeList[i].Height < 16.0f / 9.0f - 0.001f)
+				continue;
+
 			// Add resolution
 			this->supportedResolutions.push_back(
 				XMFLOAT2(

@@ -38,6 +38,9 @@ Rigidbody::~Rigidbody()
 
 void Rigidbody::setPhysics(PhysicsEngine& physicsEngine)
 {
+	if (this->physEngine != nullptr)
+		return;
+
 	this->physEngine = &physicsEngine;
 	this->rb = this->physEngine->getWorld()->createRigidBody(this->getConvertedTransform());
 	this->rb->setLinearLockAxisFactor(rp3d::Vector3(1.0f, 1.0f, 1.0f));
@@ -93,13 +96,14 @@ void Rigidbody::setGravity(bool status)
 	this->rb->enableGravity(status);
 }
 
-void Rigidbody::setTrigger(bool status)
+// Never again :)
+/*void Rigidbody::setTrigger(bool status)
 {
 	for (auto& col : this->colliders)
 	{
 		col->setIsTrigger(status);
 	}
-}
+}*/
 
 void Rigidbody::setMaterial(float frictionCoeff, float bounciness, float massDensity)
 {
