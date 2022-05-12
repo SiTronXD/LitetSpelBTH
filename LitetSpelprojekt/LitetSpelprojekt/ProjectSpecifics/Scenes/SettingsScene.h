@@ -9,6 +9,7 @@
 class SettingsScene : public Scene
 {
 private:
+	Button fullscreenBox;
 	Slider resSlider;
 	Slider graphicsSlider;
 	Slider sensSlider;
