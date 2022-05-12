@@ -31,8 +31,8 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelSphereCollider: " + i, ObjectTag::GROUND
 		);
-		MeshComp* mc = colliderObject.addComponent<MeshComp>();
-		mc->setMesh("RealSphereMesh", "testMaterial");
+		//MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		//mc->setMesh("RealSphereMesh", "testMaterial");
 
 		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(Vector3(1, 1, 1) * sphereInfo.radius);
@@ -52,8 +52,8 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 			"LevelBoxCollider: " + i, ObjectTag::GROUND
 		);
 
-		MeshComp* mc = colliderObject.addComponent<MeshComp>();
-		mc->setMesh("RealCubeMesh", "testMaterial");
+		//MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		//mc->setMesh("RealCubeMesh", "testMaterial");
 
 		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
@@ -73,8 +73,8 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelOrientedBoxColldier: " + i, ObjectTag::GROUND
 		);
-		MeshComp* mc = colliderObject.addComponent<MeshComp>();
-		mc->setMesh("RealCubeMesh", "testMaterial");
+		//MeshComp* mc = colliderObject.addComponent<MeshComp>();
+		//mc->setMesh("RealCubeMesh", "testMaterial");
 
 		colliderObject.getComponent<Transform>()->setPosition(orientedBoxInfo.pos);
 		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
@@ -139,15 +139,18 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 
 	// Portal
 	PortalInfo portalInfo = levelLoader.getPortal();
-	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
-	MeshComp* portalMc = portal.addComponent<MeshComp>();
-	portalMc->setMesh("RealCubeMesh", "portalMaterial");
-	portal.getComponent<Transform>()->setPosition(portalInfo.position);
-	portal.getComponent<Transform>()->setScaling(portalInfo.scale);
-	Rigidbody* rb = portal.addComponent<Rigidbody>();
-	rb->setPhysics(this->getPhysicsEngine());
-	rb->setType(rp3d::BodyType::STATIC);
-	rb->addBoxCollider(portalInfo.scale * 0.5f);
+	if (portalInfo.scale.x * portalInfo.scale.y * portalInfo.scale.z > 0.0f)
+	{
+		GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
+		MeshComp* portalMc = portal.addComponent<MeshComp>();
+		portalMc->setMesh("RealCubeMesh", "portalMaterial");
+		portal.getComponent<Transform>()->setPosition(portalInfo.position);
+		portal.getComponent<Transform>()->setScaling(portalInfo.scale);
+		Rigidbody* rb = portal.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::STATIC);
+		rb->addBoxCollider(portalInfo.scale * 0.5f);
+	}
 }
 
 GameScene::GameScene(SceneHandler& sceneHandler)
@@ -272,7 +275,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
+	levelLoader.load("Resources/Levels/testLevelSimon.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
@@ -315,14 +318,6 @@ void GameScene::init()
 	MeshComp* originMC = origin.addComponent<MeshComp>();
 	originMC->setMesh("RealSphereMesh", "testMaterial");
 
-	// Grappling hook rope
-	GameObject& rope = this->addGameObject("Rope");
-	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
-	mc = rope.addComponent<MeshComp>();
-	mc->setMesh("RopeMesh", "ropeMaterial");
-	GrapplingHookRope* grapplingHookRopeComp =
-		rope.addComponent<GrapplingHookRope>();
-
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
 	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
@@ -330,8 +325,16 @@ void GameScene::init()
 	amc->setCastShadow(false);
 	GrapplingHook* grapplingHookComp = 
 		grapplingHook.addComponent<GrapplingHook>();
-	grapplingHookComp->setRope(grapplingHookRopeComp);
+
+	// Grappling hook rope
+	GameObject& rope = this->addGameObject("Rope");
+	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
+	mc = rope.addComponent<MeshComp>();
+	mc->setMesh("RopeMesh", "ropeMaterial");
+	GrapplingHookRope* grapplingHookRopeComp =
+		rope.addComponent<GrapplingHookRope>();
 	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
+	grapplingHookComp->setRope(grapplingHookRopeComp);
 
 	// Grappling hook cooldown indicator
 	GameObject& cooldownIndicatorObject = this->addGameObject("Grappling Hook Cooldown Indicator");
