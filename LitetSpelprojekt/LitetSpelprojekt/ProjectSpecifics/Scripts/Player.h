@@ -10,6 +10,8 @@ class CooldownIndicator;
 class Player : public Script
 {
 private:
+	DirectX::SimpleMath::Vector3 startPosition;
+	
 	float speed;
 	float jumpForce;
 	float mouseSensitivity;
@@ -39,10 +41,12 @@ private:
 	void jump();
 	void fireWeapon();
 	void lookAround();
-
 public:
 	Player(GameObject& object);
 	~Player();
+
+	void setStartPosition(DirectX::SimpleMath::Vector3 pos);
+	inline DirectX::SimpleMath::Vector3 getStartPosition() { return this->startPosition; }
 
 	inline float getSpeed() const { return this->speed; }
 	void setSpeed(float speed);
@@ -63,6 +67,8 @@ public:
 	
 	inline bool isPlayerDead() const { return this->dead; }
 	inline bool onPortal() const { return this->portal; }
+
+	void takeDamage(float damage);
 
 	// Inherited via Script
 	virtual void init() override;
