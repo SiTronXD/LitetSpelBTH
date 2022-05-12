@@ -26,7 +26,7 @@ void SettingsScene::init()
 	// Load Textures
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSliderGray.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
-	this->getResources().addTexture("Resources/Textures/MenuGui/checkBox.png", "checkBox.png");
+
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());

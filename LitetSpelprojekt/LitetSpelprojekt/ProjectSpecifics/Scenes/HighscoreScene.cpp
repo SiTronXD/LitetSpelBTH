@@ -72,7 +72,7 @@ void HighscoreScene::renderUI()
 		this->getUIRenderer().renderString(
 		std::to_string((i + 1)) + ": " + minSec,
 		0,
-		250 - (i * 50),
+		280 - (i * 60),
 		30,
 		30
 		);
