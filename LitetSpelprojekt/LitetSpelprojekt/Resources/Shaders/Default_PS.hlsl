@@ -77,7 +77,7 @@ float4 main(Input input) : SV_TARGET
 
     float4 finalCol = texCol * shadowFactor * float4(multiplyColor, 1.0f);
 
-    const float bayerMatrix8x8[8 * 8] = {
+    /*const float bayerMatrix8x8[8 * 8] = {
         0.0, 48.0, 12.0, 60.0, 3.0, 51.0, 15.0, 63.0,
         32.0, 16.0, 44.0, 28.0, 35.0, 19.0, 47.0, 31.0,
         8.0, 56.0, 4.0, 52.0, 11.0, 59.0, 7.0, 55.0,
@@ -96,7 +96,7 @@ float4 main(Input input) : SV_TARGET
     int2 pos = int2(((ndcPos.xy + float2(1.0f, 1.0f)) * 0.5f) * 400.0f);
     pos.x = pos.x % 8;
     pos.y = pos.y % 8;
-    clip(bayerMatrix8x8[pos.x + 8 * pos.y] - fog * 64.0f);
+    clip(bayerMatrix8x8[pos.x + 8 * pos.y] - fog * 64.0f);*/
 
     //finalCol = lerp(finalCol, float4(1,0,0,1), fog);
 
