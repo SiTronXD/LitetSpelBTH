@@ -9,10 +9,10 @@ using namespace DirectX::SimpleMath;
 
 MenuScene::MenuScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	playButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
-	highscoreButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
-	settingsButton(Vector2(0, 0), 0, 0, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, this->getUIRenderer())
+	playButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
+	highscoreButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, .5), Vector3(1, 1, 1), false, this->getUIRenderer()),
+	settingsButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer())
 {
 }
 
@@ -22,8 +22,8 @@ MenuScene::~MenuScene()
 
 void MenuScene::init()
 {
-	this->getResources().addTexture("Resources/Textures/sliderBackground.png", "sliderBackground.png");
-	this->getResources().addTexture("Resources/Textures/MenuGui/NeatBox.png", "NeatBox.png");
+	this->getResources().addTexture("Resources/Textures/MenuGui/buttonBackground.png", "buttonBackground.png");
+	
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =
 	{
@@ -99,10 +99,10 @@ void MenuScene::update()
 void MenuScene::renderUI()
 {
 	// Send the buttons to the UIRenderer to display
-	playButton.render("NeatBox.png");
-	highscoreButton.render("NeatBox.png");
-	settingsButton.render("NeatBox.png");
-	exitButton.render("NeatBox.png");
+	playButton.render("buttonBackground.png");
+	highscoreButton.render("buttonBackground.png");
+	settingsButton.render("buttonBackground.png");
+	exitButton.render("buttonBackground.png");
 
 	this->getUIRenderer().renderString(
 		"grapple mayhem",

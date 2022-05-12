@@ -10,10 +10,14 @@ private:
 	DirectX::SimpleMath::Vector2 pos;
 	int width;
 	int height;
+	DirectX::SimpleMath::Vector3 buttonClr;
+	DirectX::SimpleMath::Vector3 hoverClr;
+	bool hovered;
 	UIRenderer& uiRenderer;
 
 public:
-	Button(DirectX::SimpleMath::Vector2 p, int w, int h, UIRenderer& r);
+	Button(DirectX::SimpleMath::Vector2 p, int w, int h, DirectX::SimpleMath::Vector3 bClr,
+		DirectX::SimpleMath::Vector3 hClr, bool hov, UIRenderer& r);
 	~Button();
 
 	inline DirectX::SimpleMath::Vector2 getPos() const{ return this->pos; }
