@@ -10,6 +10,7 @@
 #include "Resources.h"
 #include "Application/SceneHandler.h"
 #include "Physics/PhysicsEngine.h"
+#include "AudioEngine.h"
 
 class Engine
 {
@@ -20,6 +21,7 @@ private:
 	UIRenderer uiRenderer;
 	Resources resources;
 	PhysicsEngine physicsEngine;
+	AudioEngine audioEngine;
 
 	SceneHandler sceneHandler;
 

@@ -202,11 +202,13 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
 
-
 	//Particle texture
 	this->getResources().addTexture("Resources/Textures/particle.png", "particle.png");
 	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
 	this->getResources().addTexture("Resources/Textures/LightBloom.png", "LightBloom.png");
+
+	// Sound Effects
+	this->getResources().addSoundEffect("Resources/SoundFiles/PulseCannon.wav", "PulseCannon");
 
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
@@ -273,7 +275,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevel.fbx");
+	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
@@ -411,13 +413,13 @@ void GameScene::init()
 
 #include <iostream>
 void GameScene::update()
-{
-	RaycastInfo info = this->getPhysicsEngine().raycast(rp3d::Ray({ 0.0f, -10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
-	if (info.hit)
+{ 
+	// Temp
+	if (Input::isKeyJustPressed(Keys::SPACE))
 	{
-		std::cout << "Hit " << info.gameObject->getName() << ": at worldPos (" << info.hitPoint.x << ", " << info.hitPoint.y << ", " << info.hitPoint.z << ")" << std::endl;
+		this->getAudioEngine().playSound("PulseCannon");
 	}
-  
+
 	if (this->getPause() == false)
 	{
 		Player* playerComp = cam.getComponent<Player>();

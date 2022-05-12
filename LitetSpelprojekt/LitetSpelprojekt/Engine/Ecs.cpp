@@ -44,7 +44,8 @@ void ECS::removeComponents()
 	}
 }
 
-ECS::ECS()
+ECS::ECS(PhysicsEngine& physicsEngine, AudioEngine& audioEngine):
+	physicsEngine(physicsEngine), audioEngine(audioEngine)
 {
 	// Add new vector for script component type
 	if (this->activeComponents.count(typeid(Script)) <= 0)
