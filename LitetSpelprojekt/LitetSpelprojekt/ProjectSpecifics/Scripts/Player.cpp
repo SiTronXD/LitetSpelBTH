@@ -211,6 +211,7 @@ void Player::onCollisionEnter(GameObject& other)
 		other.removeComponent<MeshComp>();
 		other.getComponent<ParticleEmitter>()->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
 		other.removeComponent<Rigidbody>();
+		//other.getComponent<Rigidbody>()->setTrigger(true);
 		this->keyPieces++;
 		this->keyPickup = true;
 	}
@@ -219,6 +220,9 @@ void Player::onCollisionEnter(GameObject& other)
 	{
 		other.removeComponent<MeshComp>();
 		other.removeComponent<Rigidbody>();
+		//other.getComponent<Rigidbody>()->setPosition(Vector3(-999.9f, -999.9f, -999.9f));
+		//other.getComponent<Rigidbody>()->setTrigger(true);
+
 		this->health--;
 		this->healthCooldown = 0.5f;
 	}

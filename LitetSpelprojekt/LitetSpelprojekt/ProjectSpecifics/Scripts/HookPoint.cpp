@@ -81,7 +81,7 @@ void HookPoint::update()
 	}
 }
 
-void HookPoint::onTriggerEnter(GameObject& other)
+void HookPoint::onCollisionEnter(GameObject& other)
 {
 	if (this->state == HookState::SHOOTING && other.getTag() != ObjectTag::PLAYER)
 	{

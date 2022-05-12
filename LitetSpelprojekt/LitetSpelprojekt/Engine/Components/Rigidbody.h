@@ -35,7 +35,7 @@ public:
 	void setMass(float mass);
 	void setType(rp3d::BodyType type);
 	void setGravity(bool status);
-	void setTrigger(bool status);
+	//void setTrigger(bool status); Never again :)
 	void setMaterial(float frictionCoeff, float bounciness, float massDensity = 1.0f);
 	void setPosition(DirectX::SimpleMath::Vector3 pos);
 	void setPosRestrict(DirectX::SimpleMath::Vector3 restrictVec);

@@ -24,7 +24,6 @@ using namespace DirectX::SimpleMath;
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
 {
 	// Sphere colliders
-	Rigidbody* rb = nullptr;
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
 	{
 		LevelColliderSphere sphereInfo = levelLoader.getSphereColliders()[i];
@@ -38,7 +37,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(Vector3(1, 1, 1) * sphereInfo.radius);
 
-		rb = colliderObject.addComponent<Rigidbody>();
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->addSphereCollider(sphereInfo.radius);
 		rb->setType(rp3d::BodyType::STATIC);
@@ -59,7 +58,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
 
-		rb = colliderObject.addComponent<Rigidbody>();
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->addBoxCollider(boxInfo.extents);
 		rb->setType(rp3d::BodyType::STATIC);
@@ -81,7 +80,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
 		colliderObject.getComponent<Transform>()->setScaling(orientedBoxInfo.extents * 2);
 
-		rb = colliderObject.addComponent<Rigidbody>();
+		Rigidbody* rb = colliderObject.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->addBoxCollider(orientedBoxInfo.extents);
 		rb->setType(rp3d::BodyType::STATIC);
@@ -98,7 +97,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		spike.getComponent<Transform>()->setPosition(currentSpikeInfo.position);
 		spike.getComponent<Transform>()->setRotation(currentSpikeInfo.rotation);
 		spike.getComponent<Transform>()->setScaling(currentSpikeInfo.scale);
-		rb = spike.addComponent<Rigidbody>();
+		Rigidbody* rb = spike.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::KINEMATIC);
 		rb->addBoxCollider(currentSpikeInfo.scale * 0.5f);
@@ -119,7 +118,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition(keyPos);
 		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
-		rb = portalKey.addComponent<Rigidbody>();
+		Rigidbody* rb = portalKey.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
@@ -145,7 +144,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 	portalMc->setMesh("RealCubeMesh", "portalMaterial");
 	portal.getComponent<Transform>()->setPosition(portalInfo.position);
 	portal.getComponent<Transform>()->setScaling(portalInfo.scale);
-	rb = portal.addComponent<Rigidbody>();
+	Rigidbody* rb = portal.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->setType(rp3d::BodyType::STATIC);
 	rb->addBoxCollider(portalInfo.scale * 0.5f);
@@ -310,7 +309,6 @@ void GameScene::init()
 	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
 	rb->setMaterial(0.2f, 0.0f);
 	rb->setType(rp3d::BodyType::KINEMATIC);
-	rb->setTrigger(true);
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");
 

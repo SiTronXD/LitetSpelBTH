@@ -33,6 +33,5 @@ public:
 	// Inherited via Script
 	virtual void init() override;
 	virtual void update() override;
-	virtual void onTriggerEnter(GameObject& other) override;
+	virtual void onCollisionEnter(GameObject& other) override;
 };
-

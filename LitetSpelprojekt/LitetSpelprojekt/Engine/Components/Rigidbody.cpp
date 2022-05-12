@@ -33,17 +33,7 @@ Rigidbody::Rigidbody(GameObject& object) :
 
 Rigidbody::~Rigidbody()
 {
-	// 1.
-	//this->physEngine->getWorld()->destroyRigidBody(this->rb);
-	 
-	// 2. 
-	//this->rb->enableGravity(false);
-	/*for(int i = this->rb->getNbColliders() - 1; i >= 0; --i)
-		this->rb->removeCollider(this->rb->getCollider(i));*/
-
-	// 3.
-	// TODO: recreate physics world
-	this->rb->setIsSleeping(true);
+	this->physEngine->getWorld()->destroyRigidBody(this->rb);
 }
 
 void Rigidbody::setPhysics(PhysicsEngine& physicsEngine)
@@ -106,13 +96,14 @@ void Rigidbody::setGravity(bool status)
 	this->rb->enableGravity(status);
 }
 
-void Rigidbody::setTrigger(bool status)
+// Never again :)
+/*void Rigidbody::setTrigger(bool status)
 {
 	for (auto& col : this->colliders)
 	{
 		col->setIsTrigger(status);
 	}
-}
+}*/
 
 void Rigidbody::setMaterial(float frictionCoeff, float bounciness, float massDensity)
 {

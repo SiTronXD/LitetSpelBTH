@@ -7,6 +7,8 @@ void ECS::removeComponents()
 {
 	for (int i = this->componentsToRemove.size() - 1; i >= 0; --i)
 	{
+		Log::write("Removed component!");
+
 		// Component information
 		ComponentInfo compInfo = this->componentsToRemove[i];
 		Component* comp = compInfo.component;
