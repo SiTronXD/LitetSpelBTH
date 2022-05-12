@@ -41,7 +41,6 @@ private:
 	void jump();
 	void fireWeapon();
 	void lookAround();
-
 public:
 	Player(GameObject& object);
 	~Player();
@@ -68,6 +67,8 @@ public:
 	
 	inline bool isPlayerDead() const { return this->dead; }
 	inline bool onPortal() const { return this->portal; }
+
+	void takeDamage(float damage);
 
 	// Inherited via Script
 	virtual void init() override;

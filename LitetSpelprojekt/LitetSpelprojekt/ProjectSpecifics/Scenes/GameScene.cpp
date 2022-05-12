@@ -417,7 +417,7 @@ void GameScene::update()
 			rb->setPosition(playerComp->getStartPosition());
 
 			//Reduce one health
-			playerComp->addHealth(-1);
+			playerComp->takeDamage(1.0f);
 		}
 
 		//Check if player is dead or not

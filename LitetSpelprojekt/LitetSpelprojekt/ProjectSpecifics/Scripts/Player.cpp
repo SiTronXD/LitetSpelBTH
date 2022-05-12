@@ -158,6 +158,15 @@ void Player::setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIn
 	this->cooldownIndicatior->setup(this->grapplingHook);
 }
 
+void Player::takeDamage(float damage)
+{
+	if (this->healthCooldown <= 0.0f)
+	{
+		this->health--;
+		this->healthCooldown = 0.5f;
+	}
+}
+
 void Player::init()
 {
 	this->rb = this->getObject().getComponent<Rigidbody>();
@@ -224,8 +233,7 @@ void Player::onCollisionEnter(GameObject& other)
 	{
 		other.removeComponent<MeshComp>();
 		other.removeComponent<Rigidbody>();
-		this->health--;
-		this->healthCooldown = 0.5f;
+		this->takeDamage(1.0f);
 	}
 	// Portal
 	else if (other.getTag() == ObjectTag::PORTAL)
