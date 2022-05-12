@@ -1,6 +1,9 @@
 #include "Renderer.h"
+#include "../Time.h"
 #include "../Dev/Log.h"
 #include "../Dev/Helpers.h"
+
+#define PRINT_NUM_DRAWCALLS
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -286,7 +289,9 @@ void Renderer::render(Scene& scene)
 #ifdef _DEBUG
 	if (!scene.getActiveCamera())
 		Log::error("No active camera has been set in the renderer.");
+#endif
 
+#ifdef PRINT_NUM_DRAWCALLS
 	unsigned int numDrawCalls = 0;
 #endif
 
@@ -389,7 +394,7 @@ void Renderer::render(Scene& scene)
 				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
 			);
 
-#ifdef _DEBUG
+#ifdef PRINT_NUM_DRAWCALLS
 			numDrawCalls++;
 #endif
 		}
@@ -512,11 +517,15 @@ void Renderer::render(Scene& scene)
 				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
 			);
 
-#ifdef _DEBUG
+#ifdef PRINT_NUM_DRAWCALLS
 			numDrawCalls++;
 #endif
 		}
 	}
+
+#ifdef PRINT_NUM_DRAWCALLS
+	Log::write("Num draw calls: " + std::to_string(numDrawCalls) + "  ms: " + std::to_string(Time::getDT() * 1000.0f));
+#endif
 
 	// Remove third constant buffer
 	immediateContext->PSSetConstantBuffers(2, 1, nullConstantBuffer);
