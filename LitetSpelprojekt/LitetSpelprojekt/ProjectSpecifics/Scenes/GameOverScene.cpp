@@ -10,8 +10,8 @@ GameOverScene::GameOverScene(SceneHandler& sceneHandler, bool win, float highsco
 	winning(win),
 	newHighscore(false),
 	highscoreTime(highscoreTime),
-	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
+	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
 	cam(this->addGameObject("Camera"))
 {
 }

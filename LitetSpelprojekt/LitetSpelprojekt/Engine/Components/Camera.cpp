@@ -33,4 +33,16 @@ void Camera::updateAspectRatio(float aspectRatio)
 		0.1f,
 		200.0f
 	);
+
+	// Reversed Z, infinite far plane
+	/*float f = 1.0f / tan(SMath::PI * 0.5f * 0.5f);
+	this->projectionMatrix = Matrix(
+		f / aspectRatio,	0.0f,	0.0f,	0.0f,
+		0.0f,				f,		0.0f,	0.0f,
+		0.0f,				0.0f,	0.0f,	-1.0f,
+		0.0f,				0.0f,	0.1f,	0.0f
+	);*/
+
+
+	this->invProjectionMatrix = this->projectionMatrix.Invert();
 }

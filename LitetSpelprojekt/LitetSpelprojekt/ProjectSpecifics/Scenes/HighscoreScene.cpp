@@ -5,7 +5,7 @@ using namespace DirectX::SimpleMath;
 
 HighscoreScene::HighscoreScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer())
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer())
 {
 }
 
@@ -72,7 +72,7 @@ void HighscoreScene::renderUI()
 		this->getUIRenderer().renderString(
 		std::to_string((i + 1)) + ": " + minSec,
 		0,
-		250 - (i * 50),
+		280 - (i * 60),
 		30,
 		30
 		);

@@ -55,8 +55,19 @@ bool Button::isClicked()
 void Button::render(std::string textureName)
 {
 	if (!hovered)
-		uiRenderer.renderTexture(textureName, this->pos.x, this->pos.y, this->width, this->height, this->buttonClr);
+		uiRenderer.renderTexture(
+			textureName,
+			this->pos.x,
+			this->pos.y,
+			this->width,
+			this->height,
+			this->buttonClr);
 	else
-		uiRenderer.renderTexture(textureName, this->pos.x, this->pos.y, this->width, this->height, this->hoverClr);
-	
+		uiRenderer.renderTexture(
+			textureName,
+			this->pos.x,
+			this->pos.y,
+			this->width,
+			this->height,
+			this->hoverClr);	
 }

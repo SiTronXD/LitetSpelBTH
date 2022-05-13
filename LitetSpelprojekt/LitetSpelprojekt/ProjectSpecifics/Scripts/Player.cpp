@@ -5,6 +5,7 @@
 #include "HookPoint.h"
 #include "GrapplingHook.h"
 #include "CooldownIndicator.h"
+#include "Key.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -253,12 +254,12 @@ void Player::onCollisionEnter(GameObject& other)
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
 
-	// Remove key mesh and rigidbody if collided by player
+	// Collided with key
 	if (other.getTag() == ObjectTag::KEY)
 	{
-		other.removeComponent<MeshComp>();
-		other.getComponent<ParticleEmitter>()->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
-		other.removeComponent<Rigidbody>();
+		// Remove key
+		other.getComponent<Key>()->remove();
+
 		this->keyPieces++;
 		this->keyPickup = true;
 	}

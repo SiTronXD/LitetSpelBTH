@@ -5,7 +5,7 @@
 
 using namespace DirectX::SimpleMath;
 
-Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal, float perFil, UIRenderer& r) :
+Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal, float perFil, Vector3 bClr, Vector3 cClr, bool cha, UIRenderer& r) :
 	uiRenderer(r)
 {
 	this->pos = p;
@@ -15,6 +15,9 @@ Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal
 	this->currentValue = curVal;
 	this->maxValue = maxVal;
 	this->percentFilled = perFil;
+	this->buttonClr = bClr;
+	this->changedClr = cClr;
+	this->changed = cha;
 }
 
 Slider::~Slider()
@@ -24,6 +27,7 @@ Slider::~Slider()
 bool Slider::isClicked()
 {
 	bool sliderClicked = false;
+	this->changed = false;
 
 	// Slider boundries
 	int maxPosX = this->pos.x + (this->width / 2);
@@ -46,6 +50,7 @@ bool Slider::isClicked()
 				this->percentFilled = (float)((this->width / 2.0 + internal.x) / this->width);
 				this->currentValue = this->percentFilled * (this->maxValue - this->minValue);
 				sliderClicked = true;
+				this->changed = true;
 			}
 		}
 	}
@@ -55,12 +60,28 @@ bool Slider::isClicked()
 void Slider::render(std::string textureName)
 {
 	// Render Filled out Slider texture
-	uiRenderer.renderTexture(
-		textureName,
-		(int)(this->pos.x - ((this->width - this->width * this->percentFilled) / 2)),
-		(int)this->pos.y,
-		(int)(this->width * this->percentFilled),
-		this->height);
+	if (changed)
+	{
+		uiRenderer.renderTexture(
+			textureName,
+			(int)(this->pos.x - ((this->width - this->width * this->percentFilled) / 2)),
+			(int)this->pos.y,
+			(int)(this->width * this->percentFilled),
+			this->height,
+			this->changedClr
+		);
+	}
+	else
+	{
+		uiRenderer.renderTexture(
+			textureName,
+			(int)(this->pos.x - ((this->width - this->width * this->percentFilled) / 2)),
+			(int)this->pos.y,
+			(int)(this->width * this->percentFilled),
+			this->height,
+			this->buttonClr
+		);
+	}
 
 	// Render Slider border
 	uiRenderer.renderTexture(

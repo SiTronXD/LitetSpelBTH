@@ -7,6 +7,8 @@ void ECS::removeComponents()
 {
 	for (int i = this->componentsToRemove.size() - 1; i >= 0; --i)
 	{
+		Log::write("Removed component!");
+
 		// Component information
 		ComponentInfo compInfo = this->componentsToRemove[i];
 		Component* comp = compInfo.component;
@@ -27,13 +29,19 @@ void ECS::removeComponents()
 		}
 
 		// Erase from script components
-		Script* sComp = dynamic_cast<Script*>(comp);
-		for (size_t i = 0; i < this->scriptComps.size(); i++)
+		Script* sComp = (Script*) comp;
+		if (sComp == nullptr)
+			sComp = dynamic_cast<Script*>(comp);
+
+		if (sComp != nullptr)
 		{
-			if (sComp == this->scriptComps[i])
+			for (size_t i = 0; i < this->scriptComps.size(); i++)
 			{
-				this->scriptComps.erase(this->scriptComps.begin() + i);
-				break;
+				if (sComp == this->scriptComps[i])
+				{
+					this->scriptComps.erase(this->scriptComps.begin() + i);
+					break;
+				}
 			}
 		}
 

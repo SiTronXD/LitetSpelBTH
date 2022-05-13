@@ -43,6 +43,7 @@ void SceneHandler::updateToNextScene()
 		// Switch
 		this->scene = this->nextScene;
 		this->nextScene = nullptr;
+		this->physicsEngine.init(this->scene);
 		this->scene->init();
 		this->scene->getECS().init();
 		Time::init();
@@ -54,7 +55,6 @@ void SceneHandler::setScene(Scene* scene)
 	if (this->nextScene == nullptr)
 	{
 		this->nextScene = scene;
-		this->physicsEngine.init(scene);
 	}
 }
 
