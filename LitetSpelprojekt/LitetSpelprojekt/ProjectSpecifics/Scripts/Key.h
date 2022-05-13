@@ -5,7 +5,6 @@
 class Key : public Script
 {
 private:
-
 	GameObject* pointLight;
 
 public:
