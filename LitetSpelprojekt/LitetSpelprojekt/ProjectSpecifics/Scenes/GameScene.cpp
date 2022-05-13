@@ -9,6 +9,7 @@
 #include "../Scripts/GrapplingHookRope.h"
 #include "../Scripts/CooldownIndicator.h"
 #include "../Scripts/PointLight.h"
+#include "../Scripts/Key.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -18,6 +19,7 @@
 #include "../../Engine/Time.h"
 #include "../../Engine/SMath.h"
 
+#define RENDER_COLLIDERS
 
 using namespace DirectX::SimpleMath;
 
@@ -31,8 +33,11 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelSphereCollider: " + i, ObjectTag::GROUND
 		);
+
+#ifdef RENDER_COLLIDERS
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealSphereMesh", "testMaterial");
+#endif
 
 		colliderObject.getComponent<Transform>()->setPosition(sphereInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(Vector3(1, 1, 1) * sphereInfo.radius);
@@ -52,8 +57,10 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 			"LevelBoxCollider: " + i, ObjectTag::GROUND
 		);
 
+#ifdef RENDER_COLLIDERS
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealCubeMesh", "testMaterial");
+#endif
 
 		colliderObject.getComponent<Transform>()->setPosition(boxInfo.pos);
 		colliderObject.getComponent<Transform>()->setScaling(boxInfo.extents * 2);
@@ -73,8 +80,11 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		GameObject& colliderObject = this->addGameObject(
 			"LevelOrientedBoxColldier: " + i, ObjectTag::GROUND
 		);
+
+#ifdef RENDER_COLLIDERS
 		MeshComp* mc = colliderObject.addComponent<MeshComp>();
 		mc->setMesh("RealCubeMesh", "testMaterial");
+#endif
 
 		colliderObject.getComponent<Transform>()->setPosition(orientedBoxInfo.pos);
 		colliderObject.getComponent<Transform>()->setRotation(orientedBoxInfo.orientation);
@@ -97,10 +107,12 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		spike.getComponent<Transform>()->setPosition(currentSpikeInfo.position);
 		spike.getComponent<Transform>()->setRotation(currentSpikeInfo.rotation);
 		spike.getComponent<Transform>()->setScaling(currentSpikeInfo.scale);
+		
 		Rigidbody* rb = spike.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::KINEMATIC);
 		rb->addBoxCollider(currentSpikeInfo.scale * 0.5f);
+
 	}
 
 	// Keys
@@ -122,6 +134,7 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
+		Key* keyScript = portalKey.addComponent<Key>();
 		this->portalKeys.push_back(&portalKey);
 
 		// Point light
@@ -135,19 +148,24 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		lightMesh->setShouldShade(false);
 		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
 		pointLight->setTarget(cam);
+
+		keyScript->setPointLight(&pointLightObject);
 	}
 
 	// Portal
 	PortalInfo portalInfo = levelLoader.getPortal();
-	GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
-	MeshComp* portalMc = portal.addComponent<MeshComp>();
-	portalMc->setMesh("RealCubeMesh", "portalMaterial");
-	portal.getComponent<Transform>()->setPosition(portalInfo.position);
-	portal.getComponent<Transform>()->setScaling(portalInfo.scale);
-	Rigidbody* rb = portal.addComponent<Rigidbody>();
-	rb->setPhysics(this->getPhysicsEngine());
-	rb->setType(rp3d::BodyType::STATIC);
-	rb->addBoxCollider(portalInfo.scale * 0.5f);
+	if (portalInfo.scale.x * portalInfo.scale.y * portalInfo.scale.z > 0.0f)
+	{
+		GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
+		MeshComp* portalMc = portal.addComponent<MeshComp>();
+		portalMc->setMesh("RealCubeMesh", "portalMaterial");
+		portal.getComponent<Transform>()->setPosition(portalInfo.position);
+		portal.getComponent<Transform>()->setScaling(portalInfo.scale);
+		Rigidbody* rb = portal.addComponent<Rigidbody>();
+		rb->setPhysics(this->getPhysicsEngine());
+		rb->setType(rp3d::BodyType::STATIC);
+		rb->addBoxCollider(portalInfo.scale * 0.5f);
+	}
 }
 
 GameScene::GameScene(SceneHandler& sceneHandler)
@@ -210,6 +228,9 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
 	this->getResources().addTexture("Resources/Textures/LightBloom.png", "LightBloom.png");
 
+	// Sound Effects
+	this->getResources().addSoundEffect("Resources/SoundFiles/PulseCannon.wav", "PulseCannon");
+
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
 
@@ -254,8 +275,10 @@ void GameScene::init()
 		std::move(cooldownIndicatorMeshData), 
 		"QuadMesh"
 	);
-	MeshData spikeMeshData(DefaultMesh::TETRAHEDRON);
-	spikeMeshData.transformMesh(Matrix::CreateTranslation(0.0f, -1.0f, 0.0f) * Matrix::CreateRotationX(SMath::PI * 0.5f));
+
+	MeshData spikeMeshData = MeshLoader::loadModel("Resources/Models/spike.obj");
+	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	
 	this->getResources().addMesh(
 		std::move(spikeMeshData),
 		"SpikeMesh"
@@ -318,14 +341,6 @@ void GameScene::init()
 	MeshComp* originMC = origin.addComponent<MeshComp>();
 	originMC->setMesh("RealSphereMesh", "testMaterial");
 
-	// Grappling hook rope
-	GameObject& rope = this->addGameObject("Rope");
-	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
-	mc = rope.addComponent<MeshComp>();
-	mc->setMesh("RopeMesh", "ropeMaterial");
-	GrapplingHookRope* grapplingHookRopeComp =
-		rope.addComponent<GrapplingHookRope>();
-
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
 	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
@@ -333,8 +348,16 @@ void GameScene::init()
 	amc->setCastShadow(false);
 	GrapplingHook* grapplingHookComp = 
 		grapplingHook.addComponent<GrapplingHook>();
-	grapplingHookComp->setRope(grapplingHookRopeComp);
+
+	// Grappling hook rope
+	GameObject& rope = this->addGameObject("Rope");
+	rope.getComponent<Transform>()->setPosition(Vector3(2, -8, 0));
+	mc = rope.addComponent<MeshComp>();
+	mc->setMesh("RopeMesh", "ropeMaterial");
+	GrapplingHookRope* grapplingHookRopeComp =
+		rope.addComponent<GrapplingHookRope>();
 	grapplingHookRopeComp->setGrapplingHook(grapplingHookComp);
+	grapplingHookComp->setRope(grapplingHookRopeComp);
 
 	// Grappling hook cooldown indicator
 	GameObject& cooldownIndicatorObject = this->addGameObject("Grappling Hook Cooldown Indicator");
@@ -412,13 +435,13 @@ void GameScene::init()
 
 #include <iostream>
 void GameScene::update()
-{
-	RaycastInfo info = this->getPhysicsEngine().raycast(rp3d::Ray({ 0.0f, -10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
-	if (info.hit)
+{ 
+	// Temp
+	if (Input::isKeyJustPressed(Keys::SPACE))
 	{
-		std::cout << "Hit " << info.gameObject->getName() << ": at worldPos (" << info.hitPoint.x << ", " << info.hitPoint.y << ", " << info.hitPoint.z << ")" << std::endl;
+		this->getAudioEngine().playSound("PulseCannon");
 	}
-  
+
 	if (this->getPause() == false)
 	{
 		Player* playerComp = cam.getComponent<Player>();
@@ -437,11 +460,7 @@ void GameScene::update()
 		//Player fall down from a building
 		if (rb->getTransform()->getPosition().y <= 0.0f)
 		{
-			//Reset position
-			rb->setPosition(playerComp->getStartPosition());
-
-			//Reduce one health
-			playerComp->takeDamage(1.0f);
+			playerComp->resetPlayer(playerComp->getStartPosition());
 		}
 
 		//Check if player is dead or not

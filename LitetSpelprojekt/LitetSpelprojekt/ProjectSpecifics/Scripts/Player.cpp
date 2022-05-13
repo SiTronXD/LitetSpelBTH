@@ -5,6 +5,7 @@
 #include "HookPoint.h"
 #include "GrapplingHook.h"
 #include "CooldownIndicator.h"
+#include "Key.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -67,7 +68,7 @@ void Player::jump()
 {
 	if(Input::isKeyJustPressed(Keys::SPACE) && this->onGround)
 	{
-		this->rb->setVelocity({ 0.0f, this->jumpForce, 0.0f });
+		this->rb->addVelocity({ 0.0f, this->jumpForce, 0.0f });
 		this->onGround = false;
 	}
 }
@@ -105,7 +106,7 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object) :
-	Script(object), speed(1000.0f), jumpForce(10.0f), mouseSensitivity(0.5f), maxVelocity(35.0f),
+	Script(object), speed(1000.0f), jumpForce(20.0f), mouseSensitivity(0.5f), maxVelocity(35.0f),
 	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
 	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
 	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr), startPosition(0.0f, 0.0f, 0.0f)
@@ -167,6 +168,13 @@ void Player::takeDamage(float damage)
 	}
 }
 
+void Player::resetPlayer(DirectX::SimpleMath::Vector3 pos)
+{
+	this->rb->setPosition(pos);
+	this->hookPoint->setState(HookState::NOT_ACTIVE);
+	this->takeDamage(1.0f);
+}
+
 void Player::init()
 {
 	this->rb = this->getObject().getComponent<Rigidbody>();
@@ -181,18 +189,45 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
+	//Add force down
+	this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f));
+
+	/*Vector3 vel = this->rb->getVelocity();*/
+
 	if (this->rb->getVelocity().LengthSquared() > this->maxVelocity * this->maxVelocity)
 	{
 		Vector3 vel = this->rb->getVelocity();
 		vel.Normalize();
 		vel *= this->maxVelocity;
 		this->rb->setVelocity(vel);
+
 	}
+	
+	//temp solusion
+	/*if (vel.x > this->maxVelocity.x)
+		vel.x = this->maxVelocity.x;
+	else if (vel.x < -this->maxVelocity.x)
+		vel.x = -this->maxVelocity.x;
+	
+	float maxDownVel = this->maxVelocity.y * 4;
+
+	if (vel.y > this->maxVelocity.y)
+		vel.y = this->maxVelocity.y;
+	else if(vel.y < -maxDownVel)
+		vel.y = -maxDownVel;
+
+	if (vel.z > this->maxVelocity.z)
+		vel.z = this->maxVelocity.z;
+	else if (vel.z < -this->maxVelocity.z)
+		vel.z = -this->maxVelocity.z;*/
+	
+	//this->rb->setVelocity(vel);
 
 	if (this->hookPoint->getState() != HookState::NOT_ACTIVE)
 		this->grapplingHook->getRope()->setTargetPos(this->hookPoint->getTransform()->getPosition());
 
 	this->cooldownIndicatior->setPercent(1.0f - this->pulseCannonCooldown / this->maxPulseCannonCooldown);
+	
 	// Update pulse cannon cooldown
 	if (this->pulseCannonCooldown > 0.0f)
 		this->pulseCannonCooldown -= Time::getDT();
@@ -219,12 +254,11 @@ void Player::onCollisionEnter(GameObject& other)
 	if (other.getTag() == ObjectTag::GROUND)
 		this->onGround = true;
 
-	// Remove key mesh and rigidbody if collided by player
+	// Collided with key
 	if (other.getTag() == ObjectTag::KEY)
 	{
-		other.removeComponent<MeshComp>();
-		other.getComponent<ParticleEmitter>()->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
-		other.removeComponent<Rigidbody>();
+		// Remove key
+		other.getComponent<Key>()->remove();
 
 		this->keyPieces++;
 		this->keyPickup = true;

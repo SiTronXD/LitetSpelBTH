@@ -80,6 +80,8 @@
     <ClCompile Include="ProjectSpecifics\Scenes\HighscoreScene.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\HookPoint.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\PointLight.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\Key.cpp" />
+    <ClCompile Include="Engine\AudioEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -149,6 +151,8 @@
     <ClInclude Include="ProjectSpecifics\Scenes\HighscoreScene.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\HookPoint.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\PointLight.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\Key.h" />
+    <ClInclude Include="Engine\AudioEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />
