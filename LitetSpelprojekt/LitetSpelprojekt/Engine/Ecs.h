@@ -48,7 +48,7 @@ private:
 	template <typename T>
 	bool hasComponent(int gameObjectID);
 public:
-	ECS(/*PhysicsEngine* physicsEngine, AudioEngine* audioEngine*/);
+	ECS();
 	~ECS();
 
 	// Initialize Script Components
