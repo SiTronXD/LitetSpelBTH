@@ -2,8 +2,7 @@
 #include "SceneHandler.h"
 
 Scene::Scene(SceneHandler& sceneHandler)
-	: ecs(sceneHandler.getPhysicsEngine(), sceneHandler.getAudioEngine()),
-	activeCamera(nullptr),
+	: activeCamera(nullptr),
 	sceneHandler(sceneHandler),
 	resources(&sceneHandler.getResources()),
 	renderer(&sceneHandler.getRenderer()),
