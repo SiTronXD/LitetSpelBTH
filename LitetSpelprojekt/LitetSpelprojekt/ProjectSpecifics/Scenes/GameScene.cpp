@@ -23,6 +23,16 @@
 
 using namespace DirectX::SimpleMath;
 
+/*
+Vector3 keyArray[4]{
+	Vector3(1.0f, 0.0f, 0.0f),
+	Vector3(0.0f, 1.0f, 0.0f),
+	Vector3(0.0f, 0.0f, 1.0f),
+	Vector3(1.0f, 1.0f, 0.0f)
+};
+*/
+
+
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
 {
 	// Sphere colliders
@@ -217,6 +227,7 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "HealthBar.png");
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGuiCross.png", "EmptyKeyGuiCross.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
@@ -566,8 +577,8 @@ void GameScene::renderUI()
 
 		//Keys
 		this->getUIRenderer().renderTexture(
-			"EmptyKeyGui.png",
-			780, 500, 384, 96
+			"EmptyKeyGuiCross.png",
+			780, 500, 99, 100
 		);
 
 		if (this->currentKeys > 0)

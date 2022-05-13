@@ -10,6 +10,7 @@ Key::Key(GameObject& gameObject)
 	: Script(gameObject),
 	pointLight(nullptr)
 {
+	keyColor = Vector3(0.0f, 0.0f, 0.0f);
 }
 
 Key::~Key()
@@ -19,6 +20,16 @@ Key::~Key()
 void Key::setPointLight(GameObject* pointLight)
 {
 	this->pointLight = pointLight;
+}
+
+void Key::setKeyColor(Vector3 color)
+{
+	this->keyColor = color;
+}
+
+Vector3 Key::getKeyColor() const
+{
+	return this->keyColor;
 }
 
 void Key::remove()
