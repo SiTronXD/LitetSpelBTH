@@ -114,6 +114,7 @@ bool Window::init(
 	this->wc.style = CS_HREDRAW | CS_VREDRAW;
 	this->wc.hInstance = NULL;
 	this->wc.lpszClassName = CLASS_NAME;
+	this->wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	if(fullscreen) this->wc.hbrBackground = (HBRUSH) COLOR_WINDOW;
 	if (!RegisterClass(&this->wc))
 	{

@@ -3,7 +3,7 @@
 #include "../Dev/Log.h"
 #include "../Dev/Helpers.h"
 
-#define PRINT_NUM_DRAWCALLS
+//#define PRINT_NUM_DRAWCALLS
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;

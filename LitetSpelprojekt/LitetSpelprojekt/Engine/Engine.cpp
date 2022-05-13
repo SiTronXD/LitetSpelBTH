@@ -55,7 +55,7 @@ void Engine::run()
 		Time::updateDeltaTime();
 
 		// ---------- Start tracking time
-		lastTime = std::chrono::high_resolution_clock::now();
+		//lastTime = std::chrono::high_resolution_clock::now();
 
 		// Update + render
 		this->sceneHandler.updateToNextScene();
@@ -64,7 +64,7 @@ void Engine::run()
 		this->renderer.render(*this->sceneHandler.getScene());
 
 		// ---------- Stop tracking time
-		std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
+		//std::chrono::duration<double, std::milli> fp_ms = std::chrono::high_resolution_clock::now() - lastTime;
 		this->window.setTitle("Grapple Mayhem " + std::to_string((int)(1.0f / Time::getDT())) + " FPS | DT " + std::to_string(Time::getDT() * 1000.0f) + " ms");
 
 		// Render UI
