@@ -36,6 +36,7 @@ Engine::Engine()
 	
 	// Default texture, material and pixel shader
 	this->resources.addTexture("Resources/Textures/Default.png", "Default.png");
+	//this->resources.addTexture("Resources/Textures/me.png", "Default.png");
 	this->resources.addMaterial("Default.png", "");
 	this->resources.addPixelShader("Default_PS");
 }
