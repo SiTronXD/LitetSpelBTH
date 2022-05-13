@@ -3,8 +3,6 @@
 #include "../Dev/Log.h"
 #include "../Dev/Helpers.h"
 
-//#define PRINT_NUM_DRAWCALLS
-
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
@@ -205,12 +203,60 @@ bool Renderer::loadShaders()
 	// Vertex shader
 	this->vertexShader.loadVS("Default_VS", inputLayoutDesc);
 
-	// Pixel shader
-	this->pixelShader.loadPS("Default_PS");
-
 	this->outlineComputeShader.init("Outlines_COMP", this->window->getWidth() / 32, this->window->getHeight() / 32, 1);
 
 	return true;
+}
+
+void Renderer::renderMesh(MeshComp& meshComp)
+{
+	Mesh& mesh = this->resources.getMesh(meshComp.getMeshName().c_str());
+
+	// Set pixel shader for this mesh
+	PixelShader& meshPixelShader = this->resources.getPixelShader("Default_PS");
+	immediateContext->PSSetShader(meshPixelShader.getPS(), nullptr, 0);
+
+	// Set mvp Matrix
+	Matrix m = meshComp.getTransform()->getWorldMatrix();
+	this->cameraBufferStruct.modelMat = m.Transpose();
+	this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
+
+	// Vertex/index buffer
+	immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
+	immediateContext->IASetVertexBuffers(
+		0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
+	immediateContext->IASetIndexBuffer(
+		mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
+	);
+
+	// Pixel shader constant buffer
+	this->pixelShaderBufferStruct.color = meshComp.getColor();
+	this->pixelShaderBufferStruct.shade = meshComp.getShouldShade();
+	this->pixelShaderConstantBuffer.updateBuffer(&this->pixelShaderBufferStruct);
+	immediateContext->PSSetConstantBuffers(2, 1, &this->pixelShaderConstantBuffer.getBuffer());
+
+	// Render submeshes
+	for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)
+	{
+		Submesh& currentSubmesh = mesh.getSubmeshes()[j];
+
+		Material& material = this->resources.getMaterial(
+			strcmp(currentSubmesh.materialName, "") ?
+			currentSubmesh.materialName :
+			meshComp.getMaterialName().c_str()
+		);
+		Texture& texture = this->resources.getTexture(material.getDiffuseTextureName().c_str());
+		immediateContext->PSSetSamplers(
+			0, 1, &texture.getSampler()
+		);
+		immediateContext->PSSetShaderResources(
+			0, 1, &texture.getSRV().getPtr()
+		);
+
+		immediateContext->DrawIndexed(
+			currentSubmesh.numIndices, currentSubmesh.startIndex, 0
+		);
+	}
 }
 
 Renderer::Renderer(Resources& resources)
@@ -219,7 +265,6 @@ Renderer::Renderer(Resources& resources)
 	dsView("rendererDSV"),
 
 	vertexShader(*this),
-	pixelShader(*this),
 	outlineComputeShader(*this, "outlinesComputeShader"),
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
@@ -291,10 +336,6 @@ void Renderer::render(Scene& scene)
 		Log::error("No active camera has been set in the renderer.");
 #endif
 
-#ifdef PRINT_NUM_DRAWCALLS
-	unsigned int numDrawCalls = 0;
-#endif
-
 	// Clear buffers
 	float clearColour[4] = { 0, 0, 0, 0 };
 	immediateContext->ClearRenderTargetView(this->backBufferRTV, clearColour);
@@ -322,7 +363,6 @@ void Renderer::render(Scene& scene)
 
 	immediateContext->RSSetViewports(1, &this->viewport);
 	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
-	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
 	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView.getPtr());
 
 	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
@@ -346,58 +386,7 @@ void Renderer::render(Scene& scene)
 	for (unsigned int i = 0; i < meshComponents.size(); ++i)
 	{
 		MeshComp* currentMeshComp = meshComponents[i];
-		Mesh& mesh = this->resources.getMesh(currentMeshComp->getMeshName().c_str());
-
-		// Set mvp Matrix
-		Matrix m = currentMeshComp->getTransform()->getWorldMatrix();
-		this->cameraBufferStruct.modelMat = m.Transpose();
-		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
-
-		// Vertex/index buffer
-		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
-		immediateContext->IASetVertexBuffers(
-			0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
-		immediateContext->IASetIndexBuffer(
-			mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
-		);
-
-		// Pixel shader constant buffer
-		this->pixelShaderBufferStruct.color = currentMeshComp->getColor();
-		this->pixelShaderBufferStruct.shade = currentMeshComp->getShouldShade();
-		this->pixelShaderConstantBuffer.updateBuffer(&this->pixelShaderBufferStruct);
-		immediateContext->PSSetConstantBuffers(2, 1, &this->pixelShaderConstantBuffer.getBuffer());
-
-		// Render submeshes
-		for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)
-		{
-			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
-
-			Material& material = this->resources.getMaterial(
-				strcmp(currentSubmesh.materialName, "") ?
-				currentSubmesh.materialName :
-				meshComponents[i]->getMaterialName().c_str()
-			);
-			// Set texture
-			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName().c_str());
-			immediateContext->PSSetSamplers(
-				0, 1, &texture.getSampler()
-			);
-			immediateContext->PSSetShaderResources(
-				0, 1, &texture.getSRV().getPtr()
-			);
-
-			/*immediateContext->DrawIndexed(
-				mesh.getIndexBuffer().getIndexCount(), 0, 0
-			);*/
-
-			immediateContext->DrawIndexed(
-				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
-			);
-
-#ifdef PRINT_NUM_DRAWCALLS
-			numDrawCalls++;
-#endif
-		}
+		this->renderMesh(*currentMeshComp);
 	}
 
 	// Remove third constant buffer
@@ -464,7 +453,6 @@ void Renderer::render(Scene& scene)
 	// --------------------- Render absolute meshes ---------------------
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
 	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
-	immediateContext->PSSetShader(this->pixelShader.getPS(), nullptr, 0);
 
 	immediateContext->ClearDepthStencilView(this->dsView.getPtr(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 
@@ -474,58 +462,10 @@ void Renderer::render(Scene& scene)
 	for (unsigned int i = 0; i < absMeshComponents.size(); ++i)
 	{
 		AbsoluteMeshComp* currentMeshComp = absMeshComponents[i];
-		Mesh& mesh = this->resources.getMesh(currentMeshComp->getMeshName().c_str());
-
-		// Set mvp Matrix
-		Matrix m = currentMeshComp->getTransform()->getWorldMatrix();
-		this->cameraBufferStruct.modelMat = m.Transpose();
-		this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
-
-		// Vertex/index buffer
-		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
-		immediateContext->IASetVertexBuffers(
-			0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
-		immediateContext->IASetIndexBuffer(
-			mesh.getIndexBuffer().getBuffer(), DXGI_FORMAT_R32_UINT, 0
-		);
-
-		// Pixel shader constant buffer
-		this->pixelShaderBufferStruct.color = currentMeshComp->getColor();
-		this->pixelShaderBufferStruct.shade = currentMeshComp->getShouldShade();
-		this->pixelShaderConstantBuffer.updateBuffer(&this->pixelShaderBufferStruct);
-		immediateContext->PSSetConstantBuffers(2, 1, &this->pixelShaderConstantBuffer.getBuffer());
-
-		// Render submeshes
-		for (unsigned int j = 0; j < mesh.getSubmeshes().size(); ++j)
-		{
-			Submesh& currentSubmesh = mesh.getSubmeshes()[j];
-
-			Material& material = this->resources.getMaterial(
-				strcmp(currentSubmesh.materialName, "") ?
-				currentSubmesh.materialName :
-				absMeshComponents[i]->getMaterialName().c_str()
-			);
-			Texture& texture = this->resources.getTexture(material.getDiffuseTextureName().c_str());
-			immediateContext->PSSetSamplers(
-				0, 1, &texture.getSampler()
-			);
-			immediateContext->PSSetShaderResources(
-				0, 1, &texture.getSRV().getPtr()
-			);
-
-			immediateContext->DrawIndexed(
-				currentSubmesh.numIndices, currentSubmesh.startIndex, 0
-			);
-
-#ifdef PRINT_NUM_DRAWCALLS
-			numDrawCalls++;
-#endif
-		}
+		this->renderMesh(*currentMeshComp);
 	}
 
-#ifdef PRINT_NUM_DRAWCALLS
-	Log::write("Num draw calls: " + std::to_string(numDrawCalls) + "  ms: " + std::to_string(Time::getDT() * 1000.0f));
-#endif
+	//Log::write("Num draw calls: " + std::to_string(numDrawCalls) + "  ms: " + std::to_string(Time::getDT() * 1000.0f));
 
 	// Remove third constant buffer
 	immediateContext->PSSetConstantBuffers(2, 1, nullConstantBuffer);

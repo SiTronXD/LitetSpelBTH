@@ -5,7 +5,7 @@ ResolutionY
 Graphics
 0.799274
 Sensitivity
-0.655367
+0.112994
 Volume
 0.531961
 Fullscreen

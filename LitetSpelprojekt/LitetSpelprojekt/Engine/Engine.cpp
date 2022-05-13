@@ -34,9 +34,10 @@ Engine::Engine()
 	//this->sceneHandler.setScene(new GameScene(this->sceneHandler));
 	//this->sceneHandler.setScene(new GameOverScene(this->sceneHandler, false, 0.0f));
 	
-	// Default texture and material
+	// Default texture, material and pixel shader
 	this->resources.addTexture("Resources/Textures/Default.png", "Default.png");
 	this->resources.addMaterial("Default.png", "");
+	this->resources.addPixelShader("Default_PS");
 }
 
 Engine::~Engine()
