@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <SimpleMath.h>
 #include "Key.h"
+#include "Beam.h"
 #include "../../Engine/GameObject.h"
 #include "PointLight.h"
 
@@ -8,7 +9,8 @@ using namespace DirectX::SimpleMath;
 
 Key::Key(GameObject& gameObject)
 	: Script(gameObject),
-	pointLight(nullptr)
+	pointLight(nullptr),
+	beam(nullptr)
 {
 }
 
@@ -16,9 +18,10 @@ Key::~Key()
 {
 }
 
-void Key::setPointLight(GameObject* pointLight)
+void Key::set(GameObject* pointLight, GameObject* beam)
 {
 	this->pointLight = pointLight;
+	this->beam = beam;
 }
 
 void Key::remove()
@@ -33,6 +36,10 @@ void Key::remove()
 	// Remove point light components
 	this->pointLight->removeComponent<MeshComp>();
 	this->pointLight->removeComponent<PointLight>();
+
+	// Remove beam components
+	this->beam->removeComponent<MeshComp>();
+	this->beam->removeComponent<Beam>();
 }
 
 void Key::init()

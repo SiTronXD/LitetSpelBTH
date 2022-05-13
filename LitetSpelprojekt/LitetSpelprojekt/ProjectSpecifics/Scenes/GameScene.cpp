@@ -152,7 +152,6 @@ void GameScene::addLevelProperties(
 		lightMesh->setShouldShade(false);
 		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
 		pointLight->setTarget(cam);
-		keyScript->setPointLight(&pointLightObject);
 
 		// Beam
 		GameObject& beamObject = this->addGameObject("Key beam");
@@ -164,6 +163,9 @@ void GameScene::addLevelProperties(
 		beamMesh->setCastShadow(false);
 		Beam* beamScript = beamObject.addComponent<Beam>();
 		beamScript->set(portalKey, playerGameObject);
+
+		// Set pointers in key script
+		keyScript->set(&pointLightObject, &beamObject);
 	}
 
 	// Portal

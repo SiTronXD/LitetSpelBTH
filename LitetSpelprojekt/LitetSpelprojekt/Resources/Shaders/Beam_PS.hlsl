@@ -32,7 +32,7 @@ Texture2D sunShadowMap : register(t1);
 
 float4 main(Input input) : SV_TARGET
 {
-    // Ordered dithering fog
+    // Ordered dithering
     const float bayerMatrix8x8[8 * 8] = {
         0.0, 48.0, 12.0, 60.0, 3.0, 51.0, 15.0, 63.0,
         32.0, 16.0, 44.0, 28.0, 35.0, 19.0, 47.0, 31.0,
@@ -44,10 +44,10 @@ float4 main(Input input) : SV_TARGET
         42.0, 26.0, 38.0, 22.0, 41.0, 25.0, 37.0, 21.0
     };
 
-    float3 ndcPos = input.clipPos.xyz / input.clipPos.w;
+    float2 ndcPos = input.clipPos.xy / input.clipPos.w;
 
     // Clip against bayer matrix
-    int2 pos = int2(((ndcPos.xy + float2(1.0f, 1.0f)) * 0.5f) * 500.0f);
+    int2 pos = int2(((ndcPos + float2(1.0f, 1.0f)) * 0.5f) * 500.0f);
     pos.x = pos.x % 8;
     pos.y = pos.y % 8;
 
