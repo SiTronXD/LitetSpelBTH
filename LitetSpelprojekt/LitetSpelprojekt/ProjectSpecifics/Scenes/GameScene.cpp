@@ -159,6 +159,7 @@ void GameScene::addLevelProperties(
 		MeshComp* beamMesh = beamObject.addComponent<MeshComp>();
 		beamMesh->setMesh("BeamMesh", "WhiteMaterial");
 		beamMesh->setColor(keyColor);
+		beamMesh->setPixelShaderName("Beam_PS");
 		beamMesh->setShouldShade(false);
 		beamMesh->setCastShadow(false);
 		Beam* beamScript = beamObject.addComponent<Beam>();
@@ -264,6 +265,9 @@ void GameScene::init()
 	//Add cubemap
 	this->getResources().addCubeMap("SkyboxLowRes", ".png", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
+
+	// Pixel shaders
+	this->getResources().addPixelShader("Beam_PS");
 
 	// Models
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");

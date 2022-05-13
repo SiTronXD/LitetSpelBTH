@@ -213,7 +213,7 @@ void Renderer::renderMesh(MeshComp& meshComp)
 	Mesh& mesh = this->resources.getMesh(meshComp.getMeshName().c_str());
 
 	// Set pixel shader for this mesh
-	PixelShader& meshPixelShader = this->resources.getPixelShader("Default_PS");
+	PixelShader& meshPixelShader = this->resources.getPixelShader(meshComp.getPixelShaderName().c_str());
 	immediateContext->PSSetShader(meshPixelShader.getPS(), nullptr, 0);
 
 	// Set mvp Matrix
