@@ -203,6 +203,7 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorderLong.png", "sliderBorderLong.png");
+	this->getResources().addTexture("Resources/Textures/Gui/buttonBackground.png", "buttonBackground.png");
 
 	//Particle texture
 	this->getResources().addTexture("Resources/Textures/particle.png", "particle.png");
@@ -547,7 +548,7 @@ void GameScene::renderUI()
 		//Keys
 		this->getUIRenderer().renderTexture(
 			"EmptyKeyGui.png",
-			800, 500, 256, 64
+			780, 500, 384, 96
 		);
 
 		if (this->currentKeys > 0)
@@ -563,8 +564,12 @@ void GameScene::renderUI()
 
 		// Timer
 		this->getUIRenderer().renderTexture(
-			"TimerBox.png",
-			-832, 420, 256, 256
+			"buttonBackground.png",
+			-865,
+			475,
+			160,
+			100,
+			Vector3(0.9f, 0.1f, 0.3f)
 		);
 
 		// Get Minutes:Seconds Format
@@ -576,8 +581,8 @@ void GameScene::renderUI()
 		// TimerText
 		this->getUIRenderer().renderString(
 			(minSec),
-			-845,
-			410,
+			-875,
+			475,
 			35,
 			35
 		);
