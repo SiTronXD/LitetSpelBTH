@@ -298,7 +298,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
+	levelLoader.load("Resources/Levels/testLevelMattin2.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
