@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ProjectSpecifics\Scripts\Key.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\PointLight.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\CooldownIndicator.cpp" />
     <ClCompile Include="Engine\Components\AbsoluteMeshComp.cpp" />
@@ -227,6 +228,7 @@
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ProjectSpecifics\Scripts\Key.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\PointLight.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\CooldownIndicator.h" />
     <ClInclude Include="Engine\Components\AbsoluteMeshComp.h" />
