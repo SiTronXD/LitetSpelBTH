@@ -161,6 +161,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ProjectSpecifics\Scripts\Beam.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\Key.cpp" />
     <ClCompile Include="Engine\AudioEngine.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\PointLight.cpp" />
@@ -231,6 +232,7 @@
     <ClCompile Include="Engine\Graphics\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ProjectSpecifics\Scripts\Beam.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\Key.h" />
     <ClInclude Include="Engine\AudioEngine.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\PointLight.h" />

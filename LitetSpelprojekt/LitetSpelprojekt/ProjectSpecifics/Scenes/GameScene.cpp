@@ -10,6 +10,7 @@
 #include "../Scripts/CooldownIndicator.h"
 #include "../Scripts/PointLight.h"
 #include "../Scripts/Key.h"
+#include "../Scripts/Beam.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -23,7 +24,10 @@
 
 using namespace DirectX::SimpleMath;
 
-void GameScene::addLevelColliders(LevelLoader& levelLoader)
+void GameScene::addLevelProperties(
+	LevelLoader& levelLoader,
+	GameObject& playerGameObject
+)
 {
 	// Sphere colliders
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
@@ -148,8 +152,17 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		lightMesh->setShouldShade(false);
 		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
 		pointLight->setTarget(cam);
-
 		keyScript->setPointLight(&pointLightObject);
+
+		// Beam
+		GameObject& beamObject = this->addGameObject("Key beam");
+		MeshComp* beamMesh = beamObject.addComponent<MeshComp>();
+		beamMesh->setMesh("BeamMesh", "WhiteMaterial");
+		beamMesh->setColor(keyColor);
+		beamMesh->setShouldShade(false);
+		beamMesh->setCastShadow(false);
+		Beam* beamScript = beamObject.addComponent<Beam>();
+		beamScript->set(portalKey, playerGameObject);
 	}
 
 	// Portal
@@ -278,7 +291,6 @@ void GameScene::init()
 
 	MeshData spikeMeshData = MeshLoader::loadModel("Resources/Models/spike.obj");
 	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
-	
 	this->getResources().addMesh(
 		std::move(spikeMeshData),
 		"SpikeMesh"
@@ -296,6 +308,27 @@ void GameScene::init()
 		"SphereMesh"
 	);
 
+	MeshData beamMeshData(DefaultMesh::TETRAHEDRON);
+	beamMeshData.transformMesh(Matrix::CreateScale(1.0f, 100.0f, 1.0f));
+	this->getResources().addMesh(
+		std::move(beamMeshData),
+		"BeamMesh"
+	);
+
+	// Player
+	this->setActiveCamera(cam.addComponent<Camera>());
+
+	Player* player = cam.addComponent<Player>();
+	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
+	Rigidbody* rb = cam.addComponent<Rigidbody>();
+	rb->setPhysics(this->getPhysicsEngine());
+	rb->addCapsuleCollider(1.0f, 2.0f);
+	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
+	rb->setMaterial(0.2f, 0.0f);
+	cam.getComponent<Camera>()->updateAspectRatio(
+		(float)this->getWindow().getWidth() / this->getWindow().getHeight()
+	);
+
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
 	levelLoader.load("Resources/Levels/testLevelMattin2.fbx");
@@ -304,24 +337,11 @@ void GameScene::init()
 		std::move(levelMeshData),
 		"LevelMesh"
 	);
-	this->addLevelColliders(levelLoader);
-  
-	// Player
-	this->setActiveCamera(cam.addComponent<Camera>());
+	this->addLevelProperties(levelLoader, cam);
 
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
-	Player* player = cam.addComponent<Player>();
+	// Set player properties from level
 	player->setStartPosition(levelLoader.getPlayerStartPos());
-	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
-	Rigidbody* rb = cam.addComponent<Rigidbody>();
-	rb->setPhysics(this->getPhysicsEngine());
-	rb->addCapsuleCollider(1.0f, 2.0f);
-	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
-	rb->setMaterial(0.2f, 0.0f);
-	cam.getComponent<Camera>()->updateAspectRatio(
-		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
-	);
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0) });
 
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();

@@ -50,7 +50,7 @@ float4 main(Input input) : SV_TARGET
     float3 ndcPos = input.clipPos.xyz / input.clipPos.w;
 
     // Fog value
-    float fog = (ndcPos.z - 0.9997f) / (1.0f - 0.9997f);
+    float fog = (ndcPos.z - 0.9998f) / (1.0f - 0.9998f);
     fog = clamp(fog, 0.0f, 1.0f);
 
     // Clip against bayer matrix
