@@ -4,7 +4,7 @@
 
 SceneHandler::SceneHandler(
 	Resources& resources, Renderer& renderer, UIRenderer& uiRenderer,
-	Window& window, PhysicsEngine& physicsEngine, Settings& settings, Highscore& highscore):
+	Window& window, PhysicsEngine& physicsEngine, AudioEngine& audioEngine, Settings& settings, Highscore& highscore):
 	scene(nullptr),
 	nextScene(nullptr),
 	resources(resources),
@@ -12,6 +12,7 @@ SceneHandler::SceneHandler(
 	uiRenderer(uiRenderer),
 	window(window),
 	physicsEngine(physicsEngine),
+	audioEngine(audioEngine),
 	settings(settings),
 	highscore(highscore)
 {

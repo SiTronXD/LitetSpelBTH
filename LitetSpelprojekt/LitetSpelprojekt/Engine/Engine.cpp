@@ -18,9 +18,11 @@ Engine::Engine()
 		this->uiRenderer,
 		this->window,
 		this->physicsEngine,
+		this->audioEngine,
 		this->settings,
 		this->highscore
-	)
+	),
+	audioEngine(this->resources)
 {
 	this->window.init(this->settings.getSettings().resolutionX, this->settings.getSettings().resolutionY, "Grapple Mayhem", this->settings.getSettings().fullscreen);
 	this->renderer.init(this->window);

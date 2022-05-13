@@ -5,6 +5,7 @@
 #include "../Graphics/Renderer.h"
 #include "../Graphics/UIRenderer.h"
 #include "../Physics/PhysicsEngine.h"
+#include "../AudioEngine.h"
 
 class SceneHandler
 {
@@ -17,6 +18,7 @@ private:
 	UIRenderer& uiRenderer;
 	Window& window;
 	PhysicsEngine& physicsEngine;
+	AudioEngine& audioEngine;
 	Settings& settings;
 	Highscore& highscore;
 
@@ -27,6 +29,7 @@ public:
 		UIRenderer& uiRenderer,
 		Window& window,
 		PhysicsEngine& physicsEngine,
+		AudioEngine& audioEngine,
 		Settings& settings,
 		Highscore& highscore
 	);
@@ -43,6 +46,7 @@ public:
 	inline UIRenderer& getUIRenderer() { return this->uiRenderer; }
 	inline Window& getWindow() { return this->window; }
 	inline PhysicsEngine& getPhysicsEngine() { return this->physicsEngine; }
+	inline AudioEngine& getAudioEngine() { return this->audioEngine; }
 	inline Settings& getSettings() { return this->settings; }
 	inline Highscore& getHighscore() { return this->highscore; }
 };

@@ -9,6 +9,7 @@ Scene::Scene(SceneHandler& sceneHandler)
 	uiRenderer(&sceneHandler.getUIRenderer()),
 	window(&sceneHandler.getWindow()),
 	physicsEngine(&sceneHandler.getPhysicsEngine()),
+	audioEngine(&sceneHandler.getAudioEngine()),
 	settings(&sceneHandler.getSettings()),
 	highscore(&sceneHandler.getHighscore()),
 	pause(false)
