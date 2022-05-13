@@ -56,7 +56,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
     {
         //Set explosion to a circel
         buffer[DTid.x].worldMatrix[3].xyz = startPosition;
-        buffer[DTid.x].lifetime = randomFloat(DTid.x * randomTimer) * lifeTime;;
+        buffer[DTid.x].lifetime = randomFloat(DTid.x * randomTimer) * lifeTime;
         buffer[DTid.x].scaleFactor = 0.2 + randomFloat(DTid.x * randomTimer) * 0.4;
         
         float angle1 = randomFloat(DTid.x * 2 * randomTimer) * 360.0 / 180.0 * 3.14;
