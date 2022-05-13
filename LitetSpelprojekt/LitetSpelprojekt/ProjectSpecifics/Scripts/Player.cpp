@@ -105,7 +105,7 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object) :
-	Script(object), speed(1000.0f), jumpForce(20.0f), mouseSensitivity(0.5f), maxVelocity(35.0f, 35.0f, 35.0f),
+	Script(object), speed(1000.0f), jumpForce(20.0f), mouseSensitivity(0.5f), maxVelocity(35.0f),
 	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
 	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
 	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr), startPosition(0.0f, 0.0f, 0.0f)
@@ -191,10 +191,19 @@ void Player::update()
 	//Add force down
 	this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f));
 
-	Vector3 vel = this->rb->getVelocity();
+	/*Vector3 vel = this->rb->getVelocity();*/
+
+	if (this->rb->getVelocity().LengthSquared() > this->maxVelocity * this->maxVelocity)
+	{
+		Vector3 vel = this->rb->getVelocity();
+		vel.Normalize();
+		vel *= this->maxVelocity;
+		this->rb->setVelocity(vel);
+
+	}
 	
 	//temp solusion
-	if (vel.x > this->maxVelocity.x)
+	/*if (vel.x > this->maxVelocity.x)
 		vel.x = this->maxVelocity.x;
 	else if (vel.x < -this->maxVelocity.x)
 		vel.x = -this->maxVelocity.x;
@@ -209,9 +218,9 @@ void Player::update()
 	if (vel.z > this->maxVelocity.z)
 		vel.z = this->maxVelocity.z;
 	else if (vel.z < -this->maxVelocity.z)
-		vel.z = -this->maxVelocity.z;
+		vel.z = -this->maxVelocity.z;*/
 	
-	this->rb->setVelocity(vel);
+	//this->rb->setVelocity(vel);
 
 	if (this->hookPoint->getState() != HookState::NOT_ACTIVE)
 		this->grapplingHook->getRope()->setTargetPos(this->hookPoint->getTransform()->getPosition());

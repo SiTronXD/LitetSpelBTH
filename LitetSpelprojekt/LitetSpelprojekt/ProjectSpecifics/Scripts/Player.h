@@ -15,7 +15,7 @@ private:
 	float speed;
 	float jumpForce;
 	float mouseSensitivity;
-	DirectX::SimpleMath::Vector3 maxVelocity;
+	float maxVelocity;
 
 	int keyPieces;
 	int health;

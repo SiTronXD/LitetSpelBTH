@@ -25,7 +25,7 @@ void HookPoint::shoot(const DirectX::SimpleMath::Vector3& orig, const DirectX::S
 {
 	this->rb->setPosition(orig);
 	this->rb->setVelocity(vec * this->speed);
-	this->shotTimer = 0.8f;
+	this->shotTimer = 1.0f;
 	this->state = HookState::SHOOTING;
 }
 
