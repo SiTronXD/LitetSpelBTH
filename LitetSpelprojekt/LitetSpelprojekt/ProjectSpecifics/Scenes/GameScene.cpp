@@ -107,10 +107,12 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		spike.getComponent<Transform>()->setPosition(currentSpikeInfo.position);
 		spike.getComponent<Transform>()->setRotation(currentSpikeInfo.rotation);
 		spike.getComponent<Transform>()->setScaling(currentSpikeInfo.scale);
+		
 		Rigidbody* rb = spike.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::KINEMATIC);
 		rb->addBoxCollider(currentSpikeInfo.scale * 0.5f);
+
 	}
 
 	// Keys
@@ -267,8 +269,10 @@ void GameScene::init()
 		std::move(cooldownIndicatorMeshData), 
 		"QuadMesh"
 	);
-	MeshData spikeMeshData(DefaultMesh::TETRAHEDRON);
-	spikeMeshData.transformMesh(Matrix::CreateTranslation(0.0f, -1.0f, 0.0f) * Matrix::CreateRotationX(SMath::PI * 0.5f));
+
+	MeshData spikeMeshData = MeshLoader::loadModel("Resources/Models/spike.obj");
+	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
+	
 	this->getResources().addMesh(
 		std::move(spikeMeshData),
 		"SpikeMesh"
@@ -450,11 +454,7 @@ void GameScene::update()
 		//Player fall down from a building
 		if (rb->getTransform()->getPosition().y <= 0.0f)
 		{
-			//Reset position
-			rb->setPosition(playerComp->getStartPosition());
-
-			//Reduce one health
-			playerComp->takeDamage(1.0f);
+			playerComp->resetPlayer(playerComp->getStartPosition());
 		}
 
 		//Check if player is dead or not
