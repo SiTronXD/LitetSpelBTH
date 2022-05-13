@@ -2,6 +2,8 @@
 
 #include "ECS.h"
 
+struct RaycastInfo;
+
 class GameObject
 {
 private:
@@ -13,6 +15,13 @@ private:
 public:
 	GameObject(ECS& ecs, int ID, std::string name, ObjectTag tag);
 	~GameObject();
+
+	// Cast from own position and direction
+	RaycastInfo raycast(float maxDist);
+	// Define own ray position and direction
+	RaycastInfo raycast(rp3d::Ray ray);
+
+	void playSound(std::string sound);
 
 	template <typename T>
 	T* addComponent();

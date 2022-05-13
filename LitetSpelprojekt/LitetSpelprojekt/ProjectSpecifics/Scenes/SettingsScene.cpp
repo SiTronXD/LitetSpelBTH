@@ -80,7 +80,7 @@ void SettingsScene::init()
 	resSlider.setMaxVal(this->resolutions.size() / 2.0f);
 	resSlider.setPerFill(resIndex / (float)this->resolutions.size());
 
-	// graphicsness™ Slider - 
+	// Graphicsness™ Slider - 
 	graphicsSlider.setPos(Vector2(0, -10));
 	graphicsSlider.setWidth(sliderWidth);
 	graphicsSlider.setHeight(sliderHeight);
@@ -132,12 +132,14 @@ void SettingsScene::update()
 	else if (graphicsSlider.isClicked())
 	{
 		this->getSettings().getSettings().graphics = graphicsSlider.getCurVal();
-		Log::write("graphicsness set to: " + std::to_string(this->getSettings().getSettings().graphics));
+		Log::write("Graphics set to: " + std::to_string(this->getSettings().getSettings().graphics));
 	}
 	else if (volSlider.isClicked())
 	{
 		this->getSettings().getSettings().volume = volSlider.getCurVal();
 		Log::write("Volume set to: " + std::to_string(this->getSettings().getSettings().volume));
+
+		this->getAudioEngine().setVolume(this->getSettings().getSettings().volume);
 	}
 	else if (exitButton.isClicked())
 	{
