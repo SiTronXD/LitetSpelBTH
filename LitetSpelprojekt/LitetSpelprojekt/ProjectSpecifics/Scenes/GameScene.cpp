@@ -249,7 +249,7 @@ void GameScene::init()
 	this->getResources().addMesh(MeshData(DefaultMesh::TETRAHEDRON), "Tetrahedron");
 
 	//Add cubemap
-	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
+	this->getResources().addCubeMap("SkyboxLowRes", ".png", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
 
 	// Models
