@@ -207,10 +207,11 @@ const bool& Window::isRunning()
 		ShowCursor(Input::isCursorVisible());
 	this->input.updateLastCursorVisible();
 
+	/*
 	// Exit if the escape button is pressed
 	if (Input::isKeyDown(Keys::ESCAPE))
 		this->running = false;
-
+	*/
 	return this->running;
 }
 
