@@ -23,6 +23,7 @@ MenuScene::~MenuScene()
 void MenuScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/MenuGui/buttonBackground.png", "buttonBackground.png");
+	this->getAudioEngine().setMusic("Resources/SoundFiles/musicTest.wav");
 	
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =

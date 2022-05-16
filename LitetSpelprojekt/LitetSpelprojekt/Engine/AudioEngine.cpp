@@ -7,6 +7,7 @@ AudioEngine::AudioEngine(Resources& resource):
 {
 	if (!sf::SoundRecorder::getAvailableDevices().size())
 		this->active = false;
+	this->music.setLoop(true);
 }
 
 AudioEngine::~AudioEngine()
@@ -16,6 +17,7 @@ AudioEngine::~AudioEngine()
 void AudioEngine::setVolume(float percent)
 {
 	this->engine.setVolume(100 * percent);
+	this->music.setVolume(100 * percent);
 }
 
 void AudioEngine::playSound(std::string sound)
@@ -26,4 +28,10 @@ void AudioEngine::playSound(std::string sound)
 		this->engine.setBuffer(soundEffect);
 		this->engine.play();
 	}
+}
+
+void AudioEngine::setMusic(std::string path)
+{
+	if (this->music.openFromFile(path))
+		this->music.play();
 }
