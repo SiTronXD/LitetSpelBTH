@@ -148,6 +148,7 @@ void GameScene::addLevelProperties(
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 		Key* keyScript = portalKey.addComponent<Key>();
+		keyScript->setKeyColor(currentKeyInfo.color);
 		this->portalKeys.push_back(&portalKey);
 
 		// Point light
@@ -602,8 +603,8 @@ void GameScene::renderUI()
 
 		//Keys
 		this->getUIRenderer().renderTexture(
-			"EmptyKeyGuiCross.png",
-			900, 480, 100, 100
+			"EmptyKeyGui.png",
+			830, 480, 256, 64
 		);
 
 		if (this->currentKeys > 0)
@@ -612,8 +613,8 @@ void GameScene::renderUI()
 			{
 				this->getUIRenderer().renderTexture(
 					"KeyScale.png",
-					(716 + (56 * i)),
-					500,
+					(744 + (56 * i)),
+					480,
 					64,
 					64,
 					this->cam.getComponent<Player>()->getCollectedKeyColor().at(i)
