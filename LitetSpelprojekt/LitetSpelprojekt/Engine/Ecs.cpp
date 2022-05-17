@@ -2,6 +2,8 @@
 
 #include "ECS.h"
 #include "GameObject.h"
+#include "Physics/PhysicsEngine.h"
+#include "AudioEngine.h"
 
 void ECS::removeComponents()
 {
@@ -52,7 +54,8 @@ void ECS::removeComponents()
 	}
 }
 
-ECS::ECS()
+ECS::ECS(PhysicsEngine* physics, AudioEngine* audio):
+	physicsEngine(physics), audioEngine(audio)
 {
 	// Add new vector for script component type
 	if (this->activeComponents.count(typeid(Script)) <= 0)
@@ -98,6 +101,16 @@ void ECS::update()
 	}
 
 	this->removeComponents();
+}
+
+PhysicsEngine* ECS::getPhysics()
+{
+	return this->physicsEngine;
+}
+
+AudioEngine* ECS::getAudio()
+{
+	return this->audioEngine;
 }
 
 GameObject& ECS::addGameObject(std::string name, ObjectTag tag = ObjectTag::UNTAGGED)

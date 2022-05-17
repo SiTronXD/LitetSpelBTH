@@ -87,5 +87,7 @@ void HookPoint::onCollisionEnter(GameObject& other)
 	{
 		this->state = HookState::CONNECTED;
 		this->rb->setVelocity(Vector3::Zero);
+
+		this->getObject().playSound("HookShootConnect");
 	}
 }

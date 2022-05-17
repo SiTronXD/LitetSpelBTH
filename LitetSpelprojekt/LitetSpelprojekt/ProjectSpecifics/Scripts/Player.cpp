@@ -70,6 +70,8 @@ void Player::jump()
 	{
 		this->rb->addVelocity({ 0.0f, this->jumpForce, 0.0f });
 		this->onGround = false;
+
+		this->getObject().playSound("Jump");
 	}
 }
 
@@ -79,6 +81,7 @@ void Player::fireWeapon()
 	if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON) && this->hookPoint->getState() == HookState::NOT_ACTIVE)
 	{
 		this->hookPoint->shoot(this->getTransform()->getPosition() + forward * 2.0f, forward);
+		this->getObject().playSound("HookShoot");
 	}
 	else if (Input::isMouseButtonReleased(Mouse::LEFT_BUTTON) && this->hookPoint->getState() != HookState::NOT_ACTIVE)
 	{
@@ -89,6 +92,8 @@ void Player::fireWeapon()
 	{
 		this->rb->addVelocity(forward * -20.0f);
 		this->pulseCannonCooldown = this->maxPulseCannonCooldown;
+
+		this->getObject().playSound("PulseCannon");
 	}
 }
 
