@@ -229,6 +229,7 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGuiCross.png", "EmptyKeyGuiCross.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/KeyScale.png", "KeyScale.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorderLong.png", "sliderBorderLong.png");
@@ -578,7 +579,7 @@ void GameScene::renderUI()
 		//Keys
 		this->getUIRenderer().renderTexture(
 			"EmptyKeyGuiCross.png",
-			780, 500, 99, 100
+			900, 480, 100, 100
 		);
 
 		if (this->currentKeys > 0)
@@ -586,8 +587,13 @@ void GameScene::renderUI()
 			for (int i = 0; i < this->currentKeys; i++)
 			{
 				this->getUIRenderer().renderTexture(
-					"KeyGui.png",
-					(716 + (56 * i)), 500, 64, 64
+					"KeyScale.png",
+					(716 + (56 * i)),
+					500,
+					64,
+					64,
+					this->cam.getComponent<Player>()->getCollectedKeyColor().at(i)
+					
 				);
 			}
 		}

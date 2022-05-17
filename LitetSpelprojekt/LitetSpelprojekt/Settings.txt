@@ -3,10 +3,10 @@ ResolutionX
 ResolutionY
 720
 Graphics
-0.799274
+0.542373
 Sensitivity
-0.590073
+0.402542
 Volume
-0.531961
+0.237288
 Fullscreen
 false

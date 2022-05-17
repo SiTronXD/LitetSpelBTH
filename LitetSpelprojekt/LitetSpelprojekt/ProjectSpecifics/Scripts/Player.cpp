@@ -110,10 +110,7 @@ Player::Player(GameObject& object) :
 	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
 	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
 	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr), startPosition(0.0f, 0.0f, 0.0f)
-{
-	//for (int i = 0; i < 4; i++)
-		//collectedKeyColors[i] = Vector3(0.0f, 0.0f, 0.0f);
-	
+{	
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
 }
