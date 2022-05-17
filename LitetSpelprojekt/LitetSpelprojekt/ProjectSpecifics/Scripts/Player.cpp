@@ -164,7 +164,7 @@ Player::Player(GameObject& object) :
 	Input::setLockCursorPosition(true);
 
 	this->skyboxColors.push_back(Vector3(1.0f,	1.0f, 1.0f)); // No keys
-	this->skyboxColors.push_back(Vector3(1.0f,	0.9f, 0.9f)); // 1 key
+	this->skyboxColors.push_back(Vector3(1.0f,	0.85f, 0.85f)); // 1 key
 	this->skyboxColors.push_back(Vector3(0.95f, 0.7f, 0.7f)); // 2 keys
 	this->skyboxColors.push_back(Vector3(0.95f, 0.5f, 0.5f)); // 3 keys
 	this->skyboxColors.push_back(Vector3(0.9f,	0.3f, 0.3f)); // All keys
