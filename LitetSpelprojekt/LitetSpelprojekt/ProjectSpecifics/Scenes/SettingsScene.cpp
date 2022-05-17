@@ -31,6 +31,11 @@ void SettingsScene::init()
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
 
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
+
 	// Get supported resolutions from the renderer
 	std::vector<DirectX::XMFLOAT2>& supportedResolutions =
 		Scene::getRenderer().getSupportedResolutions();

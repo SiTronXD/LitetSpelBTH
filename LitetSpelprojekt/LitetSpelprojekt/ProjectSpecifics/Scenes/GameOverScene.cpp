@@ -29,6 +29,11 @@ void GameOverScene::init()
 	//Camera
 	this->setActiveCamera(this->cam.addComponent<Camera>());
 
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
+
 	//Buttons
 	this->mainMenuButton.setPos(Vector2(0, 0));
 	this->mainMenuButton.setWidth(354);

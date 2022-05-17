@@ -1,3 +1,12 @@
+
+cbuffer DirLightBuffer : register(b1)
+{
+    float3 lightDir;
+    float padding0;
+    float3 globalColor;
+    float padding1;
+}
+
 struct SKYMAP_PS_INPUT
 {
     float4 inPos : SV_POSITION;
@@ -9,6 +18,5 @@ SamplerState sam : register(s0);
 
 float4 main(SKYMAP_PS_INPUT input) : SV_TARGET
 {
-    //return float4(1.0f, 0.0f, 0.0f, 1.0f);
-    return tex.Sample(sam, input.inTexCoord);
+    return tex.Sample(sam, input.inTexCoord) * float4(globalColor, 1.0f);
 }
