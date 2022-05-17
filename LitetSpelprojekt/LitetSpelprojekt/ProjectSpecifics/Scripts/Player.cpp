@@ -254,6 +254,7 @@ void Player::onCollisionEnter(GameObject& other)
 	// Test
 	else if (other.getTag() == ObjectTag::ENEMY && healthCooldown <= 0.0f)
 	{
+		this->getObject().playSound("TakeDamage");
 		other.removeComponent<MeshComp>();
 		other.removeComponent<Rigidbody>();
 		this->takeDamage(1.0f);

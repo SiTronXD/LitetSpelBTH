@@ -4,8 +4,8 @@
 #include "../ResTranslator.h"
 using namespace DirectX::SimpleMath;
 
-Button::Button(Vector2 p, int w, int h, Vector3 bClr, Vector3 hClr, bool hov, UIRenderer& r):
-	uiRenderer(r)
+Button::Button(Vector2 p, int w, int h, Vector3 bClr, Vector3 hClr, bool hov, UIRenderer& r, AudioEngine& audioEngine):
+	uiRenderer(r), audioEngine(audioEngine)
 {
 	this->pos = p;
 	this->width = w;
@@ -31,6 +31,7 @@ bool Button::isClicked()
 	int maxPosY = this->pos.y + (this->height / 2.0);
 	int minPosY = this->pos.y - (this->height / 2.0);
 
+
 	// Transform resolution to internal positions
 	DirectX::XMFLOAT2 internal = ResTranslator::toInternalPos(DirectX::XMFLOAT2(Input::getCursorX(), Input::getCursorY()));
 	
@@ -44,6 +45,7 @@ bool Button::isClicked()
 			// Left click inside the button
 			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
 			{
+				this->audioEngine.playSound("MenuClick");
 				buttonClicked = true;
 			}	
 		}

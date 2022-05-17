@@ -6,12 +6,12 @@ using namespace DirectX::SimpleMath;
 
 SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	fullscreenBox(Vector2(0,0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	graphicsSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	volSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer())
+	fullscreenBox(Vector2(0,0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	graphicsSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	volSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine())
 {
 	resolutions = {};
 }
@@ -26,6 +26,7 @@ void SettingsScene::init()
 	// Load Textures
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
+	this->getResources().addSoundEffect("Resources/SoundFiles/MenuSlider.wav", "MenuSlider");
 
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
