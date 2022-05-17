@@ -55,5 +55,7 @@ public:
 
 	virtual void init() override;
 	virtual void update() override;
+
+	inline rp3d::RigidBody* getRB() { return this->rb; }
 };
 

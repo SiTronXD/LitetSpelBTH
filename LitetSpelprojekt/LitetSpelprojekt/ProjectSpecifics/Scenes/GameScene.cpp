@@ -369,20 +369,20 @@ void GameScene::init()
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
 	hookObject.getComponent<Transform>()->setScaling(0.1f, 0.1f, 0.1f);
-	rb = hookObject.addComponent<Rigidbody>();
+	/*rb = hookObject.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
 	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
 	rb->setMaterial(0.2f, 0.0f);
-	rb->setType(rp3d::BodyType::KINEMATIC);
+	rb->setType(rp3d::BodyType::KINEMATIC);*/
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");
 
 	// Origin
-	GameObject& origin = this->addGameObject("Origin");
+	/*GameObject& origin = this->addGameObject("Origin");
 	origin.getComponent<Transform>()->setScaling(Vector3(3, 3, 3));
 	MeshComp* originMC = origin.addComponent<MeshComp>();
-	originMC->setMesh("RealSphereMesh", "testMaterial");
+	originMC->setMesh("RealSphereMesh", "testMaterial");*/
 
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
