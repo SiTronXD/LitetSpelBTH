@@ -8,6 +8,8 @@ cbuffer DirLightBuffer : register(b1)
 {
     float3 lightDir;
     float padding0;
+    float3 globalColor;
+    float padding1;
 }
 
 cbuffer PixelShaderBuffer : register(b2)
@@ -99,9 +101,8 @@ float4 main(Input input) : SV_TARGET
         );
     }
 
-    float4 finalCol = texCol * shadowFactor * float4(multiplyColor, 1.0f);
-
-    //finalCol = lerp(finalCol, float4(1,0,0,1), fog);
+    float4 finalCol = texCol * shadowFactor * float4(multiplyColor, 1.0f) * 
+        float4(lerp(float3(1.0f, 1.0f, 1.0f), globalColor, 0.6f), 1.0f);
 
     return finalCol;
 }

@@ -10,6 +10,10 @@ class CooldownIndicator;
 class Player : public Script
 {
 private:
+	const float MAX_SKYBOX_COLOR_FADE_TIME = 2.0f;
+
+	std::vector<DirectX::SimpleMath::Vector3> skyboxColors;
+
 	DirectX::SimpleMath::Vector3 startPosition;
 	
 	float speed;
@@ -18,11 +22,13 @@ private:
 	float maxVelocity;
 
 	int keyPieces;
+	int lastKeyPieces;
 	int health;
 
 	float maxPulseCannonCooldown;
 	float pulseCannonCooldown;
 	float healthCooldown;
+	float skyboxColorFadeTimer;
 
 	bool onGround;
 	bool keyPickup;
@@ -36,11 +42,15 @@ private:
 	HookPoint* hookPoint;
 	GrapplingHook* grapplingHook;
 	CooldownIndicator* cooldownIndicatior;
+	Light* light;
 	
 	void move();
 	void jump();
 	void fireWeapon();
 	void lookAround();
+
+	void updateSkyboxColor();
+
 public:
 	Player(GameObject& object);
 	~Player();
@@ -58,7 +68,10 @@ public:
 	void setMouseSensitivity(float mouseSensitivity);
 	void setHealth(int health);
 	void addHealth(int health);
-	void setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIndicator* cooldown);
+	void setupPointers(
+		HookPoint* hp, GrapplingHook* grapHook, 
+		CooldownIndicator* cooldown, Light* light
+	);
 	
 	inline bool isOnGround() const { return this->onGround; }
 	inline bool isKeyPickUp() const { return this->keyPickup; }

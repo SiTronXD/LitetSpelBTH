@@ -398,7 +398,12 @@ void GameScene::init()
 	CooldownIndicator* cooldownIndicatorComp =
 		cooldownIndicatorObject.addComponent<CooldownIndicator>();
 
-	player->setGrapplingHook(hook, grapplingHookComp, cooldownIndicatorComp);
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
+
+	player->setupPointers(hook, grapplingHookComp, cooldownIndicatorComp, lightComponent);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
@@ -414,11 +419,6 @@ void GameScene::init()
 	GameObject& levelObject = this->addGameObject("LevelObject");
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
 	levelMeshComponent->setMesh("LevelMesh", "");
-
-	// Sun
-	GameObject& sunObject = this->addGameObject("Sun");
-	Light* lightComponent = sunObject.addComponent<Light>();
-	lightComponent->init(this->getResources(), this->getRenderer());
 
 	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));

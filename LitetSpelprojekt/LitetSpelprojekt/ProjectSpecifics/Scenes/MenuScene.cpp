@@ -51,6 +51,11 @@ void MenuScene::init()
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
 
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
+
 	// Define Play Button's size and position
 	playButton.setPos(Vector2(0, 210));
 	playButton.setWidth(354);
