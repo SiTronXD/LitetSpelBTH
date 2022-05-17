@@ -2,6 +2,7 @@
 
 #include <string>
 #include <map>
+#include "SFML/Audio.hpp"
 
 #include "Graphics/Texture.h"
 #include "Graphics/Mesh.h"
@@ -21,6 +22,7 @@ private:
 	std::map<std::string, VertexShader*> vertexShaders;
 	std::map<std::string, PixelShader*> pixelShaders;
 	std::map<std::string, CubeMap*> cubeMaps;
+	std::map<std::string, sf::SoundBuffer*> soundEffects;
 
 	Renderer* renderer;
 
@@ -57,9 +59,16 @@ public:
 		const std::string& cubeMapName
 	);
 
+	void addSoundEffect(
+		const std::string& soundFileName,
+		const std::string& soundName
+	);
+
 	Texture& getTexture(const char* textureName);
 	Mesh& getMesh(const char* meshName);
 	Material& getMaterial(const char* materialName);
 	VertexShader& getVertexShader(const char* vertexShaderName);
+	PixelShader& getPixelShader(const char* pixelShaderName);
 	CubeMap& getCubemap(const char* cubemapName);
+	sf::SoundBuffer& getSoundEffect(const char* soundEffectName);
 };

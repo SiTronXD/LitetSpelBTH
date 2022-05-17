@@ -40,8 +40,14 @@ Resources::~Resources()
 		delete itr->second;
 	}
 
-	//Cubemaps
+	// Cubemaps
 	for (std::map<std::string, CubeMap*>::iterator itr = this->cubeMaps.begin(), itr_end = this->cubeMaps.end(); itr != itr_end; ++itr)
+	{
+		delete itr->second;
+	}
+
+	// SoundEffects
+	for (std::map<std::string, sf::SoundBuffer*>::iterator itr = this->soundEffects.begin(), itr_end = this->soundEffects.end(); itr != itr_end; ++itr)
 	{
 		delete itr->second;
 	}
@@ -184,6 +190,31 @@ void Resources::addCubeMap(const std::string& textureFileName, const std::string
 	);
 }
 
+void Resources::addSoundEffect(const std::string& soundFileName, const std::string& soundName)
+{
+	//Check if resource already exist
+	if (this->soundEffects.count(soundFileName) > 0)
+	{
+		Log::write(soundFileName + " has already been added to resources.");
+		return;
+	}
+
+	//Create sound effect from file
+	sf::SoundBuffer* buffer = new sf::SoundBuffer();
+	if (!buffer->loadFromFile(soundFileName))
+	{
+		Log::write("Failed to load sound file: " + soundFileName);
+	}
+
+	//Insert sound effect
+	this->soundEffects.insert(
+		std::pair<std::string, sf::SoundBuffer*>(
+			soundName,
+			buffer
+			)
+	);
+}
+
 Texture& Resources::getTexture(const char* textureName)
 {
 	Texture* foundTexture = this->textures[textureName];
@@ -224,6 +255,16 @@ VertexShader& Resources::getVertexShader(const char* vertexShaderName)
 	return *foundVertexShader;
 }
 
+PixelShader& Resources::getPixelShader(const char* pixelShaderName)
+{
+	PixelShader* foundPixelShader = this->pixelShaders[pixelShaderName];
+
+	if (!foundPixelShader)
+		Log::error("Pixel shader has not been added: " + std::string(pixelShaderName));
+
+	return *foundPixelShader;
+}
+
 CubeMap& Resources::getCubemap(const char* cubemapName)
 {
 	CubeMap* foundMaterial = this->cubeMaps[cubemapName];
@@ -232,4 +273,14 @@ CubeMap& Resources::getCubemap(const char* cubemapName)
 		Log::error("Cubemap has not been added: " + std::string(cubemapName));
 
 	return *foundMaterial;
+}
+
+sf::SoundBuffer& Resources::getSoundEffect(const char* soundEffectName)
+{
+	sf::SoundBuffer* soundEffect = this->soundEffects[soundEffectName];
+
+	if (!soundEffect)
+		Log::error("Sound Effect has not been added: " + std::string(soundEffectName));
+
+	return *soundEffect;
 }

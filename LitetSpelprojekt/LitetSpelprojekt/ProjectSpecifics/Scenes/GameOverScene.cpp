@@ -58,7 +58,11 @@ void GameOverScene::init()
 	this->getUIRenderer().setFontCharacterSpacing(5);
 	this->getUIRenderer().setFontSpaceWidth(10);
 
-	newHighscore = this->getHighscore().newHighscore(this->highscoreTime);
+	if (this->winning)
+	{
+		newHighscore = this->getHighscore().newHighscore(this->highscoreTime);
+	}
+	
 }
 
 void GameOverScene::update()

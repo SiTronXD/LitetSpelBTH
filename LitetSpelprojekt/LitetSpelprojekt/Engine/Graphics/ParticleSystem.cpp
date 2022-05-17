@@ -8,7 +8,8 @@
 using namespace DirectX::SimpleMath;
 
 ParticleSystem::ParticleSystem()
-	:numberOfParticles(64)
+	:numberOfParticles(64),
+	activeTimer(0.0f)
 {
 }
 
@@ -115,13 +116,15 @@ void ParticleSystem::explode(DirectX::SimpleMath::Vector3 position, float speed,
 
 	this->particleSystemStruct.randomTimer = std::rand() % 1000;
 
-	this->active = true;
+	this->activeTimer = lifetime;
 }
 
 void ParticleSystem::render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFLOAT3& cameraPosition)
 {
-	if (this->active)
+	if (this->activeTimer > 0.0f)
 	{
+		this->activeTimer -= Time::getDT();
+
 		this->particleComputeShader->run();
 
 		//Bind pipeline

@@ -10,6 +10,7 @@
 #include "../Scripts/CooldownIndicator.h"
 #include "../Scripts/PointLight.h"
 #include "../Scripts/Key.h"
+#include "../Scripts/Beam.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -23,7 +24,10 @@
 
 using namespace DirectX::SimpleMath;
 
-void GameScene::addLevelColliders(LevelLoader& levelLoader)
+void GameScene::addLevelProperties(
+	LevelLoader& levelLoader,
+	GameObject& playerGameObject
+)
 {
 	// Sphere colliders
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
@@ -149,7 +153,19 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
 		pointLight->setTarget(cam);
 
-		keyScript->setPointLight(&pointLightObject);
+		// Beam
+		GameObject& beamObject = this->addGameObject("Key beam");
+		BackgroundMeshComp* beamMesh = beamObject.addComponent<BackgroundMeshComp>();
+		beamMesh->setMesh("BeamMesh", "WhiteMaterial");
+		beamMesh->setColor(keyColor);
+		beamMesh->setPixelShaderName("Beam_PS");
+		beamMesh->setShouldShade(false);
+		beamMesh->setCastShadow(false);
+		Beam* beamScript = beamObject.addComponent<Beam>();
+		beamScript->set(portalKey, playerGameObject);
+
+		// Set pointers in key script
+		keyScript->set(&pointLightObject, &beamObject);
 	}
 
 	// Portal
@@ -175,9 +191,9 @@ GameScene::GameScene(SceneHandler& sceneHandler)
 	keyTextTimer(0.0f),
 	keyTextScale(0.0f),
 	highscoreTime(0.0f),
-	resumeButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer()),
-	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.5, 0.5, 0.5), Vector3(1, 1, 1), false, this->getUIRenderer())
+	resumeButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
+	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer())
 {
 }
 
@@ -218,12 +234,23 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
-
+	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
+	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
+	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorderLong.png", "sliderBorderLong.png");
+	this->getResources().addTexture("Resources/Textures/Gui/buttonBackground.png", "buttonBackground.png");
 
 	//Particle texture
 	this->getResources().addTexture("Resources/Textures/particle.png", "particle.png");
 	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
 	this->getResources().addTexture("Resources/Textures/LightBloom.png", "LightBloom.png");
+
+	// Sound Effects
+	this->getResources().addSoundEffect("Resources/SoundFiles/PulseCannon.wav", "PulseCannon");
+	this->getResources().addSoundEffect("Resources/SoundFiles/Jump.wav", "Jump");
+	this->getResources().addSoundEffect("Resources/SoundFiles/HookShoot.wav", "HookShoot");
+	this->getResources().addSoundEffect("Resources/SoundFiles/HookShootConnect.wav", "HookShootConnect");
+
+	this->getAudioEngine().setMusic("");
 
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
@@ -243,8 +270,11 @@ void GameScene::init()
 	this->getResources().addMesh(MeshData(DefaultMesh::TETRAHEDRON), "Tetrahedron");
 
 	//Add cubemap
-	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
+	this->getResources().addCubeMap("SkyboxLowRes", ".png", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
+
+	// Pixel shaders
+	this->getResources().addPixelShader("Beam_PS");
 
 	// Models
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
@@ -272,7 +302,6 @@ void GameScene::init()
 
 	MeshData spikeMeshData = MeshLoader::loadModel("Resources/Models/spike.obj");
 	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
-	
 	this->getResources().addMesh(
 		std::move(spikeMeshData),
 		"SpikeMesh"
@@ -290,32 +319,40 @@ void GameScene::init()
 		"SphereMesh"
 	);
 
-	// Level loader
-	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
-	MeshData levelMeshData = levelLoader.getMeshData();
+	MeshData beamMeshData(DefaultMesh::TETRAHEDRON);
+	beamMeshData.transformMesh(Matrix::CreateScale(1.0f, 100.0f, 1.0f));
 	this->getResources().addMesh(
-		std::move(levelMeshData),
-		"LevelMesh"
+		std::move(beamMeshData),
+		"BeamMesh"
 	);
-	this->addLevelColliders(levelLoader);
-  
+
 	// Player
 	this->setActiveCamera(cam.addComponent<Camera>());
 
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	Player* player = cam.addComponent<Player>();
-	player->setStartPosition(levelLoader.getPlayerStartPos());
 	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	Rigidbody* rb = cam.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addCapsuleCollider(1.0f, 2.0f);
 	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
 	rb->setMaterial(0.2f, 0.0f);
 	cam.getComponent<Camera>()->updateAspectRatio(
-		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
+		(float)this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
+
+	// Level loader
+	LevelLoader levelLoader(this->getResources());
+	levelLoader.load("Resources/Levels/testLevelMattin2.fbx");
+	MeshData levelMeshData = levelLoader.getMeshData();
+	this->getResources().addMesh(
+		std::move(levelMeshData),
+		"LevelMesh"
+	);
+	this->addLevelProperties(levelLoader, cam);
+
+	// Set player properties from level
+	player->setStartPosition(levelLoader.getPlayerStartPos());
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0) });
 
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
@@ -429,13 +466,7 @@ void GameScene::init()
 
 #include <iostream>
 void GameScene::update()
-{
-	/*RaycastInfo info = this->getPhysicsEngine().raycast(rp3d::Ray({ 0.0f, -10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }));
-	if (info.hit)
-	{
-		std::cout << "Hit " << info.gameObject->getName() << ": at worldPos (" << info.hitPoint.x << ", " << info.hitPoint.y << ", " << info.hitPoint.z << ")" << std::endl;
-	}*/
-  
+{ 
 	if (this->getPause() == false)
 	{
 		Player* playerComp = cam.getComponent<Player>();
@@ -486,7 +517,7 @@ void GameScene::update()
 				this->keyTextScale += (150.0f * Time::getDT());
 		}
 
-		//Partcile update
+		//Particle update
 		if (Input::isKeyJustPressed(Keys::E))
 		{
 			std::vector<ParticleEmitter*> particleComponents = getActiveComponents<ParticleEmitter>();
@@ -514,13 +545,13 @@ void GameScene::update()
 	}
 
 	// Unpause
-	if (Input::isKeyJustPressed(Keys::P) && this->getPause() == true)
+	if (Input::isKeyJustPressed(Keys::ESCAPE) && this->getPause() == true)
 	{
 		Input::setLockCursorPosition(true);
 		Input::setCursorVisible(false);
 		this->setPause(false);
 	} // Pause
-	else if (Input::isKeyJustPressed(Keys::P) && this->getPause() == false)
+	else if (Input::isKeyJustPressed(Keys::ESCAPE) && this->getPause() == false)
 	{
 		Input::setLockCursorPosition(false);
 		Input::setCursorVisible(true);
@@ -538,26 +569,30 @@ void GameScene::renderUI()
 			0, 0, 64, 64
 		);
 
-		//Healthbar
-		this->getUIRenderer().renderTexture(
-			"HealthBox.png",
-			-700, -500, 500, 50
-		);
-
-		//866
+		// Display Healthbar
 		int currentHealth = this->cam.getComponent<Player>()->getHealth();
 		if (currentHealth > 0)
 		{
 			this->getUIRenderer().renderTexture(
-				"HealthBar.png",
-				(-949 + (83 * currentHealth)), -500, (166 * currentHealth), 50
+				"settingsSlider.png",
+				(-949 + (83 * currentHealth)),
+				-500,
+				(166 * currentHealth),
+				50,
+				Vector3(0.9f, 0.1f, 0.3f)
 			);
 		}
+
+		// Display Healthbox
+		this->getUIRenderer().renderTexture(
+			"sliderBorderLong.png",
+			-700, -500, 500, 50
+		);
 
 		//Keys
 		this->getUIRenderer().renderTexture(
 			"EmptyKeyGui.png",
-			800, 500, 256, 64
+			780, 500, 384, 96
 		);
 
 		if (this->currentKeys > 0)
@@ -573,8 +608,12 @@ void GameScene::renderUI()
 
 		// Timer
 		this->getUIRenderer().renderTexture(
-			"TimerBox.png",
-			-832, 420, 256, 256
+			"buttonBackground.png",
+			-865,
+			475,
+			160,
+			100,
+			Vector3(0.9f, 0.1f, 0.3f)
 		);
 
 		// Get Minutes:Seconds Format
@@ -586,8 +625,8 @@ void GameScene::renderUI()
 		// TimerText
 		this->getUIRenderer().renderString(
 			(minSec),
-			-845,
-			410,
+			-875,
+			475,
 			35,
 			35
 		);
@@ -606,15 +645,8 @@ void GameScene::renderUI()
 	}
 	else
 	{
-		/*
-		this->getUIRenderer().renderTexture(
-			"PauseMenu.png",
-			0, 50, 600, 800
-		);
-		*/
-
 		// Resume Game
-		this->resumeButton.render("NeatBox.png");
+		this->resumeButton.render("buttonBackground.png");
 		this->getUIRenderer().renderString(
 			"resume",
 			-10,
@@ -624,7 +656,7 @@ void GameScene::renderUI()
 		);
 
 		// Return to main menu
-		this->mainMenuButton.render("NeatBox.png");
+		this->mainMenuButton.render("buttonBackground.png");
 		this->getUIRenderer().renderString(
 			"main menu",
 			-10,
@@ -634,7 +666,7 @@ void GameScene::renderUI()
 		);
 		
 		// Exit Game
-		this->exitButton.render("NeatBox.png");
+		this->exitButton.render("buttonBackground.png");
 		this->getUIRenderer().renderString(
 			"exit",
 			-10,

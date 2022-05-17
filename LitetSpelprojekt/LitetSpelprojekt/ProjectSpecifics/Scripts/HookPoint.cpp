@@ -7,7 +7,7 @@
 using namespace DirectX::SimpleMath;
 
 HookPoint::HookPoint(GameObject& gameObject):
-	Script(gameObject), state(HookState::NOT_ACTIVE), rb(nullptr), player(nullptr), speed(125.0f), shotTimer(0.0f),
+	Script(gameObject), state(HookState::NOT_ACTIVE), rb(nullptr), player(nullptr), speed(150.0f), shotTimer(0.0f),
 	returnOffset(2.1f, -1.5f, 2.0f)
 {
 }
@@ -25,7 +25,7 @@ void HookPoint::shoot(const DirectX::SimpleMath::Vector3& orig, const DirectX::S
 {
 	this->rb->setPosition(orig);
 	this->rb->setVelocity(vec * this->speed);
-	this->shotTimer = 1.0f;
+	this->shotTimer = 0.7f;
 	this->state = HookState::SHOOTING;
 }
 
@@ -58,7 +58,7 @@ void HookPoint::update()
 			this->returnOffset.y * playerTransform->up() +
 			this->returnOffset.z * playerTransform->forward()) - 
 			this->getTransform()->getPosition();
-		if (vec.LengthSquared() < 9.0f)
+		if (vec.LengthSquared() < 25.0f)
 		{
 			this->state = HookState::NOT_ACTIVE;
 			this->rb->setVelocity(Vector3::Zero);
@@ -87,5 +87,7 @@ void HookPoint::onCollisionEnter(GameObject& other)
 	{
 		this->state = HookState::CONNECTED;
 		this->rb->setVelocity(Vector3::Zero);
+
+		this->getObject().playSound("HookShootConnect");
 	}
 }
