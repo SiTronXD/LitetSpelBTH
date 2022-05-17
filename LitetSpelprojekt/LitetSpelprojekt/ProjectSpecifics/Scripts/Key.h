@@ -8,7 +8,6 @@ class Key : public Script
 private:
 	GameObject* pointLight;
 	DirectX::SimpleMath::Vector3 keyColor;
-=======
 	GameObject* beam;
   
 public:

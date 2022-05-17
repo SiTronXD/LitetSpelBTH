@@ -33,7 +33,6 @@ Vector3 keyArray[4]{
 };
 */
 
-void GameScene::addLevelColliders(LevelLoader& levelLoader)
 void GameScene::addLevelProperties(
 	LevelLoader& levelLoader,
 	GameObject& playerGameObject
