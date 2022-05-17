@@ -6,10 +6,11 @@
 class Key : public Script
 {
 private:
-
 	GameObject* pointLight;
 	DirectX::SimpleMath::Vector3 keyColor;
-
+=======
+	GameObject* beam;
+  
 public:
 	Key(GameObject& gameObject);
 	virtual ~Key();
@@ -19,6 +20,7 @@ public:
 	
 	DirectX::SimpleMath::Vector3 getKeyColor() const;
 
+	void set(GameObject* pointLight, GameObject* beam);
 
 	void remove();
 

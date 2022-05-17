@@ -3,6 +3,7 @@
 
 Scene::Scene(SceneHandler& sceneHandler)
 	: activeCamera(nullptr),
+	ecs(&sceneHandler.getPhysicsEngine(), &sceneHandler.getAudioEngine()),
 	sceneHandler(sceneHandler),
 	resources(&sceneHandler.getResources()),
 	renderer(&sceneHandler.getRenderer()),

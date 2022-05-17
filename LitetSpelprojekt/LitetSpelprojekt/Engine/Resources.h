@@ -68,6 +68,7 @@ public:
 	Mesh& getMesh(const char* meshName);
 	Material& getMaterial(const char* materialName);
 	VertexShader& getVertexShader(const char* vertexShaderName);
+	PixelShader& getPixelShader(const char* pixelShaderName);
 	CubeMap& getCubemap(const char* cubemapName);
 	sf::SoundBuffer& getSoundEffect(const char* soundEffectName);
 };

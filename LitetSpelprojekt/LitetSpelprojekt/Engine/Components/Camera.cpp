@@ -31,7 +31,7 @@ void Camera::updateAspectRatio(float aspectRatio)
 		SMath::PI * 0.5f,
 		aspectRatio,
 		0.1f,
-		200.0f
+		300.0f
 	);
 
 	// Reversed Z, infinite far plane

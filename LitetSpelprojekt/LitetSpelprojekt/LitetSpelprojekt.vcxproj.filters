@@ -12,6 +12,7 @@
     <FxCompile Include="Resources\Shaders\Particle_PS.hlsl" />
     <FxCompile Include="Resources\Shaders\ShadowMap_VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Outlines_COMP.hlsl" />
+    <FxCompile Include="Resources\Shaders\Beam_PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Components\Camera.cpp" />
@@ -82,6 +83,8 @@
     <ClCompile Include="ProjectSpecifics\Scripts\PointLight.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\Key.cpp" />
     <ClCompile Include="Engine\AudioEngine.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\Beam.cpp" />
+    <ClCompile Include="Engine\Components\BackgroundMeshComp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -153,6 +156,8 @@
     <ClInclude Include="ProjectSpecifics\Scripts\PointLight.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\Key.h" />
     <ClInclude Include="Engine\AudioEngine.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\Beam.h" />
+    <ClInclude Include="Engine\Components\BackgroundMeshComp.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

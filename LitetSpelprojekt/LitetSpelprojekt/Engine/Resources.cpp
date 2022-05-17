@@ -255,6 +255,16 @@ VertexShader& Resources::getVertexShader(const char* vertexShaderName)
 	return *foundVertexShader;
 }
 
+PixelShader& Resources::getPixelShader(const char* pixelShaderName)
+{
+	PixelShader* foundPixelShader = this->pixelShaders[pixelShaderName];
+
+	if (!foundPixelShader)
+		Log::error("Pixel shader has not been added: " + std::string(pixelShaderName));
+
+	return *foundPixelShader;
+}
+
 CubeMap& Resources::getCubemap(const char* cubemapName)
 {
 	CubeMap* foundMaterial = this->cubeMaps[cubemapName];

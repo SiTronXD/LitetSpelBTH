@@ -2,6 +2,7 @@
 #include "../../Engine/Application/Input.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Time.h"
+#include "../../Engine/Physics/PhysicsEngine.h"
 #include "HookPoint.h"
 #include "GrapplingHook.h"
 #include "CooldownIndicator.h"
@@ -31,7 +32,7 @@ void Player::move()
 		{
 			vec.Normalize();
 			moveVec *= 0.25f;
-			this->rb->addForce(vec * 5.0f * this->speed * Time::getDT() + moveVec);
+			this->rb->addForce(vec * 6.0f * this->speed * Time::getDT() + moveVec);
 		}
 	}
 	else if (this->onGround)
@@ -70,6 +71,8 @@ void Player::jump()
 	{
 		this->rb->addVelocity({ 0.0f, this->jumpForce, 0.0f });
 		this->onGround = false;
+
+		this->getObject().playSound("Jump");
 	}
 }
 
@@ -79,6 +82,7 @@ void Player::fireWeapon()
 	if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON) && this->hookPoint->getState() == HookState::NOT_ACTIVE)
 	{
 		this->hookPoint->shoot(this->getTransform()->getPosition() + forward * 2.0f, forward);
+		this->getObject().playSound("HookShoot");
 	}
 	else if (Input::isMouseButtonReleased(Mouse::LEFT_BUTTON) && this->hookPoint->getState() != HookState::NOT_ACTIVE)
 	{
@@ -89,6 +93,8 @@ void Player::fireWeapon()
 	{
 		this->rb->addVelocity(forward * -20.0f);
 		this->pulseCannonCooldown = this->maxPulseCannonCooldown;
+
+		this->getObject().playSound("PulseCannon");
 	}
 }
 
@@ -106,7 +112,7 @@ void Player::lookAround()
 }
 
 Player::Player(GameObject& object) :
-	Script(object), speed(1000.0f), jumpForce(20.0f), mouseSensitivity(0.5f), maxVelocity(35.0f),
+	Script(object), speed(1000.0f), jumpForce(20.0f), mouseSensitivity(0.5f), maxVelocity(45.0f),
 	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
 	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
 	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr), startPosition(0.0f, 0.0f, 0.0f)
@@ -199,10 +205,7 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
-	//Add force down
-	this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f));
-
-	/*Vector3 vel = this->rb->getVelocity();*/
+	this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f) * Time::getDT() * 20.0f);
 
 	if (this->rb->getVelocity().LengthSquared() > this->maxVelocity * this->maxVelocity)
 	{
@@ -212,26 +215,6 @@ void Player::update()
 		this->rb->setVelocity(vel);
 
 	}
-	
-	//temp solusion
-	/*if (vel.x > this->maxVelocity.x)
-		vel.x = this->maxVelocity.x;
-	else if (vel.x < -this->maxVelocity.x)
-		vel.x = -this->maxVelocity.x;
-	
-	float maxDownVel = this->maxVelocity.y * 4;
-
-	if (vel.y > this->maxVelocity.y)
-		vel.y = this->maxVelocity.y;
-	else if(vel.y < -maxDownVel)
-		vel.y = -maxDownVel;
-
-	if (vel.z > this->maxVelocity.z)
-		vel.z = this->maxVelocity.z;
-	else if (vel.z < -this->maxVelocity.z)
-		vel.z = -this->maxVelocity.z;*/
-	
-	//this->rb->setVelocity(vel);
 
 	if (this->hookPoint->getState() != HookState::NOT_ACTIVE)
 		this->grapplingHook->getRope()->setTargetPos(this->hookPoint->getTransform()->getPosition());
@@ -261,8 +244,13 @@ void Player::update()
 
 void Player::onCollisionEnter(GameObject& other)
 {
+	// Ground collision
 	if (other.getTag() == ObjectTag::GROUND)
-		this->onGround = true;
+	{
+		RaycastInfo info = this->getObject().raycast(this->getTransform()->getPosition(), this->getTransform()->getPosition() + Vector3(0.0f, -2.0f, 0.0f));
+		if (info.hit)
+			this->onGround = true;
+	}
 
 	// Collided with key
 	if (other.getTag() == ObjectTag::KEY)
@@ -288,8 +276,13 @@ void Player::onCollisionEnter(GameObject& other)
 
 void Player::onCollisionStay(GameObject& other)
 {
+	// Ground collision
 	if (other.getTag() == ObjectTag::GROUND)
-		this->onGround = true;
+	{
+		RaycastInfo info = this->getObject().raycast(this->getTransform()->getPosition(), this->getTransform()->getPosition() + Vector3(0.0f, -2.0f, 0.0f));
+		if (info.hit)
+			this->onGround = true;
+	}
 }
 
 void Player::onCollisionExit(GameObject& other)

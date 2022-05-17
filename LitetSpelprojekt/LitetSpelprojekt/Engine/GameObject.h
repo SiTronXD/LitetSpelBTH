@@ -2,6 +2,8 @@
 
 #include "ECS.h"
 
+struct RaycastInfo;
+
 class GameObject
 {
 private:
@@ -13,6 +15,13 @@ private:
 public:
 	GameObject(ECS& ecs, int ID, std::string name, ObjectTag tag);
 	~GameObject();
+
+	// Cast from own position and direction
+	RaycastInfo raycast(float maxDist);
+	// Define own ray orig and dest
+	RaycastInfo raycast(DirectX::SimpleMath::Vector3 orig, DirectX::SimpleMath::Vector3 dest);
+
+	void playSound(std::string sound);
 
 	template <typename T>
 	T* addComponent();

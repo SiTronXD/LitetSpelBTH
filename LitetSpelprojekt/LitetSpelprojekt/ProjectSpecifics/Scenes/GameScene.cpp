@@ -10,6 +10,7 @@
 #include "../Scripts/CooldownIndicator.h"
 #include "../Scripts/PointLight.h"
 #include "../Scripts/Key.h"
+#include "../Scripts/Beam.h"
 #include "../../Engine/Resources.h"
 #include "../../Engine/Graphics/Renderer.h"
 #include "../../Engine/Graphics/MeshLoader.h"
@@ -32,8 +33,11 @@ Vector3 keyArray[4]{
 };
 */
 
-
 void GameScene::addLevelColliders(LevelLoader& levelLoader)
+void GameScene::addLevelProperties(
+	LevelLoader& levelLoader,
+	GameObject& playerGameObject
+)
 {
 	// Sphere colliders
 	for (unsigned int i = 0; i < levelLoader.getSphereColliders().size(); ++i)
@@ -159,7 +163,19 @@ void GameScene::addLevelColliders(LevelLoader& levelLoader)
 		PointLight* pointLight = pointLightObject.addComponent<PointLight>();
 		pointLight->setTarget(cam);
 
-		keyScript->setPointLight(&pointLightObject);
+		// Beam
+		GameObject& beamObject = this->addGameObject("Key beam");
+		BackgroundMeshComp* beamMesh = beamObject.addComponent<BackgroundMeshComp>();
+		beamMesh->setMesh("BeamMesh", "WhiteMaterial");
+		beamMesh->setColor(keyColor);
+		beamMesh->setPixelShaderName("Beam_PS");
+		beamMesh->setShouldShade(false);
+		beamMesh->setCastShadow(false);
+		Beam* beamScript = beamObject.addComponent<Beam>();
+		beamScript->set(portalKey, playerGameObject);
+
+		// Set pointers in key script
+		keyScript->set(&pointLightObject, &beamObject);
 	}
 
 	// Portal
@@ -242,6 +258,11 @@ void GameScene::init()
 
 	// Sound Effects
 	this->getResources().addSoundEffect("Resources/SoundFiles/PulseCannon.wav", "PulseCannon");
+	this->getResources().addSoundEffect("Resources/SoundFiles/Jump.wav", "Jump");
+	this->getResources().addSoundEffect("Resources/SoundFiles/HookShoot.wav", "HookShoot");
+	this->getResources().addSoundEffect("Resources/SoundFiles/HookShootConnect.wav", "HookShootConnect");
+
+	this->getAudioEngine().setMusic("");
 
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
@@ -261,8 +282,11 @@ void GameScene::init()
 	this->getResources().addMesh(MeshData(DefaultMesh::TETRAHEDRON), "Tetrahedron");
 
 	//Add cubemap
-	this->getResources().addCubeMap("SkyBox", ".bmp", "skybox");
+	this->getResources().addCubeMap("SkyboxLowRes", ".png", "skybox");
 	this->getRenderer().setSkyBoxName("skybox");
+
+	// Pixel shaders
+	this->getResources().addPixelShader("Beam_PS");
 
 	// Models
 	MeshData testMeshData = MeshLoader::loadModel("Resources/Models/suzanne.obj");
@@ -290,7 +314,6 @@ void GameScene::init()
 
 	MeshData spikeMeshData = MeshLoader::loadModel("Resources/Models/spike.obj");
 	spikeMeshData.transformMesh(Matrix::CreateRotationX(SMath::PI * 0.5f));
-	
 	this->getResources().addMesh(
 		std::move(spikeMeshData),
 		"SpikeMesh"
@@ -308,32 +331,40 @@ void GameScene::init()
 		"SphereMesh"
 	);
 
-	// Level loader
-	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
-	MeshData levelMeshData = levelLoader.getMeshData();
+	MeshData beamMeshData(DefaultMesh::TETRAHEDRON);
+	beamMeshData.transformMesh(Matrix::CreateScale(1.0f, 100.0f, 1.0f));
 	this->getResources().addMesh(
-		std::move(levelMeshData),
-		"LevelMesh"
+		std::move(beamMeshData),
+		"BeamMesh"
 	);
-	this->addLevelColliders(levelLoader);
-  
+
 	// Player
 	this->setActiveCamera(cam.addComponent<Camera>());
 
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos()});
 	Player* player = cam.addComponent<Player>();
-	player->setStartPosition(levelLoader.getPlayerStartPos());
 	player->setMouseSensitivity(this->getSettings().getSettings().sensitivity);
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0)});
 	Rigidbody* rb = cam.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addCapsuleCollider(1.0f, 2.0f);
 	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
 	rb->setMaterial(0.2f, 0.0f);
 	cam.getComponent<Camera>()->updateAspectRatio(
-		(float) this->getWindow().getWidth() / this->getWindow().getHeight()
+		(float)this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
+
+	// Level loader
+	LevelLoader levelLoader(this->getResources());
+	levelLoader.load("Resources/Levels/testLevelMattin2.fbx");
+	MeshData levelMeshData = levelLoader.getMeshData();
+	this->getResources().addMesh(
+		std::move(levelMeshData),
+		"LevelMesh"
+	);
+	this->addLevelProperties(levelLoader, cam);
+
+	// Set player properties from level
+	player->setStartPosition(levelLoader.getPlayerStartPos());
+	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0) });
 
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
@@ -448,12 +479,6 @@ void GameScene::init()
 #include <iostream>
 void GameScene::update()
 { 
-	// Temp
-	if (Input::isKeyJustPressed(Keys::SPACE))
-	{
-		this->getAudioEngine().playSound("PulseCannon");
-	}
-
 	if (this->getPause() == false)
 	{
 		Player* playerComp = cam.getComponent<Player>();

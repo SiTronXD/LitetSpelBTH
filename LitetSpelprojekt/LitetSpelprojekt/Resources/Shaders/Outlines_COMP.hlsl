@@ -14,7 +14,7 @@ cbuffer InfoBuffer : register(b0)
 void main( uint3 DTid : SV_DispatchThreadID )
 {
     float2 directions[4] = { float2(-1.0f, -1.0f), float2(1.0f, 1.0f), float2(1.0f, -1.0f), float2(-1.0f, 1.0f) };
-    float2 thicknessInPixels = thickness * float2(width, height);
+    float2 thicknessInPixels = 0.8f * thickness * float2(width, height);
 
     float4 viewCoords = mul(float4(0.0f, 0.0f, depthTexture[DTid.xy].r, 1.0f), projectionInv);
     float curLinearDepth = viewCoords.z / viewCoords.w;
