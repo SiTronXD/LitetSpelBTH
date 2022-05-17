@@ -230,6 +230,11 @@ void GameScene::init()
 
 	// Sound Effects
 	this->getResources().addSoundEffect("Resources/SoundFiles/PulseCannon.wav", "PulseCannon");
+	this->getResources().addSoundEffect("Resources/SoundFiles/Jump.wav", "Jump");
+	this->getResources().addSoundEffect("Resources/SoundFiles/HookShoot.wav", "HookShoot");
+	this->getResources().addSoundEffect("Resources/SoundFiles/HookShootConnect.wav", "HookShootConnect");
+
+	this->getAudioEngine().setMusic("");
 
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
@@ -436,12 +441,6 @@ void GameScene::init()
 #include <iostream>
 void GameScene::update()
 { 
-	// Temp
-	if (Input::isKeyJustPressed(Keys::SPACE))
-	{
-		this->getAudioEngine().playSound("PulseCannon");
-	}
-
 	if (this->getPause() == false)
 	{
 		Player* playerComp = cam.getComponent<Player>();

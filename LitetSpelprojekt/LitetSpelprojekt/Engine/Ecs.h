@@ -10,6 +10,8 @@
 #include "Dev/Log.h"
 
 class GameObject;
+class PhysicsEngine;
+class AudioEngine;
 
 class ECS
 {
@@ -28,6 +30,9 @@ private:
 		std::type_index componentType;
 		int gameObjectID;
 	};
+
+	PhysicsEngine* physicsEngine;
+	AudioEngine* audioEngine;
 
 	std::vector<GameObject*> gameObjects;
 	std::vector<Script*> scriptComps;
@@ -48,12 +53,15 @@ private:
 	template <typename T>
 	bool hasComponent(int gameObjectID);
 public:
-	ECS();
+	ECS(PhysicsEngine* physics, AudioEngine* audio);
 	~ECS();
 
 	// Initialize Script Components
 	void init();
 	void update();
+
+	PhysicsEngine* getPhysics();
+	AudioEngine* getAudio();
 
 	GameObject& addGameObject(std::string name, ObjectTag tag);
 	GameObject& getGameObject(int gameObjectID);

@@ -1,5 +1,7 @@
 #include "GameObject.h"
 #include "ECS.h"
+#include "Physics/PhysicsEngine.h"
+#include "AudioEngine.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -10,4 +12,26 @@ GameObject::GameObject(ECS& ecs, int ID, std::string name, ObjectTag tag)
 
 GameObject::~GameObject()
 {
+}
+
+RaycastInfo GameObject::raycast(float maxDist)
+{
+	Transform* transform = this->getComponent<Transform>();
+	Vector3 pos = transform->getPosition();
+	Vector3 forward = transform->forward();
+
+	rp3d::Vector3 orig = { pos.x, pos.y, pos.z };
+	rp3d::Vector3 dir = { forward.x * maxDist, forward.y * maxDist, forward.z * maxDist };
+
+	return this->ecs.getPhysics()->raycast(rp3d::Ray(orig, orig + dir));
+}
+
+RaycastInfo GameObject::raycast(rp3d::Ray ray)
+{
+	return this->ecs.getPhysics()->raycast(ray);
+}
+
+void GameObject::playSound(std::string sound)
+{
+	this->ecs.getAudio()->playSound(sound);
 }
