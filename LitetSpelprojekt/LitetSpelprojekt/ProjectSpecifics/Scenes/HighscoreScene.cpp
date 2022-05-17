@@ -19,6 +19,11 @@ void HighscoreScene::init()
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
 
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
+
 	// Load in from file
 	this->getHighscore().loadHighscore();
 	
