@@ -93,7 +93,7 @@ void HookPoint::update()
 		);*/
 	}
 
-	// Enable/disable collider when returning
+	// Raycast when shooting
 	if (this->state == HookState::SHOOTING)
 	{
 		RaycastInfo raycastInfo = 
