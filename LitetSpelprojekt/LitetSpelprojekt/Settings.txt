@@ -3,7 +3,7 @@ ResolutionX
 ResolutionY
 900
 Graphics
-0.520339
+0.542373
 Sensitivity
 0.361582
 Volume

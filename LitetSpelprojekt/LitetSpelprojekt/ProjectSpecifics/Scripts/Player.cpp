@@ -116,7 +116,7 @@ Player::Player(GameObject& object) :
 	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
 	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
 	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr), startPosition(0.0f, 0.0f, 0.0f)
-{
+{	
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
 }
@@ -163,6 +163,16 @@ void Player::setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIn
 	this->grapplingHook->setPlayerTransform(this->getTransform());
 	this->cooldownIndicatior = cooldown;
 	this->cooldownIndicatior->setup(this->grapplingHook);
+}
+
+void Player::setCollectedKeyColor(Vector3 color)
+{
+	this->collectedKeyColors.push_back(color);
+}
+
+std::vector<Vector3> Player::getCollectedKeyColor() const
+{
+	return this->collectedKeyColors;
 }
 
 void Player::takeDamage(float damage)
@@ -246,6 +256,7 @@ void Player::onCollisionEnter(GameObject& other)
 	if (other.getTag() == ObjectTag::KEY)
 	{
 		// Remove key
+		this->collectedKeyColors.push_back(other.getComponent<Key>()->getKeyColor());
 		other.getComponent<Key>()->remove();
 
 		this->keyPieces++;

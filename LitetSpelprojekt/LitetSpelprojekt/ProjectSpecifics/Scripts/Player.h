@@ -11,7 +11,8 @@ class Player : public Script
 {
 private:
 	DirectX::SimpleMath::Vector3 startPosition;
-	
+	std::vector<DirectX::SimpleMath::Vector3> collectedKeyColors;
+
 	float speed;
 	float jumpForce;
 	float mouseSensitivity;
@@ -60,6 +61,10 @@ public:
 	void addHealth(int health);
 	void setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIndicator* cooldown);
 	
+	void setCollectedKeyColor(DirectX::SimpleMath::Vector3 color);
+	std::vector<DirectX::SimpleMath::Vector3> getCollectedKeyColor() const;
+	
+
 	inline bool isOnGround() const { return this->onGround; }
 	inline bool isKeyPickUp() const { return this->keyPickup; }
 	inline int getCurrentKeys() const { return this->keyPieces; }
@@ -78,4 +83,3 @@ public:
 	virtual void onCollisionStay(GameObject& other) override;
 	virtual void onCollisionExit(GameObject& other) override;
 };
-
