@@ -196,7 +196,8 @@ void Player::update()
 	lookAround();
 
 	//Add force down
-	this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f));
+	this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f) * Time::getDT() * 20.0f);
+	//this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f));
 
 	if (this->rb->getVelocity().LengthSquared() > this->maxVelocity * this->maxVelocity)
 	{

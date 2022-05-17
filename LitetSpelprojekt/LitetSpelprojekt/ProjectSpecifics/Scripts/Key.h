@@ -5,14 +5,14 @@
 class Key : public Script
 {
 private:
-
 	GameObject* pointLight;
+	GameObject* beam;
 
 public:
 	Key(GameObject& gameObject);
 	virtual ~Key();
 
-	void setPointLight(GameObject* pointLight);
+	void set(GameObject* pointLight, GameObject* beam);
 
 	void remove();
 

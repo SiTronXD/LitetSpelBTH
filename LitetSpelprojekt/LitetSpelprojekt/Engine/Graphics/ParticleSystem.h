@@ -58,7 +58,8 @@ private:
 
 	int numberOfParticles;
 
-	bool active;
+	float activeTimer;
+
 public:
 	ParticleSystem();
 	~ParticleSystem();

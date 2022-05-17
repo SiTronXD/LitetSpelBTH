@@ -18,7 +18,10 @@ private:
 
 	float highscoreTime;
 
-	void addLevelColliders(LevelLoader& levelLoader);
+	void addLevelProperties(
+		LevelLoader& levelLoader,
+		GameObject& playerGameObject
+	);
 
 	Button resumeButton;
 	Button mainMenuButton;
