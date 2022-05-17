@@ -364,7 +364,7 @@ void GameScene::init()
 
 	// Set player properties from level
 	player->setStartPosition(levelLoader.getPlayerStartPos());
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0) });
+	cam.getComponent<Rigidbody>()->setPosition(levelLoader.getPlayerStartPos());
 
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
@@ -492,10 +492,9 @@ void GameScene::update()
 			this->keyTextTimer = 200.0f;
 		}
 
-		Rigidbody* rb = cam.getComponent<Rigidbody>();
-
 		//Player fall down from a building
-		if (rb->getTransform()->getPosition().y <= 0.0f)
+		if (cam.getComponent<Transform>()->getPosition().y <= 0.0f &&
+			this->highscoreTime >= 0.5f)
 		{
 			playerComp->resetPlayer(playerComp->getStartPosition());
 		}
