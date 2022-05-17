@@ -51,7 +51,6 @@ private:
 	IDXGISwapChain* swapChain;
 
 	VertexShader vertexShader;
-	PixelShader pixelShader;
 	ComputeShader outlineComputeShader;
 
 	D3D11_VIEWPORT viewport;
@@ -86,6 +85,8 @@ private:
 	bool createViews();
 
 	bool loadShaders();
+
+	void renderMesh(MeshComp& meshComp);
 
 public:
 	Renderer(Resources& resources);

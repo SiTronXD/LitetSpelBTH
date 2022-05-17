@@ -208,9 +208,9 @@ bool Texture::createCubemap(std::string fileName, std::string format)
 
 		if (!imageData[i])
 		{
-			Log::error("Failed to load image: " + fileName + std::to_string(i) + format);
+			Log::error("Failed to load image: " + fileName + std::to_string(i + 1) + format);
+
 			return false;
-			break;
 		}
 
 		imagePitch = imageWidth * imageDesiredChannels;
