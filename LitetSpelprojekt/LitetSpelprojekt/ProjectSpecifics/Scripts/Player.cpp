@@ -144,10 +144,6 @@ void Player::updateSkyboxColor()
 			)
 		);
 
-		Log::write("UPDATING SKYBOX COLOR: " + 
-			std::to_string(this->skyboxColorFadeTimer / this->MAX_SKYBOX_COLOR_FADE_TIME)
-		);
-
 		// Reset timer
 		if (this->lastKeyPieces == this->keyPieces)
 			this->skyboxColorFadeTimer = 0.0f;

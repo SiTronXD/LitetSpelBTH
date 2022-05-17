@@ -12,11 +12,13 @@ class HookPoint : public Script
 {
 private:
 	HookState state;
-	Rigidbody* rb;
+	//Rigidbody* rb;
+	Transform* transform;
 	Player* player;
 	float speed;
 	float shotTimer; // Is in motion with a timer until time runs out
 
+	DirectX::SimpleMath::Vector3 velocity;
 	DirectX::SimpleMath::Vector3 returnOffset;
 public:
 	HookPoint(GameObject& gameObject);
@@ -33,5 +35,5 @@ public:
 	// Inherited via Script
 	virtual void init() override;
 	virtual void update() override;
-	virtual void onCollisionEnter(GameObject& other) override;
+	//virtual void onCollisionEnter(GameObject& other) override;
 };

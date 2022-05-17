@@ -56,4 +56,3 @@ public:
 	virtual void init() override;
 	virtual void update() override;
 };
-
