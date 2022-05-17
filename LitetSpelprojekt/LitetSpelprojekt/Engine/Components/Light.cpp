@@ -101,10 +101,10 @@ void Light::render(Scene& scene)
 		scene.getActiveCamera()->getTransform()->getPosition() -
 		this->dirLightBufferStruct.direction * 50.0f;
 
-	// Try to make the transition a bit easier
-	position.x = std::roundf(position.x * 0.5f) / 0.5f;
-	position.y = std::roundf(position.y * 0.5f) / 0.5f;
-	position.z = std::roundf(position.z * 0.5f) / 0.5f;
+	// Try to make the transition a bit "easier"?
+	//position.x = std::roundf(position.x * 0.5f) / 0.5f;
+	//position.y = std::roundf(position.y * 0.5f) / 0.5f;
+	//position.z = std::roundf(position.z * 0.5f) / 0.5f;
 
 	// View matrix
 	this->viewMatrix = Matrix::CreateLookAt(
