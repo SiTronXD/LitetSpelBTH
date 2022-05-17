@@ -9,4 +9,4 @@ Sensitivity
 Volume
 0.355932
 Fullscreen
-true
+false

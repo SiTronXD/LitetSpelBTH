@@ -38,7 +38,7 @@ void Key::remove()
 	this->pointLight->removeComponent<PointLight>();
 
 	// Remove beam components
-	this->beam->removeComponent<MeshComp>();
+	this->beam->removeComponent<BackgroundMeshComp>();
 	this->beam->removeComponent<Beam>();
 }
 

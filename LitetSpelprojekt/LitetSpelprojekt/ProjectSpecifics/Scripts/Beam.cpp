@@ -1,6 +1,7 @@
 #include "Beam.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Time.h"
+#include "../../Engine/SMath.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -36,16 +37,22 @@ void Beam::update()
 	Vector3 delta = this->targetTransform->getPosition() - newPos;
 
 	// Move within view frustum
-	if (delta.LengthSquared() > this->TARGET_MAX_DIST * this->TARGET_MAX_DIST)
+	float deltaLengthSqrd = delta.LengthSquared();
+	if (deltaLengthSqrd > this->TARGET_MIN_DIST * this->TARGET_MIN_DIST)
 	{
-		delta.Normalize();
+		float deltaLength = std::sqrt(deltaLengthSqrd);
+		float t = (deltaLength - this->TARGET_MIN_DIST) / 
+			(this->TARGET_MAX_DIST - this->TARGET_MIN_DIST);
+		t = SMath::clamp(t, 0.0f, 1.0f);
+
+		delta /= deltaLength; // (Normalize)
 		newPos = this->targetTransform->getPosition();
 		newPos -= delta * this->TARGET_MAX_DIST;
 
 		this->transform->setRotation(delta + Vector3(0, -0.7f, 0), Vector3(0, 1, 0));
 
-		newScale.x = newScale.z = 10.0f;
-		newPos.y += 70.0f;
+		newScale.x = newScale.z = 10.0f * t + (1.0f - t) * this->startScale.x;
+		newPos.y += 70.0f * t;
 	}
 	else
 		this->transform->setRotation(Vector3(1, 0, 0), Vector3(0, 1, 0));
