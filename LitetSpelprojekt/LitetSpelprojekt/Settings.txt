@@ -3,10 +3,10 @@ ResolutionX
 ResolutionY
 900
 Graphics
-0.520339
+0.542373
 Sensitivity
 0.361582
 Volume
-0.355932
+0.301377
 Fullscreen
 false

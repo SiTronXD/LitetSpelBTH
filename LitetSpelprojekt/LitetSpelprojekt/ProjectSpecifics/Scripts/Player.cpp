@@ -3,6 +3,7 @@
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Time.h"
 #include "../../Engine/SMath.h"
+#include "../../Engine/Physics/PhysicsEngine.h"
 #include "HookPoint.h"
 #include "GrapplingHook.h"
 #include "CooldownIndicator.h"
@@ -32,7 +33,7 @@ void Player::move()
 		{
 			vec.Normalize();
 			moveVec *= 0.25f;
-			this->rb->addForce(vec * 5.0f * this->speed * Time::getDT() + moveVec);
+			this->rb->addForce(vec * 6.0f * this->speed * Time::getDT() + moveVec);
 		}
 	}
 	else if (this->onGround)
@@ -220,6 +221,16 @@ void Player::setupPointers(
 	this->light = light;
 }
 
+void Player::setCollectedKeyColor(Vector3 color)
+{
+	this->collectedKeyColors.push_back(color);
+}
+
+std::vector<Vector3> Player::getCollectedKeyColor() const
+{
+	return this->collectedKeyColors;
+}
+
 void Player::takeDamage(float damage)
 {
 	if (this->healthCooldown <= 0.0f)
@@ -254,9 +265,6 @@ void Player::update()
 
 	//Add force down
 	this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f) * Time::getDT() * 20.0f);
-	//this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f));
-
-	/*Vector3 vel = this->rb->getVelocity();*/
 
 	if (this->rb->getVelocity().LengthSquared() > this->maxVelocity * this->maxVelocity)
 	{
@@ -266,26 +274,6 @@ void Player::update()
 		this->rb->setVelocity(vel);
 
 	}
-	
-	//temp solusion
-	/*if (vel.x > this->maxVelocity.x)
-		vel.x = this->maxVelocity.x;
-	else if (vel.x < -this->maxVelocity.x)
-		vel.x = -this->maxVelocity.x;
-	
-	float maxDownVel = this->maxVelocity.y * 4;
-
-	if (vel.y > this->maxVelocity.y)
-		vel.y = this->maxVelocity.y;
-	else if(vel.y < -maxDownVel)
-		vel.y = -maxDownVel;
-
-	if (vel.z > this->maxVelocity.z)
-		vel.z = this->maxVelocity.z;
-	else if (vel.z < -this->maxVelocity.z)
-		vel.z = -this->maxVelocity.z;*/
-	
-	//this->rb->setVelocity(vel);
 
 	if (this->hookPoint->getState() != HookState::NOT_ACTIVE)
 		this->grapplingHook->getRope()->setTargetPos(this->hookPoint->getTransform()->getPosition());
@@ -315,13 +303,19 @@ void Player::update()
 
 void Player::onCollisionEnter(GameObject& other)
 {
+	// Ground collision
 	if (other.getTag() == ObjectTag::GROUND)
-		this->onGround = true;
+	{
+		RaycastInfo info = this->getObject().raycast(this->getTransform()->getPosition(), this->getTransform()->getPosition() + Vector3(0.0f, -2.0f, 0.0f));
+		if (info.hit)
+			this->onGround = true;
+	}
 
 	// Collided with key
 	if (other.getTag() == ObjectTag::KEY)
 	{
 		// Remove key
+		this->collectedKeyColors.push_back(other.getComponent<Key>()->getKeyColor());
 		other.getComponent<Key>()->remove();
 
 		this->keyPieces++;
@@ -341,8 +335,13 @@ void Player::onCollisionEnter(GameObject& other)
 
 void Player::onCollisionStay(GameObject& other)
 {
+	// Ground collision
 	if (other.getTag() == ObjectTag::GROUND)
-		this->onGround = true;
+	{
+		RaycastInfo info = this->getObject().raycast(this->getTransform()->getPosition(), this->getTransform()->getPosition() + Vector3(0.0f, -2.0f, 0.0f));
+		if (info.hit)
+			this->onGround = true;
+	}
 }
 
 void Player::onCollisionExit(GameObject& other)

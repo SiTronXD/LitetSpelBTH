@@ -15,7 +15,8 @@ private:
 	std::vector<DirectX::SimpleMath::Vector3> skyboxColors;
 
 	DirectX::SimpleMath::Vector3 startPosition;
-	
+	std::vector<DirectX::SimpleMath::Vector3> collectedKeyColors;
+
 	float speed;
 	float jumpForce;
 	float mouseSensitivity;
@@ -73,6 +74,10 @@ public:
 		CooldownIndicator* cooldown, Light* light
 	);
 	
+	void setCollectedKeyColor(DirectX::SimpleMath::Vector3 color);
+	std::vector<DirectX::SimpleMath::Vector3> getCollectedKeyColor() const;
+	
+
 	inline bool isOnGround() const { return this->onGround; }
 	inline bool isKeyPickUp() const { return this->keyPickup; }
 	inline int getCurrentKeys() const { return this->keyPieces; }
@@ -91,4 +96,3 @@ public:
 	virtual void onCollisionStay(GameObject& other) override;
 	virtual void onCollisionExit(GameObject& other) override;
 };
-

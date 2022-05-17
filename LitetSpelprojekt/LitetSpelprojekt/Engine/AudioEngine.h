@@ -9,6 +9,7 @@ private:
 	bool active;
 	sf::Sound engine;
 	sf::Music music;
+	std::string curMusicPath;
 	Resources& resource;
 public:
 	AudioEngine(Resources& resource);
