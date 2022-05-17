@@ -51,7 +51,7 @@ void HighscoreScene::renderUI()
 	
 	this->getUIRenderer().renderString(
 		"main menu",
-		0,
+		-10,
 		-415,
 		30,
 		30

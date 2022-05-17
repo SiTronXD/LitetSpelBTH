@@ -259,7 +259,7 @@ void SettingsScene::renderUI()
 	// Sensitivity Slider
 	this->getUIRenderer().renderString(
 		"sensitivity:",
-		- 10,
+		-10,
 		-100,
 		30,
 		30
