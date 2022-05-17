@@ -73,13 +73,15 @@ void HighscoreScene::renderUI()
 		int minutes = seconds / 60;
 		int printSeconds = seconds - (minutes * 60);
 		std::string minSec = std::to_string(minutes) + ":" + std::to_string(printSeconds);
-		
-		this->getUIRenderer().renderString(
-		std::to_string((i + 1)) + ": " + minSec,
-		0,
-		280 - (i * 60),
-		30,
-		30
-		);
+		if (!(minSec == "16:39"))
+		{
+			this->getUIRenderer().renderString(
+				std::to_string((i + 1)) + ": " + minSec,
+				0,
+				280 - (i * 60),
+				30,
+				30
+			);
+		}
 	}		
 }

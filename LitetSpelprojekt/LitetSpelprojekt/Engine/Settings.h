@@ -1,10 +1,10 @@
 #pragma once
-
+#include <iostream>
 struct SettingsStruct
 {
 	unsigned int resolutionX;
 	unsigned int resolutionY;
-	float graphics;
+	std::string graphics;
 	float sensitivity;
 	float volume;
 	bool fullscreen;

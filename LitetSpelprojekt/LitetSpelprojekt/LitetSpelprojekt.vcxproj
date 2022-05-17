@@ -162,6 +162,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Components\BackgroundMeshComp.cpp" />
+    <ClCompile Include="Engine\UI\Cycler.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\Beam.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\Key.cpp" />
     <ClCompile Include="Engine\AudioEngine.cpp" />
@@ -234,6 +235,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Components\BackgroundMeshComp.h" />
+    <ClInclude Include="Engine\UI\Cycler.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\Beam.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\Key.h" />
     <ClInclude Include="Engine\AudioEngine.h" />
