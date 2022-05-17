@@ -26,9 +26,11 @@ RaycastInfo GameObject::raycast(float maxDist)
 	return this->ecs.getPhysics()->raycast(rp3d::Ray(orig, orig + dir));
 }
 
-RaycastInfo GameObject::raycast(rp3d::Ray ray)
+RaycastInfo GameObject::raycast(DirectX::SimpleMath::Vector3 orig, DirectX::SimpleMath::Vector3 dest)
 {
-	return this->ecs.getPhysics()->raycast(ray);
+	rp3d::Vector3 rOrig = { orig.x, orig.y, orig.z };
+	rp3d::Vector3 rDest = { dest.x, dest.y, dest.z };
+	return this->ecs.getPhysics()->raycast(rp3d::Ray(rOrig, rDest));
 }
 
 void GameObject::playSound(std::string sound)

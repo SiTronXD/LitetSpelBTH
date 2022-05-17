@@ -18,8 +18,8 @@ public:
 
 	// Cast from own position and direction
 	RaycastInfo raycast(float maxDist);
-	// Define own ray position and direction
-	RaycastInfo raycast(rp3d::Ray ray);
+	// Define own ray orig and dest
+	RaycastInfo raycast(DirectX::SimpleMath::Vector3 orig, DirectX::SimpleMath::Vector3 dest);
 
 	void playSound(std::string sound);
 

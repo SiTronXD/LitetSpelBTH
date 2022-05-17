@@ -8,6 +8,7 @@ AudioEngine::AudioEngine(Resources& resource):
 	if (!sf::SoundRecorder::getAvailableDevices().size())
 		this->active = false;
 	this->music.setLoop(true);
+	this->curMusicPath = "";
 }
 
 AudioEngine::~AudioEngine()
@@ -32,6 +33,10 @@ void AudioEngine::playSound(std::string sound)
 
 void AudioEngine::setMusic(std::string path)
 {
+	if (path == this->curMusicPath)
+		return;
+
+	this->curMusicPath = path;
 	if (this->music.openFromFile(path))
 		this->music.play();
 }

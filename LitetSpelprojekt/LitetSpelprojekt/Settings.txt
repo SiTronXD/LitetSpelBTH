@@ -7,6 +7,6 @@ Graphics
 Sensitivity
 0.361582
 Volume
-0.355932
+0.301377
 Fullscreen
-true
+false
