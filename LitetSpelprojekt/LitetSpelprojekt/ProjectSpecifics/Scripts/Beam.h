@@ -7,7 +7,7 @@
 class Beam : public Script
 {
 private:
-	const float TARGET_MAX_DIST = 280.0f;
+	const float TARGET_MAX_DIST = 220.0f;
 
 	Transform* transform;
 	Transform* targetTransform;

@@ -84,6 +84,7 @@
     <ClCompile Include="ProjectSpecifics\Scripts\Key.cpp" />
     <ClCompile Include="Engine\AudioEngine.cpp" />
     <ClCompile Include="ProjectSpecifics\Scripts\Beam.cpp" />
+    <ClCompile Include="Engine\Components\BackgroundMeshComp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -156,6 +157,7 @@
     <ClInclude Include="ProjectSpecifics\Scripts\Key.h" />
     <ClInclude Include="Engine\AudioEngine.h" />
     <ClInclude Include="ProjectSpecifics\Scripts\Beam.h" />
+    <ClInclude Include="Engine\Components\BackgroundMeshComp.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

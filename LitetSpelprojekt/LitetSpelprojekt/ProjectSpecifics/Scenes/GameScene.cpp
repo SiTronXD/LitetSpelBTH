@@ -155,7 +155,7 @@ void GameScene::addLevelProperties(
 
 		// Beam
 		GameObject& beamObject = this->addGameObject("Key beam");
-		MeshComp* beamMesh = beamObject.addComponent<MeshComp>();
+		BackgroundMeshComp* beamMesh = beamObject.addComponent<BackgroundMeshComp>();
 		beamMesh->setMesh("BeamMesh", "WhiteMaterial");
 		beamMesh->setColor(keyColor);
 		beamMesh->setPixelShaderName("Beam_PS");

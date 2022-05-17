@@ -389,6 +389,17 @@ void Renderer::render(Scene& scene)
 		this->renderMesh(*currentMeshComp);
 	}
 
+
+	// --------------------- Render background meshes ---------------------
+	std::vector<BackgroundMeshComp*> backgroundMeshComps = scene.getActiveComponents<BackgroundMeshComp>();
+
+	// Render all background meshes
+	for (unsigned int i = 0; i < backgroundMeshComps.size(); ++i)
+	{
+		MeshComp* currentMeshComp = backgroundMeshComps[i];
+		this->renderMesh(*currentMeshComp);
+	}
+
 	// Remove third constant buffer
 	immediateContext->PSSetConstantBuffers(2, 1, this->nullConstantBuffer);
 
