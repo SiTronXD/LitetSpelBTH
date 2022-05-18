@@ -12,6 +12,7 @@ private:
 	Button highscoreButton;
 	Button settingsButton;
 	Button exitButton;
+	GameObject& cam;
 public:
 	MenuScene(SceneHandler& sceneHandler);
 	virtual ~MenuScene();
