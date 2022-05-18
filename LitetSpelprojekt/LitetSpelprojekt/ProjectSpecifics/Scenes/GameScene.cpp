@@ -133,7 +133,7 @@ void GameScene::addLevelProperties(
 		keyMc->setMesh("RealCubeMesh", "testMaterial");
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition(keyPos);
-		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
+		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
 		Rigidbody* rb = portalKey.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::STATIC);
@@ -167,9 +167,6 @@ void GameScene::addLevelProperties(
 		// Set pointers in key script
 		keyScript->set(&pointLightObject, &beamObject);
 	}
-
-	//Portal beam
-	//GameObject& beamObject = this->addGameObject("Portal beam");
 
 	// Portal
 	PortalInfo portalInfo = levelLoader.getPortal();
@@ -347,7 +344,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelMattin.fbx");
+	levelLoader.load("Resources/Levels/testLevelMattinBackup.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
@@ -361,7 +358,9 @@ void GameScene::init()
 
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
+	hookObject.addComponent<ParticleEmitter>();
 	hookObject.getComponent<Transform>()->setScaling(0.1f, 0.1f, 0.1f);
+	hookObject.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 64, Vector3(1.2f, 1.2f, 1.2f), Vector3(0.4f, 0.4f, 0.4f));
 	rb = hookObject.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
@@ -544,15 +543,6 @@ void GameScene::update()
 				this->keyTextScale += (150.0f * Time::getDT());
 		}
 
-		//Particle update
-		if (Input::isKeyJustPressed(Keys::E))
-		{
-			std::vector<ParticleEmitter*> particleComponents = getActiveComponents<ParticleEmitter>();
-			for (unsigned int i = 0; i < particleComponents.size(); ++i)
-			{
-				particleComponents[i]->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
-			}
-		}
 	}
 	else
 	{
