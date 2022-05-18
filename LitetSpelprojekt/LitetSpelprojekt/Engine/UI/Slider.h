@@ -1,6 +1,7 @@
 #pragma once
 #include "../Graphics/UIRenderer.h"
 #include "SimpleMath.h"
+#include "../AudioEngine.h"
 
 class Slider
 {
@@ -16,11 +17,12 @@ private:
 	DirectX::SimpleMath::Vector3 changedClr;
 	bool changed;
 	UIRenderer& uiRenderer;
+	AudioEngine& audioEngine;
 
 public:
 	Slider(DirectX::SimpleMath::Vector2 p, int w, int h, float minVal, float curVal, float maxVal,
 		float percentFilled, DirectX::SimpleMath::Vector3 bClr,
-		DirectX::SimpleMath::Vector3 cClr, bool cha, UIRenderer& r);
+		DirectX::SimpleMath::Vector3 cClr, bool cha, UIRenderer& r, AudioEngine& audio);
 	~Slider();
  
 	// Get

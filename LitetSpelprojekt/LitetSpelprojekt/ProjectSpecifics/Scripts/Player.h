@@ -12,6 +12,9 @@ class Player : public Script
 {
 private:
 	const float MAX_SKYBOX_COLOR_FADE_TIME = 2.0f;
+	const float MAX_FOV_PERCENTAGE = 1.4f;
+	const float FOV_CHANGE_MIN_SPEED = 31.0f;
+	const float FOV_CHANGE_MAX_SPEED = 50.0f;
 
 	std::vector<DirectX::SimpleMath::Vector3> skyboxColors;
 
@@ -31,6 +34,7 @@ private:
 	float pulseCannonCooldown;
 	float healthCooldown;
 	float skyboxColorFadeTimer;
+	float fovPercent;
 
 	bool onGround;
 	bool keyPickup;
@@ -39,6 +43,7 @@ private:
 
 	// Component references
 	Rigidbody* rb;
+	Camera* camera;
 
 	// References to other gameObject components
 	HookPoint* hookPoint;
@@ -76,6 +81,7 @@ public:
 		CooldownIndicator* cooldown, Light* light,
 		Hand* hand
 	);
+	void addKey();
 	
 	void setCollectedKeyColor(DirectX::SimpleMath::Vector3 color);
 	std::vector<DirectX::SimpleMath::Vector3> getCollectedKeyColor() const;
@@ -85,9 +91,11 @@ public:
 	inline bool isKeyPickUp() const { return this->keyPickup; }
 	inline int getCurrentKeys() const { return this->keyPieces; }
 	inline int getHealth() const { return this->health; }
-	
+
 	inline bool isPlayerDead() const { return this->dead; }
 	inline bool onPortal() const { return this->portal; }
+
+	DirectX::SimpleMath::Vector3 getFinalSkyBoxColor() const;
 
 	void takeDamage(float damage);
 	void resetPlayer(DirectX::SimpleMath::Vector3 pos);

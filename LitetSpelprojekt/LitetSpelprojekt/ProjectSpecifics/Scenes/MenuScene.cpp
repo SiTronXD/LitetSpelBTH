@@ -4,15 +4,17 @@
 #include "HighscoreScene.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Application/Window.h"
+#include "../../Engine/Time.h"
 
 using namespace DirectX::SimpleMath;
 
 MenuScene::MenuScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	playButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	highscoreButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	settingsButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer())
+	playButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	highscoreButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	settingsButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	cam(this->addGameObject("Camera"))
 {
 }
 
@@ -23,7 +25,9 @@ MenuScene::~MenuScene()
 void MenuScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/MenuGui/buttonBackground.png", "buttonBackground.png");
-	this->getAudioEngine().setMusic("Resources/SoundFiles/musicTest.wav");
+	this->getResources().addTexture("Resources/Textures/MenuGui/Logo.png", "Logo.png");
+	this->getAudioEngine().setMusic("Resources/SoundFiles/LonelinessOfTheWinner.wav");
+	this->getResources().addSoundEffect("Resources/SoundFiles/MenuClick.wav", "MenuClick");
 	
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =
@@ -43,13 +47,12 @@ void MenuScene::init()
 	);
 	this->getUIRenderer().setFontCharacterSpacing(5);
 	this->getUIRenderer().setFontSpaceWidth(10);
-
-	//Add cubemap
-	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
-	this->getRenderer().setSkyBoxName("menubox");
 	
-	GameObject& cam = this->addGameObject("Camera");
-	this->setActiveCamera(cam.addComponent<Camera>());
+	//Add cubemap
+	this->getResources().addCubeMap("MenuBox", ".png", "menubox");
+	this->getRenderer().setSkyBoxName("menubox");
+
+	this->setActiveCamera(this->cam.addComponent<Camera>());
 
 	// Sun
 	GameObject& sunObject = this->addGameObject("Sun");
@@ -57,17 +60,17 @@ void MenuScene::init()
 	lightComponent->init(this->getResources(), this->getRenderer());
 
 	// Define Play Button's size and position
-	playButton.setPos(Vector2(0, 210));
+	playButton.setPos(Vector2(0, 135));
 	playButton.setWidth(354);
 	playButton.setHeight(159);
 
 	// Define Highscore Button's size and position
-	highscoreButton.setPos(Vector2(0, 0));
+	highscoreButton.setPos(Vector2(0, -50));
 	highscoreButton.setWidth(354);
 	highscoreButton.setHeight(159);
 
 	// Define Settings Button's size and position
-	settingsButton.setPos(Vector2(0, -210));
+	settingsButton.setPos(Vector2(0, -235));
 	settingsButton.setWidth(354);
 	settingsButton.setHeight(159);
 
@@ -110,18 +113,18 @@ void MenuScene::renderUI()
 	settingsButton.render("buttonBackground.png");
 	exitButton.render("buttonBackground.png");
 
-	this->getUIRenderer().renderString(
-		"grapple mayhem",
-		-10,
-		400,
-		50,
-		50
+	this->getUIRenderer().renderTexture(
+		"Logo.png",
+		0,
+		385,
+		1024,
+		512
 	);
 
 	this->getUIRenderer().renderString(
 		"play",
 		-10,
-		210,
+		135,
 		30,
 		30
 	);
@@ -129,7 +132,7 @@ void MenuScene::renderUI()
 	this->getUIRenderer().renderString(
 		"highscore",
 		-10,
-		0,
+		-50,
 		30,
 		30
 	);
@@ -137,7 +140,7 @@ void MenuScene::renderUI()
 	this->getUIRenderer().renderString(
 		"settings",
 		-10,
-		-210,
+		-235,
 		30,
 		30
 	);

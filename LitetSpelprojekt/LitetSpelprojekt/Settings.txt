@@ -5,8 +5,8 @@ ResolutionY
 Graphics
 medium
 Sensitivity
-0.130508
+0.556497
 Volume
-0.164407
+0.174576
 Fullscreen
 false

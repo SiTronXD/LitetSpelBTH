@@ -23,11 +23,12 @@ void Beam::set(GameObject& keyObject, GameObject& targetObject)
 	this->startPos = keyObject.getComponent<Transform>()->getPosition() +
 		Vector3(0.0f, 7.0f, 0.0f);
 	this->startScale = Script::getTransform()->getScaling();
+	this->transform = Script::getTransform();
 }
 
 void Beam::init()
 {
-	this->transform = Script::getTransform();
+	//this->transform = Script::getTransform();
 }
 
 void Beam::update()

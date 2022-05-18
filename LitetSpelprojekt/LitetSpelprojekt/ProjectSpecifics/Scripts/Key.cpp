@@ -42,7 +42,7 @@ void Key::remove()
 	Script::getObject().removeComponent<Rigidbody>();
 
 	// Particle system
-	Script::getObject().getComponent<ParticleEmitter>()->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
+	Script::getObject().getComponent<ParticleEmitter>()->explode(10, 1);
 
 	// Remove point light components
 	this->pointLight->removeComponent<MeshComp>();

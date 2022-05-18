@@ -23,7 +23,13 @@ public:
 		const float& min, 
 		const float& max
 	);
-
+  
+  static float lerp(
+		const float& v1,
+		const float& v2,
+		float t
+	);
+  
 	static DirectX::XMFLOAT4X4 assimpMatToDX(const aiMatrix4x4& assimpMat);
 	static DirectX::XMFLOAT3 assimpVec3ToDX(const aiVector3D& assimpVec);
 	static DirectX::XMFLOAT4 assimpQuatToDX(const aiQuaternion& assimpQuat);
