@@ -26,6 +26,8 @@ void GameOverScene::init()
 	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
 	this->getRenderer().setSkyBoxName("menubox");
 
+	this->getAudioEngine().setMusic("");
+
 	//Camera
 	this->setActiveCamera(this->cam.addComponent<Camera>());
 

@@ -132,7 +132,7 @@ void GameScene::addLevelProperties(
 	for (unsigned int i = 0; i < levelLoader.getKeys().size(); ++i)
 	{
 		KeyInfo currentKeyInfo = levelLoader.getKeys()[i];
-		Vector3 keyPos = currentKeyInfo.position;
+		Vector3 keyPos = currentKeyInfo.position + Vector3(0.0f, -1.0f, 0.0f);
 		Vector3 keyColor = currentKeyInfo.color;
 
 		//Portal key objects
