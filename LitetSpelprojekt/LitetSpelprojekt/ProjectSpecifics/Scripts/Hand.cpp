@@ -49,8 +49,8 @@ void Hand::update()
 
 		// Position
 		Vector3 newPos = this->targetTransform->getPosition() +
-			this->targetTransform->right() * -6.0f +
-			this->targetTransform->up() * (1.5f) +
+			this->targetTransform->right() * -5.5f +
+			this->targetTransform->up() * 1.5f +
 			this->targetTransform->forward() * -1.5f;
 		this->transform->setPosition(newPos);
 
@@ -59,7 +59,9 @@ void Hand::update()
 			-this->targetTransform->forward() * 0.3f;
 		tempUp.Normalize();
 		this->transform->setRotation(
-			this->targetTransform->up(),
+			this->targetTransform->up() + 
+				this->targetTransform->forward() * 0.2f +
+				this->targetTransform->right() * 0.2f,
 			tempUp
 		);
 

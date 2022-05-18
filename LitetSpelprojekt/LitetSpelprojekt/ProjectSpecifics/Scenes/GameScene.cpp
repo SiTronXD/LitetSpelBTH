@@ -342,7 +342,7 @@ void GameScene::init()
 	);
 
 	MeshData handMeshData = MeshLoader::loadAnimatedModel(
-		"Resources/Models/handRig_02.fbx");
+		"Resources/Models/handRig_02_edit.fbx");
 	handMeshData.invertFaces();
 	this->getResources().addMesh(
 		std::move(handMeshData),
