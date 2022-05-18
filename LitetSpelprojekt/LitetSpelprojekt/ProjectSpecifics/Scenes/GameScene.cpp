@@ -4,6 +4,7 @@
 #include "MenuScene.h"
 #include "GameOverScene.h"
 #include "../Scripts/Player.h"
+#include "../Scripts/Hand.h"
 #include "../Scripts/HookPoint.h"
 #include "../Scripts/GrapplingHook.h"
 #include "../Scripts/GrapplingHookRope.h"
@@ -338,6 +339,13 @@ void GameScene::init()
 		"BeamMesh"
 	);
 
+	MeshData handMeshData = MeshLoader::loadAnimatedModel(
+		"Resources/Models/HandWithAnimation.fbx");
+	this->getResources().addMesh(
+		std::move(handMeshData),
+		"HandMesh"
+	);
+
 	// Player
 	this->setActiveCamera(cam.addComponent<Camera>());
 
@@ -378,12 +386,6 @@ void GameScene::init()
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");
 
-	// Origin
-	/*GameObject& origin = this->addGameObject("Origin");
-	origin.getComponent<Transform>()->setScaling(Vector3(3, 3, 3));
-	MeshComp* originMC = origin.addComponent<MeshComp>();
-	originMC->setMesh("RealSphereMesh", "testMaterial");*/
-
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
 	AbsoluteMeshComp* amc = grapplingHook.addComponent<AbsoluteMeshComp>();
@@ -409,6 +411,14 @@ void GameScene::init()
 	amc->setShouldShade(false);
 	CooldownIndicator* cooldownIndicatorComp =
 		cooldownIndicatorObject.addComponent<CooldownIndicator>();
+
+	// FPS hand
+	GameObject handObject = this->addGameObject("FPS hand");
+	MeshComp* handMesh = handObject.addComponent<MeshComp>();
+	handMesh->setMesh("HandMesh", "WhiteMaterial");
+	handMesh->setCastShadow(false);
+	Hand* handScript = handObject.addComponent<Hand>();
+	handScript->setup(this->cam);
 
 	// Sun
 	GameObject& sunObject = this->addGameObject("Sun");

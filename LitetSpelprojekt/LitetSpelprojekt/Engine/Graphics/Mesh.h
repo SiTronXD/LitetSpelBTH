@@ -12,6 +12,8 @@ private:
 	std::vector<Submesh> submeshes;
 	Submesh entireMesh;
 
+	bool meshDataHasAnimations;
+
 public:
 	Mesh(Renderer& renderer, MeshData&& meshData);
 	virtual ~Mesh();
@@ -20,4 +22,6 @@ public:
 	inline IndexBuffer& getIndexBuffer() { return this->indexBuffer; }
 	inline std::vector<Submesh>& getSubmeshes() { return this->submeshes; }
 	inline const Submesh& getEntireSubmesh() const { return this->entireMesh; }
+
+	inline const bool& hasAnimations() const { return this->meshDataHasAnimations; }
 };

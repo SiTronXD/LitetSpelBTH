@@ -51,6 +51,7 @@ private:
 	IDXGISwapChain* swapChain;
 
 	VertexShader vertexShader;
+	VertexShader animVertexShader;
 	ComputeShader outlineComputeShader;
 
 	D3D11_VIEWPORT viewport;

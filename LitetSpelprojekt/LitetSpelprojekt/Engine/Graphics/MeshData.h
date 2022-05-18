@@ -12,6 +12,38 @@ struct Vertex
 	DirectX::XMFLOAT2 uv;
 };
 
+struct AnimVertex
+{
+	DirectX::XMFLOAT3 pos;
+	DirectX::XMFLOAT3 normal;
+	DirectX::XMFLOAT2 uv;
+
+	DirectX::XMFLOAT4 boneWeights;
+	DirectX::XMINT4 boneIndices;
+};
+
+struct BoneTransforms
+{
+	std::vector<std::pair<double, DirectX::XMFLOAT3>> positionStamps;
+	std::vector<std::pair<double, DirectX::XMFLOAT4>> rotationStamps;
+	std::vector<std::pair<double, DirectX::XMFLOAT3>> scaleStamps;
+};
+
+struct Bone
+{
+	std::string name;
+	int parentIndex;
+
+	BoneTransforms boneTransforms;
+
+	// (vertex index, weight)
+	std::vector<std::pair<unsigned int, double>> weights;
+
+	DirectX::XMFLOAT4X4 bindModelInverse;
+	DirectX::XMFLOAT4X4 modelTransform;
+	DirectX::XMFLOAT4X4 finalTransform;
+};
+
 struct Submesh
 {
 	char materialName[64];
@@ -34,8 +66,10 @@ class MeshData
 {
 private:
 	std::vector<Vertex> vertices;
+	std::vector<AnimVertex> animVertices;
 	std::vector<unsigned int> indices;
 	std::vector<Submesh> submeshes;
+	std::vector<Bone> skeleton;
 
 	void createTriangle();
 	void createTetrahedron();
@@ -60,14 +94,25 @@ public:
 	void createDefault(DefaultMesh defaultMesh);
 	void calculateNormals();
 	void calculateNormals(DefaultMesh defaultMesh);
+	void calculateAnimNormals(DefaultMesh defaultMesh);
 	void invertFaces();
 	void transformMesh(const DirectX::SimpleMath::Matrix& transform);
 
 	void addVertex(const Vertex& newVertex);
+	void addAnimVertex(const AnimVertex& newAnimVertex);
 	void addIndex(const unsigned int& newIndex);
 	void addSubmesh(const Submesh& newSubmesh);
+	void addBone(const Bone& bone);
+
+	void swapBones(Bone& bone, const unsigned int& destinationIndex, const unsigned int& sourceIndex);
+
+	unsigned int getBoneIndex(const std::string& boneName, Bone*& outputBone);
 
 	inline const std::vector<Vertex>& getVertices() { return this->vertices; }
+	inline std::vector<AnimVertex>& getAnimVertices() { return this->animVertices; }
 	inline const std::vector<unsigned int>& getIndices() { return this->indices; }
 	inline const std::vector<Submesh>& getSubmeshes() { return this->submeshes; }
+	inline const std::vector<Bone>& getSkeleton() { return this->skeleton; }
+
+	inline bool hasAnimations() { return this->animVertices.size() > 0; }
 };

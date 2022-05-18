@@ -13,6 +13,7 @@
     <FxCompile Include="Resources\Shaders\ShadowMap_VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Outlines_COMP.hlsl" />
     <FxCompile Include="Resources\Shaders\Beam_PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Anim_VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Components\Camera.cpp" />
@@ -86,6 +87,7 @@
     <ClCompile Include="ProjectSpecifics\Scripts\Beam.cpp" />
     <ClCompile Include="Engine\Components\BackgroundMeshComp.cpp" />
     <ClCompile Include="Engine\UI\Cycler.cpp" />
+    <ClCompile Include="ProjectSpecifics\Scripts\Hand.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Dev\Helpers.h" />
@@ -160,6 +162,7 @@
     <ClInclude Include="ProjectSpecifics\Scripts\Beam.h" />
     <ClInclude Include="Engine\Components\BackgroundMeshComp.h" />
     <ClInclude Include="Engine\UI\Cycler.h" />
+    <ClInclude Include="ProjectSpecifics\Scripts\Hand.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Settings.txt" />

@@ -1,4 +1,5 @@
 #include "MeshData.h"
+#include "../Dev/Log.h"
 
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
@@ -351,8 +352,16 @@ void MeshData::createDefault(DefaultMesh defaultMesh)
 
 void MeshData::calculateNormals()
 {
-	// Choose anything that's not a sphere
-	this->calculateNormals(DefaultMesh::TRIANGLE);
+	if (!this->hasAnimations())
+	{
+		// Choose anything that's not a sphere
+		this->calculateNormals(DefaultMesh::TRIANGLE);
+	}
+	else
+	{
+		// Choose anything that's not a sphere
+		this->calculateAnimNormals(DefaultMesh::TRIANGLE);
+	}
 }
 
 void MeshData::calculateNormals(DefaultMesh defaultMesh)
@@ -424,6 +433,75 @@ void MeshData::calculateNormals(DefaultMesh defaultMesh)
 	}
 }
 
+void MeshData::calculateAnimNormals(DefaultMesh defaultMesh)
+{
+	if (defaultMesh != DefaultMesh::SPHERE)
+	{
+		std::vector<XMFLOAT3> vertexNormals;
+		vertexNormals.resize(this->animVertices.size(), { 0.0f, 0.0f, 0.0f });
+
+		// Add flat normals to each vertex
+		for (unsigned int i = 0; i < this->indices.size(); i += 3)
+		{
+			XMVECTOR vertPos0 = XMLoadFloat3(&this->animVertices[this->indices[i + 0]].pos);
+			XMVECTOR vertPos1 = XMLoadFloat3(&this->animVertices[this->indices[i + 1]].pos);
+			XMVECTOR vertPos2 = XMLoadFloat3(&this->animVertices[this->indices[i + 2]].pos);
+
+			XMVECTOR edge1 = vertPos1 - vertPos0;
+			XMVECTOR edge2 = vertPos2 - vertPos0;
+
+			XMVECTOR normal = XMVector3Normalize(XMVector3Cross(edge2, edge1));
+
+			// Add calculated normal to current list of vertex normals
+			XMStoreFloat3(
+				&vertexNormals[this->indices[i + 0]],
+				XMLoadFloat3(&vertexNormals[this->indices[i + 0]]) + normal
+			);
+			XMStoreFloat3(
+				&vertexNormals[this->indices[i + 1]],
+				XMLoadFloat3(&vertexNormals[this->indices[i + 1]]) + normal
+			);
+			XMStoreFloat3(
+				&vertexNormals[this->indices[i + 2]],
+				XMLoadFloat3(&vertexNormals[this->indices[i + 2]]) + normal
+			);
+		}
+
+		// Normalize vector sums
+		for (unsigned int i = 0; i < this->animVertices.size(); ++i)
+		{
+			XMVECTOR vec = XMLoadFloat3(&vertexNormals[i]);
+
+			// Normalize, if possible
+			XMFLOAT3 dotResult;
+			XMStoreFloat3(&dotResult, XMVector3Dot(vec, vec));
+			if (dotResult.x > 0.0f)
+				vec = XMVector3Normalize(vec);
+
+			// Store normal
+			XMFLOAT3 finalNormal;
+			XMStoreFloat3(&finalNormal, vec);
+			this->animVertices[i].normal = finalNormal;
+		}
+	}
+	// Sphere normals
+	else
+	{
+		for (unsigned int i = 0; i < this->animVertices.size(); ++i)
+		{
+			XMVECTOR vec = XMLoadFloat3(&this->animVertices[i].pos);
+
+			// Normalize position
+			vec = XMVector3Normalize(vec);
+
+			// Store normal
+			XMFLOAT3 finalNormal;
+			XMStoreFloat3(&finalNormal, vec);
+			this->animVertices[i].normal = finalNormal;
+		}
+	}
+}
+
 void MeshData::invertFaces()
 {
 	// Swap 2 indices in each triangle
@@ -437,16 +515,32 @@ void MeshData::invertFaces()
 
 void MeshData::transformMesh(const DirectX::SimpleMath::Matrix& transform)
 {
-	for (unsigned int i = 0; i < this->vertices.size(); ++i)
+	if (!this->hasAnimations())
 	{
-		this->transformVector(transform, this->vertices[i].pos, true);
-		this->transformVector(transform, this->vertices[i].normal, false);
+		for (unsigned int i = 0; i < this->vertices.size(); ++i)
+		{
+			this->transformVector(transform, this->vertices[i].pos, true);
+			this->transformVector(transform, this->vertices[i].normal, false);
+		}
+	}
+	else
+	{
+		for (unsigned int i = 0; i < this->animVertices.size(); ++i)
+		{
+			this->transformVector(transform, this->animVertices[i].pos, true);
+			this->transformVector(transform, this->animVertices[i].normal, false);
+		}
 	}
 }
 
 void MeshData::addVertex(const Vertex& newVertex)
 {
 	this->vertices.push_back(newVertex);
+}
+
+void MeshData::addAnimVertex(const AnimVertex& newAnimVertex)
+{
+	this->animVertices.push_back(newAnimVertex);
 }
 
 void MeshData::addIndex(const unsigned int& newIndex)
@@ -457,4 +551,36 @@ void MeshData::addIndex(const unsigned int& newIndex)
 void MeshData::addSubmesh(const Submesh& newSubmesh)
 {
 	this->submeshes.push_back(newSubmesh);
+}
+
+void MeshData::addBone(const Bone& bone)
+{
+	this->skeleton.push_back(bone);
+}
+
+void MeshData::swapBones(Bone& bone, const unsigned int& destinationIndex, const unsigned int& sourceIndex)
+{
+	if (destinationIndex != sourceIndex)
+	{
+		Bone tempBone = this->skeleton[destinationIndex];
+		this->skeleton[destinationIndex] = bone;
+		this->skeleton[sourceIndex] = tempBone;
+	}
+}
+
+unsigned int MeshData::getBoneIndex(
+	const std::string& boneName, Bone*& outputBone)
+{
+	for (unsigned int i = 0; i < this->skeleton.size(); ++i)
+	{
+		// Found bone
+		if (this->skeleton[i].name == boneName)
+		{
+			outputBone = &this->skeleton[i];
+			return i;
+		}
+	}
+
+	Log::error("Could not find bone with the name " + boneName);
+	return -1;
 }
