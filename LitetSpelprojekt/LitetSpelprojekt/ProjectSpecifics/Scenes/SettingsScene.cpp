@@ -2,23 +2,27 @@
 #include "../../Engine/GameObject.h"
 #include "SimpleMath.h"
 #include "../Scripts/Player.h"
+#include "../../Engine/Time.h"
+
 using namespace DirectX::SimpleMath;
 
 SettingsScene::SettingsScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	fullscreenBox(Vector2(0,0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	graphicsSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	volSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer())
+
+	fullscreenBox(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	resSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	graphicsCycler(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	sensSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	volSlider(Vector2(0, 0), 0, 0, 0, 0, 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine())
+
 {
 	resolutions = {};
+	this->cooldown = 0.5f;
 }
 
 SettingsScene::~SettingsScene()
 {	
-	
 }
 
 void SettingsScene::init()
@@ -26,10 +30,16 @@ void SettingsScene::init()
 	// Load Textures
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
+	this->getResources().addSoundEffect("Resources/SoundFiles/MenuSlider.wav", "MenuSlider");
 
 	// Set Camera
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
+
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
 
 	// Get supported resolutions from the renderer
 	std::vector<DirectX::XMFLOAT2>& supportedResolutions =
@@ -46,6 +56,7 @@ void SettingsScene::init()
 		);
 	}
 
+	// Display current resolution in slider
 	int k = 0;
 	int resIndex = 0;
 	for (int i = 0; i < this->resolutions.size(); i+=2)
@@ -62,6 +73,8 @@ void SettingsScene::init()
 		}
 	}
 	
+	std::vector<std::string> graphicsLevels = { "low", "medium", "high" };
+
 	// Default values for sliders
 	int sliderHeight = 60;
 	int sliderWidth = 354;
@@ -72,7 +85,7 @@ void SettingsScene::init()
 	fullscreenBox.setWidth(50);
 
 	// Resolution Slider
-	resSlider.setPos(Vector2(0, 130));
+	resSlider.setPos(Vector2(0,-10));
 	resSlider.setWidth(sliderWidth);
 	resSlider.setHeight(sliderHeight);
 	resSlider.setMinVal(0);
@@ -80,14 +93,13 @@ void SettingsScene::init()
 	resSlider.setMaxVal(this->resolutions.size() / 2.0f);
 	resSlider.setPerFill(resIndex / (float)this->resolutions.size());
 
-	// Graphicsness™ Slider - 
-	graphicsSlider.setPos(Vector2(0, -10));
-	graphicsSlider.setWidth(sliderWidth);
-	graphicsSlider.setHeight(sliderHeight);
-	graphicsSlider.setMinVal(0.1f);
-	graphicsSlider.setCurVal(this->getSettings().getSettings().graphics);
-	graphicsSlider.setMaxVal(1.0f);
-	graphicsSlider.setPerFill(this->getSettings().getSettings().graphics);
+	// Graphicsness™ Slider
+	graphicsCycler.setPos(Vector2(0, 130));
+	graphicsCycler.setWidth(sliderWidth);
+	graphicsCycler.setHeight(sliderHeight);
+	graphicsCycler.setElements(graphicsLevels);
+	graphicsCycler.setCurrent(this->getSettings().getSettings().graphics);
+	
 
 	// Sensitivity Slider
 	sensSlider.setPos(Vector2(0, -150));
@@ -116,58 +128,75 @@ void SettingsScene::init()
 void SettingsScene::update()
 {
 	this->getECS().update();
-	
-	if (resSlider.isClicked())
-	{
-		this->getSettings().getSettings().resolutionX = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2));
-		this->getSettings().getSettings().resolutionY = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2 + 1));
-		Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
-			"x" + std::to_string(this->getSettings().getSettings().resolutionY));
-	}
-	else if (sensSlider.isClicked())
-	{
-		this->getSettings().getSettings().sensitivity = sensSlider.getCurVal();
-		Log::write("Sensitivity set to: " + std::to_string(this->getSettings().getSettings().sensitivity));
-	}
-	else if (graphicsSlider.isClicked())
-	{
-		this->getSettings().getSettings().graphics = graphicsSlider.getCurVal();
-		Log::write("Graphics set to: " + std::to_string(this->getSettings().getSettings().graphics));
-	}
-	else if (volSlider.isClicked())
-	{
-		this->getSettings().getSettings().volume = volSlider.getCurVal();
-		Log::write("Volume set to: " + std::to_string(this->getSettings().getSettings().volume));
 
-		this->getAudioEngine().setVolume(this->getSettings().getSettings().volume);
-	}
-	else if (exitButton.isClicked())
+	if (cooldown > 0)
 	{
-		// Exit Game
-		this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
+		cooldown -= Time::getDT();
 	}
-	else if (fullscreenBox.isClicked())
+	else
 	{
-		if (this->getSettings().getSettings().fullscreen == true)
+		if (resSlider.isClicked())
 		{
-			this->getSettings().getSettings().fullscreen = false;
+			this->getSettings().getSettings().resolutionX = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2));
+			this->getSettings().getSettings().resolutionY = stoi(resolutions.at((int)this->resSlider.getCurVal() * 2 + 1));
+			Log::write("Resolution set to: " + std::to_string(this->getSettings().getSettings().resolutionX) +
+				"x" + std::to_string(this->getSettings().getSettings().resolutionY));
 		}
-		else
+		else if (graphicsCycler.isClicked())
 		{
-			this->getSettings().getSettings().fullscreen = true;
+			if (graphicsCycler.getCurrent() == "low")
+			{
+				graphicsCycler.setCurrent(graphicsCycler.getElements().at(1));
+			}
+			else if (graphicsCycler.getCurrent() == "medium")
+			{
+				graphicsCycler.setCurrent(graphicsCycler.getElements().at(2));
+			}
+			else if (graphicsCycler.getCurrent() == "high")
+			{
+				graphicsCycler.setCurrent(graphicsCycler.getElements().at(0));
+			}
+
+			this->getSettings().getSettings().graphics = graphicsCycler.getCurrent();
+			Log::write("Graphics set to: " + this->getSettings().getSettings().graphics);
 		}
-		
+		else if (sensSlider.isClicked())
+		{
+			this->getSettings().getSettings().sensitivity = sensSlider.getCurVal();
+			Log::write("Sensitivity set to: " + std::to_string(this->getSettings().getSettings().sensitivity));
+		}
+		else if (volSlider.isClicked())
+		{
+			this->getSettings().getSettings().volume = volSlider.getCurVal();
+			Log::write("Volume set to: " + std::to_string(this->getSettings().getSettings().volume));
+
+			this->getAudioEngine().setVolume(this->getSettings().getSettings().volume);
+		}
+		else if (exitButton.isClicked())
+		{
+			// Exit Game
+			this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
+		}
+		else if (fullscreenBox.isClicked())
+		{
+			if (this->getSettings().getSettings().fullscreen == true)
+			{
+				this->getSettings().getSettings().fullscreen = false;
+			}
+			else
+			{
+				this->getSettings().getSettings().fullscreen = true;
+			}
+		}
 	}
 }
 
 void SettingsScene::renderUI()
 {
-	
-
 	fullscreenBox.render("buttonBackground.png");
 	resSlider.render("settingsSlider.png");
 	sensSlider.render("settingsSlider.png");
-	graphicsSlider.render("settingsSlider.png");
+	graphicsCycler.render("buttonBackground.png");
 	volSlider.render("settingsSlider.png");
 	exitButton.render("buttonBackground.png");
 	// ------------------------------------------------
@@ -196,7 +225,7 @@ void SettingsScene::renderUI()
 	this->getUIRenderer().renderString(
 		"resolution:",
 		-10,
-		180,
+		40,
 		30,
 		30
 	);
@@ -206,7 +235,7 @@ void SettingsScene::renderUI()
 	this->getUIRenderer().renderString(
 		std::to_string(this->getSettings().getSettings().resolutionX) + "x" + std::to_string(this->getSettings().getSettings().resolutionY),
 		300,
-		130,
+		-10,
 		30,
 		30
 	);
@@ -216,24 +245,24 @@ void SettingsScene::renderUI()
 	this->getUIRenderer().renderString(
 		"graphics:",
 		-10,
-		40,
+		190,
 		30,
 		30
 	);
-	// Graphics %
-	int graphicsPer = graphicsSlider.getPerFill() * 100;
+	// Graphics level
 	this->getUIRenderer().renderString(
-		std::to_string(graphicsPer) + "%",
-		230,
+		graphicsCycler.getCurrent(),
 		-10,
+		130,
 		30,
 		30
 	);
 	// ------------------------------------------------
+	// 
 	// Sensitivity Slider
 	this->getUIRenderer().renderString(
 		"sensitivity:",
-		- 10,
+		-10,
 		-100,
 		30,
 		30

@@ -24,6 +24,15 @@
 
 using namespace DirectX::SimpleMath;
 
+/*
+Vector3 keyArray[4]{
+	Vector3(1.0f, 0.0f, 0.0f),
+	Vector3(0.0f, 1.0f, 0.0f),
+	Vector3(0.0f, 0.0f, 1.0f),
+	Vector3(1.0f, 1.0f, 0.0f)
+};
+*/
+
 void GameScene::addLevelProperties(
 	LevelLoader& levelLoader,
 	GameObject& playerGameObject
@@ -133,12 +142,13 @@ void GameScene::addLevelProperties(
 		keyMc->setMesh("RealCubeMesh", "testMaterial");
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition(keyPos);
-		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512);
+		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
 		Rigidbody* rb = portalKey.addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 		Key* keyScript = portalKey.addComponent<Key>();
+		keyScript->setKeyColor(currentKeyInfo.color);
 		this->portalKeys.push_back(&portalKey);
 
 		// Point light
@@ -172,15 +182,13 @@ void GameScene::addLevelProperties(
 	PortalInfo portalInfo = levelLoader.getPortal();
 	if (portalInfo.scale.x * portalInfo.scale.y * portalInfo.scale.z > 0.0f)
 	{
-		GameObject& portal = this->addGameObject("Portal", ObjectTag::PORTAL);
-		MeshComp* portalMc = portal.addComponent<MeshComp>();
-		portalMc->setMesh("RealCubeMesh", "portalMaterial");
-		portal.getComponent<Transform>()->setPosition(portalInfo.position);
-		portal.getComponent<Transform>()->setScaling(portalInfo.scale);
-		Rigidbody* rb = portal.addComponent<Rigidbody>();
+		this->portal = &this->addGameObject("Portal", ObjectTag::PORTAL);
+		
+		portal->getComponent<Transform>()->setPosition(portalInfo.position);
+		portal->getComponent<Transform>()->setScaling(portalInfo.scale);
+		Rigidbody* rb = portal->addComponent<Rigidbody>();
 		rb->setPhysics(this->getPhysicsEngine());
 		rb->setType(rp3d::BodyType::STATIC);
-		rb->addBoxCollider(portalInfo.scale * 0.5f);
 	}
 }
 
@@ -191,9 +199,10 @@ GameScene::GameScene(SceneHandler& sceneHandler)
 	keyTextTimer(0.0f),
 	keyTextScale(0.0f),
 	highscoreTime(0.0f),
-	resumeButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer())
+	resumeButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	portalActivate(false), portal()
 {
 }
 
@@ -249,7 +258,9 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "HealthBar.png");
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGuiCross.png", "EmptyKeyGuiCross.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/KeyScale.png", "KeyScale.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorderLong.png", "sliderBorderLong.png");
@@ -265,8 +276,11 @@ void GameScene::init()
 	this->getResources().addSoundEffect("Resources/SoundFiles/Jump.wav", "Jump");
 	this->getResources().addSoundEffect("Resources/SoundFiles/HookShoot.wav", "HookShoot");
 	this->getResources().addSoundEffect("Resources/SoundFiles/HookShootConnect.wav", "HookShootConnect");
+	this->getResources().addSoundEffect("Resources/SoundFiles/KeyPickup.wav", "KeyPickup");
+	this->getResources().addSoundEffect("Resources/SoundFiles/TakeDamage.wav", "TakeDamage");
+	this->getResources().addSoundEffect("Resources/SoundFiles/Die.wav", "Die");
 
-	this->getAudioEngine().setMusic("");
+	this->getAudioEngine().setMusic("Resources/SoundFiles/GameSceneMusic.wav");
 
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
@@ -368,25 +382,29 @@ void GameScene::init()
 
 	// Set player properties from level
 	player->setStartPosition(levelLoader.getPlayerStartPos());
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0) });
+	cam.getComponent<Rigidbody>()->setPosition(levelLoader.getPlayerStartPos());
 
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
+	hookObject.addComponent<ParticleEmitter>();
 	hookObject.getComponent<Transform>()->setScaling(0.1f, 0.1f, 0.1f);
-	rb = hookObject.addComponent<Rigidbody>();
+
+	hookObject.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 64, Vector3(1.2f, 1.2f, 1.2f), Vector3(0.4f, 0.4f, 0.4f));
+
+	/*rb = hookObject.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
 	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
 	rb->setMaterial(0.2f, 0.0f);
-	rb->setType(rp3d::BodyType::KINEMATIC);
+	rb->setType(rp3d::BodyType::KINEMATIC);*/
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");
 
 	// Origin
-	GameObject& origin = this->addGameObject("Origin");
+	/*GameObject& origin = this->addGameObject("Origin");
 	origin.getComponent<Transform>()->setScaling(Vector3(3, 3, 3));
 	MeshComp* originMC = origin.addComponent<MeshComp>();
-	originMC->setMesh("RealSphereMesh", "testMaterial");
+	originMC->setMesh("RealSphereMesh", "testMaterial");*/
 
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
@@ -414,7 +432,12 @@ void GameScene::init()
 	CooldownIndicator* cooldownIndicatorComp =
 		cooldownIndicatorObject.addComponent<CooldownIndicator>();
 
-	player->setGrapplingHook(hook, grapplingHookComp, cooldownIndicatorComp);
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
+
+	player->setupPointers(hook, grapplingHookComp, cooldownIndicatorComp, lightComponent);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
@@ -430,11 +453,6 @@ void GameScene::init()
 	GameObject& levelObject = this->addGameObject("LevelObject");
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
 	levelMeshComponent->setMesh("LevelMesh", "");
-
-	// Sun
-	GameObject& sunObject = this->addGameObject("Sun");
-	Light* lightComponent = sunObject.addComponent<Light>();
-	lightComponent->init(this->getResources(), this->getRenderer());
 
 	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
@@ -491,29 +509,50 @@ void GameScene::update()
 		//When the player picks up a key.
 		if (playerComp->isKeyPickUp())
 		{
-			std::cout << "Key pickup!" << std::endl;
+			this->getAudioEngine().playSound("KeyPickup");
 			this->keyTextScale = 0.0f;
-			this->keyTextTimer = 200.0f;
+			this->keyTextTimer = 240.0f;
 		}
 
-		Rigidbody* rb = cam.getComponent<Rigidbody>();
-
 		//Player fall down from a building
-		if (rb->getTransform()->getPosition().y <= 0.0f)
+		if (cam.getComponent<Transform>()->getPosition().y <= 0.0f &&
+			this->highscoreTime >= 0.5f)
 		{
+			this->getAudioEngine().playSound("TakeDamage");
 			playerComp->resetPlayer(playerComp->getStartPosition());
 		}
 
 		//Check if player is dead or not
 		if (playerComp->isPlayerDead())
 		{
-			std::cout << "Player is dead NOOB!!" << std::endl;
+			this->getAudioEngine().playSound("Die");
 			this->getSceneHandler().setScene(new GameOverScene(this->getSceneHandler(), false, this->highscoreTime));
 			Input::setLockCursorPosition(false);
 			Input::setCursorVisible(true);
 		}
 
 		this->currentKeys = playerComp->getCurrentKeys();
+
+		//Activate portal
+		if (this->currentKeys >= 4 && this->portalActivate == false)
+		{
+			MeshComp* portalMc = this->portal->addComponent<MeshComp>();
+			portalMc->setMesh("RealCubeMesh", "portalMaterial");
+			this->portal->getComponent<Rigidbody>()->addBoxCollider(this->portal->getComponent<Transform>()->getScaling() * 0.5f);
+
+			//Add a beam
+			GameObject& portalBeamObject = this->addGameObject("Portal beam");
+			BackgroundMeshComp* portalbeamMesh = portalBeamObject.addComponent<BackgroundMeshComp>();
+			portalbeamMesh->setMesh("BeamMesh", "WhiteMaterial");
+			portalbeamMesh->setColor(Vector3(1.0f, 1.0f, 1.0f));
+			portalbeamMesh->setPixelShaderName("Beam_PS");
+			portalbeamMesh->setShouldShade(false);
+			portalbeamMesh->setCastShadow(false);
+			Beam* portalBeamScript = portalBeamObject.addComponent<Beam>();
+			portalBeamScript->set(*this->portal, this->cam);
+
+			this->portalActivate = true;
+		}
 
 		//Player enters the portal and win.
 		if (playerComp->onPortal() && this->currentKeys >= 4)
@@ -533,15 +572,6 @@ void GameScene::update()
 				this->keyTextScale += (150.0f * Time::getDT());
 		}
 
-		//Particle update
-		if (Input::isKeyJustPressed(Keys::E))
-		{
-			std::vector<ParticleEmitter*> particleComponents = getActiveComponents<ParticleEmitter>();
-			for (unsigned int i = 0; i < particleComponents.size(); ++i)
-			{
-				particleComponents[i]->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
-			}
-		}
 	}
 	else
 	{
@@ -608,7 +638,7 @@ void GameScene::renderUI()
 		//Keys
 		this->getUIRenderer().renderTexture(
 			"EmptyKeyGui.png",
-			780, 500, 384, 96
+			830, 480, 256, 64
 		);
 
 		if (this->currentKeys > 0)
@@ -616,8 +646,13 @@ void GameScene::renderUI()
 			for (int i = 0; i < this->currentKeys; i++)
 			{
 				this->getUIRenderer().renderTexture(
-					"KeyGui.png",
-					(716 + (56 * i)), 500, 64, 64
+					"KeyScale.png",
+					(744 + (56 * i)),
+					480,
+					64,
+					64,
+					this->cam.getComponent<Player>()->getCollectedKeyColor().at(i)
+					
 				);
 			}
 		}
@@ -650,13 +685,26 @@ void GameScene::renderUI()
 		// Key pick up text
 		if (this->keyTextTimer > 0)
 		{
-			this->getUIRenderer().renderString(
-				"you picked up a key piece",
-				0,
-				200,
-				(int)this->keyTextScale,
-				(int)this->keyTextScale
-			);
+			if (!this->portalActivate)
+			{
+				this->getUIRenderer().renderString(
+					"you picked up a key piece",
+					0,
+					200,
+					(int)this->keyTextScale,
+					(int)this->keyTextScale
+				);
+			}
+			else
+				this->getUIRenderer().renderString(
+					"portal is now open",
+					0,
+					200,
+					(int)this->keyTextScale,
+					(int)this->keyTextScale
+				);
+			
+			
 		}
 	}
 	else

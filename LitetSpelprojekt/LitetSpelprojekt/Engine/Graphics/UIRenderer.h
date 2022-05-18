@@ -74,6 +74,10 @@ public:
 	);
 	void setFontCharacterSpacing(int characterSpace);
 	void setFontSpaceWidth(int spaceWidth);
+	void setFontCharacterRect(
+		const char& charToModify, 
+		const CharacterRect& charRect
+	);
 
 	void renderTexture(
 		const std::string& textureName,

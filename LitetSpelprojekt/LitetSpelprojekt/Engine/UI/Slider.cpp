@@ -5,8 +5,8 @@
 
 using namespace DirectX::SimpleMath;
 
-Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal, float perFil, Vector3 bClr, Vector3 cClr, bool cha, UIRenderer& r) :
-	uiRenderer(r)
+Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal, float perFil, Vector3 bClr, Vector3 cClr, bool cha, UIRenderer& r, AudioEngine& audio) :
+	uiRenderer(r), audioEngine(audio)
 {
 	this->pos = p;
 	this->width = w;
@@ -37,7 +37,6 @@ bool Slider::isClicked()
 
 	// Transform resolution to internal positions
 	DirectX::XMFLOAT2 internal = ResTranslator::toInternalPos(DirectX::XMFLOAT2(Input::getCursorX(), Input::getCursorY()));
-	float test = (float)internal.x;
 	// Inside X Range
 	if (internal.x >= minPosX && (internal.x <= maxPosX))
 	{
@@ -45,8 +44,9 @@ bool Slider::isClicked()
 		if (internal.y >= minPosY && internal.y <= maxPosY)
 		{
 			// Left click inside the button
-			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
+			if (Input::isMouseButtonDown(Mouse::LEFT_BUTTON))
 			{
+				this->audioEngine.playSound("MenuSlider");
 				this->percentFilled = (float)((this->width / 2.0 + internal.x) / this->width);
 				this->currentValue = this->percentFilled * (this->maxValue - this->minValue);
 				sliderClicked = true;

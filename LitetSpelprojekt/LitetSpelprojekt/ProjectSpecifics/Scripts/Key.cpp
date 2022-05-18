@@ -12,6 +12,7 @@ Key::Key(GameObject& gameObject)
 	pointLight(nullptr),
 	beam(nullptr)
 {
+	keyColor = Vector3(0.0f, 0.0f, 0.0f);
 }
 
 Key::~Key()
@@ -24,6 +25,16 @@ void Key::set(GameObject* pointLight, GameObject* beam)
 	this->beam = beam;
 }
 
+void Key::setKeyColor(Vector3 color)
+{
+	this->keyColor = color;
+}
+
+Vector3 Key::getKeyColor() const
+{
+	return this->keyColor;
+}
+
 void Key::remove()
 {
 	// Remove mesh and rigidbody
@@ -31,7 +42,7 @@ void Key::remove()
 	Script::getObject().removeComponent<Rigidbody>();
 
 	// Particle system
-	Script::getObject().getComponent<ParticleEmitter>()->explode(10, 1, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
+	Script::getObject().getComponent<ParticleEmitter>()->explode(10, 1);
 
 	// Remove point light components
 	this->pointLight->removeComponent<MeshComp>();

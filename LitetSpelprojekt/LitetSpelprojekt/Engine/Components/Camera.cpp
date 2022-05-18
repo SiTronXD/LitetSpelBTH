@@ -14,22 +14,11 @@ void Camera::updateViewMatrix()
 	);
 }
 
-Camera::Camera(GameObject& object):
-	Component(object)
-{
-	this->updateViewMatrix();
-	this->updateAspectRatio(16.0f / 9.0f);
-}
-
-Camera::~Camera()
-{
-}
-
-void Camera::updateAspectRatio(float aspectRatio)
+void Camera::updateProjectionMatrix()
 {
 	this->projectionMatrix = Matrix::CreatePerspectiveFieldOfView(
-		SMath::PI * 0.5f,
-		aspectRatio,
+		SMath::PI * 0.5f * this->fovPercent,
+		this->aspectRatio,
 		0.1f,
 		300.0f
 	);
@@ -45,4 +34,27 @@ void Camera::updateAspectRatio(float aspectRatio)
 
 
 	this->invProjectionMatrix = this->projectionMatrix.Invert();
+}
+
+Camera::Camera(GameObject& object):
+	Component(object), aspectRatio(16.0f / 9.0f), fovPercent(1.0f)
+{
+	this->updateViewMatrix();
+	this->updateAspectRatio(16.0f / 9.0f);
+}
+
+Camera::~Camera()
+{
+}
+
+void Camera::updateAspectRatio(float aspectRatio)
+{
+	this->aspectRatio = aspectRatio;
+	this->updateProjectionMatrix();
+}
+
+void Camera::updateFovPercent(float fovPercent)
+{
+	this->fovPercent = fovPercent;
+	this->updateProjectionMatrix();
 }

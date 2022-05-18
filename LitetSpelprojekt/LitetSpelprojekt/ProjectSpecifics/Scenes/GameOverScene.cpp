@@ -10,8 +10,8 @@ GameOverScene::GameOverScene(SceneHandler& sceneHandler, bool win, float highsco
 	winning(win),
 	newHighscore(false),
 	highscoreTime(highscoreTime),
-	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer()),
+	mainMenuButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine()),
 	cam(this->addGameObject("Camera"))
 {
 }
@@ -28,6 +28,11 @@ void GameOverScene::init()
 
 	//Camera
 	this->setActiveCamera(this->cam.addComponent<Camera>());
+
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
 
 	//Buttons
 	this->mainMenuButton.setPos(Vector2(0, 0));

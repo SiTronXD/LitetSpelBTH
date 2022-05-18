@@ -1,12 +1,12 @@
 ResolutionX
-1600
+1280
 ResolutionY
-900
+720
 Graphics
-0.520339
+low
 Sensitivity
-0.361582
+0.130508
 Volume
-0.301377
+0.0670021
 Fullscreen
 false
