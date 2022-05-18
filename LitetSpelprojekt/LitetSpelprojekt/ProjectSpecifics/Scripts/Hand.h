@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../Engine/Components/Script.h"
+#include "GrapplingHook.h"
 #include "../../Engine/Components/MeshComp.h"
 
 class Hand : public Script
@@ -11,15 +11,19 @@ private:
 	Transform* transform;
 	Transform* targetTransform;
 
+	GrapplingHook* grapplingHook;
+
 	MeshComp* meshComp;
 
 	float playTimer;
+
+	float getPositionOffset();
 
 public:
 	Hand(GameObject& gameObject);
 	virtual ~Hand();
 
-	void setup(GameObject& targetObject);
+	void setup(GameObject& grapplingHookObject);
 	void playAnim();
 
 	virtual void init() override;

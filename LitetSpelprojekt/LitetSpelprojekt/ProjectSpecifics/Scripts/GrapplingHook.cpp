@@ -87,8 +87,9 @@ void GrapplingHook::update()
 		rotation
 	);
 
-	// Update last pos
+	// Update pos
 	this->lastPos = newPos;
+	this->swayDeltaPos = newPos - nextPos;
 }
 
 void GrapplingHook::onCollisionEnter(GameObject& other)

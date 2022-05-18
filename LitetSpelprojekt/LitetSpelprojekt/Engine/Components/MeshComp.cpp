@@ -45,7 +45,7 @@ void MeshComp::setCastShadow(bool cast)
 
 void MeshComp::setAnimTimer(float animTimer)
 {
-	this->animTimer = animTimer;
+	this->animTimer = std::max(animTimer, 0.0f);
 }
 
 void MeshComp::setEnableRender(bool renderMesh)
