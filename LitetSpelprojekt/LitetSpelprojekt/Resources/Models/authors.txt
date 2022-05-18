@@ -1,3 +1,5 @@
 MeyerWeaponOBJ: Mastersilver18 (sketchfab.com)
 Gameplay skybox: The Chayed (opengameart.com)
 Menu skybox: Jockum Skoglund aka hipshot (opengameart.com/www.zfight.com)
+Little Robot Sound Factory (www.littlerobotsoundfactory.com) (found on opengameart.com)
+Throw Sound Effect: Lamoot (opengameart.com)
