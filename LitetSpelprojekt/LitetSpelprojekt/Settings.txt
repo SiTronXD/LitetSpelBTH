@@ -3,10 +3,10 @@ ResolutionX
 ResolutionY
 768
 Graphics
-0.639036
+medium
 Sensitivity
-0.210011
+0.130508
 Volume
-0.023305
+0.164407
 Fullscreen
 false

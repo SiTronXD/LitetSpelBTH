@@ -8,6 +8,8 @@ cbuffer DirLightBuffer : register(b1)
 {
     float3 lightDir;
     float padding0;
+    float3 globalColor;
+    float padding1;
 }
 
 cbuffer PixelShaderBuffer : register(b2)
@@ -74,34 +76,40 @@ float4 main(Input input) : SV_TARGET
         lightPos.xy = (lightPos.xy + float2(1.0f, 1.0f)) * 0.5f;
         lightPos.y *= -1.0f;
 
-        float2 invSize = 1.0f / SHADOW_MAP_SIZE;
-        float2 lightPosCorner = lightPos.xy * SHADOW_MAP_SIZE;
-        float2 floorLightPosCorner = floor(lightPosCorner);
-        float2 fractLightPosCorner = frac(lightPosCorner);
+        // Make sure position is visible
+        if (lightPos.x >= -1.0f && lightPos.x <= 1.0f &&
+            lightPos.y >= -1.0f && lightPos.y <= 1.0f &&
+            lightPos.z >= -1.0f && lightPos.z <= 1.0f)
+        {
 
-        // Compare
-        float lightDepth0 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner)*invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
-        float lightDepth1 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(1.0f, 0.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
-        float lightDepth2 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(0.0f, 1.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
-        float lightDepth3 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(1.0f, 1.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
+            float2 invSize = 1.0f / SHADOW_MAP_SIZE;
+            float2 lightPosCorner = lightPos.xy * SHADOW_MAP_SIZE;
+            float2 floorLightPosCorner = floor(lightPosCorner);
+            float2 fractLightPosCorner = frac(lightPosCorner);
 
-        // Interpolate
-        float edge0 = lerp(lightDepth0, lightDepth1, fractLightPosCorner.x);
-        float edge1 = lerp(lightDepth2, lightDepth3, fractLightPosCorner.x);
-        float shadowMapFactor = lerp(edge0, edge1, fractLightPosCorner.y);
+            // Compare
+            float lightDepth0 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner)*invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
+            float lightDepth1 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(1.0f, 0.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
+            float lightDepth2 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(0.0f, 1.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
+            float lightDepth3 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(1.0f, 1.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
 
-        // Shadow map + diffuse light
-        shadowFactor = lerp(
-            0.4f,
-            1.0f,
-            shadowMapFactor *
-            saturate(dot(input.worldNormal, -lightDir))
-        );
+            // Interpolate
+            float edge0 = lerp(lightDepth0, lightDepth1, fractLightPosCorner.x);
+            float edge1 = lerp(lightDepth2, lightDepth3, fractLightPosCorner.x);
+            float shadowMapFactor = lerp(edge0, edge1, fractLightPosCorner.y);
+
+            // Shadow map + diffuse light
+            shadowFactor = lerp(
+                0.4f,
+                1.0f,
+                shadowMapFactor *
+                saturate(dot(input.worldNormal, -lightDir))
+            );
+        }
     }
 
-    float4 finalCol = texCol * shadowFactor * float4(multiplyColor, 1.0f);
-
-    //finalCol = lerp(finalCol, float4(1,0,0,1), fog);
+    float4 finalCol = texCol * shadowFactor * float4(multiplyColor, 1.0f) * 
+        float4(lerp(float3(1.0f, 1.0f, 1.0f), globalColor, 0.6f), 1.0f);
 
     return finalCol;
 }

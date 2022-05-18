@@ -24,6 +24,15 @@
 
 using namespace DirectX::SimpleMath;
 
+/*
+Vector3 keyArray[4]{
+	Vector3(1.0f, 0.0f, 0.0f),
+	Vector3(0.0f, 1.0f, 0.0f),
+	Vector3(0.0f, 0.0f, 1.0f),
+	Vector3(1.0f, 1.0f, 0.0f)
+};
+*/
+
 void GameScene::addLevelProperties(
 	LevelLoader& levelLoader,
 	GameObject& playerGameObject
@@ -139,6 +148,7 @@ void GameScene::addLevelProperties(
 		rb->setType(rp3d::BodyType::STATIC);
 		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
 		Key* keyScript = portalKey.addComponent<Key>();
+		keyScript->setKeyColor(currentKeyInfo.color);
 		this->portalKeys.push_back(&portalKey);
 
 		// Point light
@@ -232,7 +242,9 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "HealthBar.png");
 	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGuiCross.png", "EmptyKeyGuiCross.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
+	this->getResources().addTexture("Resources/Textures/Gui/KeyScale.png", "KeyScale.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorderLong.png", "sliderBorderLong.png");
@@ -354,27 +366,29 @@ void GameScene::init()
 
 	// Set player properties from level
 	player->setStartPosition(levelLoader.getPlayerStartPos());
-	cam.getComponent<Transform>()->setPosition({ levelLoader.getPlayerStartPos() + Vector3(0,10,0) });
+	cam.getComponent<Rigidbody>()->setPosition(levelLoader.getPlayerStartPos());
 
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
 	hookObject.addComponent<ParticleEmitter>();
 	hookObject.getComponent<Transform>()->setScaling(0.1f, 0.1f, 0.1f);
+
 	hookObject.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 64, Vector3(1.2f, 1.2f, 1.2f), Vector3(0.4f, 0.4f, 0.4f));
-	rb = hookObject.addComponent<Rigidbody>();
+
+	/*rb = hookObject.addComponent<Rigidbody>();
 	rb->setPhysics(this->getPhysicsEngine());
 	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
 	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
 	rb->setMaterial(0.2f, 0.0f);
-	rb->setType(rp3d::BodyType::KINEMATIC);
+	rb->setType(rp3d::BodyType::KINEMATIC);*/
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");
 
 	// Origin
-	GameObject& origin = this->addGameObject("Origin");
+	/*GameObject& origin = this->addGameObject("Origin");
 	origin.getComponent<Transform>()->setScaling(Vector3(3, 3, 3));
 	MeshComp* originMC = origin.addComponent<MeshComp>();
-	originMC->setMesh("RealSphereMesh", "testMaterial");
+	originMC->setMesh("RealSphereMesh", "testMaterial");*/
 
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
@@ -402,7 +416,12 @@ void GameScene::init()
 	CooldownIndicator* cooldownIndicatorComp =
 		cooldownIndicatorObject.addComponent<CooldownIndicator>();
 
-	player->setGrapplingHook(hook, grapplingHookComp, cooldownIndicatorComp);
+	// Sun
+	GameObject& sunObject = this->addGameObject("Sun");
+	Light* lightComponent = sunObject.addComponent<Light>();
+	lightComponent->init(this->getResources(), this->getRenderer());
+
+	player->setupPointers(hook, grapplingHookComp, cooldownIndicatorComp, lightComponent);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
@@ -418,11 +437,6 @@ void GameScene::init()
 	GameObject& levelObject = this->addGameObject("LevelObject");
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
 	levelMeshComponent->setMesh("LevelMesh", "");
-
-	// Sun
-	GameObject& sunObject = this->addGameObject("Sun");
-	Light* lightComponent = sunObject.addComponent<Light>();
-	lightComponent->init(this->getResources(), this->getRenderer());
 
 	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
 	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
@@ -484,10 +498,9 @@ void GameScene::update()
 			this->keyTextTimer = 240.0f;
 		}
 
-		Rigidbody* rb = cam.getComponent<Rigidbody>();
-
 		//Player fall down from a building
-		if (rb->getTransform()->getPosition().y <= 0.0f)
+		if (cam.getComponent<Transform>()->getPosition().y <= 0.0f &&
+			this->highscoreTime >= 0.5f)
 		{
 			this->getAudioEngine().playSound("TakeDamage");
 			playerComp->resetPlayer(playerComp->getStartPosition());
@@ -609,7 +622,7 @@ void GameScene::renderUI()
 		//Keys
 		this->getUIRenderer().renderTexture(
 			"EmptyKeyGui.png",
-			780, 500, 384, 96
+			830, 480, 256, 64
 		);
 
 		if (this->currentKeys > 0)
@@ -617,8 +630,13 @@ void GameScene::renderUI()
 			for (int i = 0; i < this->currentKeys; i++)
 			{
 				this->getUIRenderer().renderTexture(
-					"KeyGui.png",
-					(716 + (56 * i)), 500, 64, 64
+					"KeyScale.png",
+					(744 + (56 * i)),
+					480,
+					64,
+					64,
+					this->cam.getComponent<Player>()->getCollectedKeyColor().at(i)
+					
 				);
 			}
 		}
