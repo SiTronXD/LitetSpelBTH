@@ -23,4 +23,10 @@ public:
 		const float& min, 
 		const float& max
 	);
+
+	static float lerp(
+		const float& v1,
+		const float& v2,
+		float t
+	);
 };

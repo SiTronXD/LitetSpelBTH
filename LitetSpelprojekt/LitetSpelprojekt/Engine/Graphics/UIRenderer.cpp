@@ -145,6 +145,12 @@ void UIRenderer::setFontSpaceWidth(int spaceWidth)
 	this->fontCharacters[' '].tileWidth = spaceWidth;
 }
 
+void UIRenderer::setFontCharacterRect(
+	const char& charToModify, const CharacterRect& charRect)
+{
+	this->fontCharacters[charToModify] = charRect;
+}
+
 void UIRenderer::renderTexture(
 	const std::string& textureName, 
 	int x, int y, int uiWidth, int uiHeight,

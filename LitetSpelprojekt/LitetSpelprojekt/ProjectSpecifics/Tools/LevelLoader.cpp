@@ -7,6 +7,8 @@
 using namespace DirectX;
 using namespace DirectX::SimpleMath;
 
+//#define LOG_NODE_NAMES
+
 void LevelLoader::switchFloats(Vector3& vec)
 {
 	float t = vec.y;
@@ -26,15 +28,16 @@ void LevelLoader::traverseStructure(
 	const DirectX::SimpleMath::Matrix& parentTransform)
 {
 	std::string nodeName = std::string(node->mName.C_Str());
+
+#ifdef LOG_NODE_NAMES
 	Log::write(nodeName);
+#endif
 
 	// Node transformation
 	Matrix transformation = parentTransform;
 	Matrix nodeTransform;
 	SMath::assimpToMat(node->mTransformation, nodeTransform);
 	transformation *= nodeTransform;
-
-	// Log::writeMat(transformation);
 
 	// Decompose transformation
 	Vector3 nodePosition;
