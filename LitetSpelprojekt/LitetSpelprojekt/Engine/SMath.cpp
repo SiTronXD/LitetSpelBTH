@@ -36,3 +36,10 @@ float SMath::clamp(const float& value, const float& min, const float& max)
 
 	return value;
 }
+
+float SMath::lerp(const float& v1, const float& v2, float t)
+{
+	t = SMath::clamp(t, 0.0f, 1.0f);
+
+	return (1.0f - t) * v1 + t * v2;
+}

@@ -11,6 +11,9 @@ class Player : public Script
 {
 private:
 	const float MAX_SKYBOX_COLOR_FADE_TIME = 2.0f;
+	const float MAX_FOV_PERCENTAGE = 1.4f;
+	const float FOV_CHANGE_MIN_SPEED = 31.0f;
+	const float FOV_CHANGE_MAX_SPEED = 50.0f;
 
 	std::vector<DirectX::SimpleMath::Vector3> skyboxColors;
 
@@ -30,6 +33,7 @@ private:
 	float pulseCannonCooldown;
 	float healthCooldown;
 	float skyboxColorFadeTimer;
+	float fovPercent;
 
 	bool onGround;
 	bool keyPickup;
@@ -38,6 +42,7 @@ private:
 
 	// Component references
 	Rigidbody* rb;
+	Camera* camera;
 
 	// References to other gameObject components
 	HookPoint* hookPoint;
