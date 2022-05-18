@@ -7,6 +7,6 @@ medium
 Sensitivity
 0.556497
 Volume
-0.997175
+0.174576
 Fullscreen
 false
