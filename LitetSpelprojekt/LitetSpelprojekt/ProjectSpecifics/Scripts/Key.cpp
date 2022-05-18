@@ -12,6 +12,7 @@ Key::Key(GameObject& gameObject)
 	pointLight(nullptr),
 	beam(nullptr)
 {
+	keyColor = Vector3(0.0f, 0.0f, 0.0f);
 }
 
 Key::~Key()
@@ -22,6 +23,16 @@ void Key::set(GameObject* pointLight, GameObject* beam)
 {
 	this->pointLight = pointLight;
 	this->beam = beam;
+}
+
+void Key::setKeyColor(Vector3 color)
+{
+	this->keyColor = color;
+}
+
+Vector3 Key::getKeyColor() const
+{
+	return this->keyColor;
 }
 
 void Key::remove()

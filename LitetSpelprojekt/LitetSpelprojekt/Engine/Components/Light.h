@@ -30,7 +30,9 @@ private:
 	struct DirectionalLightBufferData
 	{
 		DirectX::XMFLOAT3 direction;
-		float padding;
+		float padding0;
+		DirectX::XMFLOAT3 globalColor;
+		float padding1;
 	} dirLightBufferStruct{};
 
 	DirectX::SimpleMath::Matrix viewMatrix;
@@ -60,6 +62,7 @@ public:
 	void render(Scene& scene);
 
 	void updateDirection(DirectX::SimpleMath::Vector3 newDir);
+	void updateColor(const DirectX::SimpleMath::Vector3& newCol);
 
 	inline Texture& getShadowMapTexture() { return *this->shadowMapDepthTexture; }
 	inline ConstantBuffer& getLightBuffer() { return *this->lightBuffer; }

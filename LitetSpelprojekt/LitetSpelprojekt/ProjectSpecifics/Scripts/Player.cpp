@@ -2,6 +2,7 @@
 #include "../../Engine/Application/Input.h"
 #include "../../Engine/GameObject.h"
 #include "../../Engine/Time.h"
+#include "../../Engine/SMath.h"
 #include "../../Engine/Physics/PhysicsEngine.h"
 #include "HookPoint.h"
 #include "GrapplingHook.h"
@@ -111,14 +112,62 @@ void Player::lookAround()
 	this->getTransform()->setRotation(origRot);
 }
 
+void Player::updateSkyboxColor()
+{
+	// Should skybox color be updated?
+	if (this->lastKeyPieces != this->keyPieces)
+	{
+		// Update timer
+		this->skyboxColorFadeTimer += Time::getDT();
+
+		// Update last key pieces
+		if (this->skyboxColorFadeTimer >= this->MAX_SKYBOX_COLOR_FADE_TIME)
+			this->lastKeyPieces = this->keyPieces;
+
+		// Clamp timer
+		this->skyboxColorFadeTimer = SMath::clamp(
+			this->skyboxColorFadeTimer,
+			0.0f,
+			this->MAX_SKYBOX_COLOR_FADE_TIME
+		);
+
+		// Find colors to lerp between
+		Vector3 lastColor = this->skyboxColors[this->lastKeyPieces];
+		Vector3 nextColor = this->skyboxColors[this->keyPieces];
+
+		// Set color
+		this->light->updateColor(
+			Vector3::Lerp(
+				lastColor,
+				nextColor,
+				this->skyboxColorFadeTimer / this->MAX_SKYBOX_COLOR_FADE_TIME
+			)
+		);
+
+		// Reset timer
+		if (this->lastKeyPieces == this->keyPieces)
+			this->skyboxColorFadeTimer = 0.0f;
+	}
+}
+
 Player::Player(GameObject& object) :
-	Script(object), speed(1000.0f), jumpForce(20.0f), mouseSensitivity(0.5f), maxVelocity(45.0f),
-	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), health(3), dead(false), portal(false), 
+	Script(object), speed(1000.0f), jumpForce(20.0f), mouseSensitivity(0.5f), maxVelocity(35.0f),
+	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), 
+	lastKeyPieces(0), health(3), dead(false), portal(false),
 	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
-	hookPoint(nullptr), grapplingHook(nullptr), cooldownIndicatior(nullptr), startPosition(0.0f, 0.0f, 0.0f)
+	skyboxColorFadeTimer(0.0f),
+	hookPoint(nullptr), grapplingHook(nullptr), 
+	cooldownIndicatior(nullptr), light(nullptr), 
+	startPosition(0.0f, 0.0f, 0.0f)
 {
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
+
+	this->skyboxColors.push_back(Vector3(1.0f,	1.0f, 1.0f)); // No keys
+	this->skyboxColors.push_back(Vector3(1.0f,	0.9f, 0.9f)); // 1 key
+	this->skyboxColors.push_back(Vector3(0.95f, 0.7f, 0.7f)); // 2 keys
+	this->skyboxColors.push_back(Vector3(0.95f, 0.5f, 0.5f)); // 3 keys
+	this->skyboxColors.push_back(Vector3(0.9f,	0.3f, 0.3f)); // All keys
 }
 
 Player::~Player()
@@ -155,7 +204,9 @@ void Player::addHealth(int health)
 	this->health += health;
 }
 
-void Player::setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIndicator* cooldown)
+void Player::setupPointers(
+	HookPoint* hp, GrapplingHook* grapHook, 
+	CooldownIndicator* cooldown, Light* light)
 {
 	this->hookPoint = hp;
 	this->hookPoint->setPlayer(this);
@@ -163,6 +214,17 @@ void Player::setGrapplingHook(HookPoint* hp, GrapplingHook* grapHook, CooldownIn
 	this->grapplingHook->setPlayerTransform(this->getTransform());
 	this->cooldownIndicatior = cooldown;
 	this->cooldownIndicatior->setup(this->grapplingHook);
+	this->light = light;
+}
+
+void Player::setCollectedKeyColor(Vector3 color)
+{
+	this->collectedKeyColors.push_back(color);
+}
+
+std::vector<Vector3> Player::getCollectedKeyColor() const
+{
+	return this->collectedKeyColors;
 }
 
 void Player::takeDamage(float damage)
@@ -195,6 +257,9 @@ void Player::update()
 	fireWeapon();
 	lookAround();
 
+	updateSkyboxColor();
+
+	//Add force down
 	this->rb->addForce(Vector3(0.0f, -18.0f, 0.0f) * Time::getDT() * 20.0f);
 
 	if (this->rb->getVelocity().LengthSquared() > this->maxVelocity * this->maxVelocity)
@@ -246,6 +311,7 @@ void Player::onCollisionEnter(GameObject& other)
 	if (other.getTag() == ObjectTag::KEY)
 	{
 		// Remove key
+		this->collectedKeyColors.push_back(other.getComponent<Key>()->getKeyColor());
 		other.getComponent<Key>()->remove();
 
 		this->keyPieces++;

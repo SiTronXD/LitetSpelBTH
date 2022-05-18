@@ -8,6 +8,8 @@ cbuffer DirLightBuffer : register(b1)
 {
     float3 lightDir;
     float padding0;
+    float3 globalColor;
+    float padding1;
 }
 
 cbuffer PixelShaderBuffer : register(b2)
@@ -53,7 +55,7 @@ float4 main(Input input) : SV_TARGET
 
     // Regular color or "background"?
     float3 finalCol = bayerMatrix8x8[pos.x + 8 * pos.y] - 0.2f * 64.0f > 0.0f ? 
-        multiplyColor : float3(0.722, 0.871, 0.992);
+        multiplyColor : float3(0.722, 0.871, 0.992) * globalColor;
 
     return float4(finalCol, 1.0f);
 }

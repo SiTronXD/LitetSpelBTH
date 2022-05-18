@@ -37,7 +37,6 @@ bool Slider::isClicked()
 
 	// Transform resolution to internal positions
 	DirectX::XMFLOAT2 internal = ResTranslator::toInternalPos(DirectX::XMFLOAT2(Input::getCursorX(), Input::getCursorY()));
-	float test = (float)internal.x;
 	// Inside X Range
 	if (internal.x >= minPosX && (internal.x <= maxPosX))
 	{
@@ -45,7 +44,7 @@ bool Slider::isClicked()
 		if (internal.y >= minPosY && internal.y <= maxPosY)
 		{
 			// Left click inside the button
-			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
+			if (Input::isMouseButtonDown(Mouse::LEFT_BUTTON))
 			{
 				this->audioEngine.playSound("MenuSlider");
 				this->percentFilled = (float)((this->width / 2.0 + internal.x) / this->width);

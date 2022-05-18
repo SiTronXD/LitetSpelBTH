@@ -26,7 +26,7 @@ bool Settings::loadSettings()
 		Log::error("Unable to load settings file");
 		this->settingsList.resolutionX = 1280;
 		this->settingsList.resolutionY = 720;
-		this->settingsList.graphics = 3.0f;
+		this->settingsList.graphics = "medium";
 		this->settingsList.sensitivity = 3.0f;
 		this->settingsList.volume = 3.0f;
 		this->settingsList.fullscreen = true;
@@ -49,7 +49,7 @@ bool Settings::loadSettings()
 		else if (gameSettings == "Graphics")
 		{
 			getline(reader, gameSettings);
-			settingsList.graphics = stof(gameSettings);
+			settingsList.graphics = gameSettings;
 		}
 		else if (gameSettings == "Sensitivity")
 		{
@@ -71,7 +71,7 @@ bool Settings::loadSettings()
 
 	Log::write("ResX: " + std::to_string(settingsList.resolutionX) +
 		"ResY: " + std::to_string(settingsList.resolutionY) +
-		"Graphics: " + std::to_string(settingsList.graphics) +
+		"Graphics: " + (settingsList.graphics) +
 		"Sens: " + std::to_string(settingsList.sensitivity) +
 		"Volume: " + std::to_string(settingsList.volume) + 
 		"Fullscreen: " + (settingsList.fullscreen ? "true" : "false"));
@@ -101,7 +101,7 @@ bool Settings::saveSettings()
 
 	Log::write("ResX: " + std::to_string(settingsList.resolutionX) +
 		"ResY: " + std::to_string(settingsList.resolutionY) +
-		"Graphics: " + std::to_string(settingsList.graphics) +
+		"Graphics: " + (settingsList.graphics) +
 		"Sens: " + std::to_string(settingsList.sensitivity) +
 		"Volume: " + std::to_string(settingsList.volume) +
 		"Fullscreen: " + (settingsList.fullscreen ? "true" : "false"));

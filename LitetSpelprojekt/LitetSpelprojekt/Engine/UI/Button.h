@@ -22,7 +22,7 @@ public:
 		DirectX::SimpleMath::Vector3 hClr, bool hov, UIRenderer& r, AudioEngine& audioEngine);
 	~Button();
 
-	inline DirectX::SimpleMath::Vector2 getPos() const{ return this->pos; }
+	inline DirectX::SimpleMath::Vector2 getPos() const { return this->pos; }
 	inline int getWidth() const{ return this->width; }
 	inline int getheight() const { return this->height; }
 	inline void setPos(DirectX::SimpleMath::Vector2 newPos) { this->pos = newPos; }
@@ -31,4 +31,7 @@ public:
 
 	bool isClicked();
 	void render(std::string textureName);
+
+protected:
+	inline UIRenderer& getUIRenderer() const { return this->uiRenderer; }
 };
