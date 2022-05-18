@@ -25,6 +25,7 @@ MenuScene::~MenuScene()
 void MenuScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/MenuGui/buttonBackground.png", "buttonBackground.png");
+	this->getResources().addTexture("Resources/Textures/MenuGui/Logo.png", "Logo.png");
 	this->getAudioEngine().setMusic("Resources/SoundFiles/LonelinessOfTheWinner.wav");
 	this->getResources().addSoundEffect("Resources/SoundFiles/MenuClick.wav", "MenuClick");
 	
@@ -59,17 +60,17 @@ void MenuScene::init()
 	lightComponent->init(this->getResources(), this->getRenderer());
 
 	// Define Play Button's size and position
-	playButton.setPos(Vector2(0, 210));
+	playButton.setPos(Vector2(0, 135));
 	playButton.setWidth(354);
 	playButton.setHeight(159);
 
 	// Define Highscore Button's size and position
-	highscoreButton.setPos(Vector2(0, 0));
+	highscoreButton.setPos(Vector2(0, -50));
 	highscoreButton.setWidth(354);
 	highscoreButton.setHeight(159);
 
 	// Define Settings Button's size and position
-	settingsButton.setPos(Vector2(0, -210));
+	settingsButton.setPos(Vector2(0, -235));
 	settingsButton.setWidth(354);
 	settingsButton.setHeight(159);
 
@@ -112,18 +113,18 @@ void MenuScene::renderUI()
 	settingsButton.render("buttonBackground.png");
 	exitButton.render("buttonBackground.png");
 
-	this->getUIRenderer().renderString(
-		"grapple mayhem",
-		-10,
-		400,
-		50,
-		50
+	this->getUIRenderer().renderTexture(
+		"Logo.png",
+		0,
+		385,
+		1024,
+		512
 	);
 
 	this->getUIRenderer().renderString(
 		"play",
 		-10,
-		210,
+		135,
 		30,
 		30
 	);
@@ -131,7 +132,7 @@ void MenuScene::renderUI()
 	this->getUIRenderer().renderString(
 		"highscore",
 		-10,
-		0,
+		-50,
 		30,
 		30
 	);
@@ -139,7 +140,7 @@ void MenuScene::renderUI()
 	this->getUIRenderer().renderString(
 		"settings",
 		-10,
-		-210,
+		-235,
 		30,
 		30
 	);
