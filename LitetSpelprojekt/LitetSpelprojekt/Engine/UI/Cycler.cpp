@@ -3,8 +3,8 @@
 using namespace DirectX::SimpleMath;
 
 Cycler::Cycler(Vector2 p, int w, int h, Vector3 bClr, Vector3 hClr, bool hov,
-	UIRenderer& r):
-	Button(p, w, h, bClr, hClr, hov, r)
+	UIRenderer& r, AudioEngine& a):
+	Button(p, w, h, bClr, hClr, hov, r, a)
 {
 }
 
