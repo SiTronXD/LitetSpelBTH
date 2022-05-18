@@ -43,6 +43,11 @@ void LoadingScene::init()
 	);
 	this->getUIRenderer().setFontCharacterSpacing(5);
 	this->getUIRenderer().setFontSpaceWidth(10);
+
+	this->getUIRenderer().setFontCharacterRect(
+		'.', 
+		{ 134, 42 - 9, 5, 5 + 9 }
+	);
 }
 
 void LoadingScene::update()

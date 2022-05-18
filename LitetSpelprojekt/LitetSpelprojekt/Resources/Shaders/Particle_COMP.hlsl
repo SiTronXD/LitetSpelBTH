@@ -85,6 +85,7 @@ void main( uint3 DTid : SV_DispatchThreadID )
         //buffer[DTid.x].color.x = randomFloat(DTid.x * 3);
         //buffer[DTid.x].color.y = randomFloat(DTid.x * 3 + 1);
         //buffer[DTid.x].color.z = randomFloat(DTid.x * 3 + 2);
+        
            
     }
     
@@ -110,17 +111,17 @@ void main( uint3 DTid : SV_DispatchThreadID )
         }
             
         //Update lifetime
-        buffer[DTid.x].lifetime -= 2 * deltaTime;
+        buffer[DTid.x].lifetime -= 4 * deltaTime;
     }
     //If lifetime is 0 we remove them by setting scale to 0.
     if (buffer[DTid.x].lifetime < 0.0f)
     {
         if (buffer[DTid.x].scaleFactor > 0.0f)
-            buffer[DTid.x].scaleFactor -= 0.8f * deltaTime;
+            buffer[DTid.x].scaleFactor -= 1.0f * deltaTime;
 
     }
     //Update color
-    float fadingValue = buffer[DTid.x].lifetime / lifeTime;
-    buffer[DTid.x].finalColor = (float4(lerp(color1, color2, fadingValue), 1.0f));
+    //float fadingValue = buffer[DTid.x].lifetime / lifeTime;
+    //buffer[DTid.x].finalColor = (float4(lerp(color1, color2, fadingValue), 1.0f));
    
 }

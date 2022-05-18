@@ -155,16 +155,17 @@ Player::Player(GameObject& object) :
 	onGround(false), rb(nullptr),keyPickup(false), keyPieces(0), 
 	lastKeyPieces(0), health(3), dead(false), portal(false),
 	healthCooldown(0.0f), pulseCannonCooldown(0.0f), maxPulseCannonCooldown(2.5f),
-	skyboxColorFadeTimer(0.0f),
+	skyboxColorFadeTimer(0.0f), fovPercent(1.0f),
 	hookPoint(nullptr), grapplingHook(nullptr), 
 	cooldownIndicatior(nullptr), light(nullptr), 
+	camera(nullptr),
 	startPosition(0.0f, 0.0f, 0.0f)
 {
 	Input::setCursorVisible(false);
 	Input::setLockCursorPosition(true);
 
 	this->skyboxColors.push_back(Vector3(1.0f,	1.0f, 1.0f)); // No keys
-	this->skyboxColors.push_back(Vector3(1.0f,	0.9f, 0.9f)); // 1 key
+	this->skyboxColors.push_back(Vector3(1.0f,	0.85f, 0.85f)); // 1 key
 	this->skyboxColors.push_back(Vector3(0.95f, 0.7f, 0.7f)); // 2 keys
 	this->skyboxColors.push_back(Vector3(0.95f, 0.5f, 0.5f)); // 3 keys
 	this->skyboxColors.push_back(Vector3(0.9f,	0.3f, 0.3f)); // All keys
@@ -248,6 +249,8 @@ void Player::init()
 	this->rb = this->getObject().getComponent<Rigidbody>();
 	if (this->rb)
 		Log::write("Player found rigidbody");
+
+	this->camera = this->getObject().getComponent<Camera>();
 }
 
 void Player::update()
@@ -295,6 +298,22 @@ void Player::update()
 	// Update health cooldown
 	if (this->healthCooldown > 0.0f)
 		this->healthCooldown -= Time::getDT();
+
+	// Update FoV based on speed
+	float fovPercentTarget = (this->rb->getVelocity().Length() - FOV_CHANGE_MIN_SPEED) /
+		(FOV_CHANGE_MAX_SPEED - FOV_CHANGE_MIN_SPEED) * 
+		(MAX_FOV_PERCENTAGE - 1.0f) + 1.0f;
+	fovPercentTarget = SMath::clamp(
+		fovPercentTarget, 
+		1.0f, 
+		MAX_FOV_PERCENTAGE
+	);
+	this->fovPercent = SMath::lerp(
+		this->fovPercent, 
+		fovPercentTarget, 
+		Time::getDT() * 8.0f
+	);
+	this->camera->updateFovPercent(this->fovPercent);
 }
 
 void Player::onCollisionEnter(GameObject& other)
@@ -320,6 +339,7 @@ void Player::onCollisionEnter(GameObject& other)
 	// Test
 	else if (other.getTag() == ObjectTag::ENEMY && healthCooldown <= 0.0f)
 	{
+		this->getObject().playSound("TakeDamage");
 		other.removeComponent<MeshComp>();
 		other.removeComponent<Rigidbody>();
 		this->takeDamage(1.0f);

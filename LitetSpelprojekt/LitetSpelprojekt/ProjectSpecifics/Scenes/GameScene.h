@@ -9,6 +9,7 @@ class GameScene : public Scene
 {
 private:
 	GameObject& cam;
+	GameObject* portal;
 	std::vector<GameObject*> portalKeys;
 	std::vector<GameObject*> particlesObject;
 	
@@ -26,6 +27,8 @@ private:
 	Button resumeButton;
 	Button mainMenuButton;
 	Button exitButton;
+
+	bool portalActivate;
 
 public:
 	GameScene(SceneHandler& sceneHandler);

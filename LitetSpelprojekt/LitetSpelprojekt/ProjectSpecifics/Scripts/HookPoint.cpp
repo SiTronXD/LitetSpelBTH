@@ -109,6 +109,8 @@ void HookPoint::update()
 			this->velocity = Vector3::Zero;
 
 			this->getObject().playSound("HookShootConnect");
+			this->getObject().getComponent<ParticleEmitter>()->explode(5.0f, 1.0f);
+			this->getObject().getComponent<ParticleEmitter>()->getTransform()->setPosition(this->getObject().getComponent<Transform>()->getPosition());
 		}
 	}
 
@@ -128,5 +130,7 @@ void HookPoint::update()
 		this->velocity = Vector3::Zero;
 
 		this->getObject().playSound("HookShootConnect");
+		this->getObject().getComponent<ParticleEmitter>()->explode(5.0f, 1.0f);
+		this->getObject().getComponent<ParticleEmitter>()->getTransform()->setPosition(this->getObject().getComponent<Rigidbody>()->getTransform()->getPosition());
 	}
 }*/

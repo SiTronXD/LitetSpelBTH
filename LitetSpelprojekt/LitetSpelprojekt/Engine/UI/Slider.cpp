@@ -5,8 +5,8 @@
 
 using namespace DirectX::SimpleMath;
 
-Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal, float perFil, Vector3 bClr, Vector3 cClr, bool cha, UIRenderer& r) :
-	uiRenderer(r)
+Slider::Slider(Vector2 p, int w, int h, float minVal, float curVal, float maxVal, float perFil, Vector3 bClr, Vector3 cClr, bool cha, UIRenderer& r, AudioEngine& audio) :
+	uiRenderer(r), audioEngine(audio)
 {
 	this->pos = p;
 	this->width = w;
@@ -46,6 +46,7 @@ bool Slider::isClicked()
 			// Left click inside the button
 			if (Input::isMouseButtonDown(Mouse::LEFT_BUTTON))
 			{
+				this->audioEngine.playSound("MenuSlider");
 				this->percentFilled = (float)((this->width / 2.0 + internal.x) / this->width);
 				this->currentValue = this->percentFilled * (this->maxValue - this->minValue);
 				sliderClicked = true;

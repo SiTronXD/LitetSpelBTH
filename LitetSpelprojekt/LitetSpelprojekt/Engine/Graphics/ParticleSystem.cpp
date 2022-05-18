@@ -102,15 +102,17 @@ void ParticleSystem::init(Renderer& renderer, Resources& resource, int nrOfParti
 	this->particleComputeShader->addConstantBuffer(*this->cPosCbuffer);
 }
 
-void ParticleSystem::explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime,
-	DirectX::SimpleMath::Vector3 color1, DirectX::SimpleMath::Vector3 color2)
+void ParticleSystem::setColor(DirectX::SimpleMath::Vector3 color1, DirectX::SimpleMath::Vector3 color2)
+{
+	this->particleSystemStruct.color1 = color1;
+	this->particleSystemStruct.color2 = color2;
+}
+
+void ParticleSystem::explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime)
 {
 	this->particleSystemStruct.startPosition = position;
 	this->particleSystemStruct.speed = speed;
 	this->particleSystemStruct.lifeTime = lifetime;
-
-	this->particleSystemStruct.color1 = color1;
-	this->particleSystemStruct.color2 = color2;
 	
 	this->particleSystemStruct.start = 1;
 
@@ -151,10 +153,6 @@ void ParticleSystem::render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFL
 		this->particleSystemStruct.cameraPosition = cameraPosition;
 		this->particleSystemStruct.deltaTime = Time::getDT();
 		this->cPosCbuffer->updateBuffer(&this->particleSystemStruct);
-
-		//Bind constant buffer
-		this->renderer->getCameraBufferStruct().modelMat = this->m.Transpose();
-		this->renderer->getCameraConstantBuffer().updateBuffer(&this->renderer->getCameraBufferStruct());
 
 		deviceContext->VSSetConstantBuffers(0, 1, &this->renderer->getCameraConstantBuffer().getBuffer());
 

@@ -8,7 +8,7 @@ private:
 	std::string current;
 public:
 	Cycler(DirectX::SimpleMath::Vector2 p, int w, int h, DirectX::SimpleMath::Vector3 bClr,
-		DirectX::SimpleMath::Vector3 hClr, bool hov, UIRenderer& r);
+		DirectX::SimpleMath::Vector3 hClr, bool hov, UIRenderer& r, AudioEngine& a);
 	~Cycler();
 
 	inline std::vector<std::string> getElements() const { return this->elements; }
