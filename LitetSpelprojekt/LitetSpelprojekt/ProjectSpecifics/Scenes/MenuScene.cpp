@@ -43,11 +43,11 @@ void MenuScene::init()
 	);
 	this->getUIRenderer().setFontCharacterSpacing(5);
 	this->getUIRenderer().setFontSpaceWidth(10);
-
-	//Add cubemap
-	this->getResources().addCubeMap("MenuBox", ".jpg", "menubox");
-	this->getRenderer().setSkyBoxName("menubox");
 	
+	//Add cubemap
+	this->getResources().addCubeMap("MenuBox", ".png", "menubox");
+	this->getRenderer().setSkyBoxName("menubox");
+
 	GameObject& cam = this->addGameObject("Camera");
 	this->setActiveCamera(cam.addComponent<Camera>());
 

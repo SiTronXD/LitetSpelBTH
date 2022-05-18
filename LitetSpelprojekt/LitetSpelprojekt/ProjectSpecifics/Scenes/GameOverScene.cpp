@@ -72,7 +72,7 @@ void GameOverScene::init()
 
 void GameOverScene::update()
 {
-	this->cam.getComponent<Transform>()->rotate(0.0f, 0.5f, 0.0f);
+	this->cam.getComponent<Transform>()->rotate(0.0f, 0.01f, 0.0f);
 	
 	if (this->mainMenuButton.isClicked())
 		this->getSceneHandler().setScene(new MenuScene(this->getSceneHandler()));
