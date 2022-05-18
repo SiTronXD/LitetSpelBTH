@@ -194,14 +194,21 @@ bool Renderer::createViews()
 
 bool Renderer::loadShaders()
 {
-	// Input layout desc
+	// Vertex shader
 	InputLayoutDesc inputLayoutDesc;
 	inputLayoutDesc.add("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
 	inputLayoutDesc.add("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
 	inputLayoutDesc.add("UV", DXGI_FORMAT_R32G32_FLOAT);
-
-	// Vertex shader
 	this->vertexShader.loadVS("Default_VS", inputLayoutDesc);
+
+	// Animation vertex shader
+	InputLayoutDesc animInputLayoutDesc;
+	animInputLayoutDesc.add("POSITION", DXGI_FORMAT_R32G32B32_FLOAT);
+	animInputLayoutDesc.add("NORMAL", DXGI_FORMAT_R32G32B32_FLOAT);
+	animInputLayoutDesc.add("UV", DXGI_FORMAT_R32G32_FLOAT);
+	animInputLayoutDesc.add("TEXCOORD", DXGI_FORMAT_R32G32B32A32_FLOAT, 1);
+	animInputLayoutDesc.add("TEXCOORD", DXGI_FORMAT_R32G32B32A32_SINT, 2);
+	this->animVertexShader.loadVS("Anim_VS", animInputLayoutDesc);
 
 	this->outlineComputeShader.init("Outlines_COMP", this->window->getWidth() / 32, this->window->getHeight() / 32, 1);
 
@@ -210,9 +217,35 @@ bool Renderer::loadShaders()
 
 void Renderer::renderMesh(MeshComp& meshComp)
 {
+	// Don't render mesh
+	if (!meshComp.getShouldRenderMesh())
+		return;
+
 	Mesh& mesh = this->resources.getMesh(meshComp.getMeshName().c_str());
 
-	// Set pixel shader for this mesh
+	// Set vertex shader, input layout and 
+	// bone transformations structured buffer
+	if (!mesh.hasAnimations())
+	{
+		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
+		immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
+		immediateContext->VSSetShaderResources(
+			0, 1, this->nullSRV
+		);
+	}
+	else
+	{
+		// Update animation
+		mesh.update(meshComp.getAnimTimer());
+
+		immediateContext->IASetInputLayout(this->animVertexShader.getInputLayout());
+		immediateContext->VSSetShader(this->animVertexShader.getVS(), nullptr, 0);
+		immediateContext->VSSetShaderResources(
+			0, 1, &mesh.getBoneTransformationsBuffer().getSrv().getPtr()
+		);
+	}
+
+	// Set pixel shader
 	PixelShader& meshPixelShader = this->resources.getPixelShader(meshComp.getPixelShaderName().c_str());
 	immediateContext->PSSetShader(meshPixelShader.getPS(), nullptr, 0);
 
@@ -222,7 +255,6 @@ void Renderer::renderMesh(MeshComp& meshComp)
 	this->cameraConstantBuffer.updateBuffer(&this->cameraBufferStruct);
 
 	// Vertex/index buffer
-	immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
 	immediateContext->IASetVertexBuffers(
 		0, 1, &mesh.getVertexBuffer().getBuffer(), &mesh.getVertexBuffer().getStride(), &mesh.getVertexBuffer().getOffset());
 	immediateContext->IASetIndexBuffer(
@@ -265,6 +297,7 @@ Renderer::Renderer(Resources& resources)
 	dsView("rendererDSV"),
 
 	vertexShader(*this),
+	animVertexShader(*this),
 	outlineComputeShader(*this, "outlinesComputeShader"),
 
 	cameraConstantBuffer(*this, "cameraConstantBuffer"),
@@ -362,7 +395,6 @@ void Renderer::render(Scene& scene)
 	// --------------------- Render meshes ---------------------
 
 	immediateContext->RSSetViewports(1, &this->viewport);
-	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
 	immediateContext->OMSetRenderTargets(1, &this->backBufferRTV, this->dsView.getPtr());
 
 	std::vector<MeshComp*> meshComponents = scene.getActiveComponents<MeshComp>();
@@ -463,7 +495,6 @@ void Renderer::render(Scene& scene)
 
 	// --------------------- Render absolute meshes ---------------------
 	immediateContext->VSSetConstantBuffers(0, 1, &this->cameraConstantBuffer.getBuffer());
-	immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
 
 	immediateContext->ClearDepthStencilView(this->dsView.getPtr(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 

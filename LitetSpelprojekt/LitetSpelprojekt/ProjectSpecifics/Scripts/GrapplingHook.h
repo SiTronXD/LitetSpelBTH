@@ -17,6 +17,7 @@ private:
 
 	DirectX::SimpleMath::Vector3 lastPos;
 	DirectX::SimpleMath::Vector3 offsetPos;
+	DirectX::SimpleMath::Vector3 swayDeltaPos;
 
 	void setToArmPos(DirectX::SimpleMath::Vector3& result);
 
@@ -36,5 +37,7 @@ public:
 	virtual void onCollisionEnter(GameObject& other) override;
 	virtual void onCollisionStay(GameObject& other) override;
 	virtual void onCollisionExit(GameObject& other) override;
+
+	inline DirectX::SimpleMath::Vector3 getSwayDeltaPos() { return this->swayDeltaPos; }
 };
 

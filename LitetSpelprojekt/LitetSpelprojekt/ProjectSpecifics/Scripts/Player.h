@@ -6,6 +6,7 @@ class Rigidbody;
 class HookPoint;
 class GrapplingHook;
 class CooldownIndicator;
+class Hand;
 
 class Player : public Script
 {
@@ -49,6 +50,7 @@ private:
 	GrapplingHook* grapplingHook;
 	CooldownIndicator* cooldownIndicatior;
 	Light* light;
+	Hand* hand;
 	
 	void move();
 	void jump();
@@ -75,8 +77,9 @@ public:
 	void setHealth(int health);
 	void addHealth(int health);
 	void setupPointers(
-		HookPoint* hp, GrapplingHook* grapHook, 
-		CooldownIndicator* cooldown, Light* light
+		HookPoint* hp, GrapplingHook* grapHook,
+		CooldownIndicator* cooldown, Light* light,
+		Hand* hand
 	);
 	void addKey();
 	

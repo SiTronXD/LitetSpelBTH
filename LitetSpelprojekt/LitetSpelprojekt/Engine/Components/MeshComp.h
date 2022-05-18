@@ -14,8 +14,11 @@ private:
 
 	DirectX::SimpleMath::Vector3 color;
 
+	float animTimer;
+
 	bool shouldShade;
 	bool castShadow;
+	bool renderMesh;
 
 public:
 	MeshComp(GameObject& object);
@@ -31,6 +34,8 @@ public:
 	void setPixelShaderName(const std::string& pixelShaderName);
 	void setShouldShade(bool shade);
 	void setCastShadow(bool cast);
+	void setAnimTimer(float animTimer);
+	void setEnableRender(bool renderMesh);
 
 	inline const std::string& getMeshName() { return this->meshName; }
 	inline const std::string& getMaterialName() { return this->materialName; }
@@ -38,4 +43,6 @@ public:
 	inline const DirectX::SimpleMath::Vector3& getColor() { return this->color; }
 	inline const bool getShouldShade() { return this->shouldShade; }
 	inline const bool getCastShadow() { return this->castShadow; }
+	inline const bool getShouldRenderMesh() { return this->renderMesh; }
+	inline const float getAnimTimer() { return this->animTimer; }
 };

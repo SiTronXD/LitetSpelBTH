@@ -43,3 +43,53 @@ float SMath::lerp(const float& v1, const float& v2, float t)
 
 	return (1.0f - t) * v1 + t * v2;
 }
+
+DirectX::XMFLOAT4X4 SMath::assimpMatToDX(const aiMatrix4x4& assimpMat)
+{
+	DirectX::XMFLOAT4X4 mat;
+	/*mat._11 = assimpMat.a1;
+	mat._12 = assimpMat.a2;
+	mat._13 = assimpMat.a3;
+	mat._14 = assimpMat.a4;
+	mat._21 = assimpMat.b1;
+	mat._22 = assimpMat.b2;
+	mat._23 = assimpMat.b3;
+	mat._24 = assimpMat.b4;
+	mat._31 = assimpMat.c1;
+	mat._32 = assimpMat.c2;
+	mat._33 = assimpMat.c3;
+	mat._34 = assimpMat.c4;
+	mat._41 = assimpMat.d1;
+	mat._42 = assimpMat.d2;
+	mat._43 = assimpMat.d3;
+	mat._44 = assimpMat.d4;*/
+
+	mat._11 = assimpMat.a1;
+	mat._12 = assimpMat.b1;
+	mat._13 = assimpMat.c1;
+	mat._14 = assimpMat.d1;
+	mat._21 = assimpMat.a2;
+	mat._22 = assimpMat.b2;
+	mat._23 = assimpMat.c2;
+	mat._24 = assimpMat.d2;
+	mat._31 = assimpMat.a3;
+	mat._32 = assimpMat.b3;
+	mat._33 = assimpMat.c3;
+	mat._34 = assimpMat.d3;
+	mat._41 = assimpMat.a4;
+	mat._42 = assimpMat.b4;
+	mat._43 = assimpMat.c4;
+	mat._44 = assimpMat.d4;
+
+	return mat;
+}
+
+DirectX::XMFLOAT3 SMath::assimpVec3ToDX(const aiVector3D& assimpVec)
+{
+	return DirectX::XMFLOAT3(assimpVec.x, assimpVec.y, assimpVec.z);
+}
+
+DirectX::XMFLOAT4 SMath::assimpQuatToDX(const aiQuaternion& assimpQuat)
+{
+	return DirectX::XMFLOAT4(assimpQuat.x, assimpQuat.y, assimpQuat.z, assimpQuat.w);
+}

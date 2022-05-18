@@ -1,5 +1,7 @@
 MeyerWeaponOBJ: Mastersilver18 (sketchfab.com)
 Gameplay skybox: The Chayed (opengameart.com)
+handRig_02: SantosGabriel
+
 Menu skybox: Jockum Skoglund aka hipshot (opengameart.com/www.zfight.com)
 Menu Music by AmarantaMusic (pixabay.com)
 Game Music by lemonmusicstudio (pixabay.com)

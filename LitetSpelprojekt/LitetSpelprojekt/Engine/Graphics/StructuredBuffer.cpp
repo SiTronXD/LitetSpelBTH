@@ -11,7 +11,7 @@ StructuredBuffer::~StructuredBuffer()
 {
 }
 
-void StructuredBuffer::updateBuffer(void* bufferData)
+void StructuredBuffer::cpuUpdateBuffer(void* bufferData)
 {
 	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
 	Buffer::map(mappedSubresource);
@@ -24,23 +24,32 @@ void StructuredBuffer::updateBuffer(void* bufferData)
 
 bool StructuredBuffer::createBuffer(
 	UINT elementSize, UINT numElements,
-	void* initialData)
+	void* initialData, D3D11_USAGE usage, 
+	UINT bindFlags, bool cpuWrite)
 {
 	bool success = Buffer::createBuffer(
-		D3D11_USAGE_DEFAULT,
-		D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE,
+		usage,
+		bindFlags,
 		elementSize * numElements,
 		initialData,
-		0,
+		cpuWrite ? D3D11_CPU_ACCESS_WRITE : 0,
 		D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
 		elementSize
 	);
 
-	success = this->srv.createBufferSRV(
-		this->getBuffer(), DXGI_FORMAT_UNKNOWN, numElements
-	);
+	// SRV
+	if ((bindFlags & D3D11_BIND_SHADER_RESOURCE) == D3D11_BIND_SHADER_RESOURCE)
+	{
+		success = this->srv.createBufferSRV(
+			this->getBuffer(), DXGI_FORMAT_UNKNOWN, numElements
+		);
+	}
 
-	success = this->uav.createBufferUAV(this->getBuffer(), DXGI_FORMAT_UNKNOWN, numElements);
+	// UAV
+	if ((bindFlags & D3D11_BIND_UNORDERED_ACCESS) == D3D11_BIND_UNORDERED_ACCESS)
+	{
+		success = this->uav.createBufferUAV(this->getBuffer(), DXGI_FORMAT_UNKNOWN, numElements);
+	}
 
 	return success;
 }

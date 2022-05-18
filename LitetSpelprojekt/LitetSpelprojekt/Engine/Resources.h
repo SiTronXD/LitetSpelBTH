@@ -31,6 +31,7 @@ public:
 	virtual ~Resources();
 
 	void init(Renderer* renderer);
+	void update();
 
 	void addTexture(
 		const std::string& textureFilePath,

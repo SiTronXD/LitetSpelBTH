@@ -41,6 +41,11 @@ void Log::write(const std::string& message)
 	std::cout << "[Log]: " << message << std::endl;
 }
 
+void Log::warning(const std::string& message)
+{
+	std::cout << "[Log Warning]: " << message << std::endl;
+}
+
 void Log::error(const std::string& errorMessage)
 {
 	// Simple message box

@@ -4,6 +4,7 @@
 #include "MenuScene.h"
 #include "GameOverScene.h"
 #include "../Scripts/Player.h"
+#include "../Scripts/Hand.h"
 #include "../Scripts/HookPoint.h"
 #include "../Scripts/GrapplingHook.h"
 #include "../Scripts/GrapplingHookRope.h"
@@ -238,6 +239,7 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
 	this->getResources().addTexture("Resources/Textures/RopeTexture.png", "RopeTexture.png");
 	this->getResources().addTexture("Resources/Textures/StingrayPBS1SG_Base_Color_1001.png", "GrapplingHookTexture");
+	this->getResources().addTexture("Resources/Textures/HandTexture.png", "HandTexture.png");
 
 	//Gui textures
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
@@ -280,6 +282,7 @@ void GameScene::init()
 	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
 	this->getResources().addMaterial("Gray.png", "GrayMaterial");
 	this->getResources().addMaterial("LightBloom.png", "LightBloomMaterial");
+	this->getResources().addMaterial("HandTexture.png", "HandMaterial");
 
 	// Default meshes
 	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
@@ -342,6 +345,14 @@ void GameScene::init()
 	this->getResources().addMesh(
 		std::move(beamMeshData),
 		"BeamMesh"
+	);
+
+	MeshData handMeshData = MeshLoader::loadAnimatedModel(
+		"Resources/Models/handRig_02_edit2.fbx");
+	handMeshData.invertFaces();
+	this->getResources().addMesh(
+		std::move(handMeshData),
+		"HandMesh"
 	);
 
 	// Player
@@ -409,12 +420,24 @@ void GameScene::init()
 	CooldownIndicator* cooldownIndicatorComp =
 		cooldownIndicatorObject.addComponent<CooldownIndicator>();
 
+	// FPS hand
+	GameObject handObject = this->addGameObject("FPS hand");
+	MeshComp* handMesh = handObject.addComponent<MeshComp>();
+	handMesh->setMesh("HandMesh", "HandMaterial");
+	handMesh->setCastShadow(false);
+	Hand* handScript = handObject.addComponent<Hand>();
+	handScript->setup(grapplingHook);
+
 	// Sun
 	GameObject& sunObject = this->addGameObject("Sun");
 	Light* lightComponent = sunObject.addComponent<Light>();
 	lightComponent->init(this->getResources(), this->getRenderer());
 
-	player->setupPointers(hook, grapplingHookComp, cooldownIndicatorComp, lightComponent);
+	player->setupPointers(
+		hook, grapplingHookComp, 
+		cooldownIndicatorComp, lightComponent,
+		handScript
+	);
 
 	// Level game object
 	GameObject& levelObject = this->addGameObject("LevelObject");
