@@ -50,7 +50,8 @@ Output main(Vertex input)
     output.position = mul(output.position, modelMatrix);
     output.worldPos = output.position;
     output.position = mul(output.position, vpMatrix);
-    output.worldNormal = mul(float4(input.normal, 0.0f), modelMatrix).xyz;
+    output.worldNormal = mul(float4(input.normal, 0.0f), skeletonTransformation).xyz;
+    output.worldNormal = mul(float4(output.worldNormal, 0.0f), modelMatrix).xyz;
     output.uv = input.uv;
     output.clipPos = output.position;
 
