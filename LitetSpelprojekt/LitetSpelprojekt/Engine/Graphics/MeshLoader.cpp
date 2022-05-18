@@ -6,7 +6,7 @@
 
 using namespace DirectX;
 
-#define PRINT_SKELETAL_INFO
+//#define PRINT_SKELETAL_INFO
 
 void MeshLoader::traverseSkeleton(
 	std::map<std::string, XMFLOAT4X4>& bindInverseMatrices,
