@@ -664,7 +664,7 @@ void GameScene::renderUI()
 			475,
 			160,
 			100,
-			Vector3(0.9f, 0.1f, 0.3f)
+			Vector3(0.5f, 0.5f, 0.5f)
 		);
 
 		// Get Minutes:Seconds Format
