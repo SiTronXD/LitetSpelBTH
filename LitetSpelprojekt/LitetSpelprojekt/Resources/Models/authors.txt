@@ -1,3 +1,2 @@
 MeyerWeaponOBJ: Mastersilver18 (sketchfab.com)
 Gameplay skybox: The Chayed (opengameart.com)
-HandWithAnimation: volkanongun
