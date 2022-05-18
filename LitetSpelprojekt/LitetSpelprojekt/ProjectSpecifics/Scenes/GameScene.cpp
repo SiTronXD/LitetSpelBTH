@@ -20,7 +20,7 @@
 #include "../../Engine/Time.h"
 #include "../../Engine/SMath.h"
 
-#define RENDER_COLLIDERS
+//#define RENDER_COLLIDERS
 
 using namespace DirectX::SimpleMath;
 
@@ -236,6 +236,22 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/RopeTexture.png", "RopeTexture.png");
 	this->getResources().addTexture("Resources/Textures/StingrayPBS1SG_Base_Color_1001.png", "GrapplingHookTexture");
 
+	//// Level textures
+	//this->getResources().addTexture("Resources/Textures/Gray.png", "Gray.png");
+	//this->getResources().addTexture("Resources/Textures/Building1.png", "Building1.png");
+	//this->getResources().addTexture("Resources/Textures/Building2.png", "Building2.png");
+	//this->getResources().addTexture("Resources/Textures/Building3.png", "Building3.png");
+	//this->getResources().addTexture("Resources/Textures/Building4.png", "Building4.png");
+	//this->getResources().addTexture("Resources/Textures/Building5.png", "Building5.png");
+
+	//// Level materials
+	//this->getResources().addMaterial("Gray.png", "GrayMat");
+	//this->getResources().addMaterial("Building1.png", "Building1Mat");
+	//this->getResources().addMaterial("Building2.png", "Building2Mat");
+	//this->getResources().addMaterial("Building3.png", "Building3Mat");
+	//this->getResources().addMaterial("Building4.png", "Building4Mat");
+	//this->getResources().addMaterial("Building5.png", "Building5Mat");
+
 	//Gui textures
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "HealthBox.png");
@@ -356,7 +372,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelMattinBackup.fbx");
+	levelLoader.load("Resources/Levels/Level.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),

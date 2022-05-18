@@ -39,7 +39,7 @@ void AudioEngine::playSound(std::string sound)
 
 void AudioEngine::setMusic(std::string path)
 {
-	if (path == this->curMusicPath)
+	if (path == this->curMusicPath || !this->active)
 		return;
 
 	this->curMusicPath = path;
