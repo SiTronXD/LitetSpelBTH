@@ -20,7 +20,7 @@
 #include "../../Engine/Time.h"
 #include "../../Engine/SMath.h"
 
-#define RENDER_COLLIDERS
+//#define RENDER_COLLIDERS
 
 using namespace DirectX::SimpleMath;
 
@@ -267,7 +267,7 @@ void GameScene::init()
 	this->getResources().addSoundEffect("Resources/SoundFiles/TakeDamage.wav", "TakeDamage");
 	this->getResources().addSoundEffect("Resources/SoundFiles/Die.wav", "Die");
 
-	this->getAudioEngine().setMusic("Resources/SoundFiles/GameSceneMusic.wav");
+	this->getAudioEngine().setMusic("Resources/SoundFiles/OnTheWayToTheTop.wav");
 
 	this->getResources().addTexture("Resources/Textures/portal.png", "portal");
 
@@ -358,7 +358,7 @@ void GameScene::init()
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
-	levelLoader.load("Resources/Levels/testLevelMattinBackup.fbx");
+	levelLoader.load("Resources/Levels/Level.fbx");
 	MeshData levelMeshData = levelLoader.getMeshData();
 	this->getResources().addMesh(
 		std::move(levelMeshData),
@@ -658,7 +658,7 @@ void GameScene::renderUI()
 			475,
 			160,
 			100,
-			Vector3(0.9f, 0.1f, 0.3f)
+			Vector3(0.5f, 0.5f, 0.5f)
 		);
 
 		// Get Minutes:Seconds Format
