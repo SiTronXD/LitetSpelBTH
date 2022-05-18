@@ -99,7 +99,7 @@ void Light::render(Scene& scene)
 	// Make position follow camera
 	Vector3 position = 
 		scene.getActiveCamera()->getTransform()->getPosition() -
-		this->dirLightBufferStruct.direction * 50.0f;
+		this->dirLightBufferStruct.direction * this->LIGHT_DIST_FROM_CAM;
 
 	// Try to make the transition a bit "easier"?
 	//position.x = std::roundf(position.x * 0.5f) / 0.5f;

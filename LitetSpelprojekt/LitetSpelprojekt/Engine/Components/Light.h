@@ -21,6 +21,7 @@ class Light : public Component
 {
 private:
 	static const unsigned int SHADOW_MAP_SIZE = 512;
+	const float LIGHT_DIST_FROM_CAM = 50.0f;
 
 	struct LightBufferData
 	{
