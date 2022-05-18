@@ -132,7 +132,7 @@ void GameScene::addLevelProperties(
 	for (unsigned int i = 0; i < levelLoader.getKeys().size(); ++i)
 	{
 		KeyInfo currentKeyInfo = levelLoader.getKeys()[i];
-		Vector3 keyPos = currentKeyInfo.position;
+		Vector3 keyPos = currentKeyInfo.position + Vector3(0.0f, -1.0f, 0.0f);
 		Vector3 keyColor = currentKeyInfo.color;
 
 		//Portal key objects
@@ -256,6 +256,7 @@ void GameScene::init()
 	//Particle texture
 	this->getResources().addTexture("Resources/Textures/particle.png", "particle.png");
 	this->getResources().addTexture("Resources/Textures/WhiteTexture.png", "WhiteTexture.png");
+	this->getResources().addTexture("Resources/Textures/Gray.png", "Gray.png");
 	this->getResources().addTexture("Resources/Textures/LightBloom.png", "LightBloom.png");
 
 	// Sound Effects
@@ -277,6 +278,7 @@ void GameScene::init()
 	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
 	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
 	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
+	this->getResources().addMaterial("Gray.png", "GrayMaterial");
 	this->getResources().addMaterial("LightBloom.png", "LightBloomMaterial");
 
 	// Default meshes
@@ -370,6 +372,7 @@ void GameScene::init()
 	player->setStartPosition(levelLoader.getPlayerStartPos());
 	cam.getComponent<Rigidbody>()->setPosition(levelLoader.getPlayerStartPos());
 
+	// Hook point
 	GameObject& hookObject = this->addGameObject("HookPoint");
 	HookPoint* hook = hookObject.addComponent<HookPoint>();
 	hookObject.addComponent<ParticleEmitter>();
@@ -377,20 +380,8 @@ void GameScene::init()
 
 	hookObject.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 64, Vector3(1.2f, 1.2f, 1.2f), Vector3(0.4f, 0.4f, 0.4f));
 
-	/*rb = hookObject.addComponent<Rigidbody>();
-	rb->setPhysics(this->getPhysicsEngine());
-	rb->addBoxCollider(Vector3(0.25f, 0.25f, 0.25f));
-	rb->setRotRestrict(Vector3(0.0f, 0.0f, 0.0f));
-	rb->setMaterial(0.2f, 0.0f);
-	rb->setType(rp3d::BodyType::KINEMATIC);*/
 	MeshComp* mc = hookObject.addComponent<MeshComp>();
 	mc->setMesh("SphereMesh", "testMaterial");
-
-	// Origin
-	/*GameObject& origin = this->addGameObject("Origin");
-	origin.getComponent<Transform>()->setScaling(Vector3(3, 3, 3));
-	MeshComp* originMC = origin.addComponent<MeshComp>();
-	originMC->setMesh("RealSphereMesh", "testMaterial");*/
 
 	// Grappling hook
 	GameObject& grapplingHook = this->addGameObject("Grappling hook");
@@ -425,50 +416,17 @@ void GameScene::init()
 
 	player->setupPointers(hook, grapplingHookComp, cooldownIndicatorComp, lightComponent);
 
-	GameObject& model = this->addGameObject("Suzanne1");
-	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
-	model.getComponent<Transform>()->setPosition(10.0f, -7.0f, 10.0f);
-	rb = model.addComponent<Rigidbody>();
-	rb->setPhysics(this->getPhysicsEngine());
-	rb->addSphereCollider(2.0f);
-	rb->setType(rp3d::BodyType::STATIC);
-	mc = model.addComponent<MeshComp>();
-	mc->setMesh("CubeMesh", "testMaterial");
-
 	// Level game object
 	GameObject& levelObject = this->addGameObject("LevelObject");
 	MeshComp* levelMeshComponent = levelObject.addComponent<MeshComp>();
 	levelMeshComponent->setMesh("LevelMesh", "");
 
-	GameObject& model2 = this->addGameObject("Suzanne2", ObjectTag::ENEMY);
-	model2.getComponent<Transform>()->setPosition(Vector3(3, 0, 0));
-	mc = model2.addComponent<MeshComp>();
-	mc->setMesh("CubeMesh", "testMaterial");
-
 	GameObject& ground = this->addGameObject("Ground", ObjectTag::GROUND);
 	mc = ground.addComponent<MeshComp>();
-	mc->setMesh("PlaneMesh", "testMaterial");
-	ground.getComponent<Transform>()->setScaling({ 100.0f, 1.0f, 100.0f });
-	ground.getComponent<Transform>()->setPosition(0.0f, -10.0f, 0.0f);
-	rb = ground.addComponent<Rigidbody>();
-	rb->setPhysics(this->getPhysicsEngine());
-	rb->addBoxCollider(Vector3(100.0f, 1.0f, 100.0f));
-	rb->setType(rp3d::BodyType::KINEMATIC);
-	rb->setMaterial(0.2f, 0.0f);
-
-	//Test obstacle, taking damage etc
-	for (int i = 0; i < 3; i++)
-	{
-		GameObject& enemy = this->addGameObject("Enemy", ObjectTag::ENEMY);
-		MeshComp* enemyMc = enemy.addComponent<MeshComp>();
-		enemyMc->setMesh("Tetrahedron", "testMaterial");
-		enemy.getComponent<Transform>()->setScaling({ 1.0f, 1.0f, 1.0f });
-		enemy.getComponent<Transform>()->setPosition((5.0f + (4 * i)), -9.0f, -6.0f);
-		rb = enemy.addComponent<Rigidbody>();
-		rb->setPhysics(this->getPhysicsEngine());
-		rb->setType(rp3d::BodyType::KINEMATIC);
-		rb->addBoxCollider(Vector3(1.0f, 1.0f, 1.0f));
-	}
+	mc->setMesh("PlaneMesh", "GrayMaterial");
+	mc->setCastShadow(false);
+	mc->setShouldShade(false);
+	ground.getComponent<Transform>()->setScaling({ 2500.0f, 1.0f, 2500.0f });
 
 	//Buttons
 	this->resumeButton.setPos(Vector2(0, 170));
