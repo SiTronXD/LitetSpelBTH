@@ -23,11 +23,31 @@ struct Output
     float2 uv : UV;
 };
 
+StructuredBuffer<float4x4> boneTransformations : register(t0);
+
 Output main(Vertex input)
 {
     Output output;
 
-    output.position = mul(float4(input.position, 1.0f), modelMatrix);
+    // Bone transformations
+    float4x4 skeletonTransformation = float4x4(
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0,
+        0, 0, 0, 0
+    );
+    if (input.boneIndices.x >= 0)
+        skeletonTransformation += boneTransformations[input.boneIndices.x] * input.boneWeights.x;
+    if (input.boneIndices.y >= 0)
+        skeletonTransformation += boneTransformations[input.boneIndices.y] * input.boneWeights.y;
+    if (input.boneIndices.z >= 0)
+        skeletonTransformation += boneTransformations[input.boneIndices.z] * input.boneWeights.z;
+    if (input.boneIndices.w >= 0)
+        skeletonTransformation += boneTransformations[input.boneIndices.w] * input.boneWeights.w;
+
+    // Regular setup
+    output.position = mul(float4(input.position, 1.0f), skeletonTransformation);
+    output.position = mul(output.position, modelMatrix);
     output.worldPos = output.position;
     output.position = mul(output.position, vpMatrix);
     output.worldNormal = mul(float4(input.normal, 0.0f), modelMatrix).xyz;

@@ -219,16 +219,23 @@ void Renderer::renderMesh(MeshComp& meshComp)
 {
 	Mesh& mesh = this->resources.getMesh(meshComp.getMeshName().c_str());
 
-	// Set vertex shader and input layout
+	// Set vertex shader, input layout and 
+	// bone transformations structured buffer
 	if (!mesh.hasAnimations())
 	{
 		immediateContext->IASetInputLayout(this->vertexShader.getInputLayout());
 		immediateContext->VSSetShader(this->vertexShader.getVS(), nullptr, 0);
+		immediateContext->VSSetShaderResources(
+			0, 1, this->nullSRV
+		);
 	}
 	else
 	{
 		immediateContext->IASetInputLayout(this->animVertexShader.getInputLayout());
 		immediateContext->VSSetShader(this->animVertexShader.getVS(), nullptr, 0);
+		immediateContext->VSSetShaderResources(
+			0, 1, &mesh.getBoneTransformationsBuffer().getSrv().getPtr()
+		);
 	}
 
 	// Set pixel shader
