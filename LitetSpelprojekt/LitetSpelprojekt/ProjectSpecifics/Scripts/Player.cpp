@@ -299,8 +299,9 @@ void Player::update()
 	if (this->healthCooldown > 0.0f)
 		this->healthCooldown -= Time::getDT();
 
-	if (Input::isKeyJustPressed(Keys::E))
-		this->hand->playAnim();
+	// Debug hand animation
+	/*if (Input::isKeyJustPressed(Keys::E))
+		this->hand->playAnim();*/
 }
 
 void Player::onCollisionEnter(GameObject& other)
