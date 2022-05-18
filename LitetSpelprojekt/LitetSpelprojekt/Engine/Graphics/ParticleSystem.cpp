@@ -7,6 +7,21 @@
 
 using namespace DirectX::SimpleMath;
 
+void ParticleSystem::setParticleType(System system)
+{
+	this->particleSystemStruct.particleType = (int)system;
+}
+
+void ParticleSystem::initParticles(DirectX::SimpleMath::Vector3 position, float speed, float lifetime)
+{
+	this->particleSystemStruct.startPosition = position;
+	this->particleSystemStruct.speed = speed;
+	this->particleSystemStruct.lifeTime = lifetime;
+	this->particleSystemStruct.start = 1;
+	this->particleSystemStruct.randomTimer = std::rand() % 1000;
+	this->activeTimer = lifetime;
+}
+
 ParticleSystem::ParticleSystem()
 	:numberOfParticles(64),
 	activeTimer(0.0f)
@@ -110,20 +125,24 @@ void ParticleSystem::setColor(DirectX::SimpleMath::Vector3 color1, DirectX::Simp
 
 void ParticleSystem::explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime)
 {
-	this->particleSystemStruct.startPosition = position;
-	this->particleSystemStruct.speed = speed;
-	this->particleSystemStruct.lifeTime = lifetime;
-	
-	this->particleSystemStruct.start = 1;
+	this->initParticles(position, speed, lifetime);
+	this->particleSystemStruct.particleType = (int)System::EXPLOSION;
+}
 
-	this->particleSystemStruct.randomTimer = std::rand() % 1000;
+void ParticleSystem::loopable(DirectX::SimpleMath::Vector3 position, float speed, float lifetime)
+{
+	this->initParticles(position, speed, lifetime);
+	this->particleSystemStruct.particleType = (int)System::LOOP;
+}
 
-	this->activeTimer = lifetime;
+void ParticleSystem::stop()
+{
+	this->particleSystemStruct.particleType = (int)System::STOP;
 }
 
 void ParticleSystem::render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFLOAT3& cameraPosition)
 {
-	if (this->activeTimer > 0.0f)
+	if (this->activeTimer > 0.0f || this->particleSystemStruct.particleType == (int)System::LOOP)
 	{
 		this->activeTimer -= Time::getDT();
 

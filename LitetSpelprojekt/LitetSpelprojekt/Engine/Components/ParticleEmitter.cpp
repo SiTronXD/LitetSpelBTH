@@ -27,3 +27,15 @@ void ParticleEmitter::explode(float speed, float lifetime)
 	
 	this->system.explode(position, speed, lifetime);
 }
+
+void ParticleEmitter::loopable(float speed, float lifetime)
+{
+	DirectX::SimpleMath::Vector3 position = this->getTransform()->getPosition();
+
+	this->system.loopable(position, speed, lifetime);
+}
+
+void ParticleEmitter::stop()
+{
+	this->system.stop();
+}

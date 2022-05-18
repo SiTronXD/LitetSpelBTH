@@ -218,6 +218,14 @@ void Player::setupPointers(
 	this->light = light;
 }
 
+void Player::addKey()
+{
+	this->collectedKeyColors.push_back(Vector3(1.0f, 1.0f, 1.0f));
+
+	this->keyPieces++;
+	this->keyPickup = true;
+}
+
 void Player::setCollectedKeyColor(Vector3 color)
 {
 	this->collectedKeyColors.push_back(color);
@@ -226,6 +234,17 @@ void Player::setCollectedKeyColor(Vector3 color)
 std::vector<Vector3> Player::getCollectedKeyColor() const
 {
 	return this->collectedKeyColors;
+}
+
+DirectX::SimpleMath::Vector3 Player::getFinalSkyBoxColor() const
+{
+	if (!skyboxColors.empty())
+	{
+		return this->skyboxColors[this->skyboxColors.size() - 1];
+	}
+	
+	return Vector3(0.0f, 0.0f, 0.0f);
+	
 }
 
 void Player::takeDamage(float damage)
@@ -332,6 +351,8 @@ void Player::onCollisionEnter(GameObject& other)
 		// Remove key
 		this->collectedKeyColors.push_back(other.getComponent<Key>()->getKeyColor());
 		other.getComponent<Key>()->remove();
+
+		this->startPosition = other.getComponent<Transform>()->getPosition();
 
 		this->keyPieces++;
 		this->keyPickup = true;
