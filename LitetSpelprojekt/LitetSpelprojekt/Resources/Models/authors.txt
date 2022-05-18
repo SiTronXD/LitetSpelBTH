@@ -1,2 +1,3 @@
 MeyerWeaponOBJ: Mastersilver18 (sketchfab.com)
 Gameplay skybox: The Chayed (opengameart.com)
+handRig_02: SantosGabriel
