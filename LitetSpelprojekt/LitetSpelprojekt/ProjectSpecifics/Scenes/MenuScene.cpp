@@ -25,7 +25,7 @@ MenuScene::~MenuScene()
 void MenuScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/MenuGui/buttonBackground.png", "buttonBackground.png");
-	this->getAudioEngine().setMusic("Resources/SoundFiles/LonelinessOfTheWinter.wav");
+	this->getAudioEngine().setMusic("Resources/SoundFiles/LonelinessOfTheWinner.wav");
 	this->getResources().addSoundEffect("Resources/SoundFiles/MenuClick.wav", "MenuClick");
 	
 	// Text rendering
