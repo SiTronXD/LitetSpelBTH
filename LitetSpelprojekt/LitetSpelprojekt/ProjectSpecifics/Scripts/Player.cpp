@@ -8,6 +8,7 @@
 #include "GrapplingHook.h"
 #include "CooldownIndicator.h"
 #include "Key.h"
+#include "Hand.h"
 
 using namespace DirectX::SimpleMath;
 
@@ -206,7 +207,8 @@ void Player::addHealth(int health)
 
 void Player::setupPointers(
 	HookPoint* hp, GrapplingHook* grapHook, 
-	CooldownIndicator* cooldown, Light* light)
+	CooldownIndicator* cooldown, Light* light,
+	Hand* hand)
 {
 	this->hookPoint = hp;
 	this->hookPoint->setPlayer(this);
@@ -215,6 +217,7 @@ void Player::setupPointers(
 	this->cooldownIndicatior = cooldown;
 	this->cooldownIndicatior->setup(this->grapplingHook);
 	this->light = light;
+	this->hand = hand;
 }
 
 void Player::setCollectedKeyColor(Vector3 color)
@@ -295,6 +298,9 @@ void Player::update()
 	// Update health cooldown
 	if (this->healthCooldown > 0.0f)
 		this->healthCooldown -= Time::getDT();
+
+	if (Input::isKeyJustPressed(Keys::E))
+		this->hand->playAnim();
 }
 
 void Player::onCollisionEnter(GameObject& other)
@@ -313,6 +319,9 @@ void Player::onCollisionEnter(GameObject& other)
 		// Remove key
 		this->collectedKeyColors.push_back(other.getComponent<Key>()->getKeyColor());
 		other.getComponent<Key>()->remove();
+
+		// Play hand animation
+		this->hand->playAnim();
 
 		this->keyPieces++;
 		this->keyPickup = true;

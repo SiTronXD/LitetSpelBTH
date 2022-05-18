@@ -165,14 +165,14 @@ Mesh::Mesh(Renderer& renderer, MeshData&& meshData)
 	// Bone transformations buffer
 	if (meshData.hasAnimations())
 	{
-		// Fill array with identity matrices
-		XMFLOAT4X4* initialTransformationData = new XMFLOAT4X4[
+		// Transformation matrices, init to identity
+		this->boneTransformationMats = new XMFLOAT4X4[
 			meshData.getSkeleton().size()
 		];
 		for (unsigned int i = 0; i < meshData.getSkeleton().size(); ++i)
 		{
 			XMStoreFloat4x4(
-				&initialTransformationData[i],
+				&boneTransformationMats[i],
 				XMMatrixTranspose(XMMatrixIdentity())
 			);
 		}
@@ -181,14 +181,11 @@ Mesh::Mesh(Renderer& renderer, MeshData&& meshData)
 		this->boneTransformationsBuffer.createBuffer(
 			sizeof(XMFLOAT4X4),
 			(UINT) meshData.getSkeleton().size(),
-			initialTransformationData,
+			this->boneTransformationMats,
 			D3D11_USAGE_DYNAMIC,
 			D3D11_BIND_SHADER_RESOURCE,
 			true
 		);
-
-		// Deallocate initial data
-		delete[] initialTransformationData;
 
 		// Get important mesh data
 		this->skeletonMeshData = meshData;
@@ -199,17 +196,17 @@ Mesh::Mesh(Renderer& renderer, MeshData&& meshData)
 
 Mesh::~Mesh()
 {
+	delete[] boneTransformationMats;
 }
 
-void Mesh::update()
+void Mesh::update(float animationTimer)
 {
 	// Only update animated meshes
 	if (!this->hasAnimations())
 		return;
 
-	this->animationTimer += Time::getDT() * 32.0f;
-	XMFLOAT4X4* mats = new XMFLOAT4X4[this->skeletonMeshData.getSkeleton().size()];
-	this->getTransformations(mats);
-	this->boneTransformationsBuffer.cpuUpdateBuffer(mats);
-	delete[] mats;
+	this->animationTimer = animationTimer;
+
+	this->getTransformations(this->boneTransformationMats);
+	this->boneTransformationsBuffer.cpuUpdateBuffer(this->boneTransformationMats);
 }

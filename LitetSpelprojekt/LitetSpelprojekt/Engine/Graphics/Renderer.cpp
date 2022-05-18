@@ -217,6 +217,10 @@ bool Renderer::loadShaders()
 
 void Renderer::renderMesh(MeshComp& meshComp)
 {
+	// Don't render mesh
+	if (!meshComp.getShouldRenderMesh())
+		return;
+
 	Mesh& mesh = this->resources.getMesh(meshComp.getMeshName().c_str());
 
 	// Set vertex shader, input layout and 
@@ -231,6 +235,9 @@ void Renderer::renderMesh(MeshComp& meshComp)
 	}
 	else
 	{
+		// Update animation
+		mesh.update(meshComp.getAnimTimer());
+
 		immediateContext->IASetInputLayout(this->animVertexShader.getInputLayout());
 		immediateContext->VSSetShader(this->animVertexShader.getVS(), nullptr, 0);
 		immediateContext->VSSetShaderResources(

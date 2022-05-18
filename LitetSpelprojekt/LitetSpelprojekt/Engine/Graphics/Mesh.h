@@ -16,6 +16,7 @@ private:
 	StructuredBuffer boneTransformationsBuffer;
 
 	MeshData skeletonMeshData;
+	DirectX::XMFLOAT4X4* boneTransformationMats;
 
 	float animationTimer;
 
@@ -43,7 +44,7 @@ public:
 	Mesh(Renderer& renderer, MeshData&& meshData);
 	virtual ~Mesh();
 
-	void update();
+	void update(float animationTimer);
 
 	inline StructuredBuffer& getBoneTransformationsBuffer() { return this->boneTransformationsBuffer; }
 

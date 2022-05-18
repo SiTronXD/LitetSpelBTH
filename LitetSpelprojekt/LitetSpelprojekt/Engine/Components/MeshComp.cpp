@@ -7,6 +7,7 @@ MeshComp::MeshComp(GameObject& object):
 	Component(object),
 	shouldShade(true),
 	castShadow(true),
+	renderMesh(true),
 	pixelShaderName("Default_PS")
 {
 	this->setColor(Vector3(1,1,1));
@@ -40,4 +41,14 @@ void MeshComp::setShouldShade(bool shade)
 void MeshComp::setCastShadow(bool cast)
 {
 	this->castShadow = cast;
+}
+
+void MeshComp::setAnimTimer(float animTimer)
+{
+	this->animTimer = animTimer;
+}
+
+void MeshComp::setEnableRender(bool renderMesh)
+{
+	this->renderMesh = renderMesh;
 }

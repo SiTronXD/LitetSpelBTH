@@ -237,6 +237,7 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/me.png", "me.png");
 	this->getResources().addTexture("Resources/Textures/RopeTexture.png", "RopeTexture.png");
 	this->getResources().addTexture("Resources/Textures/StingrayPBS1SG_Base_Color_1001.png", "GrapplingHookTexture");
+	this->getResources().addTexture("Resources/Textures/HandTexture.png", "HandTexture.png");
 
 	//Gui textures
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
@@ -275,6 +276,7 @@ void GameScene::init()
 	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
 	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
 	this->getResources().addMaterial("LightBloom.png", "LightBloomMaterial");
+	this->getResources().addMaterial("HandTexture.png", "HandMaterial");
 
 	// Default meshes
 	this->getResources().addMesh(MeshData(DefaultMesh::CUBE), "RealCubeMesh");
@@ -340,8 +342,8 @@ void GameScene::init()
 	);
 
 	MeshData handMeshData = MeshLoader::loadAnimatedModel(
-		"Resources/Models/amogus.fbx");
-		//"Resources/Models/HandWithAnimation.fbx");
+		"Resources/Models/handRig_02.fbx");
+	handMeshData.invertFaces();
 	this->getResources().addMesh(
 		std::move(handMeshData),
 		"HandMesh"
@@ -416,17 +418,21 @@ void GameScene::init()
 	// FPS hand
 	GameObject handObject = this->addGameObject("FPS hand");
 	MeshComp* handMesh = handObject.addComponent<MeshComp>();
-	handMesh->setMesh("HandMesh", "WhiteMaterial");
+	handMesh->setMesh("HandMesh", "HandMaterial");
 	handMesh->setCastShadow(false);
 	Hand* handScript = handObject.addComponent<Hand>();
-	handScript->setup(this->cam);
+	handScript->setup(grapplingHook);
 
 	// Sun
 	GameObject& sunObject = this->addGameObject("Sun");
 	Light* lightComponent = sunObject.addComponent<Light>();
 	lightComponent->init(this->getResources(), this->getRenderer());
 
-	player->setupPointers(hook, grapplingHookComp, cooldownIndicatorComp, lightComponent);
+	player->setupPointers(
+		hook, grapplingHookComp, 
+		cooldownIndicatorComp, lightComponent,
+		handScript
+	);
 
 	GameObject& model = this->addGameObject("Suzanne1");
 	model.getComponent<Transform>()->setScaling(5.0f, 5.0f, 5.0f);
