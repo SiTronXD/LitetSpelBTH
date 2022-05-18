@@ -448,7 +448,7 @@ void GameScene::init()
 	mc = ground.addComponent<MeshComp>();
 	mc->setMesh("PlaneMesh", "GrayMaterial");
 	mc->setCastShadow(false);
-	mc->setShouldShade(false);
+	//mc->setShouldShade(false);
 	ground.getComponent<Transform>()->setScaling({ 2500.0f, 1.0f, 2500.0f });
 
 	//Buttons

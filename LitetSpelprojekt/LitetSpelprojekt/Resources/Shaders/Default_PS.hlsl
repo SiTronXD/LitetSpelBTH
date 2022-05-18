@@ -65,7 +65,7 @@ float4 main(Input input) : SV_TARGET
     float4 texCol = diffuseTexture.Sample(textureSampler, input.uv);
     clip(texCol.a - 0.5f);
 
-    float shadowFactor = 1.0f;
+    float shadowMapFactor = 1.0f;
 
     // Shadow mapping + diffuse light
     if (shade)
@@ -96,17 +96,17 @@ float4 main(Input input) : SV_TARGET
             // Interpolate
             float edge0 = lerp(lightDepth0, lightDepth1, fractLightPosCorner.x);
             float edge1 = lerp(lightDepth2, lightDepth3, fractLightPosCorner.x);
-            float shadowMapFactor = lerp(edge0, edge1, fractLightPosCorner.y);
-
-            // Shadow map + diffuse light
-            shadowFactor = lerp(
-                0.4f,
-                1.0f,
-                shadowMapFactor *
-                saturate(dot(input.worldNormal, -lightDir))
-            );
+            shadowMapFactor = lerp(edge0, edge1, fractLightPosCorner.y);  
         }
     }
+
+    // Shadow map + diffuse light
+    float shadowFactor = lerp(
+        0.4f,
+        1.0f,
+        shadowMapFactor *
+        saturate(dot(input.worldNormal, -lightDir))
+    );
 
     float4 finalCol = texCol * shadowFactor * float4(multiplyColor, 1.0f) * 
         float4(lerp(float3(1.0f, 1.0f, 1.0f), globalColor, 0.6f), 1.0f);
