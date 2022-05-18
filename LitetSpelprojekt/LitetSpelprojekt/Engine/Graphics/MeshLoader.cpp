@@ -104,7 +104,7 @@ void MeshLoader::loadPoses(
 				std::pair<double, XMFLOAT3>(
 					channel->mPositionKeys[j].mTime,
 					SMath::assimpVec3ToDX(channel->mPositionKeys[j].mValue)
-					)
+				)
 			);
 		}
 
@@ -115,7 +115,7 @@ void MeshLoader::loadPoses(
 				std::pair<double, XMFLOAT4>(
 					channel->mRotationKeys[j].mTime,
 					SMath::assimpQuatToDX(channel->mRotationKeys[j].mValue)
-					)
+				)
 			);
 		}
 
@@ -126,7 +126,7 @@ void MeshLoader::loadPoses(
 				std::pair<double, XMFLOAT3>(
 					channel->mScalingKeys[j].mTime,
 					SMath::assimpVec3ToDX(channel->mScalingKeys[j].mValue)
-					)
+				)
 			);
 		}
 
@@ -134,6 +134,45 @@ void MeshLoader::loadPoses(
 #ifdef PRINT_SKELETAL_INFO
 		Log::write("Channel node name: " + std::string(channel->mNodeName.C_Str()));
 #endif
+	}
+
+	// Add default stamps for empty joints
+	for (unsigned int i = 0; i < meshData.getSkeleton().size(); ++i)
+	{
+		BoneTransforms& transforms = meshData.getSkeleton()[i].boneTransforms;
+
+		// Position
+		if (transforms.positionStamps.size() <= 0)
+		{
+			transforms.positionStamps.push_back(
+				std::pair<double, XMFLOAT3>(
+					0.0f,
+					XMFLOAT3(0.0f, 0.0f, 0.0f)
+				)
+			);
+		}
+
+		// Rotation
+		if (transforms.rotationStamps.size() <= 0)
+		{
+			transforms.rotationStamps.push_back(
+				std::pair<double, XMFLOAT4>(
+					0.0f,
+					XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f)
+				)
+			);
+		}
+
+		// Scale
+		if (transforms.scaleStamps.size() <= 0)
+		{
+			transforms.scaleStamps.push_back(
+				std::pair<double, XMFLOAT3>(
+					0.0f,
+					XMFLOAT3(1.0f, 1.0f, 1.0f)
+				)
+			);
+		}
 	}
 }
 

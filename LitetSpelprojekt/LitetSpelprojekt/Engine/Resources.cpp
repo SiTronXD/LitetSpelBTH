@@ -58,6 +58,17 @@ void Resources::init(Renderer* renderer)
 	this->renderer = renderer;
 }
 
+void Resources::update()
+{
+	// Update animations in meshes
+	for (std::map<std::string, Mesh*>::iterator itr = this->meshes.begin(), itr_end = this->meshes.end(); 
+		itr != itr_end; 
+		++itr)
+	{
+		itr->second->update();
+	}
+}
+
 void Resources::addTexture(
 	const std::string& textureFilePath, const std::string& textureName,
 	bool saveImageData)

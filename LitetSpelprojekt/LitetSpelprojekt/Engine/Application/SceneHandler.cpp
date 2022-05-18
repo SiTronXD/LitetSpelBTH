@@ -29,7 +29,8 @@ void SceneHandler::update()
 	
 	if (this->scene->getPause() == false)
 		this->scene->getECS().update();
-		
+
+	this->resources.update();
 }
 
 void SceneHandler::updateToNextScene()

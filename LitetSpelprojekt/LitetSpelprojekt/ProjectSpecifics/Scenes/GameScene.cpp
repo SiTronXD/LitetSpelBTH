@@ -340,7 +340,8 @@ void GameScene::init()
 	);
 
 	MeshData handMeshData = MeshLoader::loadAnimatedModel(
-		"Resources/Models/HandWithAnimation.fbx");
+		"Resources/Models/amogus.fbx");
+		//"Resources/Models/HandWithAnimation.fbx");
 	this->getResources().addMesh(
 		std::move(handMeshData),
 		"HandMesh"

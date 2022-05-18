@@ -15,11 +15,35 @@ private:
 
 	StructuredBuffer boneTransformationsBuffer;
 
+	MeshData skeletonMeshData;
+
+	float animationTimer;
+
 	bool meshDataHasAnimations;
+
+	template <typename T>
+	void calcAlpha(
+		std::vector<std::pair<double, T>> stamps,
+		unsigned int& outputLowestIndex,
+		unsigned int& outputHighestIndex,
+		float& outputAlpha
+	);
+	void getLerpValues(
+		std::vector<std::pair<double, DirectX::XMFLOAT3>> stamps,
+		DirectX::XMVECTOR& output
+	);
+	void getSlerpValues(
+		std::vector<std::pair<double, DirectX::XMFLOAT4>> stamps,
+		DirectX::XMVECTOR& output
+	);
+	void getInterpolatedModelMat(BoneTransforms& boneTransforms, DirectX::XMMATRIX& output);
+	void getTransformations(DirectX::XMFLOAT4X4*& mats);
 
 public:
 	Mesh(Renderer& renderer, MeshData&& meshData);
 	virtual ~Mesh();
+
+	void update();
 
 	inline StructuredBuffer& getBoneTransformationsBuffer() { return this->boneTransformationsBuffer; }
 

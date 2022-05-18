@@ -108,11 +108,11 @@ public:
 
 	unsigned int getBoneIndex(const std::string& boneName, Bone*& outputBone);
 
-	inline const std::vector<Vertex>& getVertices() { return this->vertices; }
+	inline std::vector<Vertex>& getVertices() { return this->vertices; }
 	inline std::vector<AnimVertex>& getAnimVertices() { return this->animVertices; }
-	inline const std::vector<unsigned int>& getIndices() { return this->indices; }
-	inline const std::vector<Submesh>& getSubmeshes() { return this->submeshes; }
-	inline const std::vector<Bone>& getSkeleton() { return this->skeleton; }
+	inline std::vector<unsigned int>& getIndices() { return this->indices; }
+	inline std::vector<Submesh>& getSubmeshes() { return this->submeshes; }
+	inline std::vector<Bone>& getSkeleton() { return this->skeleton; }
 
 	inline bool hasAnimations() { return this->animVertices.size() > 0; }
 };
