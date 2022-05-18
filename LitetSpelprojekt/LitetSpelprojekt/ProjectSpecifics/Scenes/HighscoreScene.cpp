@@ -5,7 +5,7 @@ using namespace DirectX::SimpleMath;
 
 HighscoreScene::HighscoreScene(SceneHandler& sceneHandler) :
 	Scene(sceneHandler),
-	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer())
+	exitButton(Vector2(0, 0), 0, 0, Vector3(0.32, 0.27, 0.42), Vector3(0.64, 0.54, 0.84), false, this->getUIRenderer(), this->getAudioEngine())
 {
 }
 

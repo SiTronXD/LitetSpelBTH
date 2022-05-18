@@ -87,7 +87,7 @@ public:
 	inline bool isKeyPickUp() const { return this->keyPickup; }
 	inline int getCurrentKeys() const { return this->keyPieces; }
 	inline int getHealth() const { return this->health; }
-	
+
 	inline bool isPlayerDead() const { return this->dead; }
 	inline bool onPortal() const { return this->portal; }
 
