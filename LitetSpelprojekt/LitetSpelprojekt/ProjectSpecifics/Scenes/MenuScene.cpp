@@ -25,8 +25,8 @@ MenuScene::~MenuScene()
 void MenuScene::init()
 {
 	this->getResources().addTexture("Resources/Textures/MenuGui/buttonBackground.png", "buttonBackground.png");
-	this->getResources().addSoundEffect("Resources/SoundFiles/MenuClick.wav", "MenuClick");
 	this->getAudioEngine().setMusic("Resources/SoundFiles/LonelinessOfTheWinter.wav");
+	this->getResources().addSoundEffect("Resources/SoundFiles/MenuClick.wav", "MenuClick");
 	
 	// Text rendering
 	std::vector<std::string> fontCharacterOrder =
@@ -81,8 +81,6 @@ void MenuScene::init()
 
 void MenuScene::update()
 {
-	this->cam.getComponent<Transform>()->rotate(2.0f * Time::getDT(), -8.0f * Time::getDT(), 0.0f);
-	
 	// Check for user input
 	if (playButton.isClicked())
 	{

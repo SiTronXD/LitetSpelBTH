@@ -280,7 +280,7 @@ void GameScene::init()
 	this->getResources().addSoundEffect("Resources/SoundFiles/TakeDamage.wav", "TakeDamage");
 	this->getResources().addSoundEffect("Resources/SoundFiles/Die.wav", "Die");
 
-	this->getAudioEngine().setMusic("Resources/SoundFiles/GameSceneMusic.wav");
+	this->getAudioEngine().setMusic("Resources/SoundFiles/OnTheWayToTheTop.wav");
 
 	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
 	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
