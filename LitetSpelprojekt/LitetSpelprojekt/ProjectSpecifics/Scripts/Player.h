@@ -78,6 +78,7 @@ public:
 		HookPoint* hp, GrapplingHook* grapHook, 
 		CooldownIndicator* cooldown, Light* light
 	);
+	void addKey();
 	
 	void setCollectedKeyColor(DirectX::SimpleMath::Vector3 color);
 	std::vector<DirectX::SimpleMath::Vector3> getCollectedKeyColor() const;
@@ -90,6 +91,8 @@ public:
 
 	inline bool isPlayerDead() const { return this->dead; }
 	inline bool onPortal() const { return this->portal; }
+
+	DirectX::SimpleMath::Vector3 getFinalSkyBoxColor() const;
 
 	void takeDamage(float damage);
 	void resetPlayer(DirectX::SimpleMath::Vector3 pos);

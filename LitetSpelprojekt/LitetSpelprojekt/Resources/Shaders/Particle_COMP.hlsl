@@ -42,7 +42,8 @@ cbuffer ParticleSystemBuffer : register(b0)
     float3 color2;
     float lifeTime;
     float randomTimer;
-    float3 padding;
+    int particleType;
+    float2 padding;
 };
 
 RWStructuredBuffer<particle> buffer : register(u0);
@@ -66,62 +67,51 @@ void main( uint3 DTid : SV_DispatchThreadID )
         buffer[DTid.x].velocity.x = radius * cos(angle1) * sin(angle2);
         buffer[DTid.x].velocity.y = radius * sin(angle1) * sin(angle2);
         buffer[DTid.x].velocity.z = radius * cos(angle2);
-        
-        //float angle1 = randomFloat(DTid.x) * 360.0 / 180.0 * 3.14;
-        //float angle2 = randomFloat(DTid.x + 1) * 360.0 / 180.0 * 3.14;
-        //float radius = 1 + randomFloat(DTid.x) * speed;
-        
-        //buffer[DTid.x].velocity.x = cos(angle1) * sin(angle2);
-        //buffer[DTid.x].velocity.y = sin(angle1) * sin(angle2);
-        //buffer[DTid.x].velocity.z = cos(angle2);
-        
-        //buffer[DTid.x].velocity += float3(0.0f, 1.0f, 0.0f);
-        //buffer[DTid.x].velocity = normalize(buffer[DTid.x].velocity) * radius;
-        
+            
         //Update color
         float randomColorValue = randomFloat(DTid.x * randomTimer);
-        buffer[DTid.x].finalColor = (float4(lerp(color1, color2, randomColorValue), 1.0f));
- 
-        //buffer[DTid.x].color.x = randomFloat(DTid.x * 3);
-        //buffer[DTid.x].color.y = randomFloat(DTid.x * 3 + 1);
-        //buffer[DTid.x].color.z = randomFloat(DTid.x * 3 + 2);
-        
-           
+        buffer[DTid.x].finalColor = (float4(lerp(color1, color2, randomColorValue), 1.0f)); 
     }
     
-    //No need to update paricle when scale is below 0
-    if (buffer[DTid.x].scaleFactor > 0.0f)
+    //Only update if particle is not set to "STOPPED"
+    if (particleType != 0 && buffer[DTid.x].scaleFactor > 0.0f)
     {
-        //Caculate the direction
-        float3 forwardVector = cameraPosition - buffer[DTid.x].worldMatrix[3].xyz;
-        forwardVector = normalize(forwardVector);
-    
-        //Rotate thoughts the camera
-        float3 rightVector = normalize(cross(float3(0.0f, 1.0f, 0.0f), forwardVector));
-        float3 upVector = cross(forwardVector, rightVector);
-    
-        buffer[DTid.x].worldMatrix[0] = float4(rightVector, 0.0f) * buffer[DTid.x].scaleFactor;
-        buffer[DTid.x].worldMatrix[1] = float4(upVector, 0.0f) * buffer[DTid.x].scaleFactor;
-        buffer[DTid.x].worldMatrix[2] = float4(forwardVector, 0.0f) * buffer[DTid.x].scaleFactor;
-    
-        //Update position
-        if(start == 0)
-        {
-            buffer[DTid.x].worldMatrix[3].xyz += buffer[DTid.x].velocity * deltaTime;
-        }
-            
-        //Update lifetime
-        buffer[DTid.x].lifetime -= 4 * deltaTime;
-    }
-    //If lifetime is 0 we remove them by setting scale to 0.
-    if (buffer[DTid.x].lifetime < 0.0f)
-    {
+        //No need to update paricle when scale is below 0
         if (buffer[DTid.x].scaleFactor > 0.0f)
-            buffer[DTid.x].scaleFactor -= 1.0f * deltaTime;
+        {
+            //Caculate the direction
+            float3 forwardVector = cameraPosition - buffer[DTid.x].worldMatrix[3].xyz;
+            forwardVector = normalize(forwardVector);
+    
+            //Rotate thoughts the camera
+            float3 rightVector = normalize(cross(float3(0.0f, 1.0f, 0.0f), forwardVector));
+            float3 upVector = cross(forwardVector, rightVector);
+    
+            buffer[DTid.x].worldMatrix[0] = float4(rightVector, 0.0f) * buffer[DTid.x].scaleFactor;
+            buffer[DTid.x].worldMatrix[1] = float4(upVector, 0.0f) * buffer[DTid.x].scaleFactor;
+            buffer[DTid.x].worldMatrix[2] = float4(forwardVector, 0.0f) * buffer[DTid.x].scaleFactor;
+    
+            //Update position
+            buffer[DTid.x].worldMatrix[3].xyz += buffer[DTid.x].velocity * deltaTime;
+             
+            //Update lifetime
+            buffer[DTid.x].lifetime -= 4 * deltaTime;
+        }
+        
+        //If lifetime is 0 we remove them by setting scale to 0.
+        if (buffer[DTid.x].lifetime < 0.0f)
+        {
+            if (buffer[DTid.x].scaleFactor > 0.0f)
+                buffer[DTid.x].scaleFactor -= 1.0f * deltaTime;
 
+        }
     }
-    //Update color
-    //float fadingValue = buffer[DTid.x].lifetime / lifeTime;
-    //buffer[DTid.x].finalColor = (float4(lerp(color1, color2, fadingValue), 1.0f));
+    
+    if (particleType == 2 && buffer[DTid.x].scaleFactor <= 0.0f)
+    {
+        buffer[DTid.x].worldMatrix[3].xyz = startPosition;
+        buffer[DTid.x].lifetime = randomFloat(DTid.x * randomTimer) * lifeTime;
+        buffer[DTid.x].scaleFactor = 0.2 + randomFloat(DTid.x * randomTimer) * 0.4;
+    }
    
 }

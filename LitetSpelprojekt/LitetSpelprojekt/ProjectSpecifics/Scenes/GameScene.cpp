@@ -139,7 +139,8 @@ void GameScene::addLevelProperties(
 		GameObject& portalKey = this->addGameObject("Key", ObjectTag::KEY);
 		portalKey.addComponent<ParticleEmitter>();
 		MeshComp* keyMc = portalKey.addComponent<MeshComp>();
-		keyMc->setMesh("RealCubeMesh", "testMaterial");
+		keyMc->setMesh("Tetrahedron", "WhiteMaterial");
+		keyMc->setColor(currentKeyInfo.color);
 		portalKey.getComponent<Transform>()->setScaling({ 0.6f, 0.6f, 0.6f });
 		portalKey.getComponent<Transform>()->setPosition(keyPos);
 		portalKey.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512, Vector3(1.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 0.0f));
@@ -183,6 +184,8 @@ void GameScene::addLevelProperties(
 	if (portalInfo.scale.x * portalInfo.scale.y * portalInfo.scale.z > 0.0f)
 	{
 		this->portal = &this->addGameObject("Portal", ObjectTag::PORTAL);
+		this->portal->addComponent<ParticleEmitter>();
+		portal->getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 512, Vector3(0.0f, 0.0f, 1.2f), Vector3(1.0f, 1.0f, 1.0f));
 		
 		portal->getComponent<Transform>()->setPosition(portalInfo.position);
 		portal->getComponent<Transform>()->setScaling(portalInfo.scale);
@@ -266,12 +269,11 @@ void GameScene::init()
 
 	this->getAudioEngine().setMusic("Resources/SoundFiles/OnTheWayToTheTop.wav");
 
-	//this->getResources().addTexture("Resources/Textures/GemTexture.png", "GemTexture.png");
-	//this->getResources().addTexture("Resources/Textures/portalTexture.jpg", "portalTexture.jpg");
+	this->getResources().addTexture("Resources/Textures/portal.png", "portal");
 
 	//Materials
 	this->getResources().addMaterial("me.png", "testMaterial");
-	this->getResources().addMaterial("me.png", "portalMaterial");
+	this->getResources().addMaterial("portal", "portalMaterial");
 	this->getResources().addMaterial("RopeTexture.png", "ropeMaterial");
 	this->getResources().addMaterial("GrapplingHookTexture", "GrapplingHookMaterial");
 	this->getResources().addMaterial("WhiteTexture.png", "WhiteMaterial");
@@ -522,6 +524,10 @@ void GameScene::update()
 		{
 			MeshComp* portalMc = this->portal->addComponent<MeshComp>();
 			portalMc->setMesh("RealCubeMesh", "portalMaterial");
+			Vector3 skyBoxColor = playerComp->getFinalSkyBoxColor();
+
+			portalMc->setColor(Vector3(1.0f, 1.0f, 1.0f) / skyBoxColor);
+
 			this->portal->getComponent<Rigidbody>()->addBoxCollider(this->portal->getComponent<Transform>()->getScaling() * 0.5f);
 
 			//Add a beam
@@ -534,6 +540,8 @@ void GameScene::update()
 			portalbeamMesh->setCastShadow(false);
 			Beam* portalBeamScript = portalBeamObject.addComponent<Beam>();
 			portalBeamScript->set(*this->portal, this->cam);
+
+			this->portal->getComponent<ParticleEmitter>()->loopable(10.0f, 1.0f);
 
 			this->portalActivate = true;
 		}
@@ -587,6 +595,8 @@ void GameScene::update()
 		Input::setCursorVisible(true);
 		this->setPause(true);
 	}
+
+	
 }
 
 void GameScene::renderUI()
@@ -672,7 +682,7 @@ void GameScene::renderUI()
 			if (!this->portalActivate)
 			{
 				this->getUIRenderer().renderString(
-					"you picked up a key piece",
+					"you picked up a key",
 					0,
 					200,
 					(int)this->keyTextScale,

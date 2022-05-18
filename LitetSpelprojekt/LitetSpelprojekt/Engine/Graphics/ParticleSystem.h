@@ -11,6 +11,13 @@
 #include "Texture.h"
 #include "../Resources.h"
 
+enum class System
+{
+	STOP		= 0,
+	EXPLOSION	= 1,
+	LOOP		= 2
+};
+
 class ParticleSystem
 {
 private:
@@ -21,7 +28,6 @@ private:
 		float lifetime;
 		float scaleFactor;
 		DirectX::XMFLOAT3 finalColor;
-	
 	}particleBufferStruct{};
 
 	struct ParticleSystemStruct
@@ -35,7 +41,8 @@ private:
 		DirectX::XMFLOAT3 color2;
 		float lifeTime;
 		float randomTimer;
-		DirectX::XMFLOAT3 padding;
+		int particleType;
+		DirectX::XMFLOAT2 padding;
 
 	}particleSystemStruct{};
 
@@ -56,6 +63,9 @@ private:
 	VertexShader* particleVS;
 	PixelShader* particlePS;
 
+	void setParticleType(System system);
+	void initParticles(DirectX::SimpleMath::Vector3 position, float speed, float lifetime);
+
 	int numberOfParticles;
 
 	float activeTimer;
@@ -68,6 +78,8 @@ public:
 	void setColor(DirectX::SimpleMath::Vector3 color1, DirectX::SimpleMath::Vector3 color2);
 
 	void explode(DirectX::SimpleMath::Vector3 position, float speed, float lifetime);
+	void loopable(DirectX::SimpleMath::Vector3 position, float speed, float lifetime);
+	void stop();
 
 	void render(DirectX::SimpleMath::Matrix& vp, const DirectX::XMFLOAT3& cameraPosition);
 
