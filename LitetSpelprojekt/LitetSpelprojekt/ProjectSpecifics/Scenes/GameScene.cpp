@@ -368,6 +368,8 @@ void GameScene::init()
 	cam.getComponent<Camera>()->updateAspectRatio(
 		(float)this->getWindow().getWidth() / this->getWindow().getHeight()
 	);
+	cam.addComponent<ParticleEmitter>();
+	cam.getComponent<ParticleEmitter>()->init(this->getRenderer(), this->getResources(), 128, Vector3(1.0f, 1.0f, 1.0f), Vector3(0.2f, 0.2f, 0.2f));
 
 	// Level loader
 	LevelLoader levelLoader(this->getResources());
