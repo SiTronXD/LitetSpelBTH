@@ -97,6 +97,8 @@ void Player::fireWeapon()
 		this->pulseCannonCooldown = this->maxPulseCannonCooldown;
 
 		this->getObject().playSound("PulseCannon");
+		this->getObject().getComponent<ParticleEmitter>()->explode(5.0f, 1.0f);
+		this->getObject().getComponent<ParticleEmitter>()->getTransform()->setPosition(this->getObject().getComponent<Transform>()->getPosition() + forward);
 	}
 }
 

@@ -43,10 +43,12 @@ bool Slider::isClicked()
 		// Inside Y range
 		if (internal.y >= minPosY && internal.y <= maxPosY)
 		{
+			if (Input::isMouseButtonJustPressed(Mouse::LEFT_BUTTON))
+				this->audioEngine.playSound("MenuSlider");
+
 			// Left click inside the button
 			if (Input::isMouseButtonDown(Mouse::LEFT_BUTTON))
 			{
-				this->audioEngine.playSound("MenuSlider");
 				this->percentFilled = (float)((this->width / 2.0 + internal.x) / this->width);
 				this->currentValue = this->percentFilled * (this->maxValue - this->minValue);
 				sliderClicked = true;
