@@ -204,9 +204,9 @@ void Resources::addCubeMap(const std::string& textureFileName, const std::string
 void Resources::addSoundEffect(const std::string& soundFileName, const std::string& soundName)
 {
 	//Check if resource already exist
-	if (this->soundEffects.count(soundFileName) > 0)
+	if (this->soundEffects.count(soundName) > 0)
 	{
-		Log::write(soundFileName + " has already been added to resources.");
+		Log::write(soundName + " has already been added to resources.");
 		return;
 	}
 
