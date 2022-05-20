@@ -35,6 +35,8 @@ private:
 	{
 		DirectX::XMFLOAT3 color;
 		int shade;
+		float aspectRatio;
+		DirectX::XMFLOAT3 padding;
 	} pixelShaderBufferStruct{};
 
 	struct OutlineInfoBufferData
@@ -80,6 +82,8 @@ private:
 
 	std::vector<DirectX::XMFLOAT2> supportedResolutions;
 
+	int graphicsSettingsLevel;
+
 	// Functions
 	bool evaluateAdapterModes();
 	bool createInterfaces();
@@ -93,7 +97,7 @@ public:
 	Renderer(Resources& resources);
 	virtual ~Renderer();
 
-	void init(Window& window);
+	void init(Window& window, const std::string& graphicsSetting);
 	void render(Scene& scene);
 	void presentSC();
 	void setSkyBoxName(const std::string& name);
@@ -109,4 +113,5 @@ public:
 	inline CameraBufferData& getCameraBufferStruct() { return this->cameraBufferStruct; }
 	inline CompactCameraBufferData& getCompactCameraBufferStruct() { return this->compactCameraBufferStruct; }
 	inline std::vector<DirectX::XMFLOAT2>& getSupportedResolutions() { return supportedResolutions; }
+	inline const unsigned int& getGraphicsLevel() const { return this->graphicsSettingsLevel; }
 };

@@ -7,15 +7,17 @@ cbuffer LightBuffer : register(b0)
 cbuffer DirLightBuffer : register(b1)
 {
     float3 lightDir;
-    float padding0;
+    float shadowMapSize;
     float3 globalColor;
-    float padding1;
+    float biasScale;
 }
 
 cbuffer PixelShaderBuffer : register(b2)
 {
     float3 multiplyColor;
     int shade;
+    float aspectRatio;
+    float3 padding2;
 }
 
 struct Input
@@ -47,6 +49,7 @@ float4 main(Input input) : SV_TARGET
     };
 
     float2 ndcPos = input.clipPos.xy / input.clipPos.w;
+    ndcPos.x *= aspectRatio;
 
     // Clip against bayer matrix
     int2 pos = int2(((ndcPos + float2(1.0f, 1.0f)) * 0.5f) * 500.0f);

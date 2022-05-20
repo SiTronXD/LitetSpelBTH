@@ -7,15 +7,17 @@ cbuffer LightBuffer : register(b0)
 cbuffer DirLightBuffer : register(b1)
 {
     float3 lightDir;
-    float padding0;
+    float shadowMapSize;
     float3 globalColor;
-    float padding1;
+    float biasScale;
 }
 
 cbuffer PixelShaderBuffer : register(b2)
 {
     float3 multiplyColor;
     int shade;
+    float aspectRatio;
+    float3 padding2;
 }
 
 struct Input
@@ -33,7 +35,6 @@ Texture2D diffuseTexture : register(t0);
 Texture2D sunShadowMap : register(t1);
 
 #define SHADOW_BIAS 0.012f
-#define SHADOW_MAP_SIZE 512.0f
 
 float4 main(Input input) : SV_TARGET
 {
@@ -50,6 +51,7 @@ float4 main(Input input) : SV_TARGET
     };
 
     float3 ndcPos = input.clipPos.xyz / input.clipPos.w;
+    ndcPos.x *= aspectRatio;
 
     // Fog value
     float fog = (ndcPos.z - 0.9998f) / (1.0f - 0.9998f);
@@ -73,25 +75,26 @@ float4 main(Input input) : SV_TARGET
         // Light space
         float4 lightPos = mul(float4(input.worldPos, 1.0f), vpLightMatrix);
         lightPos /= lightPos.w;
-        lightPos.xy = (lightPos.xy + float2(1.0f, 1.0f)) * 0.5f;
-        lightPos.y *= -1.0f;
 
         // Make sure position is visible
         if (lightPos.x >= -1.0f && lightPos.x <= 1.0f &&
             lightPos.y >= -1.0f && lightPos.y <= 1.0f &&
-            lightPos.z >= -1.0f && lightPos.z <= 1.0f)
+            lightPos.z >= 0.0f && lightPos.z <= 1.0f)
         {
+            lightPos.y *= -1.0f;
+            lightPos.xy = (lightPos.xy + float2(1.0f, 1.0f)) * 0.5f;
 
-            float2 invSize = 1.0f / SHADOW_MAP_SIZE;
-            float2 lightPosCorner = lightPos.xy * SHADOW_MAP_SIZE;
+            float2 invSize = 1.0f / shadowMapSize;
+            float2 lightPosCorner = lightPos.xy * shadowMapSize;
             float2 floorLightPosCorner = floor(lightPosCorner);
             float2 fractLightPosCorner = frac(lightPosCorner);
 
             // Compare
-            float lightDepth0 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner)*invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
-            float lightDepth1 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(1.0f, 0.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
-            float lightDepth2 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(0.0f, 1.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
-            float lightDepth3 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(1.0f, 1.0f)) * invSize) + SHADOW_BIAS >= lightPos.z ? 1.0f : 0.0f;
+            float bias = SHADOW_BIAS * biasScale;
+            float lightDepth0 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner)                      * invSize) + bias >= lightPos.z ? 1.0f : 0.0f;
+            float lightDepth1 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(1.0f, 0.0f)) * invSize) + bias >= lightPos.z ? 1.0f : 0.0f;
+            float lightDepth2 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(0.0f, 1.0f)) * invSize) + bias >= lightPos.z ? 1.0f : 0.0f;
+            float lightDepth3 = sunShadowMap.Sample(depthSampler, (floorLightPosCorner + float2(1.0f, 1.0f)) * invSize) + bias >= lightPos.z ? 1.0f : 0.0f;
 
             // Interpolate
             float edge0 = lerp(lightDepth0, lightDepth1, fractLightPosCorner.x);

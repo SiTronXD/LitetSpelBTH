@@ -20,8 +20,8 @@ enum class LightType
 class Light : public Component
 {
 private:
-	static const unsigned int SHADOW_MAP_SIZE = 512;
-	const float LIGHT_DIST_FROM_CAM = 50.0f;
+	static const unsigned int MIN_SHADOW_MAP_SIZE = 512;
+	const float LIGHT_DIST_FROM_CAM = 100.0f;
 
 	struct LightBufferData
 	{
@@ -31,9 +31,9 @@ private:
 	struct DirectionalLightBufferData
 	{
 		DirectX::XMFLOAT3 direction;
-		float padding0;
+		float shadowMapSize;
 		DirectX::XMFLOAT3 globalColor;
-		float padding1;
+		float biasScale;
 	} dirLightBufferStruct{};
 
 	DirectX::SimpleMath::Matrix viewMatrix;
@@ -53,6 +53,8 @@ private:
 
 	Resources* resources;
 	Renderer* renderer;
+
+	unsigned int shadowMapSize;
 
 public:
 	Light(GameObject& object);

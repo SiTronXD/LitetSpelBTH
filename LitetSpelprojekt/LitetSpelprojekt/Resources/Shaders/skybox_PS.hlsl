@@ -2,9 +2,9 @@
 cbuffer DirLightBuffer : register(b1)
 {
     float3 lightDir;
-    float padding0;
+    float shadowMapSize;
     float3 globalColor;
-    float padding1;
+    float biasScale;
 }
 
 struct SKYMAP_PS_INPUT

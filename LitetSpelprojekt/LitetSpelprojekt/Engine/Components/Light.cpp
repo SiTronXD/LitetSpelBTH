@@ -16,7 +16,8 @@ Light::Light(GameObject& object)
 	shadowMapDSV("shadowMapDSV"),
 	shadowMapVS(nullptr),
 	resources(nullptr),
-	renderer(nullptr)
+	renderer(nullptr),
+	shadowMapSize(0)
 {
 }
 
@@ -32,11 +33,15 @@ void Light::init(Resources& resources, Renderer& renderer)
 	this->resources = &resources;
 	this->renderer = &renderer;
 
+	float shadowMapSizeScale = std::powf(2.0f, (float)(renderer.getGraphicsLevel() - 1));
+	this->shadowMapSize = this->MIN_SHADOW_MAP_SIZE * 
+		shadowMapSizeScale;
+
 	// Create depth texture
 	delete this->shadowMapDepthTexture;
 	this->shadowMapDepthTexture = new Texture(renderer);
 	this->shadowMapDepthTexture->createAsDepthTexture(
-		this->SHADOW_MAP_SIZE, this->SHADOW_MAP_SIZE,
+		this->shadowMapSize, this->shadowMapSize,
 		DXGI_FORMAT_R32_TYPELESS,
 		D3D11_BIND_SHADER_RESOURCE,
 		true
@@ -71,18 +76,28 @@ void Light::init(Resources& resources, Renderer& renderer)
 		// Viewport
 		this->shadowMapViewport.TopLeftX = 0;
 		this->shadowMapViewport.TopLeftY = 0;
-		this->shadowMapViewport.Width = (FLOAT) this->SHADOW_MAP_SIZE;
-		this->shadowMapViewport.Height = (FLOAT) this->SHADOW_MAP_SIZE;
+		this->shadowMapViewport.Width = (FLOAT) this->shadowMapSize;
+		this->shadowMapViewport.Height = (FLOAT) this->shadowMapSize;
 		this->shadowMapViewport.MinDepth = 0;
 		this->shadowMapViewport.MaxDepth = 1;
+
+		// Shadow map size in shader
+		this->dirLightBufferStruct.shadowMapSize = 
+			(float) this->shadowMapSize;
+
+		// Bias scale
+		this->dirLightBufferStruct.biasScale =
+			renderer.getGraphicsLevel() <= 2 ? 
+				1.0f : 
+				std::powf(0.5f, renderer.getGraphicsLevel() - 2);
 
 		// Directional light direction
 		this->updateDirection(Vector3(1, -1, 1));
 
 		// Constant projection matrix
 		this->projectionMatrix = Matrix::CreateOrthographic(
-			100,
-			100,
+			100 * std::min(shadowMapSizeScale, 2.0f),
+			100 * std::min(shadowMapSizeScale, 2.0f),
 			0.1f,
 			200.0f
 		);

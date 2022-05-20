@@ -308,14 +308,18 @@ Renderer::Renderer(Resources& resources)
 
 	resources(resources),
 
-	skybox(*this)
+	skybox(*this),
+
+	graphicsSettingsLevel(1)
 {
 }
 
 Renderer::~Renderer()
 {
 	// Switch to windowed mode
-	this->swapChain->SetFullscreenState(false, NULL);
+	this->swapChain->SetFullscreenState(FALSE, NULL);
+
+	this->immediateContext->ClearState();
 
 	S_RELEASE(this->device);
 	S_RELEASE(this->immediateContext);
@@ -325,7 +329,7 @@ Renderer::~Renderer()
 	S_RELEASE(this->dsState);
 }
 
-void Renderer::init(Window& window)
+void Renderer::init(Window& window, const std::string& graphicsSettings)
 {
 	this->window = &window;
 
@@ -357,6 +361,24 @@ void Renderer::init(Window& window)
 	this->outlineInfoBufferStruct.width = this->window->getWidth();
 	this->outlineInfoBufferStruct.height = this->window->getHeight();
 	this->outlineInfoBufferStruct.thickness = 0.001f;
+
+	// Graphics settings
+	if (graphicsSettings == "low")
+	{
+		this->graphicsSettingsLevel = 1;
+	}
+	else if (graphicsSettings == "medium")
+	{
+		this->graphicsSettingsLevel = 2;
+	}
+	else if (graphicsSettings == "high")
+	{
+		this->graphicsSettingsLevel = 4;
+	}
+
+	// Set aspect ratio in constant buffer
+	this->pixelShaderBufferStruct.aspectRatio =
+		(float) window.getWidth() / window.getHeight();
 
 	// Topology won't change during runtime
 	immediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

@@ -3,7 +3,7 @@ ResolutionX
 ResolutionY
 900
 Graphics
-medium
+high
 Sensitivity
 0.556497
 Volume
