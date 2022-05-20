@@ -245,10 +245,7 @@ void GameScene::init()
 	this->getResources().addTexture("Resources/Textures/Gui/crosshairs64.png", "crosshairs64.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBox.png", "HealthBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/HealthBar.png", "HealthBar.png");
-	this->getResources().addTexture("Resources/Textures/Gui/TimerBox.png", "TimerBox.png");
 	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGui.png", "EmptyKeyGui.png");
-	this->getResources().addTexture("Resources/Textures/Gui/EmptyKeyGuiCross.png", "EmptyKeyGuiCross.png");
-	this->getResources().addTexture("Resources/Textures/Gui/KeyGui.png", "KeyGui.png");
 	this->getResources().addTexture("Resources/Textures/Gui/KeyScale.png", "KeyScale.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/settingsSlider.png", "settingsSlider.png");
 	this->getResources().addTexture("Resources/Textures/MenuGui/sliderBorder.png", "sliderBorder.png");
