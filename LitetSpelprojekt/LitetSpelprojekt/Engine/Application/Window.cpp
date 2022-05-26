@@ -1,3 +1,4 @@
+#include <shellscalingapi.h>
 #include "Window.h"
 #include "../Dev/Log.h"
 
@@ -154,6 +155,9 @@ bool Window::init(
 	SetFocus(this->windowHandle);
 	UpdateWindow(this->windowHandle);
 
+	// Fix resolution scaling
+	SetProcessDpiAwareness(PROCESS_SYSTEM_DPI_AWARE);
+
 	this->running = true;
 
 	// Update last cursor point
@@ -213,6 +217,7 @@ const bool& Window::isRunning()
 	if (Input::isKeyDown(Keys::ESCAPE))
 		this->running = false;
 	*/
+
 	return this->running;
 }
 
