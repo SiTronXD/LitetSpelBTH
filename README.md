@@ -1,3 +1,5 @@
+![github-small](LitetSpelprojekt/LitetSpelprojekt/Resources/Textures/GithubScreenshots/Screenshot_1.png)
+
 # Grapple Mayhem
 A small game about collecting keys to a portal. The player has a grappling hook and a pulse cannon to traverse the map. [Trailer can be found here.](https://drive.google.com/file/d/1JpgOtOUMuuPeV_nibfomrBeAsp5E1YKn/view)
 
@@ -19,3 +21,9 @@ While everyone worked on a lot of different aspects in the project, our main con
 * William Kamnert - Entity components and physics implementation
 * Martin Johansson - Particle systems and gameplay elements
 * Joel Berg - Menus and UI elements
+
+# Screenshots
+![github-small](LitetSpelprojekt/LitetSpelprojekt/Resources/Textures/GithubScreenshots/Screenshot_2.png)
+![github-small](LitetSpelprojekt/LitetSpelprojekt/Resources/Textures/GithubScreenshots/Screenshot_5.png)
+![github-small](LitetSpelprojekt/LitetSpelprojekt/Resources/Textures/GithubScreenshots/Screenshot_3.png)
+![github-small](LitetSpelprojekt/LitetSpelprojekt/Resources/Textures/GithubScreenshots/Screenshot_4.png)
